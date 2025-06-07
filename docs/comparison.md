@@ -536,4 +536,4 @@ Debian 13 是一个优秀的全能型Linux发行版，特别适合：
 
 ---
 
-**需要更详细的特定场景分析吗？** [查看安装指南 →](/installation) | [了解基础使用 →](/basics/first-boot) 
+**需要更详细的特定场景分析吗？** [查看安装指南 →](/basics/installation) | [了解基础使用 →](/basics/first-boot) 

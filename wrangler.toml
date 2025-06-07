@@ -1,0 +1,11 @@
+name = "debian-club"
+compatibility_date = "2024-06-07"
+
+[build]
+command = "npm run docs:build"
+cwd = "."
+watch_dir = "docs"
+
+[[build.upload]]
+format = "service-worker"
+dir = "docs/.vitepress/dist" 

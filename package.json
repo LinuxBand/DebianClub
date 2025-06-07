@@ -1,0 +1,27 @@
+{
+  "name": "debian-club",
+  "version": "1.0.0",
+  "description": "Debian 初学者完全指南 - Complete Debian Guide for Beginners",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "keywords": [
+    "debian",
+    "linux",
+    "tutorial",
+    "beginner",
+    "guide",
+    "vitepress"
+  ],
+  "author": "Debian.Club",
+  "license": "MIT",
+  "devDependencies": {
+    "vitepress": "^1.6.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

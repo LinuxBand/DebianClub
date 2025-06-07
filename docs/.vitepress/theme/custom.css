@@ -1,0 +1,214 @@
+/**
+ * Debian.Club 自定义样式
+ * 面向初学者的友好设计
+ */
+
+:root {
+  /* Debian 品牌色彩 */
+  --vp-c-brand-1: #d41443;
+  --vp-c-brand-2: #c61a43;
+  --vp-c-brand-3: #a0122e;
+  --vp-c-brand-soft: rgba(212, 20, 67, 0.1);
+  
+  /* 提升可读性 */
+  --vp-font-family-base: "Noto Sans SC", "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --vp-font-family-mono: "JetBrains Mono", "Fira Code", Menlo, Monaco, Consolas, "Courier New", monospace;
+  
+  /* 间距优化 */
+  --vp-layout-max-width: 1440px;
+}
+
+/* 中文字体优化 */
+.VPDoc h1, .VPDoc h2, .VPDoc h3, .VPDoc h4, .VPDoc h5, .VPDoc h6 {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* 代码块优化 */
+.vp-code-group {
+  margin: 16px 0;
+}
+
+.vp-code-group .tabs {
+  background: var(--vp-c-bg-soft);
+  border-radius: 8px 8px 0 0;
+}
+
+/* 初学者友好的提示框样式 */
+.custom-block.tip {
+  border-color: var(--vp-c-brand-1);
+}
+
+.custom-block.tip .custom-block-title {
+  color: var(--vp-c-brand-1);
+}
+
+.custom-block.warning {
+  border-color: #f59e0b;
+}
+
+.custom-block.danger {
+  border-color: #ef4444;
+}
+
+.custom-block.info {
+  border-color: #3b82f6;
+}
+
+/* 命令行代码块特殊样式 */
+.language-bash .line::before {
+  content: "$ ";
+  color: #10b981;
+  font-weight: bold;
+  user-select: none;
+}
+
+.language-bash .line:first-child::before {
+  content: "$ ";
+}
+
+/* 导航优化 */
+.VPNavBar .title {
+  font-weight: bold;
+}
+
+/* 搜索框优化 */
+.DocSearch {
+  --docsearch-primary-color: var(--vp-c-brand-1);
+}
+
+/* 移动端优化 */
+@media (max-width: 768px) {
+  .VPDoc .container {
+    padding: 0 24px;
+  }
+  
+  .vp-doc h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+}
+
+/* 无障碍优化 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 代码复制按钮优化 */
+.vp-code-group .copy {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.vp-code-group:hover .copy {
+  opacity: 1;
+}
+
+/* 链接样式优化 */
+.vp-doc a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  transition: all 0.3s ease;
+}
+
+.vp-doc a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* 图片响应式优化 */
+.vp-doc img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 16px 0;
+}
+
+/* 表格优化 */
+.vp-doc table {
+  font-size: 14px;
+}
+
+.vp-doc th {
+  background-color: var(--vp-c-bg-soft);
+  font-weight: 600;
+}
+
+/* 初学者指南特殊标记 */
+.beginner-tip {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
+.beginner-tip .title {
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.beginner-tip .title::before {
+  content: "💡";
+  margin-right: 8px;
+}
+
+/* 步骤指示器 */
+.step-counter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--vp-c-brand-1);
+  color: white;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+/* 命令提示优化 */
+.command-prompt {
+  background: #1a1a1a;
+  color: #00ff00;
+  padding: 16px;
+  border-radius: 8px;
+  font-family: var(--vp-font-family-mono);
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+.command-prompt::before {
+  content: "user@debian:~$ ";
+  color: #00ff00;
+  font-weight: bold;
+}
+
+/* 键盘快捷键样式 */
+.kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 4px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.9em;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 语言切换按钮优化 */
+.VPNavBarTranslations {
+  margin-right: 8px;
+} 

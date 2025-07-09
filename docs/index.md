@@ -14,6 +14,9 @@ hero:
       text: 🚀 开始学习
       link: /basics/introduction
     - theme: alt
+      text: 📥 系统下载
+      link: /download
+    - theme: alt
       text: 📖 查看教程
       link: /basics/installation
 
@@ -248,26 +251,6 @@ Debian 是真正的自由软件，永远免费且开源。没有任何许可费�
 | 🔧 **双系统安装** | ⭐⭐⭐ 中等 | ⏱️ 1小时 | 准备深度使用 |
 | 🚀 **完整替换** | ⭐⭐⭐⭐ 高级 | ⏱️ 2小时 | Linux 爱好者 |
 
-## 🤝 加入我们的社区
-
-遇到问题？我们的社区随时为你提供帮助！加入活跃的 Debian 中文社区，与志同道合的朋友一起学习和成长。
-
-::: info 📧 邮件支持
-有任何问题都可以发邮件给我们：[help@debian.club](mailto:help@debian.club)
-:::
-
-::: tip 💬 Discord 群组  
-加入我们的Discord服务器实时交流：[discord.gg/debian-club](https://discord.gg/debian-club)
-:::
-
-::: warning 🐛 问题反馈
-发现网站问题或有改进建议？请在GitHub提交Issue：[debian.club/issues](https://github.com/debian-club/debian.club/issues)
-:::
-
-::: details 📖 贡献指南
-想要参与网站建设？查看我们的[贡献指南](/community)了解如何参与
-:::
-
 ## 🚀 开始你的 Debian 之旅
 
 ### 准备好了吗？
@@ -276,6 +259,7 @@ Debian 是真正的自由软件，永远免费且开源。没有任何许可费�
 
 <p style="text-align: center; margin: 2rem 0;">
   <a href="/basics/introduction" style="background: var(--vp-c-brand); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 0 8px; display: inline-block; font-weight: 500;">🎯 立即开始</a>
+  <a href="/download" style="background: transparent; color: var(--vp-c-brand); padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 0 8px; display: inline-block; font-weight: 500; border: 2px solid var(--vp-c-brand);">📥 系统下载</a>
   <a href="/basics/installation" style="background: transparent; color: var(--vp-c-brand); padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 0 8px; display: inline-block; font-weight: 500; border: 2px solid var(--vp-c-brand);">📖 查看安装教程</a>
   <a href="/troubleshooting/faq" style="background: transparent; color: var(--vp-c-brand); padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 0 8px; display: inline-block; font-weight: 500; border: 2px solid var(--vp-c-brand);">❓ 常见问题</a>
 </p>

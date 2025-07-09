@@ -10,10 +10,13 @@ hero:
     alt: Debian Logo
   actions:
     - theme: brand
-      text: Get Started
+      text: 🚀 Get Started
       link: /en/basics/introduction
     - theme: alt
-      text: View Tutorials
+      text: 📥 Download
+      link: /en/download
+    - theme: alt
+      text: 📖 View Tutorials
       link: /en/basics/installation
 
 features:
@@ -95,15 +98,6 @@ Want to quickly experience Debian? Here are several options:
 | 💿 Live USB | ⭐ | 10 minutes | Quick experience |
 | 🔧 Dual Boot | ⭐⭐⭐ | 1 hour | Ready for deep use |
 | 🖥️ Complete Replacement | ⭐⭐⭐⭐ | 2 hours | Linux enthusiasts |
-
-## 🤝 Community Support
-
-Need help? Our community is always here to assist you:
-
-- 📧 [Mailing List](mailto:help@debian.club)
-- 💬 [Discord Community](https://discord.gg/debian-club)
-- 🐛 [Issue Reporting](https://github.com/debian-club/debian.club/issues)
-- 📖 [Contribution Guide](/en/community)
 
 ---
 

@@ -11,7 +11,6 @@ export default {
     })
   },
   enhanceApp({ app, router, siteData }) {
-    // 注册自定义组件
-    // app.component('MyComponent', MyComponent)
+    // 这里可以注册其他自定义组件
   }
 } satisfies Theme 

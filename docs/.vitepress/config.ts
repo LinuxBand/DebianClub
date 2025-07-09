@@ -6,37 +6,12 @@ const sharedConfig = {
   description: 'Debian 初学者完全指南 - Complete Debian Guide for Beginners',
   cleanUrls: true,
   
-  head: [
-    ['meta', { name: 'theme-color', content: '#d41443' }],
-    ['meta', { name: 'og:type', content: 'website' }],
-    ['meta', { name: 'og:locale', content: 'zh_CN' }],
-    ['meta', { name: 'og:site_name', content: 'Debian.Club' }],
-    ['meta', { name: 'og:image', content: '/images/debian-club-banner.png' }],
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
-    ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' }],
-    ['meta', { name: 'keywords', content: 'Debian, Linux, 教程, Tutorial, 初学者, Beginner, Guide' }],
-    ['meta', { name: 'author', content: 'Debian.Club' }],
-    ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID' }],
-    ['script', {}, `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'GA_MEASUREMENT_ID');
-    `]
-  ],
-  
   themeConfig: {
     logo: '/images/debian-logo.svg',
     siteTitle: 'Debian.Club',
     
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/debian-club/debian.club' },
-      { icon: 'discord', link: 'https://discord.gg/debian-club' },
-      { icon: 'twitter', link: 'https://twitter.com/debian_club' }
-    ],
-    
     search: {
-      provider: 'local',
+      provider: 'local' as const,
       options: {
         locales: {
           zh: {
@@ -60,16 +35,11 @@ const sharedConfig = {
     },
 
     footer: {
-      message: '基于 MIT 许可发布',
       copyright: 'Copyright © 2024 Debian.Club'
     }
   },
 
   markdown: {
-    theme: {
-      light: 'github-light',
-      dark: 'github-dark'
-    },
     lineNumbers: true,
     container: {
       tipLabel: '提示',
@@ -87,6 +57,22 @@ const sharedConfig = {
 
 export default defineConfig({
   ...sharedConfig,
+  head: [
+    ['meta', { name: 'theme-color', content: '#d41443' }, ''],
+    ['meta', { name: 'og:type', content: 'website' }, ''],
+    ['meta', { name: 'og:locale', content: 'zh_CN' }, ''],
+    ['meta', { name: 'og:site_name', content: 'Debian.Club' }, ''],
+    ['meta', { name: 'og:image', content: '/images/debian-club-banner.png' }, ''],
+    ['link', { rel: 'icon', href: '/favicon.ico' }, ''],
+    ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' }, ''],
+    ['meta', { name: 'keywords', content: 'Debian, Linux, 教程, Tutorial, 初学者, Beginner, Guide' }, ''],
+    ['meta', { name: 'author', content: 'Debian.Club' }, ''],
+    ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID' }, ''],
+    ['script', {}, `window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GA_MEASUREMENT_ID');`]
+  ],
   
   locales: {
     root: {
@@ -98,15 +84,27 @@ export default defineConfig({
       themeConfig: {
         nav: [
           { text: '首页', link: '/' },
-          { text: '系统对比', link: '/comparison' },
-        { text: '版本对比', link: '/versions' },
-          { 
-            text: '基础教程', 
+          {
+            text: '系统下载',
             items: [
-              { text: 'Debian 13 介绍', link: '/basics/introduction' },
+              { text: '下载页面', link: '/download' },
+              { text: '版本支持周期', link: '/eol' }
+            ]
+          },
+          { 
+            text: '基础', 
+            items: [
+              { text: 'Debian 13 简介', link: '/basics/introduction' },
               { text: '安装指南', link: '/basics/installation' },
               { text: '系统配置', link: '/basics/configuration' },
               { text: '桌面环境', link: '/basics/desktop-environments' }
+            ]
+          },
+          { 
+            text: '对比',
+            items: [
+              { text: '系统对比', link: '/comparison' },
+              { text: '版本对比', link: '/versions' }
             ]
           },
           { 
@@ -119,7 +117,7 @@ export default defineConfig({
             ]
           },
           { 
-            text: '应用程序', 
+            text: '常用应用', 
             items: [
               { text: '开发环境', link: '/applications/development' },
               { text: '办公软件', link: '/applications/office' },
@@ -128,14 +126,13 @@ export default defineConfig({
             ]
           },
           { 
-            text: '故障排除', 
+            text: '故障排查', 
             items: [
               { text: '常见问题', link: '/troubleshooting/faq' },
-              { text: '系统修复', link: '/troubleshooting/recovery' },
+              { text: '系统恢复', link: '/troubleshooting/recovery' },
               { text: '性能优化', link: '/troubleshooting/performance' }
             ]
-          },
-          { text: '社区', link: '/community' }
+          }
         ],
 
         sidebar: {
@@ -198,10 +195,10 @@ export default defineConfig({
           ]
         },
 
-        editLink: {
-          pattern: 'https://github.com/debian-club/debian.club/edit/main/docs/:path',
-          text: '编辑此页面'
-        },
+        // editLink: {
+        //   pattern: 'https://github.com/debian-club/debian.club/edit/main/docs/:path',
+        //   text: '编辑此页面'
+        // },
 
         lastUpdated: {
           text: '最后更新于',
@@ -237,6 +234,13 @@ export default defineConfig({
       themeConfig: {
         nav: [
           { text: 'Home', link: '/en/' },
+          {
+            text: 'Download',
+            items: [
+              { text: 'Download Page', link: '/en/download' },
+              { text: 'End-of-Life (EOL)', link: '/en/eol' }
+            ]
+          },
           { 
             text: 'Basics', 
             items: [
@@ -244,6 +248,13 @@ export default defineConfig({
               { text: 'Installation Guide', link: '/en/basics/installation' },
               { text: 'System Configuration', link: '/en/basics/configuration' },
               { text: 'Desktop Environments', link: '/en/basics/desktop-environments' }
+            ]
+          },
+          { 
+            text: 'Comparison',
+            items: [
+              { text: 'System Comparison', link: '/en/comparison' },
+              { text: 'Version Comparison', link: '/en/versions' }
             ]
           },
           { 
@@ -271,8 +282,7 @@ export default defineConfig({
               { text: 'System Recovery', link: '/en/troubleshooting/recovery' },
               { text: 'Performance Tuning', link: '/en/troubleshooting/performance' }
             ]
-          },
-          { text: 'Community', link: '/en/community' }
+          }
         ],
 
         sidebar: {
@@ -334,10 +344,10 @@ export default defineConfig({
           ]
         },
 
-        editLink: {
-          pattern: 'https://github.com/debian-club/debian.club/edit/main/docs/:path',
-          text: 'Edit this page'
-        },
+        // editLink: {
+        //   pattern: 'https://github.com/debian-club/debian.club/edit/main/docs/:path',
+        //   text: 'Edit this page'
+        // },
 
         lastUpdated: {
           text: 'Last updated',

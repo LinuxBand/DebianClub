@@ -19,7 +19,8 @@
   "author": "Debian.Club",
   "license": "MIT",
   "devDependencies": {
-    "vitepress": "^1.6.3"
+    "vitepress": "^1.6.3",
+    "vitepress-export-pdf": "^1.0.0"
   },
   "engines": {
     "node": ">=18.0.0"

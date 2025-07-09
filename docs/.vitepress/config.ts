@@ -35,7 +35,7 @@ const sharedConfig = {
     },
 
     footer: {
-      copyright: 'Copyright © 2024 Debian.Club'
+      copyright: 'Copyright © 2025 Debian.Club'
     }
   },
 
@@ -51,7 +51,7 @@ const sharedConfig = {
   },
 
   sitemap: {
-    hostname: 'https://debian.club'
+    hostname: 'https://www.debian.club'
   }
 }
 
@@ -237,11 +237,7 @@ export default defineConfig({
         // },
 
         lastUpdated: {
-          text: '最后更新于',
-          formatOptions: {
-            dateStyle: 'short',
-            timeStyle: 'medium'
-          }
+          text: '最后更新于'
         },
 
         docFooter: {
@@ -423,11 +419,7 @@ export default defineConfig({
         // },
 
         lastUpdated: {
-          text: 'Last updated',
-          formatOptions: {
-            dateStyle: 'short',
-            timeStyle: 'medium'
-          }
+          text: 'Last Updated'
         },
 
         docFooter: {

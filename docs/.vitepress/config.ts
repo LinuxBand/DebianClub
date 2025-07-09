@@ -91,13 +91,28 @@ export default defineConfig({
               { text: '版本支持周期', link: '/eol' }
             ]
           },
+          {
+            text: '服务器',
+            items: [
+              { text: 'LAMP/LEMP 部署', link: '/server/lamp' },
+              { text: 'Java 环境安装', link: '/server/java' },
+              { text: 'Docker 安装与使用', link: '/server/docker' },
+              { text: 'Kubernetes (K8s) 部署', link: '/server/k8s' },
+              { text: '服务器安全加固', link: '/server/security' },
+              { text: '数据库服务', link: '/server/database' },
+              { text: '文件与网络存储', link: '/server/storage' },
+              { text: '虚拟化平台', link: '/server/virtualization' },
+              { text: '反向代理', link: '/server/reverse-proxy' },
+            ]
+          },
           { 
             text: '基础', 
             items: [
               { text: 'Debian 13 简介', link: '/basics/introduction' },
               { text: '安装指南', link: '/basics/installation' },
               { text: '系统配置', link: '/basics/configuration' },
-              { text: '桌面环境', link: '/basics/desktop-environments' }
+              { text: '桌面环境', link: '/basics/desktop-environments' },
+              { text: '硬件兼容性', link: '/basics/hardware-compatibility' },
             ]
           },
           { 
@@ -113,7 +128,8 @@ export default defineConfig({
               { text: '用户管理', link: '/administration/users' },
               { text: '软件包管理', link: '/administration/packages' },
               { text: '系统服务', link: '/administration/services' },
-              { text: '网络配置', link: '/administration/network' }
+              { text: '网络配置', link: '/administration/network' },
+              { text: '安全管理', link: '/administration/security' },
             ]
           },
           { 
@@ -122,7 +138,8 @@ export default defineConfig({
               { text: '开发环境', link: '/applications/development' },
               { text: '办公软件', link: '/applications/office' },
               { text: '多媒体', link: '/applications/multimedia' },
-              { text: '游戏', link: '/applications/gaming' }
+              { text: '游戏', link: '/applications/gaming' },
+              { text: 'Windows 兼容', link: '/applications/wine' },
             ]
           },
           { 
@@ -136,6 +153,22 @@ export default defineConfig({
         ],
 
         sidebar: {
+          '/server/': [
+            {
+              text: '服务器配置',
+              items: [
+                { text: 'LAMP/LEMP 部署', link: '/server/lamp' },
+                { text: 'Java 环境安装', link: '/server/java' },
+                { text: 'Docker 安装与使用', link: '/server/docker' },
+                { text: 'Kubernetes (K8s) 部署', link: '/server/k8s' },
+                { text: '服务器安全加固', link: '/server/security' },
+                { text: '数据库服务', link: '/server/database' },
+                { text: '文件与网络存储', link: '/server/storage' },
+                { text: '虚拟化平台', link: '/server/virtualization' },
+                { text: '反向代理', link: '/server/reverse-proxy' },
+              ]
+            }
+          ],
           '/basics/': [
             {
               text: '基础教程',
@@ -143,6 +176,7 @@ export default defineConfig({
                 { text: 'Debian 13 介绍', link: '/basics/introduction' },
                 { text: 'Debian 13 新特性', link: '/basics/whats-new' },
                 { text: '系统要求', link: '/basics/requirements' },
+                { text: '硬件兼容性', link: '/basics/hardware-compatibility' },
                 { text: '下载镜像', link: '/basics/download' },
                 { text: '制作启动盘', link: '/basics/bootable-media' },
                 { text: '安装过程', link: '/basics/installation' },
@@ -163,7 +197,8 @@ export default defineConfig({
                 { text: '网络设置', link: '/administration/network' },
                 { text: '防火墙配置', link: '/administration/firewall' },
                 { text: '定时任务', link: '/administration/cron' },
-                { text: '日志管理', link: '/administration/logs' }
+                { text: '日志管理', link: '/administration/logs' },
+                { text: '安全管理', link: '/administration/security' },
               ]
             }
           ],
@@ -176,7 +211,8 @@ export default defineConfig({
                 { text: 'LibreOffice 办公', link: '/applications/office' },
                 { text: '图像和视频', link: '/applications/multimedia' },
                 { text: 'Steam 游戏', link: '/applications/gaming' },
-                { text: '虚拟化', link: '/applications/virtualization' }
+                { text: '虚拟化', link: '/applications/virtualization' },
+                { text: 'Windows 兼容 (Wine)', link: '/applications/wine' },
               ]
             }
           ],
@@ -238,16 +274,31 @@ export default defineConfig({
             text: 'Download',
             items: [
               { text: 'Download Page', link: '/en/download' },
-              { text: 'End-of-Life (EOL)', link: '/en/eol' }
+              { text: 'Release EOL', link: '/en/eol' }
+            ]
+          },
+          {
+            text: 'Server',
+            items: [
+              { text: 'LAMP/LEMP Deployment', link: '/en/server/lamp' },
+              { text: 'Java Environment Setup', link: '/en/server/java' },
+              { text: 'Docker Setup & Usage', link: '/en/server/docker' },
+              { text: 'Kubernetes (K8s) Deployment', link: '/en/server/k8s' },
+              { text: 'Server Security Hardening', link: '/en/server/security' },
+              { text: 'Database Services', link: '/en/server/database' },
+              { text: 'File & Network Storage', link: '/en/server/storage' },
+              { text: 'Virtualization Platform', link: '/en/server/virtualization' },
+              { text: 'Reverse Proxy', link: '/en/server/reverse-proxy' },
             ]
           },
           { 
             text: 'Basics', 
             items: [
-              { text: 'Debian 13 Introduction', link: '/en/basics/introduction' },
+              { text: 'Introduction to Debian 13', link: '/en/basics/introduction' },
               { text: 'Installation Guide', link: '/en/basics/installation' },
               { text: 'System Configuration', link: '/en/basics/configuration' },
-              { text: 'Desktop Environments', link: '/en/basics/desktop-environments' }
+              { text: 'Desktop Environments', link: '/en/basics/desktop-environments' },
+              { text: 'Hardware Compatibility', link: '/en/basics/hardware-compatibility' },
             ]
           },
           { 
@@ -263,7 +314,8 @@ export default defineConfig({
               { text: 'User Management', link: '/en/administration/users' },
               { text: 'Package Management', link: '/en/administration/packages' },
               { text: 'System Services', link: '/en/administration/services' },
-              { text: 'Network Configuration', link: '/en/administration/network' }
+              { text: 'Network Configuration', link: '/en/administration/network' },
+              { text: 'Security Management', link: '/en/administration/security' },
             ]
           },
           { 
@@ -272,7 +324,8 @@ export default defineConfig({
               { text: 'Development Environment', link: '/en/applications/development' },
               { text: 'Office Software', link: '/en/applications/office' },
               { text: 'Multimedia', link: '/en/applications/multimedia' },
-              { text: 'Gaming', link: '/en/applications/gaming' }
+              { text: 'Gaming', link: '/en/applications/gaming' },
+              { text: 'Windows Compatibility', link: '/en/applications/wine' },
             ]
           },
           { 
@@ -286,12 +339,30 @@ export default defineConfig({
         ],
 
         sidebar: {
+          '/en/server/': [
+            {
+              text: 'Server Configuration',
+              items: [
+                { text: 'LAMP/LEMP Deployment', link: '/en/server/lamp' },
+                { text: 'Java Environment', link: '/en/server/java' },
+                { text: 'Docker', link: '/en/server/docker' },
+                { text: 'Kubernetes (K8s)', link: '/en/server/k8s' },
+                { text: 'Server Hardening', link: '/en/server/security' },
+                { text: 'Database Services', link: '/en/server/database' },
+                { text: 'File & Network Storage', link: '/en/server/storage' },
+                { text: 'Virtualization', link: '/en/server/virtualization' },
+                { text: 'Reverse Proxy', link: '/en/server/reverse-proxy' },
+              ]
+            }
+          ],
           '/en/basics/': [
             {
               text: 'Basic Tutorials',
               items: [
-                { text: 'Debian 13 Introduction', link: '/en/basics/introduction' },
+                { text: 'Introduction to Debian 13', link: '/en/basics/introduction' },
+                { text: "What's New in Debian 13", link: '/en/basics/whats-new' },
                 { text: 'System Requirements', link: '/en/basics/requirements' },
+                { text: 'Hardware Compatibility', link: '/en/basics/hardware-compatibility' },
                 { text: 'Download Images', link: '/en/basics/download' },
                 { text: 'Create Bootable Media', link: '/en/basics/bootable-media' },
                 { text: 'Installation Process', link: '/en/basics/installation' },
@@ -307,12 +378,13 @@ export default defineConfig({
               items: [
                 { text: 'Users and Permissions', link: '/en/administration/users' },
                 { text: 'APT Package Management', link: '/en/administration/packages' },
-                { text: 'Snap and Flatpak', link: '/en/administration/alternative-packages' },
+                { text: 'Snap & Flatpak', link: '/en/administration/alternative-packages' },
                 { text: 'System Services', link: '/en/administration/services' },
                 { text: 'Network Settings', link: '/en/administration/network' },
                 { text: 'Firewall Configuration', link: '/en/administration/firewall' },
-                { text: 'Scheduled Tasks', link: '/en/administration/cron' },
-                { text: 'Log Management', link: '/en/administration/logs' }
+                { text: 'Cron Jobs', link: '/en/administration/cron' },
+                { text: 'Log Management', link: '/en/administration/logs' },
+                { text: 'Security Management', link: '/en/administration/security' },
               ]
             }
           ],
@@ -320,12 +392,13 @@ export default defineConfig({
             {
               text: 'Applications',
               items: [
-                { text: 'Development Environment', link: '/en/applications/development' },
-                { text: 'VS Code and IDEs', link: '/en/applications/ide' },
-                { text: 'LibreOffice Office', link: '/en/applications/office' },
-                { text: 'Image and Video', link: '/en/applications/multimedia' },
+                { text: 'Development Setup', link: '/en/applications/development' },
+                { text: 'VS Code & IDEs', link: '/en/applications/ide' },
+                { text: 'LibreOffice Suite', link: '/en/applications/office' },
+                { text: 'Graphics & Video', link: '/en/applications/multimedia' },
                 { text: 'Steam Gaming', link: '/en/applications/gaming' },
-                { text: 'Virtualization', link: '/en/applications/virtualization' }
+                { text: 'Virtualization', link: '/en/applications/virtualization' },
+                { text: 'Windows Compatibility (Wine)', link: '/en/applications/wine' },
               ]
             }
           ],

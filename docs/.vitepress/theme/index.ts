@@ -2,6 +2,7 @@ import { h } from 'vue'
 import DefaultTheme from 'vitepress/theme'
 import './custom.css'
 import type { Theme } from 'vitepress'
+import MirrorSelector from './components/MirrorSelector.vue'
 
 export default {
   extends: DefaultTheme,
@@ -11,6 +12,7 @@ export default {
     })
   },
   enhanceApp({ app, router, siteData }) {
-    // 这里可以注册其他自定义组件
+    // 注册全局组件
+    app.component('MirrorSelector', MirrorSelector)
   }
 } satisfies Theme 

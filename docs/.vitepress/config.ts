@@ -143,12 +143,8 @@ export default defineConfig({
             ]
           },
           { 
-            text: '故障排查', 
-            items: [
-              { text: '常见问题', link: '/troubleshooting/faq' },
-              { text: '系统恢复', link: '/troubleshooting/recovery' },
-              { text: '性能优化', link: '/troubleshooting/performance' }
-            ]
+            text: 'FAQ', 
+            link: '/troubleshooting/installation-boot'
           }
         ],
 
@@ -218,14 +214,15 @@ export default defineConfig({
           ],
           '/troubleshooting/': [
             {
-              text: '故障排除',
+              text: '常见问题解答',
               items: [
-                { text: '常见问题解答', link: '/troubleshooting/faq' },
-                { text: '引导问题', link: '/troubleshooting/boot-issues' },
-                { text: '系统恢复', link: '/troubleshooting/recovery' },
-                { text: '驱动问题', link: '/troubleshooting/drivers' },
-                { text: '性能优化', link: '/troubleshooting/performance' },
-                { text: '网络故障', link: '/troubleshooting/network-issues' }
+                { text: '安装与启动', link: '/troubleshooting/installation-boot' },
+                { text: '系统配置与使用', link: '/troubleshooting/system-usage' },
+                { text: '软件包管理 (APT)', link: '/troubleshooting/package-management' },
+                { text: '桌面环境与显示', link: '/troubleshooting/desktop-display' },
+                { text: '网络连接', link: '/troubleshooting/networking' },
+                { text: '系统安全与内核', link: '/troubleshooting/security-kernel' },
+                { text: '其他问题', link: '/troubleshooting/others' }
               ]
             }
           ]
@@ -270,27 +267,27 @@ export default defineConfig({
             text: 'Download',
             items: [
               { text: 'Download Page', link: '/en/download' },
-              { text: 'Release EOL', link: '/en/eol' }
+              { text: 'End-of-Life (EOL)', link: '/en/eol' }
             ]
           },
           {
             text: 'Server',
             items: [
               { text: 'LAMP/LEMP Deployment', link: '/en/server/lamp' },
-              { text: 'Java Environment Setup', link: '/en/server/java' },
-              { text: 'Docker Setup & Usage', link: '/en/server/docker' },
-              { text: 'Kubernetes (K8s) Deployment', link: '/en/server/k8s' },
-              { text: 'Server Security Hardening', link: '/en/server/security' },
+              { text: 'Java Environment', link: '/en/server/java' },
+              { text: 'Docker', link: '/en/server/docker' },
+              { text: 'Kubernetes (K8s)', link: '/en/server/k8s' },
+              { text: 'Server Hardening', link: '/en/server/security' },
               { text: 'Database Services', link: '/en/server/database' },
               { text: 'File & Network Storage', link: '/en/server/storage' },
-              { text: 'Virtualization Platform', link: '/en/server/virtualization' },
+              { text: 'Virtualization Platforms', link: '/en/server/virtualization' },
               { text: 'Reverse Proxy', link: '/en/server/reverse-proxy' },
             ]
           },
           { 
             text: 'Basics', 
             items: [
-              { text: 'Introduction to Debian 13', link: '/en/basics/introduction' },
+              { text: 'Intro to Debian 13', link: '/en/basics/introduction' },
               { text: 'Installation Guide', link: '/en/basics/installation' },
               { text: 'System Configuration', link: '/en/basics/configuration' },
               { text: 'Desktop Environments', link: '/en/basics/desktop-environments' },
@@ -298,10 +295,10 @@ export default defineConfig({
             ]
           },
           { 
-            text: 'Comparison',
+            text: 'Comparisons',
             items: [
-              { text: 'System Comparison', link: '/en/comparison' },
-              { text: 'Version Comparison', link: '/en/versions' }
+              { text: 'System Comparisons', link: '/en/comparison' },
+              { text: 'Version Comparisons', link: '/en/versions' }
             ]
           },
           { 
@@ -317,7 +314,7 @@ export default defineConfig({
           { 
             text: 'Applications', 
             items: [
-              { text: 'Development Environment', link: '/en/applications/development' },
+              { text: 'Development', link: '/en/applications/development' },
               { text: 'Office Software', link: '/en/applications/office' },
               { text: 'Multimedia', link: '/en/applications/multimedia' },
               { text: 'Gaming', link: '/en/applications/gaming' },
@@ -325,12 +322,8 @@ export default defineConfig({
             ]
           },
           { 
-            text: 'Troubleshooting', 
-            items: [
-              { text: 'FAQ', link: '/en/troubleshooting/faq' },
-              { text: 'System Recovery', link: '/en/troubleshooting/recovery' },
-              { text: 'Performance Tuning', link: '/en/troubleshooting/performance' }
-            ]
+            text: 'FAQ', 
+            link: '/en/troubleshooting/installation-boot'
           }
         ],
 
@@ -400,23 +393,24 @@ export default defineConfig({
           ],
           '/en/troubleshooting/': [
             {
-              text: 'Troubleshooting',
+              text: 'FAQ',
               items: [
-                { text: 'Frequently Asked Questions', link: '/en/troubleshooting/faq' },
-                { text: 'Boot Issues', link: '/en/troubleshooting/boot-issues' },
-                { text: 'System Recovery', link: '/en/troubleshooting/recovery' },
-                { text: 'Driver Issues', link: '/en/troubleshooting/drivers' },
-                { text: 'Performance Tuning', link: '/en/troubleshooting/performance' },
-                { text: 'Network Issues', link: '/en/troubleshooting/network-issues' }
+                { text: 'Installation & Boot', link: '/en/troubleshooting/installation-boot' },
+                { text: 'System Configuration & Usage', link: '/en/troubleshooting/system-usage' },
+                { text: 'Package Management (APT)', link: '/en/troubleshooting/package-management' },
+                { text: 'Desktop Environment & Display', link: '/en/troubleshooting/desktop-display' },
+                { text: 'Networking', link: '/en/troubleshooting/networking' },
+                { text: 'System Security & Kernel', link: '/en/troubleshooting/security-kernel' },
+                { text: 'Others', link: '/en/troubleshooting/others' }
               ]
             }
           ]
         },
 
-        // editLink: {
-        //   pattern: 'https://github.com/debian-club/debian.club/edit/main/docs/:path',
-        //   text: 'Edit this page'
-        // },
+        editLink: {
+          pattern: 'https://github.com/debian-club/debian.club/edit/main/docs/:path',
+          text: 'Edit this page'
+        },
 
         lastUpdated: {
           text: 'Last Updated'

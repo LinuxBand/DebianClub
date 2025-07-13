@@ -58,6 +58,7 @@ const sharedConfig = {
 export default defineConfig({
   ...sharedConfig,
   head: [
+    ['meta', { charset: 'UTF-8' }],
     ['meta', { name: 'theme-color', content: '#d41443' }, ''],
     ['meta', { name: 'og:type', content: 'website' }, ''],
     ['meta', { name: 'og:locale', content: 'zh_CN' }, ''],
@@ -80,17 +81,12 @@ export default defineConfig({
       lang: 'zh-CN',
       title: 'Debian.Club',
       description: 'Debian 初学者完全指南 - 从零开始学习 Debian Linux',
+      head: [['meta', { charset: 'UTF-8' }]],
       
       themeConfig: {
         nav: [
           { text: '首页', link: '/' },
-          {
-            text: '系统下载',
-            items: [
-              { text: '下载页面', link: '/download' },
-              { text: '版本支持周期', link: '/eol' }
-            ]
-          },
+          { text: '系统下载', link: '/download' },
           {
             text: '服务器',
             items: [
@@ -113,6 +109,7 @@ export default defineConfig({
               { text: '系统配置', link: '/basics/configuration' },
               { text: '桌面环境', link: '/basics/desktop-environments' },
               { text: '硬件兼容性', link: '/basics/hardware-compatibility' },
+              { text: '版本支持周期 (EOL)', link: '/eol' },
             ]
           },
           { 
@@ -258,18 +255,13 @@ export default defineConfig({
       label: 'English',
       lang: 'en-US',
       title: 'Debian.Club',
-      description: 'Complete Debian Guide for Beginners - Learn Debian Linux from Zero',
+      description: 'A Complete Debian Guide for Beginners - Learn Debian Linux from Scratch',
+      head: [['meta', { charset: 'UTF-8' }]],
       
       themeConfig: {
         nav: [
           { text: 'Home', link: '/en/' },
-          {
-            text: 'Download',
-            items: [
-              { text: 'Download Page', link: '/en/download' },
-              { text: 'End-of-Life (EOL)', link: '/en/eol' }
-            ]
-          },
+          { text: 'Download', link: '/en/download' },
           {
             text: 'Server',
             items: [
@@ -292,6 +284,7 @@ export default defineConfig({
               { text: 'System Configuration', link: '/en/basics/configuration' },
               { text: 'Desktop Environments', link: '/en/basics/desktop-environments' },
               { text: 'Hardware Compatibility', link: '/en/basics/hardware-compatibility' },
+              { text: 'Release EOL', link: '/en/eol' },
             ]
           },
           { 

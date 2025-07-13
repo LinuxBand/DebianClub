@@ -1,63 +1,84 @@
 ---
-layout: page
-title: Download Debian
-description: "Download ISO images for the latest Debian Stable, Testing, or Unstable (Sid) releases, including netinst, DVD, and live editions. Choose the best Debian for your server or desktop."
+title: System Download
+description: How to download Debian system images and find the fastest download server.
 ---
 
-# Download Debian
+# System Download
 
-Download the latest and most stable version of Debian for your computer.
+This guide will help you find the fastest Debian download server and choose the right system image.
 
-## Which version should I choose?
+## Official Download URLs
 
-- **Stable**:
-  - **Recommended for most users**, especially for servers and daily desktop use. It is thoroughly tested, offering the highest stability and the most timely security support.
-  - Current stable version: **Debian 12 (Bookworm)**
+To ensure security and get the latest version, always download from the official Debian website or its recognized mirrors.
 
-- **Testing**:
-  - The "candidate" version for the next stable release. It contains newer software than the stable version but is slightly behind in terms of stability and security support.
-  - **Suitable for developers and users who want to experience new features** and don't mind occasional minor issues.
-  - Current testing version: **Debian 13 (Trixie)**
+- **[Official Stable Release Download (Recommended)](https://www.debian.org/distrib/)**
+  <br>
+  This page will automatically detect your operating system and recommend the most suitable version.
 
-- **Unstable (Codename Sid)**:
-  - A rolling release that contains the very latest software packages.
-  - **Only recommended for experienced Debian developers and advanced users** who know how to handle potential system breakages.
+- **[Global Mirror List](https://www.debian.org/mirror/list)**
+  <br>
+  If you want to manually browse and select a specific mirror server, the complete list is here.
 
----
+- **[Historical Archives (Old Releases)](https://www.debian.org/releases/)**
+  <br>
+  If you need to download an older version of Debian, you can find it here.
 
-## Recommended Mirror Sites
+## Finding the Fastest Mirror Server
 
-For the fastest download speeds, it is recommended to download from a mirror site close to your location.
+Debian has hundreds of mirror servers worldwide, which are copies of the official package repository. Choosing a mirror that is geographically close to you and fast can significantly speed up downloading and updating software.
 
-<MirrorSelector />
+### Automatic Selection
 
----
+In most cases, the official Debian installer will automatically detect your geographical location and recommend a suitable mirror server for you. For most users, accepting the recommended option is sufficient.
 
-## Download Links
+### For Users Worldwide: Using `netselect-apt`
 
-### Debian 12 (Bookworm) - Stable
+For advanced users, you can use the `netselect-apt` tool to automatically test and find the fastest mirror for you.
 
-| Architecture      | Net-install | Live Desktop (GNOME) | DVD Edition |
-| :---------------- | :---------- | :------------------- | :---------- |
-| **amd64** (64-bit) | [Download](https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso) | [Download](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-12.5.0-amd64-gnome.iso) | [Download](https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-12.5.0-amd64-DVD-1.iso) |
-| **arm64** (64-bit ARM) | [Download](https://cdimage.debian.org/debian-cd/current/arm64/iso-cd/debian-12.5.0-arm64-netinst.iso) | - | [Download](https://cdimage.debian.org/debian-cd/current/arm64/iso-dvd/debian-12.5.0-arm64-DVD-1.iso) |
-| **i386** (32-bit) | [Download](https://cdimage.debian.org/debian-cd/current/i386/iso-cd/debian-12.5.0-i386-netinst.iso) | [Download](https://cdimage.debian.org/debian-cd/current-live/i386/iso-hybrid/debian-live-12.5.0-i386-gnome.iso) | [Download](https://cdimage.debian.org/debian-cd/current/i386/iso-dvd/debian-12.5.0-i386-DVD-1.iso) |
+1.  Install the tool:
+    ```bash
+    sudo apt update
+    sudo apt install netselect-apt
+    ```
 
-> **Tip**: The `netinst` image is the recommended choice for most users. It is small and will download the latest packages from the network during installation.
+2.  Run the test (this may take a few minutes):
+    ```bash
+    sudo netselect-apt
+    ```
+    This command will automatically test the latency and download speed of different mirrors and generate a new `sources.list` file.
 
-### Debian 13 (Trixie) - Testing
+## Choosing the Right Image
 
-| Architecture      | Net-install |
-| :---------------- | :---------- |
-| **amd64** (64-bit) | [Download](https://cdimage.debian.org/cdimage/weekly-builds/amd64/iso-cd/debian-testing-amd64-netinst.iso) |
-| **arm64** (64-bit ARM) | [Download](https://cdimage.debian.org/cdimage/weekly-builds/arm64/iso-cd/debian-testing-arm64-netinst.iso) |
-| **i386** (32-bit) | [Download](https://cdimage.debian.org/cdimage/weekly-builds/i386/iso-cd/debian-testing-i386-netinst.iso) |
+Debian offers several types of installation images to meet the needs of different users.
 
----
+### 1. Network Install (netinst)
 
-### Historical Versions
+- **Size**: Very small (around 300-400 MB).
+- **Features**: This is the recommended choice for most users. The image itself only contains the installer and the most essential packages. During the installation, the installer will download the latest packages from the mirror server you select.
+- **Requirements**: A stable internet connection is required during installation.
 
-- **Debian 11 (Bullseye)** - [Old stable release downloads](https://cdimage.debian.org/cdimage/archive/11.9.0/amd64/iso-cd/)
-- **Debian 10 (Buster)** - [Old LTS release downloads](https://cdimage.debian.org/cdimage/archive/10.13.0/amd64/iso-cd/)
+### 2. Complete CD/DVD Images
 
-Before installing any system, it is strongly recommended to verify the integrity of the ISO image. 
+- **Size**: Large (a single DVD is about 4.7 GB).
+- **Features**: Contains a full set of packages, allowing you to complete a full desktop environment installation without an internet connection. There is usually a series of DVD images, but you typically only need the first DVD for a standard installation.
+- **Requirements**: No internet connection needed.
+
+### 3. Live Images
+
+- **Size**: Medium (around 2-3 GB).
+- **Features**: Live images allow you to boot directly from a USB drive or DVD and try out a full Debian desktop environment without installing it. This is an excellent way to test hardware compatibility if you are unsure. Live images also include a graphical installer.
+
+## Verifying the Downloaded File
+
+After the download is complete, it is highly recommended that you verify the integrity and authenticity of the file to ensure it has not been corrupted or tampered with during the download process.
+
+Each download directory provides a file named `SHA256SUMS` or `SHA512SUMS`, which contains the checksums for all image files.
+
+For example, if you downloaded `debian-12.5.0-amd64-netinst.iso`, you can verify it as follows:
+
+1.  Download the `SHA256SUMS` file.
+2.  Run the following command in your terminal:
+    ```bash
+    sha256sum debian-12.5.0-amd64-netinst.iso
+    ```
+3.  Compare the output with the corresponding entry in the `SHA256SUMS` file. If they match exactly, the file is complete and unmodified. 

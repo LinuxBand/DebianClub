@@ -264,3 +264,51 @@ Debian 是真正的自由软件，永远免费且开源。没有任何许可费�
   <a href="/troubleshooting/faq" style="background: transparent; color: var(--vp-c-brand); padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 0 8px; display: inline-block; font-weight: 500; border: 2px solid var(--vp-c-brand);">❓ 常见问题</a>
 </p>
 
+
+<style>
+.friend-links { 
+  margin: 3rem 0; 
+  padding-top: 1.5rem; 
+  border-top: 1px solid var(--vp-c-divider); 
+}
+.friend-links-title {
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  margin-bottom: 0.75rem;
+}
+.friend-links-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.friend-links-list a {
+  color: var(--vp-c-brand);
+  text-decoration: none;
+}
+.friend-links-list a:hover {
+  text-decoration: underline;
+}
+</style>
+
+<div class="friend-links">
+  <div class="friend-links-title">????</div>
+  <ul class="friend-links-list">
+    <li><a href="https://debian.club" target="_blank" rel="noopener">Debian.Club</a></li>
+    <li><a href="https://hestiacp.cn" target="_blank" rel="noopener">hestiacp.cn</a></li>
+    <li><a href="https://portcyou.com" target="_blank" rel="noopener">PortCyou</a></li>
+    <li><a href="https://cloud.fan" target="_blank" rel="noopener">CloudFan</a></li>
+    <li><a href="https://mulerun.com" target="_blank" rel="noopener">MuleRun</a></li>
+    <li><a href="https://www.almalinux.com.cn" target="_blank" rel="noopener">AlmaLinuxCN</a></li>
+    <li><a href="https://p.cafe" target="_blank" rel="noopener">P.Cafe</a></li>
+    <li><a href="https://www.rank.fan" target="_blank" rel="noopener">RankFan</a></li>
+    <li><a href="https://run.claw.cloud" target="_blank" rel="noopener">ClawCloud Run</a></li>
+    <li><a href="https://www.apponarm.com" target="_blank" rel="noopener">APP on ARM</a></li>
+    <li><a href="https://freehost.work" target="_blank" rel="noopener">FreeHost</a></li>
+    <li><a href="https://mf8.biz" target="_blank" rel="noopener">MF8</a></li>
+    <li><a href="https://aat.ee" target="_blank" rel="noopener">AAT.ee</a></li>
+    <li><a href="https://ii.pe" target="_blank" rel="noopener">II.Pe</a></li>
+  </ul>
+</div>

@@ -104,3 +104,20 @@ Want to quickly experience Debian? Here are several options:
 <div style="text-align: center; margin: 2rem 0; color: var(--vp-c-text-2);">
   <strong>Start your Debian journey now!</strong>
 </div> 
+
+## Friend Links
+
+- [Debian.Club](https://debian.club)
+- [hestiacp.cn](https://hestiacp.cn)
+- [PortCyou](https://portcyou.com)
+- [CloudFan](https://cloud.fan)
+- [MuleRun](https://mulerun.com)
+- [AlmaLinuxCN](https://www.almalinux.com.cn)
+- [P.Cafe](https://p.cafe)
+- [RankFan](https://www.rank.fan)
+- [ClawCloud Run](https://run.claw.cloud)
+- [APP on ARM](https://www.apponarm.com)
+- [FreeHost](https://freehost.work)
+- [MF8](https://mf8.biz)
+- [AAT.ee](https://aat.ee)
+- [II.Pe](https://ii.pe)

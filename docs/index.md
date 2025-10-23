@@ -1,4 +1,4 @@
----
+﻿---
 layout: home
 hero:
   name: "Debian.Club"
@@ -94,18 +94,7 @@ Debian 以稳定著称，是服务器与关键系统的首选。
 
 ## 友情链接
 
-- [Debian.Club](https://debian.club)
-- [hestiacp.cn](https://hestiacp.cn)
-- [PortCyou](https://portcyou.com)
-- [CloudFan](https://cloud.fan)
-- [MuleRun](https://mulerun.com)
-- [AlmaLinuxCN](https://www.almalinux.com.cn)
-- [P.Cafe](https://p.cafe)
-- [RankFan](https://www.rank.fan)
-- [ClawCloud Run](https://run.claw.cloud)
-- [APP on ARM](https://www.apponarm.com)
-- [FreeHost](https://freehost.work)
-- [MF8](https://mf8.biz)
-- [AAT.ee](https://aat.ee)
-- [II.Pe](https://ii.pe)
+[Debian.Club](https://debian.club) | [hestiacp.cn](https://hestiacp.cn) | [PortCyou](https://portcyou.com) | [CloudFan](https://cloud.fan) | [MuleRun](https://mulerun.com) | [AlmaLinuxCN](https://www.almalinux.com.cn)
+
+[P.Cafe](https://p.cafe) | [RankFan](https://www.rank.fan) | [ClawCloud Run](https://run.claw.cloud) | [APP on ARM](https://www.apponarm.com) | [FreeHost](https://freehost.work) | [MF8](https://mf8.biz) | [AAT.ee](https://aat.ee) | [II.Pe](https://ii.pe)
 

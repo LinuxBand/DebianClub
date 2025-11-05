@@ -7,7 +7,13 @@ export default defineConfig({
   head: [
     ['meta', { charset: 'UTF-8' }],
     ['meta', { name: 'theme-color', content: '#d41443' }],
-    ['link', { rel: 'icon', href: '/favicon.ico' }]
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    // Google Analytics
+    ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-KQDJQSRRNS' }],
+    ['script', {}, `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-KQDJQSRRNS');`]
   ],
   sitemap: { hostname: 'https://www.debian.club' },
 

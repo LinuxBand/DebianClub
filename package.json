@@ -19,8 +19,8 @@
   "author": "Debian.Club",
   "license": "MIT",
   "devDependencies": {
-    "@vue/devtools-api": "^7.7.7",
-    "vitepress": "^1.6.3",
+    "@vue/devtools-api": "^8.0.6",
+    "vitepress": "^1.6.4",
     "vitepress-export-pdf": "^1.0.0"
   },
   "engines": {

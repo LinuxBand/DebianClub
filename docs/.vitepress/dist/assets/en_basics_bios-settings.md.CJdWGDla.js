@@ -1,1 +1,0 @@
-import{_ as e,c as s,o as t}from"./chunks/framework.C78-raJP.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"en/basics/bios-settings.md","filePath":"en/basics/bios-settings.md"}'),a={name:"en/basics/bios-settings.md"};function n(i,o,c,r,p,_){return t(),s("div")}const f=e(a,[["render",n]]);export{m as __pageData,f as default};

@@ -1,16 +1,28 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
+import llmstxt from 'vitepress-plugin-llms'
 
 export default withMermaid(defineConfig({
   title: 'Debian.Club',
   description: 'Debian 初学者完全指南',
   cleanUrls: true,
+  lastUpdated: true,
+  themeConfig: {
+    outline: {
+      level: [2, 3],
+      label: '页面导航'
+    },
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/LinuxBand/DebianClub' }
+    ],
+  },
   vite: {
+    plugins: [llmstxt()],
     optimizeDeps: {
       include: ['mermaid'],
     },
     ssr: {
-      noExternal: ['mermaid'],
+      noExternal: ['mermaid', '@nolebase/vitepress-plugin-enhanced-readabilities'],
     },
   },
   head: [
@@ -35,6 +47,13 @@ gtag('config', 'G-KQDJQSRRNS');`]
         logo: '/images/debian-logo.svg',
         siteTitle: 'Debian.Club',
         search: { provider: 'local' },
+        lastUpdated: {
+          text: '最后更新于'
+        },
+        editLink: {
+          pattern: 'https://github.com/LinuxBand/DebianClub/edit/main/docs/:path',
+          text: '在 GitHub 上编辑此页'
+        },
         nav: [
           { text: '首页', link: '/' },
           { text: '下载', link: '/download' },
@@ -101,8 +120,35 @@ gtag('config', 'G-KQDJQSRRNS');`]
               { text: '反向代理', link: '/server/reverse-proxy' }
             ]
           },
+          {
+            text: 'AI 工具',
+            items: [
+              { text: '总览', link: '/ai/' },
+              { text: 'Claude Code', link: '/ai/claude-code' },
+              { text: 'Cursor', link: '/ai/cursor' },
+              { text: 'Windsurf', link: '/ai/windsurf' },
+              { text: 'Zed', link: '/ai/zed' },
+              { text: 'Aider', link: '/ai/aider' },
+              { text: 'Cline', link: '/ai/cline' },
+              { text: 'Continue', link: '/ai/continue' },
+              { text: 'GitHub Copilot', link: '/ai/github-copilot' },
+              { text: 'Gemini CLI', link: '/ai/gemini-cli' },
+              { text: 'OpenCode', link: '/ai/opencode' },
+              { text: 'OpenClaw', link: '/ai/openclaw' },
+              { text: 'Ollama', link: '/ai/ollama' },
+              { text: 'LM Studio', link: '/ai/lm-studio' },
+              { text: 'llama.cpp', link: '/ai/llama-cpp' },
+              { text: 'llamafile', link: '/ai/llamafile' },
+              { text: 'Jan', link: '/ai/jan' },
+              { text: 'LocalAI', link: '/ai/localai' },
+              { text: 'Stable Diffusion', link: '/ai/stable-diffusion' },
+              { text: 'ComfyUI', link: '/ai/comfyui' },
+              { text: 'Whisper', link: '/ai/whisper' },
+              { text: 'Dify', link: '/ai/dify' },
+              { text: 'n8n', link: '/ai/n8n' }
+            ]
+          },
           { text: '故障排查', link: '/troubleshooting/faq' },
-          { text: '社区', link: '/community' },
           { text: 'English', link: '/en/' }
         ],
         sidebar: {
@@ -177,6 +223,56 @@ gtag('config', 'G-KQDJQSRRNS');`]
               ]
             }
           ],
+          '/ai/': [
+            {
+              text: 'AI 编辑器 / IDE',
+              items: [
+                { text: '总览', link: '/ai/' },
+                { text: 'Cursor', link: '/ai/cursor' },
+                { text: 'Windsurf', link: '/ai/windsurf' },
+                { text: 'Zed', link: '/ai/zed' }
+              ]
+            },
+            {
+              text: 'AI 编码助手 (CLI)',
+              items: [
+                { text: 'Claude Code', link: '/ai/claude-code' },
+                { text: 'Aider', link: '/ai/aider' },
+                { text: 'OpenCode', link: '/ai/opencode' },
+                { text: 'Cline', link: '/ai/cline' },
+                { text: 'Continue', link: '/ai/continue' },
+                { text: 'GitHub Copilot', link: '/ai/github-copilot' },
+                { text: 'Gemini CLI', link: '/ai/gemini-cli' }
+              ]
+            },
+            {
+              text: '本地大模型',
+              items: [
+                { text: 'Ollama', link: '/ai/ollama' },
+                { text: 'LM Studio', link: '/ai/lm-studio' },
+                { text: 'llama.cpp', link: '/ai/llama-cpp' },
+                { text: 'llamafile', link: '/ai/llamafile' },
+                { text: 'Jan', link: '/ai/jan' },
+                { text: 'LocalAI', link: '/ai/localai' }
+              ]
+            },
+            {
+              text: 'AI 图像与语音',
+              items: [
+                { text: 'Stable Diffusion WebUI', link: '/ai/stable-diffusion' },
+                { text: 'ComfyUI', link: '/ai/comfyui' },
+                { text: 'OpenAI Whisper', link: '/ai/whisper' }
+              ]
+            },
+            {
+              text: 'AI 平台与自动化',
+              items: [
+                { text: 'Dify', link: '/ai/dify' },
+                { text: 'n8n', link: '/ai/n8n' },
+                { text: 'OpenClaw', link: '/ai/openclaw' }
+              ]
+            }
+          ],
           '/troubleshooting/': [
             {
               text: '故障排查',
@@ -205,8 +301,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: '下载', link: '/download' },
                 { text: '版本对比', link: '/comparison' },
                 { text: '版本与发布', link: '/versions' },
-                { text: '生命周期 (EOL)', link: '/eol' },
-                { text: '社区', link: '/community' }
+                { text: '生命周期 (EOL)', link: '/eol' }
               ]
             }
           ]
@@ -221,6 +316,16 @@ gtag('config', 'G-KQDJQSRRNS');`]
         logo: '/images/debian-logo.svg',
         siteTitle: 'Debian.Club',
         search: { provider: 'local' },
+        lastUpdated: {
+          text: 'Last updated'
+        },
+        editLink: {
+          pattern: 'https://github.com/LinuxBand/DebianClub/edit/main/docs/:path',
+          text: 'Edit this page on GitHub'
+        },
+        outline: {
+          label: 'On this page'
+        },
         nav: [
           { text: 'Home', link: '/en/' },
           { text: 'Download', link: '/en/download' },
@@ -228,6 +333,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
           { text: 'Administration', link: '/en/administration/users' },
           { text: 'Applications', link: '/en/applications/' },
           { text: 'Server', link: '/en/server/lamp' },
+          { text: 'AI Tools', link: '/en/ai/' },
           { text: 'Troubleshooting', link: '/en/troubleshooting/faq' },
           { text: '中文', link: '/' }
         ],
@@ -291,6 +397,56 @@ gtag('config', 'G-KQDJQSRRNS');`]
               ]
             }
           ],
+          '/en/ai/': [
+            {
+              text: 'AI Editors / IDEs',
+              items: [
+                { text: 'Overview', link: '/en/ai/' },
+                { text: 'Cursor', link: '/en/ai/cursor' },
+                { text: 'Windsurf', link: '/en/ai/windsurf' },
+                { text: 'Zed', link: '/en/ai/zed' }
+              ]
+            },
+            {
+              text: 'AI Coding Assistants (CLI)',
+              items: [
+                { text: 'Claude Code', link: '/en/ai/claude-code' },
+                { text: 'Aider', link: '/en/ai/aider' },
+                { text: 'OpenCode', link: '/en/ai/opencode' },
+                { text: 'Cline', link: '/en/ai/cline' },
+                { text: 'Continue', link: '/en/ai/continue' },
+                { text: 'GitHub Copilot', link: '/en/ai/github-copilot' },
+                { text: 'Gemini CLI', link: '/en/ai/gemini-cli' }
+              ]
+            },
+            {
+              text: 'Local LLM Runners',
+              items: [
+                { text: 'Ollama', link: '/en/ai/ollama' },
+                { text: 'LM Studio', link: '/en/ai/lm-studio' },
+                { text: 'llama.cpp', link: '/en/ai/llama-cpp' },
+                { text: 'llamafile', link: '/en/ai/llamafile' },
+                { text: 'Jan', link: '/en/ai/jan' },
+                { text: 'LocalAI', link: '/en/ai/localai' }
+              ]
+            },
+            {
+              text: 'AI Image & Speech',
+              items: [
+                { text: 'Stable Diffusion WebUI', link: '/en/ai/stable-diffusion' },
+                { text: 'ComfyUI', link: '/en/ai/comfyui' },
+                { text: 'OpenAI Whisper', link: '/en/ai/whisper' }
+              ]
+            },
+            {
+              text: 'AI Platforms & Automation',
+              items: [
+                { text: 'Dify', link: '/en/ai/dify' },
+                { text: 'n8n', link: '/en/ai/n8n' },
+                { text: 'OpenClaw', link: '/en/ai/openclaw' }
+              ]
+            }
+          ],
           '/en/troubleshooting/': [
             {
               text: 'Troubleshooting',
@@ -319,8 +475,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Download', link: '/en/download' },
                 { text: 'Comparison', link: '/en/comparison' },
                 { text: 'Versions', link: '/en/versions' },
-                { text: 'End of Life (EOL)', link: '/en/eol' },
-                { text: 'Community', link: '/en/community' }
+                { text: 'End of Life (EOL)', link: '/en/eol' }
               ]
             }
           ]

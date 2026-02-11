@@ -5,6 +5,10 @@ description: Download Debian 13 installation images and choose the right version
 
 # Download Debian 13
 
+::: tip Interactive Download
+Looking for a quick download? Visit the [Interactive Download Page](/en/download) to select your region and mirror for the fastest Debian ISO download.
+:::
+
 This guide helps you download the appropriate Debian 13 installation images for your system.
 
 ## 🎯 Choose Your Download

@@ -211,4 +211,77 @@
 /* 语言切换按钮优化 */
 .VPNavBarTranslations {
   margin-right: 8px;
-} 
+}
+
+/* ============================
+   视觉增强
+   ============================ */
+
+/* Hero 标题渐变色 */
+.VPHero .name .clip {
+  background: linear-gradient(135deg, #d41443 0%, #c61a43 40%, #a0122e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Feature 卡片悬停效果 */
+.VPFeature {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.VPFeature:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Hero 图片浮动动画 */
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.VPHero .image-container .image-bg {
+  animation: hero-float 4s ease-in-out infinite;
+}
+
+.VPHero .image-container img {
+  animation: hero-float 4s ease-in-out infinite;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--vp-c-bg-soft);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vp-c-brand-soft);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vp-c-brand-2);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--vp-c-brand-soft) var(--vp-c-bg-soft);
+}
+
+/* 侧边栏活动项高亮 */
+.VPSidebarItem.is-active > .item .link {
+  background-color: var(--vp-c-brand-soft);
+  border-left: 3px solid var(--vp-c-brand-1);
+  padding-left: 12px;
+  border-radius: 0 6px 6px 0;
+}
+
+/* 暗色模式平滑过渡 */
+body {
+  transition: color 0.3s ease, background-color 0.3s ease;
+}

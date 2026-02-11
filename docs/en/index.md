@@ -20,22 +20,34 @@ hero:
       link: /en/basics/installation
 
 features:
-  - icon: 🚀
+  - icon:
+      src: /images/icons/icon-free.svg
+      alt: Completely Free
     title: Completely Free
     details: All content is completely free, no registration required, access anytime
-  - icon: 👨‍🎓
+  - icon:
+      src: /images/icons/icon-beginner.svg
+      alt: Beginner Friendly
     title: Beginner Friendly
     details: Designed specifically for Linux newcomers with detailed steps and screenshots
-  - icon: 🔧
+  - icon:
+      src: /images/icons/icon-practical.svg
+      alt: Practical Tutorials
     title: Practical Tutorials
     details: Real actionable commands and configurations, copy and paste ready
-  - icon: 🌍
+  - icon:
+      src: /images/icons/icon-multilang.svg
+      alt: Multi-language Support
     title: Multi-language Support
     details: Available in Chinese and English, more languages coming soon
-  - icon: 📱
+  - icon:
+      src: /images/icons/icon-responsive.svg
+      alt: Responsive Design
     title: Responsive Design
     details: Perfect adaptation for mobile, tablet and desktop devices
-  - icon: ⚡
+  - icon:
+      src: /images/icons/icon-updated.svg
+      alt: Continuously Updated
     title: Continuously Updated
     details: Following the latest Debian 13 changes, timely content updates
 ---
@@ -88,6 +100,10 @@ Powerful security team ensures timely release of system security updates
 Over 50,000 pre-compiled software packages available, with support for multiple architectures including the newly added RISC-V 64-bit architecture
 :::
 
+<StatsSection />
+
+<TestimonialsSection />
+
 ## 🎮 Quick Experience
 
 Want to quickly experience Debian? Here are several options:
@@ -103,7 +119,7 @@ Want to quickly experience Debian? Here are several options:
 
 <div style="text-align: center; margin: 2rem 0; color: var(--vp-c-text-2);">
   <strong>Start your Debian journey now!</strong>
-</div> 
+</div>
 
 ## Friend Links
 

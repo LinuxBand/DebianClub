@@ -702,4 +702,4 @@ apropos keyword     # 搜索相关命令
 
 ---
 
-**没找到答案？** [访问社区获取帮助 →](/community) 
+**没找到答案？** [访问 GitHub 获取帮助 →](https://github.com/LinuxBand/DebianClub)

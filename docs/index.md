@@ -1,4 +1,4 @@
-﻿---
+---
 layout: home
 hero:
   name: "Debian.Club"
@@ -18,22 +18,34 @@ hero:
       text: "📖 查看教程"
       link: /basics/installation
 features:
-  - icon: "🚀"
+  - icon:
+      src: /images/icons/icon-free.svg
+      alt: 完全免费
     title: "完全免费"
     details: "所有内容完全免费，无需注册，随时访问学习。"
-  - icon: "👨‍🎓"
+  - icon:
+      src: /images/icons/icon-beginner.svg
+      alt: 初学者友好
     title: "初学者友好"
     details: "专为 Linux 新手设计，提供详尽步骤与截图。"
-  - icon: "🔧"
+  - icon:
+      src: /images/icons/icon-practical.svg
+      alt: 实用教程
     title: "实用教程"
     details: "真实可操作的命令与配置，复制粘贴即可用。"
-  - icon: "🌍"
+  - icon:
+      src: /images/icons/icon-multilang.svg
+      alt: 多语言支持
     title: "多语言支持"
     details: "提供中文与英文版本，更多语言陆续添加。"
-  - icon: "📱"
+  - icon:
+      src: /images/icons/icon-responsive.svg
+      alt: 响应式设计
     title: "响应式设计"
     details: "完美适配手机、平板与桌面设备。"
-  - icon: "⚡"
+  - icon:
+      src: /images/icons/icon-updated.svg
+      alt: 持续更新
     title: "持续更新"
     details: "紧跟 Debian 13 变化，内容及时更新。"
 ---
@@ -79,6 +91,10 @@ Debian 以稳定著称，是服务器与关键系统的首选。
 超过 50,000 个预编译软件包，支持多种体系结构（含 RISC-V 64 位）。
 :::
 
+<StatsSection />
+
+<TestimonialsSection />
+
 ## 🎮 快速体验 Debian
 
 | 方式 | 难度 | 时间 | 适合人群 |
@@ -97,4 +113,3 @@ Debian 以稳定著称，是服务器与关键系统的首选。
 [Debian.Club](https://debian.club) | [hestiacp.cn](https://hestiacp.cn) | [PortCyou](https://portcyou.com) | [CloudFan](https://cloud.fan) | [MuleRun](https://mulerun.com) | [AlmaLinuxCN](https://www.almalinux.com.cn)
 
 [P.Cafe](https://p.cafe) | [RankFan](https://www.rank.fan) | [ClawCloud Run](https://run.claw.cloud) | [APP on ARM](https://www.apponarm.com) | [FreeHost](https://freehost.work) | [MF8](https://mf8.biz) | [AAT.ee](https://aat.ee) | [II.Pe](https://ii.pe)
-

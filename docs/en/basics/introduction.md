@@ -155,7 +155,7 @@ Now that you understand the basics of Debian 13, you can continue learning:
 2. [Download Installation Images](/en/basics/download) - Get the latest Debian 13 images
 3. [Create Bootable Media](/en/basics/bootable-media) - Prepare installation media
 
-If you have any questions, please check our [FAQ](/en/troubleshooting/faq) or join our [community discussion](/en/community).
+If you have any questions, please check our [FAQ](/en/troubleshooting/faq) or visit our [GitHub project](https://github.com/LinuxBand/DebianClub).
 
 ---
 

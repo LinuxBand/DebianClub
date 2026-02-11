@@ -222,9 +222,10 @@ HDD (1TB+)   → 文档 + 媒体文件
 
 硬件检查完成后，您可以继续：
 
-1. [下载 Debian 13 镜像](/basics/download) - 获取安装文件
-2. [制作启动盘](/basics/bootable-media) - 准备安装媒体
-3. [开始安装过程](/basics/installation) - 正式安装系统
+1. [虚拟机体验](/basics/virtual-machine) - 零风险在虚拟机中先试用 Debian
+2. [下载 Debian 13 镜像](/basics/download) - 获取安装文件
+3. [制作启动盘](/basics/bootable-media) - 准备安装媒体
+4. [开始安装过程](/basics/installation) - 正式安装系统
 
 ---
 

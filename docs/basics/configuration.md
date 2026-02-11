@@ -635,8 +635,9 @@ sudo systemctl restart service-name
 基本配置完成后，您可以继续：
 
 1. [安装常用软件](/administration/packages) - 安装办公和娱乐软件
-2. [系统安全配置](/administration/security) - 加强系统安全
-3. [高级网络配置](/administration/network) - 配置高级网络功能
+2. [备份与恢复](/administration/backup) - 保护你的数据安全
+3. [磁盘与存储管理](/administration/disk-management) - 管理磁盘和存储设备
+4. [系统安全配置](/administration/security) - 加强系统安全
 
 ---
 

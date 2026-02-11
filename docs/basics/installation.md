@@ -460,8 +460,9 @@ sudo apt install eog
 安装完成后，您可以继续：
 
 1. [首次启动配置](/basics/first-boot) - 完成系统基本设置
-2. [选择桌面环境](/basics/desktop-environments) - 自定义桌面体验
-3. [安装常用软件](/administration/packages) - 安装您需要的应用程序
+2. [双系统安装](/basics/dual-boot) - 保留 Windows 同时安装 Debian
+3. [Shell 与命令行基础](/basics/command-line) - 学习命令行操作
+4. [选择桌面环境](/basics/desktop-environments) - 自定义桌面体验
 
 ---
 

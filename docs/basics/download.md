@@ -266,9 +266,10 @@ curl -L -C - -O https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso
 
 镜像下载完成后，您可以：
 
-1. [制作启动盘](/basics/bootable-media) - 创建安装媒体
-2. [开始安装过程](/basics/installation) - 正式安装 Debian
-3. [了解桌面环境](/basics/desktop-environments) - 选择合适的界面
+1. [虚拟机体验](/basics/virtual-machine) - 先在虚拟机中零风险体验 Debian
+2. [制作启动盘](/basics/bootable-media) - 创建安装媒体
+3. [开始安装过程](/basics/installation) - 正式安装 Debian
+4. [了解桌面环境](/basics/desktop-environments) - 选择合适的界面
 
 ---
 

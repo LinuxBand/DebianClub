@@ -420,9 +420,10 @@ sudo fc-cache -fv
 
 首次配置完成后，您可以继续：
 
-1. [深度系统配置](/basics/configuration) - 进一步优化系统
-2. [选择桌面环境](/basics/desktop-environments) - 自定义桌面体验
-3. [安装常用软件](/administration/packages) - 安装您需要的应用程序
+1. [Shell 与命令行基础](/basics/command-line) - 学习 Linux 命令行操作
+2. [深度系统配置](/basics/configuration) - 进一步优化系统
+3. [选择桌面环境](/basics/desktop-environments) - 自定义桌面体验
+4. [安装常用软件](/administration/packages) - 安装您需要的应用程序
 
 ---
 

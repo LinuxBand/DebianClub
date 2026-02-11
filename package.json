@@ -19,9 +19,16 @@
   "author": "Debian.Club",
   "license": "MIT",
   "devDependencies": {
+    "@braintree/sanitize-url": "^7.1.2",
     "@vue/devtools-api": "^8.0.6",
+    "cytoscape": "^3.33.1",
+    "cytoscape-cose-bilkent": "^4.1.0",
+    "dayjs": "^1.11.19",
+    "debug": "^4.4.3",
+    "mermaid": "^11.12.2",
     "vitepress": "^1.6.4",
-    "vitepress-export-pdf": "^1.0.0"
+    "vitepress-export-pdf": "^1.0.0",
+    "vitepress-plugin-mermaid": "^2.0.17"
   },
   "engines": {
     "node": ">=18.0.0"

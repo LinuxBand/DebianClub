@@ -1,9 +1,18 @@
 import { defineConfig } from 'vitepress'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 
-export default defineConfig({
+export default withMermaid(defineConfig({
   title: 'Debian.Club',
   description: 'Debian 初学者完全指南',
   cleanUrls: true,
+  vite: {
+    optimizeDeps: {
+      include: ['mermaid'],
+    },
+    ssr: {
+      noExternal: ['mermaid'],
+    },
+  },
   head: [
     ['meta', { charset: 'UTF-8' }],
     ['meta', { name: 'theme-color', content: '#d41443' }],
@@ -35,12 +44,15 @@ gtag('config', 'G-KQDJQSRRNS');`]
               { text: 'Debian 13 介绍', link: '/basics/introduction' },
               { text: '新特性', link: '/basics/whats-new' },
               { text: '系统要求', link: '/basics/requirements' },
+              { text: '虚拟机体验', link: '/basics/virtual-machine' },
               { text: '硬件兼容性', link: '/basics/hardware-compatibility' },
               { text: '下载镜像', link: '/basics/download' },
               { text: 'BIOS/UEFI 设置', link: '/basics/bios-settings' },
               { text: '制作启动盘', link: '/basics/bootable-media' },
               { text: '安装指南', link: '/basics/installation' },
+              { text: '双系统安装', link: '/basics/dual-boot' },
               { text: '首次启动', link: '/basics/first-boot' },
+              { text: 'Shell 与命令行', link: '/basics/command-line' },
               { text: '系统配置', link: '/basics/configuration' },
               { text: '桌面环境', link: '/basics/desktop-environments' }
             ]
@@ -56,7 +68,9 @@ gtag('config', 'G-KQDJQSRRNS');`]
               { text: '安全加固', link: '/administration/security' },
               { text: '日志管理', link: '/administration/logs' },
               { text: '计划任务', link: '/administration/cron' },
-              { text: '防火墙', link: '/administration/firewall' }
+              { text: '防火墙', link: '/administration/firewall' },
+              { text: '备份与恢复', link: '/administration/backup' },
+              { text: '磁盘管理', link: '/administration/disk-management' }
             ]
           },
           {
@@ -99,12 +113,15 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Debian 13 介绍', link: '/basics/introduction' },
                 { text: '新特性', link: '/basics/whats-new' },
                 { text: '系统要求', link: '/basics/requirements' },
+                { text: '虚拟机体验指南', link: '/basics/virtual-machine' },
                 { text: '硬件兼容性', link: '/basics/hardware-compatibility' },
                 { text: '下载镜像', link: '/basics/download' },
                 { text: 'BIOS/UEFI 设置', link: '/basics/bios-settings' },
                 { text: '制作启动盘', link: '/basics/bootable-media' },
                 { text: '安装指南', link: '/basics/installation' },
+                { text: '双系统安装指南', link: '/basics/dual-boot' },
                 { text: '首次启动', link: '/basics/first-boot' },
+                { text: 'Shell 与命令行基础', link: '/basics/command-line' },
                 { text: '系统配置', link: '/basics/configuration' },
                 { text: '桌面环境', link: '/basics/desktop-environments' }
               ]
@@ -122,7 +139,9 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: '安全加固', link: '/administration/security' },
                 { text: '日志管理', link: '/administration/logs' },
                 { text: '计划任务', link: '/administration/cron' },
-                { text: '防火墙', link: '/administration/firewall' }
+                { text: '防火墙', link: '/administration/firewall' },
+                { text: '备份与恢复', link: '/administration/backup' },
+                { text: '磁盘与存储管理', link: '/administration/disk-management' }
               ]
             }
           ],
@@ -220,12 +239,15 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Introduction', link: '/en/basics/introduction' },
                 { text: 'What’s New', link: '/en/basics/whats-new' },
                 { text: 'Requirements', link: '/en/basics/requirements' },
+                { text: 'Virtual Machine Guide', link: '/en/basics/virtual-machine' },
                 { text: 'Hardware Compatibility', link: '/en/basics/hardware-compatibility' },
                 { text: 'Download', link: '/en/basics/download' },
                 { text: 'BIOS/UEFI Settings', link: '/en/basics/bios-settings' },
                 { text: 'Bootable Media', link: '/en/basics/bootable-media' },
                 { text: 'Installation', link: '/en/basics/installation' },
+                { text: 'Dual Boot Guide', link: '/en/basics/dual-boot' },
                 { text: 'First Boot', link: '/en/basics/first-boot' },
+                { text: 'Command Line Basics', link: '/en/basics/command-line' },
                 { text: 'Configuration', link: '/en/basics/configuration' },
                 { text: 'Desktop Environments', link: '/en/basics/desktop-environments' }
               ]
@@ -238,7 +260,9 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Users', link: '/en/administration/users' },
                 { text: 'Packages', link: '/en/administration/packages' },
                 { text: 'Network', link: '/en/administration/network' },
-                { text: 'Security', link: '/en/administration/security' }
+                { text: 'Security', link: '/en/administration/security' },
+                { text: 'Backup & Recovery', link: '/en/administration/backup' },
+                { text: 'Disk Management', link: '/en/administration/disk-management' }
               ]
             }
           ],
@@ -304,4 +328,4 @@ gtag('config', 'G-KQDJQSRRNS');`]
       }
     }
   }
-})
+}))

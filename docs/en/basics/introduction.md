@@ -35,22 +35,22 @@ Debian 13 (codenamed: Trixie) brings many exciting new features:
 
 ### 🖥️ Desktop Environment Updates
 
-- **GNOME 43**: Modern user interface with improved user experience
-- **KDE Plasma 5.27**: Feature-rich desktop environment
-- **Xfce 4.18**: Lightweight but fully functional
+- **GNOME 48**: Modern user interface with improved user experience
+- **KDE Plasma 6.3**: Feature-rich desktop environment
+- **Xfce 4.20**: Lightweight but fully functional
 - **MATE 1.26**: Traditional desktop experience
-- **LXQt 1.2.0**: Lightweight Qt desktop environment
+- **LXQt 2.1.0**: Lightweight Qt desktop environment
 
 ### 📦 Software Package Updates
 
 | Software | Version | Key Improvements |
 |----------|---------|------------------|
 | Linux Kernel | 6.12 | Better hardware support and performance |
-| LibreOffice | 7.4+ | Improved document compatibility |
+| LibreOffice | 25.2.3 | Improved document compatibility |
 | Python | 3.13 | Faster execution speed and new features |
 | GCC | 14.2 | Latest compiler support |
-| GNOME | 43 | Modern desktop environment |
-| KDE Plasma | 5.27 | Feature-rich desktop experience |
+| GNOME | 48 | Modern desktop environment |
+| KDE Plasma | 6.3 | Feature-rich desktop experience |
 
 ## Why Choose Debian?
 

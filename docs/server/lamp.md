@@ -16,7 +16,7 @@ description: 学习如何在 Debian 上快速部署和配置经典的 LAMP (Linu
 
 ## 先决条件
 
-- 一台已安装 Debian 12 (Bookworm) 的服务器。
+- 一台已安装 Debian 13 (Trixie) 的服务器。
 - 一个拥有 `sudo` 权限的非 root 用户。
 
 ---
@@ -151,7 +151,7 @@ server {
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
         # 注意: 路径可能因 PHP 版本而异
-        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
     }
 }
 ```

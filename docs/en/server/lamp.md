@@ -151,7 +151,7 @@ server {
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
         # Note: The path may vary depending on the PHP version
-        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
     }
 }
 ```

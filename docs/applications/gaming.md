@@ -51,9 +51,14 @@ sudo apt install python3-apt
 # Steam → Settings → Steam Play → Enable Steam Play for all other titles
 
 # 手动安装 Proton-GE（社区增强版）
+# 请从以下页面获取最新版本号：
+# https://github.com/GloriousEggroll/proton-ge-custom/releases
 cd ~/.steam/steam/compatibilitytools.d/
-wget https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton8-32/GE-Proton8-32.tar.gz
-tar -xf GE-Proton8-32.tar.gz
+# 将 GE-ProtonX-YY 替换为最新版本，例如：
+wget https://github.com/GloriousEggroll/proton-ge-custom/releases/latest/download/GE-Proton_latest.tar.gz
+# 或指定版本：
+# wget https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton9-20/GE-Proton9-20.tar.gz
+tar -xf GE-Proton*.tar.gz
 ```
 
 ## 🎯 Lutris 游戏管理器

@@ -1,17 +1,31 @@
 <template>
   <footer class="custom-footer">
     <div class="featured-badges">
-      <a href="https://hicyou.com/debian-club" target="_blank" rel="noopener noreferrer">
-        <img 
-          :src="hicyouBadgeUrl" 
-          alt="Featured on Hicyou" 
+      <a href="https://hicyou.com/" target="_blank" rel="noopener noreferrer">
+        <img
+          :src="hicyouBadgeUrl"
+          alt="Featured on Hicyou"
           class="badge-image"
         />
       </a>
-      <a href="https://www.aat.ee/projects/debian-club" target="_blank" rel="noopener noreferrer">
-        <img 
-          :src="aatBadgeUrl" 
-          alt="Top 1 on AAT" 
+      <a href="https://www.aat.ee/" target="_blank" rel="noopener noreferrer">
+        <img
+          :src="aatBadgeUrl"
+          alt="Featured on AAT"
+          class="badge-image"
+        />
+      </a>
+      <a href="https://www.mf8.biz" target="_blank" rel="noopener noreferrer">
+        <img
+          :src="mf8BadgeUrl"
+          alt="已收录于 米饭粑"
+          class="badge-image"
+        />
+      </a>
+      <a href="https://bigkr.com" target="_blank" rel="noopener noreferrer">
+        <img
+          :src="bigkrBadgeUrl"
+          alt="Featured on BigKr"
           class="badge-image"
         />
       </a>
@@ -26,15 +40,27 @@ import { useData } from 'vitepress'
 const { isDark } = useData()
 
 const hicyouBadgeUrl = computed(() => {
-  return isDark.value 
+  return isDark.value
     ? 'https://hicyou.com/badge/featured-dark.svg'
     : 'https://hicyou.com/badge/featured-light.svg'
 })
 
 const aatBadgeUrl = computed(() => {
-  return isDark.value 
+  return isDark.value
     ? 'https://www.aat.ee/images/badges/top1-dark.svg'
     : 'https://www.aat.ee/images/badges/top1-light.svg'
+})
+
+const mf8BadgeUrl = computed(() => {
+  return isDark.value
+    ? 'https://www.mf8.biz/badge/badge_dark.svg'
+    : 'https://www.mf8.biz/badge/badge_light.svg'
+})
+
+const bigkrBadgeUrl = computed(() => {
+  return isDark.value
+    ? 'https://bigkr.com/badge/badge_dark.svg'
+    : 'https://bigkr.com/badge/badge_light.svg'
 })
 </script>
 

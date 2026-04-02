@@ -1,10 +1,25 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig, type HeadConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import llmstxt from 'vitepress-plugin-llms'
 
+const SITE_URL = 'https://www.debian.club'
+const OG_IMAGE = `${SITE_URL}/images/og-cover.svg`
+
+// locale → hreflang value
+const LOCALES: Record<string, string> = {
+  '': 'zh-CN',
+  'en': 'en',
+  'ja': 'ja',
+  'ko': 'ko',
+  'de': 'de',
+  'fr': 'fr',
+  'es': 'es',
+  'pt': 'pt-BR',
+}
+
 export default withMermaid(defineConfig({
   title: 'Debian.Club',
-  description: 'Debian 初学者完全指南',
+  description: 'Complete Debian Linux Guide — Beginner to Expert',
   cleanUrls: true,
   lastUpdated: true,
   themeConfig: {
@@ -29,6 +44,15 @@ export default withMermaid(defineConfig({
     ['meta', { charset: 'UTF-8' }],
     ['meta', { name: 'theme-color', content: '#d41443' }],
     ['link', { rel: 'icon', href: '/favicon.ico' }],
+    // Open Graph
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'Debian.Club' }],
+    ['meta', { property: 'og:image', content: OG_IMAGE }],
+    ['meta', { property: 'og:image:width', content: '1200' }],
+    ['meta', { property: 'og:image:height', content: '630' }],
+    // Twitter Card
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:image', content: OG_IMAGE }],
     // Google Analytics
     ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-KQDJQSRRNS' }],
     ['script', {}, `window.dataLayer = window.dataLayer || [];
@@ -36,13 +60,57 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-KQDJQSRRNS');`]
   ],
-  sitemap: { hostname: 'https://www.debian.club' },
+  sitemap: {
+    hostname: SITE_URL,
+    transformItems(items) {
+      return items.map(item => ({
+        ...item,
+        lastmod: new Date().toISOString().split('T')[0],
+        changefreq: item.url.split('/').length <= 2 ? 'weekly' : 'monthly',
+        priority: item.url === '' || item.url === 'index.html' ? 1.0
+          : item.url.includes('/basics/') || item.url.includes('/administration/') ? 0.8
+          : 0.6,
+      }))
+    },
+  },
+  transformHead({ pageData, siteData }) {
+    const head: HeadConfig[] = []
+    const path = pageData.relativePath.replace(/\.md$/, '').replace(/\/index$/, '')
+    const canonicalUrl = `${SITE_URL}/${path}`
+
+    // Canonical URL
+    head.push(['link', { rel: 'canonical', href: canonicalUrl }])
+
+    // Per-page OG tags
+    const title = pageData.frontmatter.title
+      ? `${pageData.frontmatter.title} | Debian.Club`
+      : siteData.title
+    const description = pageData.frontmatter.description || siteData.description
+
+    head.push(['meta', { property: 'og:title', content: title }])
+    head.push(['meta', { property: 'og:description', content: description }])
+    head.push(['meta', { property: 'og:url', content: canonicalUrl }])
+    head.push(['meta', { name: 'twitter:title', content: title }])
+    head.push(['meta', { name: 'twitter:description', content: description }])
+
+    // hreflang alternate links for every page
+    const relPath = path.replace(/^(en|ja|ko|de|fr|es|pt)\//, '')
+    for (const [locale, hreflang] of Object.entries(LOCALES)) {
+      const altPath = locale === '' ? relPath : `${locale}/${relPath}`
+      const altUrl = `${SITE_URL}/${altPath}`.replace(/\/$/, '') || SITE_URL
+      head.push(['link', { rel: 'alternate', hreflang, href: altUrl }])
+    }
+    head.push(['link', { rel: 'alternate', hreflang: 'x-default', href: `${SITE_URL}/${relPath}`.replace(/\/$/, '') || SITE_URL }])
+
+    return head
+  },
 
   locales: {
     root: {
       label: '简体中文',
       lang: 'zh-CN',
       link: '/',
+      description: 'Debian 初学者完全指南 — 从零开始学习 Debian 13',
       themeConfig: {
         logo: '/images/debian-logo.svg',
         siteTitle: 'Debian.Club',
@@ -149,6 +217,14 @@ gtag('config', 'G-KQDJQSRRNS');`]
             ]
           },
           { text: '故障排查', link: '/troubleshooting/faq' },
+          {
+            text: '更多',
+            items: [
+              { text: '变体发行版', link: '/variants/' },
+              { text: '最新动态', link: '/news' },
+              { text: '友情链接', link: '/links' }
+            ]
+          },
           { text: 'English', link: '/en/' }
         ],
         sidebar: {
@@ -294,14 +370,551 @@ gtag('config', 'G-KQDJQSRRNS');`]
               ]
             }
           ],
+          '/variants/': [
+            {
+              text: 'Debian 变体发行版',
+              items: [
+                { text: '总览', link: '/variants/' },
+                { text: 'Ubuntu', link: '/variants/ubuntu' },
+                { text: 'Kali Linux', link: '/variants/kali' },
+                { text: 'Linux Mint / LMDE', link: '/variants/mint' },
+                { text: 'MX Linux', link: '/variants/mx-linux' },
+                { text: 'Raspberry Pi OS', link: '/variants/raspberry-pi-os' },
+                { text: 'Tails', link: '/variants/tails' },
+                { text: 'Parrot OS', link: '/variants/parrot' },
+                { text: 'Deepin', link: '/variants/deepin' },
+                { text: 'Devuan', link: '/variants/devuan' },
+                { text: 'antiX', link: '/variants/antix' }
+              ]
+            }
+          ],
           '/': [
             {
               text: '概览',
               items: [
+                { text: '最新动态', link: '/news' },
                 { text: '下载', link: '/download' },
+                { text: '变体发行版', link: '/variants/' },
                 { text: '版本对比', link: '/comparison' },
                 { text: '版本与发布', link: '/versions' },
-                { text: '生命周期 (EOL)', link: '/eol' }
+                { text: '生命周期 (EOL)', link: '/eol' },
+                { text: '友情链接', link: '/links' }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    ja: {
+      label: '日本語',
+      lang: 'ja-JP',
+      link: '/ja/',
+      description: '初心者のための完全 Debian ガイド — Debian 13 をゼロから学ぶ',
+      themeConfig: {
+        logo: '/images/debian-logo.svg',
+        siteTitle: 'Debian.Club',
+        search: { provider: 'local' },
+        lastUpdated: { text: '最終更新' },
+        editLink: {
+          pattern: 'https://github.com/LinuxBand/DebianClub/edit/main/docs/:path',
+          text: 'GitHubでこのページを編集'
+        },
+        outline: { label: 'このページの内容' },
+        nav: [
+          { text: 'ホーム', link: '/ja/' },
+          { text: 'ダウンロード', link: '/ja/download' },
+          { text: '入門', link: '/ja/basics/introduction' },
+          { text: 'バージョン', link: '/ja/versions' },
+          { text: 'EOL', link: '/ja/eol' },
+          { text: 'その他', items: [
+            { text: 'Debian 派生ディストロ', link: '/ja/variants/' },
+            { text: 'ニュース', link: '/ja/news' },
+            { text: 'リンク集', link: '/ja/links' }
+          ]},
+          { text: '中文', link: '/' }
+        ],
+        sidebar: {
+          '/ja/variants/': [
+            {
+              text: 'Debian 派生ディストロ',
+              items: [
+                { text: '一覧', link: '/ja/variants/' },
+                { text: 'Ubuntu', link: '/ja/variants/ubuntu' },
+                { text: 'Kali Linux', link: '/ja/variants/kali' },
+                { text: 'Linux Mint / LMDE', link: '/ja/variants/mint' },
+                { text: 'MX Linux', link: '/ja/variants/mx-linux' },
+                { text: 'Raspberry Pi OS', link: '/ja/variants/raspberry-pi-os' },
+                { text: 'Tails', link: '/ja/variants/tails' },
+                { text: 'Parrot OS', link: '/ja/variants/parrot' },
+                { text: 'Deepin', link: '/ja/variants/deepin' },
+                { text: 'Devuan', link: '/ja/variants/devuan' },
+                { text: 'antiX', link: '/ja/variants/antix' }
+              ]
+            }
+          ],
+          '/ja/basics/': [
+            {
+              text: '基礎入門',
+              items: [
+                { text: 'Debian 13 入門', link: '/ja/basics/introduction' },
+                { text: '新機能', link: '/ja/basics/whats-new' },
+                { text: 'システム要件', link: '/ja/basics/requirements' },
+                { text: 'ISOイメージのダウンロード', link: '/ja/basics/download' },
+                { text: '起動可能メディアの作成', link: '/ja/basics/bootable-media' },
+                { text: 'インストールガイド', link: '/ja/basics/installation' },
+                { text: '初回起動設定', link: '/ja/basics/first-boot' },
+                { text: 'システム設定', link: '/ja/basics/configuration' },
+                { text: 'デスクトップ環境', link: '/ja/basics/desktop-environments' }
+              ]
+            }
+          ],
+          '/ja/': [
+            {
+              text: '概要',
+              items: [
+                { text: 'ニュース', link: '/ja/news' },
+                { text: 'ダウンロード', link: '/ja/download' },
+                { text: 'Debian 派生ディストロ', link: '/ja/variants/' },
+                { text: 'バージョン比較', link: '/ja/comparison' },
+                { text: 'バージョン情報', link: '/ja/versions' },
+                { text: 'サポート終了 (EOL)', link: '/ja/eol' },
+                { text: 'リンク集', link: '/ja/links' }
+              ]
+            },
+            {
+              text: '入門',
+              items: [
+                { text: 'Debian 13 入門', link: '/ja/basics/introduction' }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    ko: {
+      label: '한국어',
+      lang: 'ko-KR',
+      link: '/ko/',
+      description: '초보자를 위한 완전한 Debian 가이드 — Debian 13을 처음부터 배우기',
+      themeConfig: {
+        logo: '/images/debian-logo.svg',
+        siteTitle: 'Debian.Club',
+        search: { provider: 'local' },
+        lastUpdated: { text: '최종 업데이트' },
+        editLink: {
+          pattern: 'https://github.com/LinuxBand/DebianClub/edit/main/docs/:path',
+          text: 'GitHub에서 이 페이지 편집'
+        },
+        outline: { label: '이 페이지 내용' },
+        nav: [
+          { text: '홈', link: '/ko/' },
+          { text: '다운로드', link: '/ko/download' },
+          { text: '입문', link: '/ko/basics/introduction' },
+          { text: '버전', link: '/ko/versions' },
+          { text: 'EOL', link: '/ko/eol' },
+          { text: '더보기', items: [
+            { text: 'Debian 파생 배포판', link: '/ko/variants/' },
+            { text: '뉴스', link: '/ko/news' },
+            { text: '파트너 링크', link: '/ko/links' }
+          ]},
+          { text: '中文', link: '/' }
+        ],
+        sidebar: {
+          '/ko/variants/': [
+            {
+              text: 'Debian 파생 배포판',
+              items: [
+                { text: '목록', link: '/ko/variants/' },
+                { text: 'Ubuntu', link: '/ko/variants/ubuntu' },
+                { text: 'Kali Linux', link: '/ko/variants/kali' },
+                { text: 'Linux Mint / LMDE', link: '/ko/variants/mint' },
+                { text: 'MX Linux', link: '/ko/variants/mx-linux' },
+                { text: 'Raspberry Pi OS', link: '/ko/variants/raspberry-pi-os' },
+                { text: 'Tails', link: '/ko/variants/tails' },
+                { text: 'Parrot OS', link: '/ko/variants/parrot' },
+                { text: 'Deepin', link: '/ko/variants/deepin' },
+                { text: 'Devuan', link: '/ko/variants/devuan' },
+                { text: 'antiX', link: '/ko/variants/antix' }
+              ]
+            }
+          ],
+          '/ko/basics/': [
+            {
+              text: '기초 입문',
+              items: [
+                { text: 'Debian 13 소개', link: '/ko/basics/introduction' },
+                { text: '새로운 기능', link: '/ko/basics/whats-new' },
+                { text: '시스템 요구사항', link: '/ko/basics/requirements' },
+                { text: 'ISO 이미지 다운로드', link: '/ko/basics/download' },
+                { text: '부팅 미디어 만들기', link: '/ko/basics/bootable-media' },
+                { text: '설치 가이드', link: '/ko/basics/installation' },
+                { text: '첫 번째 부팅 설정', link: '/ko/basics/first-boot' },
+                { text: '시스템 설정', link: '/ko/basics/configuration' },
+                { text: '데스크톱 환경', link: '/ko/basics/desktop-environments' }
+              ]
+            }
+          ],
+          '/ko/': [
+            {
+              text: '개요',
+              items: [
+                { text: '최신 소식', link: '/ko/news' },
+                { text: '다운로드', link: '/ko/download' },
+                { text: 'Debian 파생 배포판', link: '/ko/variants/' },
+                { text: '버전 비교', link: '/ko/comparison' },
+                { text: '버전 정보', link: '/ko/versions' },
+                { text: '지원 종료 (EOL)', link: '/ko/eol' },
+                { text: '파트너 링크', link: '/ko/links' }
+              ]
+            },
+            {
+              text: '입문',
+              items: [
+                { text: 'Debian 13 소개', link: '/ko/basics/introduction' }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    de: {
+      label: 'Deutsch',
+      lang: 'de-DE',
+      link: '/de/',
+      description: 'Vollständiger Debian-Leitfaden für Einsteiger — Debian 13 von Grund auf lernen',
+      themeConfig: {
+        logo: '/images/debian-logo.svg',
+        siteTitle: 'Debian.Club',
+        search: { provider: 'local' },
+        lastUpdated: { text: 'Zuletzt aktualisiert' },
+        editLink: {
+          pattern: 'https://github.com/LinuxBand/DebianClub/edit/main/docs/:path',
+          text: 'Diese Seite auf GitHub bearbeiten'
+        },
+        outline: { label: 'Auf dieser Seite' },
+        nav: [
+          { text: 'Start', link: '/de/' },
+          { text: 'Download', link: '/de/download' },
+          { text: 'Einführung', link: '/de/basics/introduction' },
+          { text: 'Versionen', link: '/de/versions' },
+          { text: 'EOL', link: '/de/eol' },
+          { text: 'Mehr', items: [
+            { text: 'Debian-Varianten', link: '/de/variants/' },
+            { text: 'Neuigkeiten', link: '/de/news' },
+            { text: 'Partnerlinks', link: '/de/links' }
+          ]},
+          { text: '中文', link: '/' }
+        ],
+        sidebar: {
+          '/de/variants/': [
+            {
+              text: 'Debian-Varianten',
+              items: [
+                { text: 'Übersicht', link: '/de/variants/' },
+                { text: 'Ubuntu', link: '/de/variants/ubuntu' },
+                { text: 'Kali Linux', link: '/de/variants/kali' },
+                { text: 'Linux Mint / LMDE', link: '/de/variants/mint' },
+                { text: 'MX Linux', link: '/de/variants/mx-linux' },
+                { text: 'Raspberry Pi OS', link: '/de/variants/raspberry-pi-os' },
+                { text: 'Tails', link: '/de/variants/tails' },
+                { text: 'Parrot OS', link: '/de/variants/parrot' },
+                { text: 'Deepin', link: '/de/variants/deepin' },
+                { text: 'Devuan', link: '/de/variants/devuan' },
+                { text: 'antiX', link: '/de/variants/antix' }
+              ]
+            }
+          ],
+          '/de/basics/': [
+            {
+              text: 'Grundlagen',
+              items: [
+                { text: 'Debian 13 Einführung', link: '/de/basics/introduction' },
+                { text: 'Neuigkeiten', link: '/de/basics/whats-new' },
+                { text: 'Systemanforderungen', link: '/de/basics/requirements' },
+                { text: 'ISO herunterladen', link: '/de/basics/download' },
+                { text: 'Bootfähiges Medium erstellen', link: '/de/basics/bootable-media' },
+                { text: 'Installationsanleitung', link: '/de/basics/installation' },
+                { text: 'Erster Start', link: '/de/basics/first-boot' },
+                { text: 'Systemkonfiguration', link: '/de/basics/configuration' },
+                { text: 'Desktop-Umgebungen', link: '/de/basics/desktop-environments' }
+              ]
+            }
+          ],
+          '/de/': [
+            {
+              text: 'Übersicht',
+              items: [
+                { text: 'Neuigkeiten', link: '/de/news' },
+                { text: 'Download', link: '/de/download' },
+                { text: 'Debian-Varianten', link: '/de/variants/' },
+                { text: 'Versionsvergleich', link: '/de/comparison' },
+                { text: 'Versionsinformationen', link: '/de/versions' },
+                { text: 'End-of-Life (EOL)', link: '/de/eol' },
+                { text: 'Partnerlinks', link: '/de/links' }
+              ]
+            },
+            {
+              text: 'Erste Schritte',
+              items: [
+                { text: 'Debian 13 Einführung', link: '/de/basics/introduction' }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    fr: {
+      label: 'Français',
+      lang: 'fr-FR',
+      link: '/fr/',
+      description: 'Guide complet Debian pour débutants — Apprenez Debian 13 de zéro',
+      themeConfig: {
+        logo: '/images/debian-logo.svg',
+        siteTitle: 'Debian.Club',
+        search: { provider: 'local' },
+        lastUpdated: { text: 'Dernière mise à jour' },
+        editLink: {
+          pattern: 'https://github.com/LinuxBand/DebianClub/edit/main/docs/:path',
+          text: 'Modifier cette page sur GitHub'
+        },
+        outline: { label: 'Sur cette page' },
+        nav: [
+          { text: 'Accueil', link: '/fr/' },
+          { text: 'Télécharger', link: '/fr/download' },
+          { text: 'Introduction', link: '/fr/basics/introduction' },
+          { text: 'Versions', link: '/fr/versions' },
+          { text: 'EOL', link: '/fr/eol' },
+          { text: 'Plus', items: [
+            { text: 'Variantes Debian', link: '/fr/variants/' },
+            { text: 'Actualités', link: '/fr/news' },
+            { text: 'Liens partenaires', link: '/fr/links' }
+          ]},
+          { text: '中文', link: '/' }
+        ],
+        sidebar: {
+          '/fr/variants/': [
+            {
+              text: 'Variantes Debian',
+              items: [
+                { text: 'Vue d\'ensemble', link: '/fr/variants/' },
+                { text: 'Ubuntu', link: '/fr/variants/ubuntu' },
+                { text: 'Kali Linux', link: '/fr/variants/kali' },
+                { text: 'Linux Mint / LMDE', link: '/fr/variants/mint' },
+                { text: 'MX Linux', link: '/fr/variants/mx-linux' },
+                { text: 'Raspberry Pi OS', link: '/fr/variants/raspberry-pi-os' },
+                { text: 'Tails', link: '/fr/variants/tails' },
+                { text: 'Parrot OS', link: '/fr/variants/parrot' },
+                { text: 'Deepin', link: '/fr/variants/deepin' },
+                { text: 'Devuan', link: '/fr/variants/devuan' },
+                { text: 'antiX', link: '/fr/variants/antix' }
+              ]
+            }
+          ],
+          '/fr/basics/': [
+            {
+              text: 'Bases',
+              items: [
+                { text: 'Introduction à Debian 13', link: '/fr/basics/introduction' },
+                { text: 'Nouveautés', link: '/fr/basics/whats-new' },
+                { text: 'Configuration requise', link: '/fr/basics/requirements' },
+                { text: 'Télécharger l\'ISO', link: '/fr/basics/download' },
+                { text: 'Créer un média amorçable', link: '/fr/basics/bootable-media' },
+                { text: 'Guide d\'installation', link: '/fr/basics/installation' },
+                { text: 'Premier démarrage', link: '/fr/basics/first-boot' },
+                { text: 'Configuration du système', link: '/fr/basics/configuration' },
+                { text: 'Environnements de bureau', link: '/fr/basics/desktop-environments' }
+              ]
+            }
+          ],
+          '/fr/': [
+            {
+              text: 'Aperçu',
+              items: [
+                { text: 'Actualités', link: '/fr/news' },
+                { text: 'Télécharger', link: '/fr/download' },
+                { text: 'Variantes Debian', link: '/fr/variants/' },
+                { text: 'Comparaison des versions', link: '/fr/comparison' },
+                { text: 'Informations de version', link: '/fr/versions' },
+                { text: 'Fin de vie (EOL)', link: '/fr/eol' },
+                { text: 'Liens partenaires', link: '/fr/links' }
+              ]
+            },
+            {
+              text: 'Premiers pas',
+              items: [
+                { text: 'Introduction à Debian 13', link: '/fr/basics/introduction' }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    es: {
+      label: 'Español',
+      lang: 'es-ES',
+      link: '/es/',
+      description: 'Guía completa de Debian para principiantes — Aprende Debian 13 desde cero',
+      themeConfig: {
+        logo: '/images/debian-logo.svg',
+        siteTitle: 'Debian.Club',
+        search: { provider: 'local' },
+        lastUpdated: { text: 'Última actualización' },
+        editLink: {
+          pattern: 'https://github.com/LinuxBand/DebianClub/edit/main/docs/:path',
+          text: 'Editar esta página en GitHub'
+        },
+        outline: { label: 'En esta página' },
+        nav: [
+          { text: 'Inicio', link: '/es/' },
+          { text: 'Descargar', link: '/es/download' },
+          { text: 'Introducción', link: '/es/basics/introduction' },
+          { text: 'Versiones', link: '/es/versions' },
+          { text: 'EOL', link: '/es/eol' },
+          { text: 'Más', items: [
+            { text: 'Variantes de Debian', link: '/es/variants/' },
+            { text: 'Noticias', link: '/es/news' },
+            { text: 'Enlaces de amigos', link: '/es/links' }
+          ]},
+          { text: '中文', link: '/' }
+        ],
+        sidebar: {
+          '/es/variants/': [
+            {
+              text: 'Variantes de Debian',
+              items: [
+                { text: 'Resumen', link: '/es/variants/' },
+                { text: 'Ubuntu', link: '/es/variants/ubuntu' },
+                { text: 'Kali Linux', link: '/es/variants/kali' },
+                { text: 'Linux Mint / LMDE', link: '/es/variants/mint' },
+                { text: 'MX Linux', link: '/es/variants/mx-linux' },
+                { text: 'Raspberry Pi OS', link: '/es/variants/raspberry-pi-os' },
+                { text: 'Tails', link: '/es/variants/tails' },
+                { text: 'Parrot OS', link: '/es/variants/parrot' },
+                { text: 'Deepin', link: '/es/variants/deepin' },
+                { text: 'Devuan', link: '/es/variants/devuan' },
+                { text: 'antiX', link: '/es/variants/antix' }
+              ]
+            }
+          ],
+          '/es/basics/': [
+            {
+              text: 'Fundamentos',
+              items: [
+                { text: 'Introducción a Debian 13', link: '/es/basics/introduction' },
+                { text: 'Novedades', link: '/es/basics/whats-new' },
+                { text: 'Requisitos del sistema', link: '/es/basics/requirements' },
+                { text: 'Descargar ISO', link: '/es/basics/download' },
+                { text: 'Crear medio de arranque', link: '/es/basics/bootable-media' },
+                { text: 'Guía de instalación', link: '/es/basics/installation' },
+                { text: 'Primer inicio', link: '/es/basics/first-boot' },
+                { text: 'Configuración del sistema', link: '/es/basics/configuration' },
+                { text: 'Entornos de escritorio', link: '/es/basics/desktop-environments' }
+              ]
+            }
+          ],
+          '/es/': [
+            {
+              text: 'Resumen',
+              items: [
+                { text: 'Noticias', link: '/es/news' },
+                { text: 'Descargar', link: '/es/download' },
+                { text: 'Variantes de Debian', link: '/es/variants/' },
+                { text: 'Comparación de versiones', link: '/es/comparison' },
+                { text: 'Información de versiones', link: '/es/versions' },
+                { text: 'Fin de vida (EOL)', link: '/es/eol' },
+                { text: 'Enlaces de amigos', link: '/es/links' }
+              ]
+            },
+            {
+              text: 'Primeros pasos',
+              items: [
+                { text: 'Introducción a Debian 13', link: '/es/basics/introduction' }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    pt: {
+      label: 'Português',
+      lang: 'pt-BR',
+      link: '/pt/',
+      description: 'Guia completo do Debian para iniciantes — Aprenda Debian 13 do zero',
+      themeConfig: {
+        logo: '/images/debian-logo.svg',
+        siteTitle: 'Debian.Club',
+        search: { provider: 'local' },
+        lastUpdated: { text: 'Última atualização' },
+        editLink: {
+          pattern: 'https://github.com/LinuxBand/DebianClub/edit/main/docs/:path',
+          text: 'Editar esta página no GitHub'
+        },
+        outline: { label: 'Nesta página' },
+        nav: [
+          { text: 'Início', link: '/pt/' },
+          { text: 'Baixar', link: '/pt/download' },
+          { text: 'Introdução', link: '/pt/basics/introduction' },
+          { text: 'Versões', link: '/pt/versions' },
+          { text: 'EOL', link: '/pt/eol' },
+          { text: 'Mais', items: [
+            { text: 'Variantes do Debian', link: '/pt/variants/' },
+            { text: 'Notícias', link: '/pt/news' },
+            { text: 'Links parceiros', link: '/pt/links' }
+          ]},
+          { text: '中文', link: '/' }
+        ],
+        sidebar: {
+          '/pt/variants/': [
+            {
+              text: 'Variantes do Debian',
+              items: [
+                { text: 'Visão geral', link: '/pt/variants/' },
+                { text: 'Ubuntu', link: '/pt/variants/ubuntu' },
+                { text: 'Kali Linux', link: '/pt/variants/kali' },
+                { text: 'Linux Mint / LMDE', link: '/pt/variants/mint' },
+                { text: 'MX Linux', link: '/pt/variants/mx-linux' },
+                { text: 'Raspberry Pi OS', link: '/pt/variants/raspberry-pi-os' },
+                { text: 'Tails', link: '/pt/variants/tails' },
+                { text: 'Parrot OS', link: '/pt/variants/parrot' },
+                { text: 'Deepin', link: '/pt/variants/deepin' },
+                { text: 'Devuan', link: '/pt/variants/devuan' },
+                { text: 'antiX', link: '/pt/variants/antix' }
+              ]
+            }
+          ],
+          '/pt/basics/': [
+            {
+              text: 'Fundamentos',
+              items: [
+                { text: 'Introdução ao Debian 13', link: '/pt/basics/introduction' },
+                { text: 'Novidades', link: '/pt/basics/whats-new' },
+                { text: 'Requisitos do sistema', link: '/pt/basics/requirements' },
+                { text: 'Baixar ISO', link: '/pt/basics/download' },
+                { text: 'Criar mídia de boot', link: '/pt/basics/bootable-media' },
+                { text: 'Guia de instalação', link: '/pt/basics/installation' },
+                { text: 'Primeira inicialização', link: '/pt/basics/first-boot' },
+                { text: 'Configuração do sistema', link: '/pt/basics/configuration' },
+                { text: 'Ambientes de desktop', link: '/pt/basics/desktop-environments' }
+              ]
+            }
+          ],
+          '/pt/': [
+            {
+              text: 'Visão geral',
+              items: [
+                { text: 'Notícias', link: '/pt/news' },
+                { text: 'Baixar', link: '/pt/download' },
+                { text: 'Variantes do Debian', link: '/pt/variants/' },
+                { text: 'Comparação de versões', link: '/pt/comparison' },
+                { text: 'Informações de versão', link: '/pt/versions' },
+                { text: 'Fim de vida (EOL)', link: '/pt/eol' },
+                { text: 'Links parceiros', link: '/pt/links' }
+              ]
+            },
+            {
+              text: 'Primeiros passos',
+              items: [
+                { text: 'Introdução ao Debian 13', link: '/pt/basics/introduction' }
               ]
             }
           ]
@@ -312,6 +925,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
       label: 'English',
       lang: 'en-US',
       link: '/en/',
+      description: 'Complete Debian Guide for Beginners — Learn Debian 13 from Zero',
       themeConfig: {
         logo: '/images/debian-logo.svg',
         siteTitle: 'Debian.Club',
@@ -335,6 +949,14 @@ gtag('config', 'G-KQDJQSRRNS');`]
           { text: 'Server', link: '/en/server/lamp' },
           { text: 'AI Tools', link: '/en/ai/' },
           { text: 'Troubleshooting', link: '/en/troubleshooting/faq' },
+          {
+            text: 'More',
+            items: [
+              { text: 'Debian Variants', link: '/en/variants/' },
+              { text: 'News', link: '/en/news' },
+              { text: 'Friend Links', link: '/en/links' }
+            ]
+          },
           { text: '中文', link: '/' }
         ],
         sidebar: {
@@ -468,14 +1090,35 @@ gtag('config', 'G-KQDJQSRRNS');`]
               ]
             }
           ],
+          '/en/variants/': [
+            {
+              text: 'Debian Variants',
+              items: [
+                { text: 'Overview', link: '/en/variants/' },
+                { text: 'Ubuntu', link: '/en/variants/ubuntu' },
+                { text: 'Kali Linux', link: '/en/variants/kali' },
+                { text: 'Linux Mint / LMDE', link: '/en/variants/mint' },
+                { text: 'MX Linux', link: '/en/variants/mx-linux' },
+                { text: 'Raspberry Pi OS', link: '/en/variants/raspberry-pi-os' },
+                { text: 'Tails', link: '/en/variants/tails' },
+                { text: 'Parrot OS', link: '/en/variants/parrot' },
+                { text: 'Deepin', link: '/en/variants/deepin' },
+                { text: 'Devuan', link: '/en/variants/devuan' },
+                { text: 'antiX', link: '/en/variants/antix' }
+              ]
+            }
+          ],
           '/en/': [
             {
               text: 'Overview',
               items: [
+                { text: 'Latest News', link: '/en/news' },
                 { text: 'Download', link: '/en/download' },
+                { text: 'Debian Variants', link: '/en/variants/' },
                 { text: 'Comparison', link: '/en/comparison' },
                 { text: 'Versions', link: '/en/versions' },
-                { text: 'End of Life (EOL)', link: '/en/eol' }
+                { text: 'End of Life (EOL)', link: '/en/eol' },
+                { text: 'Friend Links', link: '/en/links' }
               ]
             }
           ]

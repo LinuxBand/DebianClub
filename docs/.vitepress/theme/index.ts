@@ -1,9 +1,36 @@
-import { h } from 'vue'
+import { h, onMounted, watch } from 'vue'
 import { useRoute, useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import './custom.css'
 import type { Theme } from 'vitepress'
 import { toRefs } from 'vue'
+
+function injectJsonLd(title: string, description: string, url: string) {
+  if (typeof document === 'undefined') return
+  const existing = document.getElementById('json-ld-schema')
+  if (existing) existing.remove()
+  const script = document.createElement('script')
+  script.id = 'json-ld-schema'
+  script.type = 'application/ld+json'
+  script.text = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    name: title,
+    description,
+    url,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Debian.Club',
+      url: 'https://www.debian.club',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.debian.club/images/debian-logo.svg',
+      },
+    },
+    inLanguage: document.documentElement.lang || 'zh-CN',
+  })
+  document.head.appendChild(script)
+}
 
 // 组件
 import MirrorSelector from './components/MirrorSelector.vue'
@@ -27,8 +54,6 @@ import '@nolebase/vitepress-plugin-enhanced-readabilities/client/style.css'
 import vitepressBprogress from 'vitepress-plugin-bprogress'
 import 'vitepress-plugin-bprogress/style'
 
-// Giscus 评论
-import giscusTalk from 'vitepress-plugin-comment-with-giscus'
 
 export default {
   extends: DefaultTheme,
@@ -54,24 +79,21 @@ export default {
     vitepressBprogress({ app, router, siteData })
   },
   setup() {
-    const { frontmatter } = toRefs(useData())
+    const { frontmatter, page, site } = toRefs(useData())
     const route = useRoute()
 
-    // Giscus 评论系统
-    // TODO: 需要用户在 GitHub 启用 Discussions 后到 https://giscus.app 获取 repoId 和 categoryId
-    giscusTalk({
-      repo: 'LinuxBand/DebianClub',
-      repoId: 'REPLACE_WITH_ACTUAL_REPO_ID',
-      category: 'Announcements',
-      categoryId: 'REPLACE_WITH_ACTUAL_CATEGORY_ID',
-      mapping: 'pathname',
-      inputPosition: 'top',
-      lang: 'zh-CN',
-      lightTheme: 'light',
-      darkTheme: 'transparent_dark',
-    }, {
-      frontmatter,
-      route
-    }, true)
+    // Inject JSON-LD on every page navigation
+    const updateJsonLd = () => {
+      const title = frontmatter.value.title
+        ? `${frontmatter.value.title} | Debian.Club`
+        : site.value.title
+      const description = frontmatter.value.description || site.value.description
+      const url = `https://www.debian.club/${page.value.relativePath.replace(/\.md$/, '').replace(/\/index$/, '')}`
+      injectJsonLd(title, description, url)
+    }
+
+    onMounted(updateJsonLd)
+    watch(() => route.path, updateJsonLd)
+
   }
 } satisfies Theme

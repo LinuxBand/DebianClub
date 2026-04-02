@@ -225,7 +225,6 @@ gtag('config', 'G-KQDJQSRRNS');`]
               { text: '友情链接', link: '/links' }
             ]
           },
-          { text: 'English', link: '/en/' }
         ],
         sidebar: {
           '/basics/': [
@@ -431,7 +430,6 @@ gtag('config', 'G-KQDJQSRRNS');`]
             { text: 'ニュース', link: '/ja/news' },
             { text: 'リンク集', link: '/ja/links' }
           ]},
-          { text: '中文', link: '/' }
         ],
         sidebar: {
           '/ja/variants/': [
@@ -517,7 +515,6 @@ gtag('config', 'G-KQDJQSRRNS');`]
             { text: '뉴스', link: '/ko/news' },
             { text: '파트너 링크', link: '/ko/links' }
           ]},
-          { text: '中文', link: '/' }
         ],
         sidebar: {
           '/ko/variants/': [
@@ -603,7 +600,6 @@ gtag('config', 'G-KQDJQSRRNS');`]
             { text: 'Neuigkeiten', link: '/de/news' },
             { text: 'Partnerlinks', link: '/de/links' }
           ]},
-          { text: '中文', link: '/' }
         ],
         sidebar: {
           '/de/variants/': [
@@ -689,7 +685,6 @@ gtag('config', 'G-KQDJQSRRNS');`]
             { text: 'Actualités', link: '/fr/news' },
             { text: 'Liens partenaires', link: '/fr/links' }
           ]},
-          { text: '中文', link: '/' }
         ],
         sidebar: {
           '/fr/variants/': [
@@ -775,7 +770,6 @@ gtag('config', 'G-KQDJQSRRNS');`]
             { text: 'Noticias', link: '/es/news' },
             { text: 'Enlaces de amigos', link: '/es/links' }
           ]},
-          { text: '中文', link: '/' }
         ],
         sidebar: {
           '/es/variants/': [
@@ -861,7 +855,6 @@ gtag('config', 'G-KQDJQSRRNS');`]
             { text: 'Notícias', link: '/pt/news' },
             { text: 'Links parceiros', link: '/pt/links' }
           ]},
-          { text: '中文', link: '/' }
         ],
         sidebar: {
           '/pt/variants/': [
@@ -957,7 +950,6 @@ gtag('config', 'G-KQDJQSRRNS');`]
               { text: 'Friend Links', link: '/en/links' }
             ]
           },
-          { text: '中文', link: '/' }
         ],
         sidebar: {
           '/en/basics/': [

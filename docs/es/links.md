@@ -19,6 +19,7 @@
 | [CloudFan](https://cloud.fan/) | Directorio de servicios en la nube |
 | [BigKr](https://bigkr.com/) | Directorio de recursos tecnológicos |
 | [WebCasa](https://web.casa) | Panel de control de servidor de código abierto nativo con IA |
+| [LiteHTTPD](https://litehttpd.com) | Servidor web ligero altamente compatible con Apache HTTPD |
 
 ## Comunidad y herramientas
 

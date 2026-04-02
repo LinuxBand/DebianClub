@@ -133,6 +133,7 @@ Vous souhaitez essayer Debian rapidement ? Voici plusieurs options :
 Consultez le cycle de vie des logiciels sur : [EOL.Wiki](https://eol.wiki/)
 
 Panneau de contrôle serveur open-source natif IA : [WebCasa](https://web.casa)
+Serveur Web léger hautement compatible avec Apache HTTPD : [LiteHTTPD](https://litehttpd.com)
 
 ## Liens partenaires
 
@@ -140,6 +141,6 @@ Panneau de contrôle serveur open-source natif IA : [WebCasa](https://web.casa)
 
 [P.Cafe](https://p.cafe/) | [RankFan](https://www.rank.fan/) | [APP on ARM](https://www.apponarm.com/) | [FreeHost](https://freehost.work/) | [MF8](https://mf8.biz/) | [AAT.ee](https://aat.ee/) | [II.Pe](https://ii.pe/)
 
-[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa)
+[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa) | [LiteHTTPD](https://litehttpd.com)
 
 [Plus de liens partenaires →](/fr/links)

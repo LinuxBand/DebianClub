@@ -24,6 +24,7 @@ description: Parceiros e sites recomendados pelo Debian.Club
 | [CloudFan](https://cloud.fan/) | Diretório de serviços em nuvem |
 | [BigKr](https://bigkr.com/) | Diretório de recursos tech |
 | [WebCasa](https://web.casa) | Painel de controle de servidor open-source AI Native |
+| [LiteHTTPD](https://litehttpd.com) | Servidor Web leve com alta compatibilidade com Apache HTTPD |
 
 ## Comunidade & Ferramentas
 

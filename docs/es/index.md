@@ -133,6 +133,7 @@ Más de 50.000 paquetes de software precompilados disponibles, con soporte para 
 Consulte el ciclo de vida del soporte de software en: [EOL.Wiki](https://eol.wiki/)
 
 Panel de control de servidor de código abierto nativo con IA: [WebCasa](https://web.casa)
+Servidor web ligero altamente compatible con Apache HTTPD: [LiteHTTPD](https://litehttpd.com)
 
 ## Enlaces de amigos
 
@@ -140,6 +141,6 @@ Panel de control de servidor de código abierto nativo con IA: [WebCasa](https:/
 
 [P.Cafe](https://p.cafe/) | [RankFan](https://www.rank.fan/) | [APP on ARM](https://www.apponarm.com/) | [FreeHost](https://freehost.work/) | [MF8](https://mf8.biz/) | [AAT.ee](https://aat.ee/) | [II.Pe](https://ii.pe/)
 
-[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa)
+[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa) | [LiteHTTPD](https://litehttpd.com)
 
 [Más enlaces de amigos →](/es/links)

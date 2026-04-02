@@ -133,6 +133,7 @@ Debian을 빠르게 체험하고 싶으신가요? 다음과 같은 여러 가지
 소프트웨어 지원 수명 주기 확인: [EOL.Wiki](https://eol.wiki/)
 
 AI 네이티브 오픈 소스 서버 제어판: [WebCasa](https://web.casa)
+Apache HTTPD와 높은 호환성을 갖춘 경량 웹 서버: [LiteHTTPD](https://litehttpd.com)
 
 ## 친구 링크
 
@@ -140,6 +141,6 @@ AI 네이티브 오픈 소스 서버 제어판: [WebCasa](https://web.casa)
 
 [P.Cafe](https://p.cafe/) | [RankFan](https://www.rank.fan/) | [APP on ARM](https://www.apponarm.com/) | [FreeHost](https://freehost.work/) | [MF8](https://mf8.biz/) | [AAT.ee](https://aat.ee/) | [II.Pe](https://ii.pe/)
 
-[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa)
+[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa) | [LiteHTTPD](https://litehttpd.com)
 
 [더 많은 친구 링크 →](/ko/links)

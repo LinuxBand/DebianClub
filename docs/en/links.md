@@ -19,6 +19,7 @@
 | [CloudFan](https://cloud.fan/) | Cloud Service Directory |
 | [BigKr](https://bigkr.com/) | Tech Resource Directory |
 | [WebCasa](https://web.casa) | AI Native Open-Source Server Control Panel |
+| [LiteHTTPD](https://litehttpd.com) | Lightweight Web Server Highly Compatible with Apache HTTPD |
 
 ## Community & Tools
 

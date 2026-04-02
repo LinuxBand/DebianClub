@@ -19,6 +19,7 @@
 | [CloudFan](https://cloud.fan/) | クラウドサービスディレクトリ |
 | [BigKr](https://bigkr.com/) | テックリソースディレクトリ |
 | [WebCasa](https://web.casa) | AI ネイティブオープンソースサーバーコントロールパネル |
+| [LiteHTTPD](https://litehttpd.com) | Apache HTTPD と高い互換性を持つ軽量 Web サーバー |
 
 ## コミュニティとツール
 

@@ -29,6 +29,13 @@
           class="badge-image"
         />
       </a>
+      <a href="https://litehttpd.com" target="_blank" rel="noopener noreferrer">
+        <img
+          :src="litehttpdBadgeUrl"
+          alt="Featured on LiteHTTPD"
+          class="badge-image"
+        />
+      </a>
     </div>
   </footer>
 </template>
@@ -61,6 +68,12 @@ const bigkrBadgeUrl = computed(() => {
   return isDark.value
     ? 'https://bigkr.com/badge/badge_dark.svg'
     : 'https://bigkr.com/badge/badge_light.svg'
+})
+
+const litehttpdBadgeUrl = computed(() => {
+  return isDark.value
+    ? 'https://litehttpd.com/badge/badge_dark.svg'
+    : 'https://litehttpd.com/badge/badge_light.svg'
 })
 </script>
 

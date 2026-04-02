@@ -121,12 +121,14 @@ Debian 以稳定著称，是服务器与关键系统的首选。
 
 更 AI Native 的开源服务器控制面板：[WebCasa](https://web.casa)
 
+高度兼容 Apache HTTPD 的轻量化 Web Server：[LiteHTTPD](https://litehttpd.com)
+
 ## 友情链接
 
 [Debian.Club](https://debian.club/) | [hestiacp.cn](https://hestiacp.cn/) | [PortCyou](https://portcyou.com/) | [CloudFan](https://cloud.fan/) | [BigKr](https://bigkr.com/) | [AlmaLinuxCN](https://www.almalinux.com.cn/)
 
 [P.Cafe](https://p.cafe/) | [RankFan](https://www.rank.fan/) | [APP on ARM](https://www.apponarm.com/) | [FreeHost](https://freehost.work/) | [MF8](https://mf8.biz/) | [AAT.ee](https://aat.ee/) | [II.Pe](https://ii.pe/)
 
-[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa)
+[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa) | [LiteHTTPD](https://litehttpd.com)
 
 [更多友情链接 →](/links)

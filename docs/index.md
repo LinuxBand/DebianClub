@@ -108,8 +108,25 @@ Debian 以稳定著称，是服务器与关键系统的首选。
 
 前往入门、下载或安装教程，立即开始使用 Debian。
 
+## Linux 文档联盟
+
+| 站点 | 描述 |
+|------|------|
+| [Debian.Club](https://debian.club/) | Debian 初学者完全指南 |
+| [Ubuntu.Fan](https://ubuntu.fan/) | Ubuntu 中文社区 |
+| [RunEntLinux](https://runentlinux.com/) | 企业级 Linux 运维指南 |
+| [AlmaLinuxCN](https://www.almalinux.com.cn/) | AlmaLinux 中文社区 |
+
+查看软件支持生命周期请看：[EOL.Wiki](https://eol.wiki/)
+
+更 AI Native 的开源服务器控制面板：[WebCasa](https://web.casa)
+
 ## 友情链接
 
-[Debian.Club](https://debian.club) | [hestiacp.cn](https://hestiacp.cn) | [PortCyou](https://portcyou.com) | [CloudFan](https://cloud.fan) | [MuleRun](https://mulerun.com) | [AlmaLinuxCN](https://www.almalinux.com.cn)
+[Debian.Club](https://debian.club/) | [hestiacp.cn](https://hestiacp.cn/) | [PortCyou](https://portcyou.com/) | [CloudFan](https://cloud.fan/) | [BigKr](https://bigkr.com/) | [AlmaLinuxCN](https://www.almalinux.com.cn/)
 
-[P.Cafe](https://p.cafe) | [RankFan](https://www.rank.fan) | [ClawCloud Run](https://run.claw.cloud) | [APP on ARM](https://www.apponarm.com) | [FreeHost](https://freehost.work) | [MF8](https://mf8.biz) | [AAT.ee](https://aat.ee) | [II.Pe](https://ii.pe)
+[P.Cafe](https://p.cafe/) | [RankFan](https://www.rank.fan/) | [APP on ARM](https://www.apponarm.com/) | [FreeHost](https://freehost.work/) | [MF8](https://mf8.biz/) | [AAT.ee](https://aat.ee/) | [II.Pe](https://ii.pe/)
+
+[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa)
+
+[更多友情链接 →](/links)

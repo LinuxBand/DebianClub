@@ -5,11 +5,7 @@ description: New features, improvements and important changes in Debian 13 (Trix
 
 # What's New in Debian 13 (Trixie)
 
-Debian 13 codenamed "Trixie" is expected to be released in the second half of 2025. This page introduces the important changes and new features in this new version.
-
-::: warning 📢 Development Status
-Debian 13 is currently under development. The information below is based on the current testing version and may change before the official release.
-:::
+Debian 13 codenamed "Trixie" was officially released in August 2025 and is the current stable release. As of March 2026, the latest point release is **13.4**. This page introduces the important changes and new features in this version.
 
 ## 🚀 Major New Features
 
@@ -20,20 +16,20 @@ Debian 13 is currently under development. The information below is based on the 
 | **Linux Kernel** | 6.12 | 6.1 | Better hardware support, performance optimization |
 | **Python** | 3.13 | 3.11 | Faster execution speed, new language features |
 | **GCC** | 14.2 | 12.2 | Latest compiler technology, C++23 support |
-| **GNOME** | 43 | 43 | Modern interface, improved user experience |
-| **KDE Plasma** | 5.27 | 5.27 | Enhanced features, improved stability |
-| **LibreOffice** | 7.4+ | 7.4 | Better document compatibility |
-| **Firefox ESR** | 115+ | 102 | Enhanced privacy protection and performance |
+| **GNOME** | 48 | 43 | Modern interface, improved user experience |
+| **KDE Plasma** | 6.3 | 5.27 | Enhanced features, improved stability |
+| **LibreOffice** | 25.2.3 | 7.4 | Better document compatibility |
+| **Firefox ESR** | 128+ | 102 | Enhanced privacy protection and performance |
 
 ### 🖥️ Desktop Environment Improvements
 
-#### GNOME 43 Optimizations
+#### GNOME 48 Optimizations
 - **Performance Boost**: Faster startup, optimized memory usage
 - **User Interface**: More modern design language
 - **File Manager**: Enhanced Nautilus functionality
 - **Settings Center**: More intuitive system settings interface
 
-#### KDE Plasma 5.27 Enhancements
+#### KDE Plasma 6.3 Enhancements
 - **Wayland Support**: Better Wayland compatibility
 - **Theme System**: Improved theme customization features
 - **System Integration**: Deeper system integration
@@ -57,23 +53,24 @@ Debian 13 is currently under development. The information below is based on the 
 
 ### Software Repository Changes
 
-#### New Component Structure
-Debian 13 made important adjustments to software repository components:
+#### New non-free-firmware Component
+Debian 13 added a dedicated component for hardware firmware:
 
 ```bash
-# New component structure
-main contrib non-free-firmware
-
-# Replaces the previous
-main contrib non-free
+# Full recommended sources.list (including non-free software)
+main contrib non-free non-free-firmware
 ```
 
-#### non-free-firmware Component
-A new component specifically for hardware firmware:
+::: warning Note
+`non-free-firmware` is a **new addition**, not a replacement for `non-free`. The `non-free` component continues to exist. If you need packages like `nvidia-driver`, you still need to include `non-free`.
+:::
 
-- **Purpose**: Separate free software from non-free firmware
-- **Content**: Graphics drivers, WiFi firmware, Bluetooth firmware, etc.
-- **Advantage**: Clearer license classification
+#### non-free-firmware Component
+Dedicated component for hardware firmware:
+
+- **Purpose**: Separates hardware firmware from other non-free software for clearer license classification
+- **Content**: GPU firmware, WiFi firmware, Bluetooth firmware, etc.
+- **Impact**: The Debian Installer now automatically prompts whether non-free firmware is needed
 
 ### Network Boot Enhancements
 
@@ -139,7 +136,7 @@ systemd-analyze plot > bootup.svg
 
 ### Memory Management Improvements
 
-- **zswap enabled by default**: Compressed swap, reduced disk I/O
+- **`/tmp` mounted as tmpfs**: Debian 13 mounts `/tmp` in memory (tmpfs) by default, automatically cleared on reboot, improving I/O performance
 - **Memory reclaim optimization**: Smarter memory management
 - **Enhanced ZRAM support**: Better memory compression
 
@@ -204,19 +201,15 @@ firefox-l10n-zh-cn
 
 ### Upgrading from Debian 12
 
-::: warning ⚠️ Upgrade Warning
-Debian 13 is currently under development. Upgrading in production environments is not recommended.
-:::
-
 ```bash
-# Prepare for upgrade (when officially released)
+# Prepare for upgrade
 sudo apt update
 sudo apt upgrade
 
 # Backup important data
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
 
-# Update software sources (after release)
+# Update software sources
 sudo sed -i 's/bookworm/trixie/g' /etc/apt/sources.list
 sudo apt update
 sudo apt full-upgrade
@@ -233,49 +226,23 @@ debconf-show package-name
 sudo dpkg-reconfigure package-name
 ```
 
-## 📝 Testing Participation
+## 🔮 Release Timeline & Point Updates
 
-### How to Participate in Testing
+### Released Versions
 
-```bash
-# Install testing version
-# 1. Download daily build images
-wget https://cdimage.debian.org/cdimage/daily-builds/daily/arch-latest/amd64/iso-cd/
-
-# 2. Or upgrade from stable to testing
-sudo sed -i 's/bookworm/trixie/g' /etc/apt/sources.list
-sudo apt update && sudo apt full-upgrade
-```
-
-### Reporting Issues
-
-```bash
-# Install bug reporting tool
-sudo apt install reportbug
-
-# Report issues
-reportbug package-name
-
-# View known issues
-https://bugs.debian.org/
-```
-
-## 🔮 Release Timeline
-
-### Important Milestones
-
-| Time | Milestone | Description |
-|------|-----------|-------------|
-| **2024** | Development Start | Trixie branch created |
-| **Early 2025** | Feature Freeze | Stop adding new features |
-| **Mid 2025** | Soft Freeze | Major package versions determined |
-| **Late 2025** | Official Release | Debian 13 stable release |
+| Version | Release Date | Notes |
+|---------|-------------|-------|
+| **13.0** | 2025-08-09 | Initial stable release |
+| **13.3** | 2026-01-10 | Security fixes and critical bug fixes |
+| **13.4** | 2026-03-08 | Security fixes and critical bug fixes |
+| **13.5** | 2026-05-16 (est.) | Next planned point release |
+| **13.6** | 2026-07-11 (est.) | Next planned point release |
 
 ### Support Lifecycle
 
-- **Maintenance Period**: About 3 years (until 2028)
-- **Long Term Support**: May provide LTS version
-- **Security Updates**: Begin immediately after release
+- **Regular Security Support**: ~3 years (until ~2028)
+- **Long Term Support (LTS)**: Expected until ~2030
+- **Security Updates**: DSA security advisories actively published
 
 ## Next Steps
 

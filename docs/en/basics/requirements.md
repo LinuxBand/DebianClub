@@ -13,7 +13,7 @@ Before installing Debian 13, it's important to ensure your computer meets the ba
 
 | Component | Minimum Requirement | Notes |
 |-----------|---------------------|-------|
-| **Processor** | 1 GHz single-core | i386 or amd64 architecture |
+| **Processor** | 1 GHz single-core | amd64 architecture (recommended) or arm64 |
 | **Memory** | 2 GB RAM | Desktop environments need more memory |
 | **Storage** | 25 GB | Including basic system and applications |
 | **Graphics** | Supports 1024×768 | Integrated graphics sufficient |
@@ -38,10 +38,17 @@ If you're unsure about your hardware configuration, you can press <span class="k
 
 Debian 13 supports multiple processor architectures:
 
-#### Mainstream Architectures
-- **amd64** (64-bit) - Intel/AMD 64-bit processors
-- **i386** (32-bit) - Legacy 32-bit processors
-- **arm64** - ARM 64-bit processors (new Macs, Raspberry Pi, etc.)
+#### Supported Architectures
+- **amd64** (64-bit) - Intel/AMD 64-bit processors (recommended for modern PCs)
+- **arm64** - ARM 64-bit processors (new Macs, Raspberry Pi 4+, etc.)
+- **armhf** - ARM 32-bit hard float (older Raspberry Pi)
+- **riscv64** - RISC-V 64-bit (🆕 new in Debian 13)
+- **ppc64el** - IBM Power 64-bit little-endian
+- **s390x** - IBM z/Architecture
+
+::: warning i386 (32-bit) Support Status
+Debian 13 (Trixie) **no longer supports i386 as a regular installation architecture**. There is no official i386 installation kernel and no Debian Installer for i386. i386 support in Debian is retained only for running legacy 32-bit applications on amd64 systems via multiarch — not for installing a complete 32-bit OS. If your hardware is genuinely 32-bit only, consider antiX Linux or other distributions that still maintain i386 installers.
+:::
 
 #### How to Check Your Architecture
 
@@ -120,7 +127,7 @@ Almost all wired network interfaces have full support.
 
 ### Essential Items
 
-- [ ] **Processor**: Confirm architecture (amd64/i386/arm64)
+- [ ] **Processor**: Confirm architecture (amd64 for modern PCs, arm64 for ARM hardware)
 - [ ] **Memory**: At least 2 GB, recommended 8 GB+
 - [ ] **Storage**: At least 25 GB available space
 - [ ] **Network**: Confirm network connection available

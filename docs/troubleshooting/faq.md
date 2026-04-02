@@ -329,12 +329,12 @@ apt-cache depends package-name
 sudo nano /etc/apt/sources.list
 
 # 标准 Debian 源配置：
-deb http://deb.debian.org/debian bookworm main
-deb-src http://deb.debian.org/debian bookworm main
+deb http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
 
 # 中国镜像源：
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main
-deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main contrib non-free non-free-firmware
+deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main contrib non-free non-free-firmware
 
 # 更新源列表：
 sudo apt update

@@ -29,7 +29,7 @@ Quick answers to the most common Debian 13 questions.
 
 ### Q: Will Debian work on my old computer?
 
-**A:** Debian supports a wide range of hardware. For computers older than 10 years, consider using the **i386** (32-bit) version or a lightweight desktop environment like **Xfce** or **LXDE**.
+**A:** Debian supports a wide range of hardware. For computers older than 10 years, note that Debian 13 no longer provides an i386 (32-bit) installer — use a lightweight desktop environment like **Xfce** or **LXQt** on a 64-bit amd64 install instead. If the hardware is truly 32-bit only, consider antiX Linux which still maintains i386 support.
 
 ### Q: My graphics card isn't working properly. Help!
 

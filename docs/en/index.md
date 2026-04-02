@@ -121,8 +121,25 @@ Want to quickly experience Debian? Here are several options:
   <strong>Start your Debian journey now!</strong>
 </div>
 
+## Linux Documentation Alliance
+
+| Site | Description |
+|------|-------------|
+| [Debian.Club](https://debian.club/) | Complete Debian Guide for Beginners |
+| [Ubuntu.Fan](https://ubuntu.fan/) | Ubuntu Chinese Community |
+| [RunEntLinux](https://runentlinux.com/) | Enterprise Linux Operations Guide |
+| [AlmaLinuxCN](https://www.almalinux.com.cn/) | AlmaLinux Chinese Community |
+
+Check software support lifecycle at: [EOL.Wiki](https://eol.wiki/)
+
+AI Native open-source server control panel: [WebCasa](https://web.casa)
+
 ## Friend Links
 
-[Debian.Club](https://debian.club) | [hestiacp.cn](https://hestiacp.cn) | [PortCyou](https://portcyou.com) | [CloudFan](https://cloud.fan) | [MuleRun](https://mulerun.com) | [AlmaLinuxCN](https://www.almalinux.com.cn)
+[Debian.Club](https://debian.club/) | [hestiacp.cn](https://hestiacp.cn/) | [PortCyou](https://portcyou.com/) | [CloudFan](https://cloud.fan/) | [BigKr](https://bigkr.com/) | [AlmaLinuxCN](https://www.almalinux.com.cn/)
 
-[P.Cafe](https://p.cafe) | [RankFan](https://www.rank.fan) | [ClawCloud Run](https://run.claw.cloud) | [APP on ARM](https://www.apponarm.com) | [FreeHost](https://freehost.work) | [MF8](https://mf8.biz) | [AAT.ee](https://aat.ee) | [II.Pe](https://ii.pe)
+[P.Cafe](https://p.cafe/) | [RankFan](https://www.rank.fan/) | [APP on ARM](https://www.apponarm.com/) | [FreeHost](https://freehost.work/) | [MF8](https://mf8.biz/) | [AAT.ee](https://aat.ee/) | [II.Pe](https://ii.pe/)
+
+[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa)
+
+[More friend links →](/en/links)

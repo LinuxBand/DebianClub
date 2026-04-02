@@ -261,16 +261,23 @@ ls /etc/apt/sources.list.d/
 # 编辑主软件源文件
 sudo nano /etc/apt/sources.list
 
-# Debian 13 (Trixie) 标准软件源配置示例：
-deb http://deb.debian.org/debian trixie main contrib non-free-firmware
-deb-src http://deb.debian.org/debian trixie main contrib non-free-firmware
+# Debian 13 (Trixie) 完整软件源配置（含非自由软件及固件）：
+deb http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
 
-deb http://security.debian.org/debian-security trixie-security main contrib non-free-firmware
-deb-src http://security.debian.org/debian-security trixie-security main contrib non-free-firmware
+deb http://security.debian.org/debian-security trixie-security main contrib non-free non-free-firmware
+deb-src http://security.debian.org/debian-security trixie-security main contrib non-free non-free-firmware
 
-deb http://deb.debian.org/debian trixie-updates main contrib non-free-firmware
-deb-src http://deb.debian.org/debian trixie-updates main contrib non-free-firmware
+deb http://deb.debian.org/debian trixie-updates main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian trixie-updates main contrib non-free non-free-firmware
 ```
+
+::: tip non-free 与 non-free-firmware 的区别
+- `non-free-firmware`：硬件固件（WiFi、显卡、蓝牙固件等），Debian 13 新增的专用组件
+- `non-free`：其他非自由软件（如 NVIDIA 驱动程序包装、专有字体等）
+
+如果您需要安装 NVIDIA 驱动（`nvidia-driver`）等非自由软件，必须同时保留 `non-free` 组件。
+:::
 
 ### 使用中国镜像源
 

@@ -20,6 +20,7 @@
 | [BigKr](https://bigkr.com/) | テックリソースディレクトリ |
 | [WebCasa](https://web.casa) | AI ネイティブオープンソースサーバーコントロールパネル |
 | [LiteHTTPD](https://litehttpd.com) | Apache HTTPD と高い互換性を持つ軽量 Web サーバー |
+| [LLStack](https://llstack.com) | Linux ベースのフルスタック開発環境 |
 
 ## コミュニティとツール
 

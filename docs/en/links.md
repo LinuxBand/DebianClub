@@ -20,6 +20,7 @@
 | [BigKr](https://bigkr.com/) | Tech Resource Directory |
 | [WebCasa](https://web.casa) | AI Native Open-Source Server Control Panel |
 | [LiteHTTPD](https://litehttpd.com) | Lightweight Web Server Highly Compatible with Apache HTTPD |
+| [LLStack](https://llstack.com) | Linux-Based Full-Stack Development Environment |
 
 ## Community & Tools
 

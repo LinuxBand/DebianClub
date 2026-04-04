@@ -25,6 +25,7 @@ description: Debian.Club의 파트너 및 추천 사이트
 | [BigKr](https://bigkr.com/) | 기술 리소스 디렉터리 |
 | [WebCasa](https://web.casa) | AI 네이티브 오픈소스 서버 제어판 |
 | [LiteHTTPD](https://litehttpd.com) | Apache HTTPD와 높은 호환성을 갖춘 경량 웹 서버 |
+| [LLStack](https://llstack.com) | Linux 기반 풀스택 개발 환경 |
 
 ## 커뮤니티 & 도구
 

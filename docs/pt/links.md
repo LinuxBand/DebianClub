@@ -25,6 +25,7 @@ description: Parceiros e sites recomendados pelo Debian.Club
 | [BigKr](https://bigkr.com/) | Diretório de recursos tech |
 | [WebCasa](https://web.casa) | Painel de controle de servidor open-source AI Native |
 | [LiteHTTPD](https://litehttpd.com) | Servidor Web leve com alta compatibilidade com Apache HTTPD |
+| [LLStack](https://llstack.com) | Ambiente de desenvolvimento full-stack baseado em Linux |
 
 ## Comunidade & Ferramentas
 

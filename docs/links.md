@@ -20,6 +20,7 @@
 | [BigKr](https://bigkr.com/) | 科技资源导航 |
 | [WebCasa](https://web.casa) | AI Native 开源服务器控制面板 |
 | [LiteHTTPD](https://litehttpd.com) | 高度兼容 Apache HTTPD 的轻量化 Web Server |
+| [LLStack](https://llstack.com) | 基于 Linux 的全栈开发环境 |
 
 ## 社区与工具
 

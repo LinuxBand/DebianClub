@@ -36,3 +36,5 @@
 | [ScreenHello](https://www.screenhello.com/) | 屏幕共享工具 |
 | [GEO.Fan](https://geo.fan/) | 地理信息查询 |
 | [Hicyou](https://hicyou.com/) | 项目展示平台 |
+| [HiEmdash](https://hiemdash.com) | HiEmdash 站点 |
+| [QOO.IM](https://qoo.im) | AI 工具与独立产品发现平台 |

@@ -38,9 +38,15 @@ Let's start by creating a public share that anyone can access without a password
 # Create the directory path
 sudo mkdir -p /srv/samba/public
 
-# Change the directory permissions to allow anyone to read and write
-sudo chmod -R 777 /srv/samba/public
+# Give the directory to the account Samba maps guests to (defaults to nobody:nogroup)
+sudo chown -R nobody:nogroup /srv/samba/public
+
+# Use 2775 instead of 777: owner and group can read/write, others read-only.
+# The leading 2 is the setgid bit, so new files inherit the directory's group.
+sudo chmod -R 2775 /srv/samba/public
 ```
+
+> ⚠️ **Security note**: Do not use `chmod 777`. Mode 777 lets **any** local user on the system read, write, and delete these files — a common security hole. Guest writes are handled by Samba mapping to the `nobody` account, so the directory itself never needs to be world-writable.
 
 ### 2.2 Edit the Samba Configuration File
 
@@ -64,6 +70,8 @@ At the very **bottom** of the file, add the following lines to define our public
     read only = no
     browsable = yes
     guest ok = yes
+    force user = nobody
+    force group = nogroup
 ```
 - `[public]`: This is the name of the share, which clients will use to access it.
 - `comment`: A description of the share.
@@ -71,6 +79,7 @@ At the very **bottom** of the file, add the following lines to define our public
 - `read only = no`: Allows users to write files.
 - `browsable = yes`: Makes the share visible in network neighborhood browsing.
 - `guest ok = yes`: Allows anonymous (guest) access.
+- `force user = nobody` / `force group = nogroup`: Maps every guest read/write to the `nobody:nogroup` identity. Since the previous step already set the directory owner to `nobody:nogroup` with mode `2775`, this guarantees guests can write without making the directory world-writable.
 
 ### 2.3 Test Configuration and Restart Samba
 

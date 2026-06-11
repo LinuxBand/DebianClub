@@ -38,9 +38,15 @@ sudo apt-get install samba
 # 创建文件夹路径
 sudo mkdir -p /srv/samba/public
 
-# 更改文件夹权限，允许任何人读写
-sudo chmod -R 777 /srv/samba/public
+# 将目录归属给 Samba 访客映射的账户（默认 nobody:nogroup）
+sudo chown -R nobody:nogroup /srv/samba/public
+
+# 使用 2775 而不是 777：属主和属组可读写，其他用户只读；
+# 前导的 2 是 setgid 位，保证新建文件自动继承所在目录的组
+sudo chmod -R 2775 /srv/samba/public
 ```
+
+> ⚠️ **安全提示**：请勿使用 `chmod 777`。777 会让系统上的**任何**本地用户都能读写、删除这些文件，是常见的安全隐患。访客写入由 Samba 通过映射到 `nobody` 账户来完成，目录本身无需对所有人开放写权限。
 
 ### 2.2 编辑 Samba 配置文件
 
@@ -64,6 +70,8 @@ sudo nano /etc/samba/smb.conf
     read only = no
     browsable = yes
     guest ok = yes
+    force user = nobody
+    force group = nogroup
 ```
 - `[public]`: 这是共享的名称，客户端将通过这个名字访问。
 - `comment`: 共享的描述。
@@ -71,6 +79,7 @@ sudo nano /etc/samba/smb.conf
 - `read only = no`: 允许用户写入文件。
 - `browsable = yes`: 允许在网络邻居中看到这个共享。
 - `guest ok = yes`: 允许匿名（访客）访问。
+- `force user = nobody` / `force group = nogroup`: 将所有访客的读写操作统一映射为 `nobody:nogroup` 身份。由于上一步已把目录归属设为 `nobody:nogroup` 并赋予 `2775` 权限，这样可确保访客既能正常写入，又无需把目录对所有人开放写权限。
 
 ### 2.3 检查配置并重启 Samba
 

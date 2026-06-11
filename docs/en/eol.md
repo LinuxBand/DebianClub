@@ -29,7 +29,7 @@ The table below lists the release dates and End-of-Life (EOL) dates for recent D
 | :----------------------- | :----------- | :--------------------- | :----------------------------- |
 | **Debian 13 (Trixie)**   | 2025-08-09   | ~ August 2028          | ~ August 2030                  |
 | **Debian 12 (Bookworm)** | 2023-06-10   | ~ June 2026            | ~ June 2028                    |
-| **Debian 11 (Bullseye)** | 2021-08-14   | July 2024              | 2026-06-30                     |
+| **Debian 11 (Bullseye)** | 2021-08-14   | July 2024              | 2026-08-31                     |
 | **Debian 10 (Buster)**   | 2019-07-06   | 2022-09-10             | 2024-06-30                     |
 | **Debian 9 (Stretch)**   | 2017-06-17   | 2020-07-06             | 2022-06-30                     |
 | **Debian 8 (Jessie)**    | 2015-04-25   | 2018-06-17             | 2020-06-30                     |

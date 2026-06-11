@@ -144,7 +144,7 @@ Installing the proprietary NVIDIA drivers on Debian is key to getting the best g
 1.  **Enable `contrib` and `non-free` repositories**:
     *   The NVIDIA driver is in the `non-free` repository. Edit `/etc/apt/sources.list` and ensure your source lines include `contrib` and `non-free` at the end (since Debian 12, the driver is in `non-free-firmware` and `non-free`, and some dependencies are in `contrib`).
         ```
-        deb http://deb.debian.org/debian/ bookworm main contrib non-free non-free-firmware
+        deb http://deb.debian.org/debian/ trixie main contrib non-free non-free-firmware
         ```
 
 2.  **Update and install essential tools**:

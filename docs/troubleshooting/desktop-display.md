@@ -144,7 +144,7 @@
 1.  **启用 `contrib` 和 `non-free` 源**：
     *   NVIDIA 驱动位于 `non-free` 仓库。编辑 `/etc/apt/sources.list`，确保您的软件源行末尾包含了 `contrib` 和 `non-free` (从 Debian 12 开始，驱动在 `non-free`，一些依赖在 `contrib`)。
         ```
-        deb http://deb.debian.org/debian/ bookworm main contrib non-free non-free-firmware
+        deb http://deb.debian.org/debian/ trixie main contrib non-free non-free-firmware
         ```
 
 2.  **更新并安装基础工具**：

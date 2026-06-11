@@ -15,8 +15,8 @@ Cette page fournit une comparaison détaillée des principales différences entr
 |---|---|---|---|
 | **Statut de publication** | Stable actuel | Ancien stable | LTS |
 | **Date de publication** | Août 2025 | Juin 2023 | Août 2021 |
-| **Dernière version ponctuelle** | 13.4 (2026-03-08) | 12.13 (2026-01-10) | — |
-| **Fin de support** | ~2030 (LTS inclus) | ~Juin 2028 | Juin 2026 |
+| **Dernière version ponctuelle** | 13.5 (2026-05-16) | 12.14 (2026-05-16) | — |
+| **Fin de support** | ~2030 (LTS inclus) | ~Juin 2028 | Août 2026 |
 | **Noyau Linux** | 6.12 | 6.1 LTS | 5.10 LTS |
 | **Version GNOME** | 48 | 43 | 3.38 |
 
@@ -24,9 +24,9 @@ Cette page fournit une comparaison détaillée des principales différences entr
 
 | Logiciel/Outil | Trixie (Debian 13) | Bookworm (Debian 12) | Bullseye (Debian 11) |
 |---|---|---|---|
-| **GCC** | 15.x | 12.2 | 10.2 |
+| **GCC** | 14.2 | 12.2 | 10.2 |
 | **LLVM/Clang** | 16+ | 14.0 | 11.0 |
-| **Python** | 3.12 | 3.11 | 3.9 |
+| **Python** | 3.13 | 3.11 | 3.9 |
 | **Node.js** | 20.x | 18.13 | 12.22 |
 | **Go** | 1.21+ | 1.19 | 1.15 |
 | **Rust** | 1.70+ | 1.63 | 1.48 |
@@ -46,12 +46,12 @@ Cette page fournit une comparaison détaillée des principales différences entr
 
 - **🖧 Administrateur de serveur** :
   - **Nouveaux déploiements** : Nous recommandons fortement **Debian 13 (Trixie)**. En tant que version stable actuelle, il bénéficie des derniers correctifs de sécurité et d'un cycle de support complet.
-  - **Maintenance des anciens systèmes** : **Debian 12 (Bookworm)** en tant qu'ancien stable est toujours maintenu (jusqu'à ~2028). Le support LTS de **Debian 11 (Bullseye)** se termine en juin 2026 — planifiez votre mise à niveau rapidement.
+  - **Maintenance des anciens systèmes** : **Debian 12 (Bookworm)** en tant qu'ancien stable est toujours maintenu (jusqu'à ~2028). Le support LTS de **Debian 11 (Bullseye)** se termine en août 2026 — planifiez votre mise à niveau rapidement.
 
 ### Chemin de mise à niveau
 
 - **Depuis Debian 11** : Mettez d'abord à niveau vers **Debian 12**, puis vers **Debian 13**. Les mises à niveau entre versions doivent se faire étape par étape.
-- **Depuis Debian 12** : Il est recommandé de mettre à niveau vers **Debian 13**. Avec plusieurs versions ponctuelles (13.4), il est bien mature.
+- **Depuis Debian 12** : Il est recommandé de mettre à niveau vers **Debian 13**. Avec plusieurs versions ponctuelles (13.5), il est bien mature.
 
 ---
 

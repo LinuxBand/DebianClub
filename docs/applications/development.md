@@ -187,9 +187,10 @@ cargo add serde
 # 安装 Go
 sudo apt install golang-go
 
-# 或下载最新版本
-wget https://go.dev/dl/go1.21.0.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.21.0.linux-amd64.tar.gz
+# 或下载最新版本（请到 https://go.dev/dl/ 查看当前最新版本号并替换）
+wget https://go.dev/dl/go1.24.4.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf go1.24.4.linux-amd64.tar.gz
 
 # 设置环境变量
 echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
@@ -293,9 +294,11 @@ GRANT ALL PRIVILEGES ON mydatabase.* TO 'myuser'@'localhost';
 ### MongoDB
 
 ```bash
-# 添加 MongoDB 仓库
-wget -qO - https://www.mongodb.org/static/pgp/server-7.0.asc | sudo apt-key add -
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/7.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+# 添加 MongoDB 仓库（apt-key 已废弃，改用 keyring + signed-by）
+sudo mkdir -p /etc/apt/keyrings
+wget -qO - https://www.mongodb.org/static/pgp/server-7.0.asc | sudo gpg --dearmor -o /etc/apt/keyrings/mongodb-server-7.0.gpg
+# 注意：MongoDB 官方仓库目前仍以 bookworm 为最新可用代号，在 Debian 13 上可正常使用
+echo "deb [ arch=amd64,arm64 signed-by=/etc/apt/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/7.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
 
 # 安装 MongoDB
 sudo apt update
@@ -340,14 +343,14 @@ sudo apt install code
 ### IntelliJ IDEA
 
 ```bash
-# 下载 IntelliJ IDEA
-wget https://download.jetbrains.com/idea/ideaIC-2023.2.2.tar.gz
+# 下载 IntelliJ IDEA（请到 https://www.jetbrains.com/idea/download/ 查看当前最新版本号）
+wget https://download.jetbrains.com/idea/ideaIC-2025.1.tar.gz
 
 # 解压安装
-sudo tar -xzf ideaIC-2023.2.2.tar.gz -C /opt/
+sudo tar -xzf ideaIC-2025.1.tar.gz -C /opt/
 
-# 创建桌面快捷方式
-sudo /opt/idea-IC-232.9559.62/bin/idea.sh
+# 启动（目录名以实际解压出的版本为准）
+/opt/idea-IC-*/bin/idea.sh
 ```
 
 ### 其他编辑器
@@ -457,9 +460,10 @@ npm install -g artillery
 ### CI/CD 工具
 
 ```bash
-# Jenkins 本地安装
-wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
-sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+# Jenkins 本地安装（apt-key 已废弃，改用 keyring + signed-by）
+sudo mkdir -p /etc/apt/keyrings
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo gpg --dearmor -o /etc/apt/keyrings/jenkins.gpg
+echo "deb [signed-by=/etc/apt/keyrings/jenkins.gpg] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list
 sudo apt update
 sudo apt install jenkins
 

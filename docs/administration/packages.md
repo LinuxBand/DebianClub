@@ -323,7 +323,6 @@ deb-src https://mirrors.ustc.edu.cn/debian/ trixie-updates main contrib non-free
 
 ```bash
 # 下载并添加 GPG 密钥
-wget -qO - https://example.com/key.gpg | sudo apt-key add -
 
 # 现代方法（推荐）
 wget -qO - https://example.com/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/example-keyring.gpg
@@ -434,7 +433,6 @@ sudo apt-get dselect-upgrade
 #### GPG 密钥错误
 ```bash
 # 问题：NO_PUBKEY 错误
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 密钥ID
 
 # 或使用现代方法
 wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x密钥ID | sudo gpg --dearmor -o /usr/share/keyrings/package-keyring.gpg

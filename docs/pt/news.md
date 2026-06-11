@@ -11,6 +11,15 @@ Esta página resume as atualizações importantes recentes do projeto Debian, aj
 
 ### Lançamentos de versões
 
+#### Lançamento do Debian 13.5 e 12.14 (2026-05-16)
+
+Em 16/05/2026, o Debian lançou duas versões pontuais simultaneamente:
+- **Debian 13.5**: Quinta versão pontual da versão estável atual (Trixie), com correções de segurança e de erros críticos
+- **Debian 12.14**: Versão pontual de rotina do oldstable (Bookworm)
+
+- [Anúncio oficial](https://www.debian.org/News/2026/2026051602)
+- [Baixar Debian 13.5](/pt/download)
+
 #### Lançamento do Debian 13.4 (2026-03-08)
 
 O Debian 13 (Trixie) recebeu sua quarta atualização pontual, **13.4**. Esta atualização foca em correções de segurança e correções de bugs críticos, com imagens de instalação atualizadas.
@@ -28,7 +37,6 @@ Em 10 de janeiro de 2026, o Debian lançou simultaneamente:
 
 | Data estimada | Versões |
 |---------------|---------|
-| 2026-05-16 | Debian 12.14 + 13.5 |
 | 2026-07-11 | Debian 12.15 + 13.6 |
 
 *As datas podem mudar — consulte [release.debian.org](https://release.debian.org/) para as informações mais recentes.*

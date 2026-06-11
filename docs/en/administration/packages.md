@@ -154,7 +154,6 @@ deb-src http://deb.debian.org/debian trixie main contrib non-free non-free-firmw
 
 ```bash
 # Add repository key
-wget -qO- https://example.com/key.gpg | sudo apt-key add -
 
 # Add repository
 echo "deb https://example.com/repo stable main" | sudo tee /etc/apt/sources.list.d/example.list
@@ -279,8 +278,8 @@ sudo apt install appimagelauncher
 # Verify package integrity
 apt-cache policy package-name
 
-# Check package signatures
-apt-key list
+# List the trusted repository keyrings (apt-key is deprecated on Debian 13)
+ls -l /etc/apt/keyrings/ /usr/share/keyrings/ /etc/apt/trusted.gpg.d/
 
 # Verify installed packages
 debsums -c

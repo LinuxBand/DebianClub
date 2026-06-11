@@ -36,9 +36,10 @@ browser.tabs.loadInBackground = true
 ### Google Chrome
 
 ```bash
-# 添加Google Chrome软件源
-wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+# 添加Google Chrome软件源（apt-key 已废弃，改用 keyring + signed-by）
+sudo mkdir -p /etc/apt/keyrings
+wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /etc/apt/keyrings/google-chrome.gpg
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
 
 # 安装Chrome
 sudo apt update

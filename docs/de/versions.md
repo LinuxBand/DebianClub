@@ -15,8 +15,8 @@ Diese Seite bietet einen detaillierten Vergleich der wichtigsten Unterschiede zw
 |---|---|---|---|
 | **Release-Status** | Aktuelles Stable | Old Stable | LTS |
 | **Veröffentlichungs­datum** | August 2025 | Juni 2023 | August 2021 |
-| **Neuestes Point-Release** | 13.4 (2026-03-08) | 12.13 (2026-01-10) | — |
-| **Support-Ende** | ~2030 (inkl. LTS) | ~Juni 2028 | Juni 2026 |
+| **Neuestes Point-Release** | 13.5 (2026-05-16) | 12.14 (2026-05-16) | — |
+| **Support-Ende** | ~2030 (inkl. LTS) | ~Juni 2028 | August 2026 |
 | **Linux-Kernel** | 6.12 | 6.1 LTS | 5.10 LTS |
 | **GNOME-Version** | 48 | 43 | 3.38 |
 
@@ -24,9 +24,9 @@ Diese Seite bietet einen detaillierten Vergleich der wichtigsten Unterschiede zw
 
 | Software/Werkzeug | Trixie (Debian 13) | Bookworm (Debian 12) | Bullseye (Debian 11) |
 |---|---|---|---|
-| **GCC** | 15.x | 12.2 | 10.2 |
+| **GCC** | 14.2 | 12.2 | 10.2 |
 | **LLVM/Clang** | 16+ | 14.0 | 11.0 |
-| **Python** | 3.12 | 3.11 | 3.9 |
+| **Python** | 3.13 | 3.11 | 3.9 |
 | **Node.js** | 20.x | 18.13 | 12.22 |
 | **Go** | 1.21+ | 1.19 | 1.15 |
 | **Rust** | 1.70+ | 1.63 | 1.48 |
@@ -46,12 +46,12 @@ Diese Seite bietet einen detaillierten Vergleich der wichtigsten Unterschiede zw
 
 - **🖧 Server-Administrator**:
   - **Neue Deployments**: Wir empfehlen dringend **Debian 13 (Trixie)**. Als aktuelles Stable-Release verfügt es über die neuesten Sicherheits­patches und einen vollständigen Support-Zyklus.
-  - **Wartung alter Systeme**: **Debian 12 (Bookworm)** wird als Oldstable weiterhin gepflegt (bis ~2028). Der LTS-Support für **Debian 11 (Bullseye)** endet im Juni 2026 — planen Sie Ihr Upgrade rechtzeitig.
+  - **Wartung alter Systeme**: **Debian 12 (Bookworm)** wird als Oldstable weiterhin gepflegt (bis ~2028). Der LTS-Support für **Debian 11 (Bullseye)** endet im August 2026 — planen Sie Ihr Upgrade rechtzeitig.
 
 ### Upgrade-Pfad
 
 - **Von Debian 11**: Zuerst auf **Debian 12** upgraden, dann auf **Debian 13**. Versions­übergreifende Upgrades sollten schrittweise durchgeführt werden.
-- **Von Debian 12**: Empfohlen wird das Upgrade auf **Debian 13**. Mit mehreren Point-Releases (13.4) ist es gut ausgereift.
+- **Von Debian 12**: Empfohlen wird das Upgrade auf **Debian 13**. Mit mehreren Point-Releases (13.5) ist es gut ausgereift.
 
 ---
 

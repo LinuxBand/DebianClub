@@ -28,7 +28,7 @@ This error means that `apt` cannot find the package you want to install in its l
     *   **Cause**: The package you want to install is in repositories like `contrib`, `non-free`, or `non-free-firmware`, which may not be fully enabled by default.
     *   **Solution**: Edit your `/etc/apt/sources.list` file and ensure that the repository lines include `contrib non-free non-free-firmware` at the end.
         ```
-        deb http://deb.debian.org/debian/ bookworm main contrib non-free non-free-firmware
+        deb http://deb.debian.org/debian/ trixie main contrib non-free non-free-firmware
         ```
         After modifying the file, be sure to run `sudo apt update`.
 
@@ -171,13 +171,13 @@ APT uses "priorities" to decide which version of a package to install. By defaul
     ```
     # Make the default priority of backports lower than stable to avoid upgrading all packages
     Package: *
-    Pin: release n=bookworm-backports
+    Pin: release n=trixie-backports
     Pin-Priority: 400
 
     # Specifically target linux-image-* and linux-headers-* to be installed from backports
     # Raise their priority to be higher than stable (500)
     Package: linux-image-* linux-headers-*
-    Pin: release n=bookworm-backports
+    Pin: release n=trixie-backports
     Pin-Priority: 501
     ```
 

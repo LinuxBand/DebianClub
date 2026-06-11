@@ -15,8 +15,8 @@ Esta página ofrece una comparación detallada de las principales diferencias en
 |---|---|---|---|
 | **Estado de versión** | Estable actual | Estable anterior | LTS |
 | **Fecha de lanzamiento** | agosto 2025 | junio 2023 | agosto 2021 |
-| **Última versión puntual** | 13.4 (2026-03-08) | 12.13 (2026-01-10) | — |
-| **Fin de soporte** | ~2030 (incl. LTS) | ~junio 2028 | junio 2026 |
+| **Última versión puntual** | 13.5 (2026-05-16) | 12.14 (2026-05-16) | — |
+| **Fin de soporte** | ~2030 (incl. LTS) | ~junio 2028 | agosto 2026 |
 | **Kernel Linux** | 6.12 | 6.1 LTS | 5.10 LTS |
 | **Versión de GNOME** | 48 | 43 | 3.38 |
 
@@ -24,9 +24,9 @@ Esta página ofrece una comparación detallada de las principales diferencias en
 
 | Software/Herramienta | Trixie (Debian 13) | Bookworm (Debian 12) | Bullseye (Debian 11) |
 |---|---|---|---|
-| **GCC** | 15.x | 12.2 | 10.2 |
+| **GCC** | 14.2 | 12.2 | 10.2 |
 | **LLVM/Clang** | 16+ | 14.0 | 11.0 |
-| **Python** | 3.12 | 3.11 | 3.9 |
+| **Python** | 3.13 | 3.11 | 3.9 |
 | **Node.js** | 20.x | 18.13 | 12.22 |
 | **Go** | 1.21+ | 1.19 | 1.15 |
 | **Rust** | 1.70+ | 1.63 | 1.48 |
@@ -46,12 +46,12 @@ Esta página ofrece una comparación detallada de las principales diferencias en
 
 - **🖧 Administrador de servidores**:
   - **Nuevos despliegues**: Se recomienda encarecidamente **Debian 13 (Trixie)**. Como versión estable actual, tiene los últimos parches de seguridad y un ciclo de soporte completo.
-  - **Mantenimiento de sistemas antiguos**: **Debian 12 (Bookworm)** como oldstable sigue siendo mantenida (hasta ~2028). El soporte LTS de **Debian 11 (Bullseye)** finaliza en junio de 2026; planifique su actualización pronto.
+  - **Mantenimiento de sistemas antiguos**: **Debian 12 (Bookworm)** como oldstable sigue siendo mantenida (hasta ~2028). El soporte LTS de **Debian 11 (Bullseye)** finaliza en agosto de 2026; planifique su actualización pronto.
 
 ### Ruta de actualización
 
 - **Desde Debian 11**: Actualice primero a **Debian 12** y luego a **Debian 13**. Las actualizaciones entre versiones deben realizarse paso a paso.
-- **Desde Debian 12**: Se recomienda actualizar a **Debian 13**. Con múltiples versiones puntuales (13.4), está bien consolidada.
+- **Desde Debian 12**: Se recomienda actualizar a **Debian 13**. Con múltiples versiones puntuales (13.5), está bien consolidada.
 
 ---
 

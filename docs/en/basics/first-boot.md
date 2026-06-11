@@ -283,9 +283,10 @@ sudo apt install exfat-fuse exfatprogs
 # Chromium
 sudo apt install chromium
 
-# Google Chrome (from web)
-wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-echo "deb http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+# Google Chrome (apt-key is deprecated; use a keyring + signed-by instead)
+sudo mkdir -p /etc/apt/keyrings
+wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /etc/apt/keyrings/google-chrome.gpg
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
 sudo apt update
 sudo apt install google-chrome-stable
 ```

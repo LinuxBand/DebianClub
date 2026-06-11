@@ -175,12 +175,12 @@ To speed up downloads, it's often recommended to switch from the official Debian
 
 3.  **Replace the content**:
     *   Delete or comment out all existing lines in the file with a `#`.
-    *   Choose a mirror, for example, the Tsinghua University mirror, and paste the following content (example for Debian 12 "Bookworm"):
+    *   Choose a mirror, for example, the Tsinghua University mirror, and paste the following content (example for Debian 13 "Trixie"):
         ```
-        deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware
-        deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware
-        deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-backports main contrib non-free non-free-firmware
-        deb https://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
+        deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main contrib non-free non-free-firmware
+        deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie-updates main contrib non-free non-free-firmware
+        deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie-backports main contrib non-free non-free-firmware
+        deb https://security.debian.org/debian-security trixie-security main contrib non-free non-free-firmware
         ```
     *   Other popular mirrors include:
         *   Aliyun: `https://mirrors.aliyun.com/debian/`

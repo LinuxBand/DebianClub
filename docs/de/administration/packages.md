@@ -323,7 +323,6 @@ deb-src https://mirrors.ustc.edu.cn/debian/ trixie-updates main contrib non-free
 
 ```bash
 # GPG-Schlüssel herunterladen und hinzufügen
-wget -qO - https://example.com/key.gpg | sudo apt-key add -
 
 # Moderne Methode (empfohlen)
 wget -qO - https://example.com/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/example-keyring.gpg
@@ -434,7 +433,6 @@ sudo apt-get dselect-upgrade
 #### GPG-Schlüssel-Fehler
 ```bash
 # Problem: NO_PUBKEY-Fehler
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys schluesselID
 
 # Oder moderne Methode verwenden
 wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xschluesselID | sudo gpg --dearmor -o /usr/share/keyrings/package-keyring.gpg

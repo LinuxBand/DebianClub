@@ -323,7 +323,6 @@ deb-src https://mirrors.ustc.edu.cn/debian/ trixie-updates main contrib non-free
 
 ```bash
 # GPG 키 다운로드 및 추가
-wget -qO - https://example.com/key.gpg | sudo apt-key add -
 
 # 현대적 방법 (권장)
 wget -qO - https://example.com/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/example-keyring.gpg
@@ -434,7 +433,6 @@ sudo apt-get dselect-upgrade
 #### GPG 키 오류
 ```bash
 # 문제: NO_PUBKEY 오류
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 키ID
 
 # 또는 현대적 방법 사용
 wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x키ID | sudo gpg --dearmor -o /usr/share/keyrings/package-keyring.gpg

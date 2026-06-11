@@ -172,11 +172,15 @@ sudo apt autoremove
 
 ::: details 🔑 GPG密钥错误
 ```bash
-# 添加缺失的GPG密钥
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 密钥ID
+# 添加缺失的GPG密钥（apt-key 已在 Debian 13 中废弃，改用 keyring + signed-by）
+wget -qO - "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x密钥ID" | sudo gpg --dearmor -o /usr/share/keyrings/example-keyring.gpg
 
-# 或者下载密钥文件
-wget -qO - https://example.com/key.gpg | sudo apt-key add -
+# 或者从下载的密钥文件生成 keyring
+wget -qO - https://example.com/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/example-keyring.gpg
+
+# 关键：软件源必须通过 signed-by 引用上面生成的 keyring，密钥才会生效
+echo "deb [signed-by=/usr/share/keyrings/example-keyring.gpg] https://example.com/debian stable main" | sudo tee /etc/apt/sources.list.d/example.list
+sudo apt update
 ```
 :::
 

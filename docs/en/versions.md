@@ -15,8 +15,8 @@ This page provides a detailed comparison of the main differences between Debian 
 |---|---|---|---|
 | **Release Status** | Current Stable | Old Stable | LTS |
 | **Release Date** | August 2025 | June 2023 | August 2021 |
-| **Latest Point Release** | 13.4 (2026-03-08) | 12.13 (2026-01-10) | — |
-| **End of Support** | ~2030 (incl. LTS) | ~June 2028 | June 2026 |
+| **Latest Point Release** | 13.5 (2026-05-16) | 12.14 (2026-05-16) | — |
+| **End of Support** | ~2030 (incl. LTS) | ~June 2028 | August 2026 |
 | **Linux Kernel** | 6.12 | 6.1 LTS | 5.10 LTS |
 | **GNOME Version**| 48 | 43 | 3.38 |
 
@@ -46,12 +46,12 @@ This page provides a detailed comparison of the main differences between Debian 
 
 - **🖧 Server Administrator**:
   - **New Deployments**: Highly recommend **Debian 13 (Trixie)**. As the current stable release, it has the latest security patches and a full support cycle.
-  - **Maintaining Old Systems**: **Debian 12 (Bookworm)** as oldstable is still maintained (until ~2028). **Debian 11 (Bullseye)** LTS support ends June 2026 — plan your upgrade soon.
+  - **Maintaining Old Systems**: **Debian 12 (Bookworm)** as oldstable is still maintained (until ~2028). **Debian 11 (Bullseye)** LTS support ends August 2026 — plan your upgrade soon.
 
 ### Upgrade Path
 
 - **From Debian 11**: Upgrade to **Debian 12** first, then to **Debian 13**. Cross-version upgrades should be done step by step.
-- **From Debian 12**: Recommended to upgrade to **Debian 13**. With multiple point releases (13.4), it is well-matured.
+- **From Debian 12**: Recommended to upgrade to **Debian 13**. With multiple point releases (13.5), it is well-matured.
 
 ---
 

@@ -195,7 +195,7 @@ These are the four main components of the Debian software repository, categorize
 **How to configure**:
 In the `/etc/apt/sources.list` file, a typical line looks like this:
 ```
-deb http://deb.debian.org/debian/ bookworm main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian/ trixie main contrib non-free non-free-firmware
 ```
 This means you have enabled all four software sources.
 
@@ -248,13 +248,13 @@ Verifying the ISO image ensures that the file you downloaded is the complete, of
         sha256sum -c SHA256SUMS
         ```
     *   The terminal will compute the hash of your downloaded ISO and compare it with the record in the `SHA256SUMS` file.
-    *   If the output includes a line like `debian-12.5.0-amd64-netinst.iso: OK`, the file is intact. If you see any `FAILED` messages, the file is corrupted and you need to download it again.
+    *   If the output includes a line like `debian-13.5.0-amd64-netinst.iso: OK`, the file is intact. If you see any `FAILED` messages, the file is corrupted and you need to download it again.
 
 3.  **Verifying on Windows**:
     *   Windows does not have a built-in checksum tool by default. You can use third-party tools like [7-Zip](https://www.7-zip.org/) or use the `Get-FileHash` command in PowerShell.
     *   **Using PowerShell**:
         ```powershell
-        Get-FileHash -Algorithm SHA256 .\debian-12.5.0-amd64-netinst.iso
+        Get-FileHash -Algorithm SHA256 .\debian-13.5.0-amd64-netinst.iso
         ```
         Then, manually compare the output hash with the corresponding hash for the ISO in the `SHA256SUMS` file.
 
@@ -287,14 +287,14 @@ Debian provides several types of installation images to suit different network c
 
 Additionally, there is a **`live`** image, which allows you to boot into a full Debian desktop environment directly from a USB drive without installing anything, just to try it out. The live image also includes a shortcut to the installer.
 
-## How to seamlessly upgrade from Debian 11 "Bullseye" to Debian 12 "Bookworm"?
+## How to seamlessly upgrade from Debian 12 "Bookworm" to Debian 13 "Trixie"?
 
 Debian's major version upgrade process is very reliable, but it still requires caution. **It is strongly recommended to back up important data before upgrading.**
 
 **Upgrade Steps:**
 
 1.  **Fully update the current system**:
-    *   Make sure your current Debian 11 system is completely up-to-date.
+    *   Make sure your current Debian 12 system is completely up-to-date.
     ```bash
     sudo apt update
     sudo apt upgrade --without-new-pkgs
@@ -302,14 +302,14 @@ Debian's major version upgrade process is very reliable, but it still requires c
     ```
 
 2.  **Modify software sources (sources.list)**:
-    *   This is the core step of the upgrade. You need to replace all instances of the release codename `bullseye` (Debian 11) with `bookworm` (Debian 12) in your software sources.
+    *   This is the core step of the upgrade. You need to replace all instances of the release codename `bookworm` (Debian 12) with `trixie` (Debian 13) in your software sources.
     *   `sudo nano /etc/apt/sources.list`
-    *   Use the editor's replace function to change all `bullseye` strings to `bookworm`.
-    *   Check and modify other source files in the `/etc/apt/sources.list.d/` directory as well.
+    *   Use the editor's replace function to change all `bookworm` strings to `trixie`.
+    *   Check and modify other source files in the `/etc/apt/sources.list.d/` directory as well. Debian 13 switches to the deb822 format by default, so a freshly installed system may keep its sources in `/etc/apt/sources.list.d/debian.sources` — check that file too.
 
 3.  **Begin the upgrade process**:
     *   **Step 1: Update package lists**
-        *   Let `apt` fetch package information from the new `bookworm` sources.
+        *   Let `apt` fetch package information from the new `trixie` sources.
         ```bash
         sudo apt update
         ```
@@ -319,7 +319,7 @@ Debian's major version upgrade process is very reliable, but it still requires c
         sudo apt upgrade --without-new-pkgs
         ```
     *   **Step 3: Full upgrade**
-        *   This is the main step. It will install the new kernel version, resolve all package dependency changes, and install new packages required by `bookworm`.
+        *   This is the main step. It will install the new kernel version, resolve all package dependency changes, and install new packages required by `trixie`.
         ```bash
         sudo apt full-upgrade
         ```
@@ -332,5 +332,5 @@ Debian's major version upgrade process is very reliable, but it still requires c
     ```
 
 5.  **Verify and clean up**:
-    *   After rebooting, run `lsb_release -a`. The output should show `Distributor ID: Debian`, `Release: 12`.
+    *   After rebooting, run `lsb_release -a`. The output should show `Distributor ID: Debian`, `Release: 13`.
     *   Finally, you can run `sudo apt autoremove` to clean up old packages that are no longer needed. 

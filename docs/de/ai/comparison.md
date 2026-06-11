@@ -1,0 +1,80 @@
+---
+title: "AI-Tool-Auswahlvergleich"
+description: "Quervergleich verschiedener KI-Tools auf Debian – Codierungsassistenten, KI-Editoren, lokale große Modelle, Bilder und Plattformen, mit Auswahlhinweisen"
+---
+
+# AI-Tool-Auswahlvergleich
+
+Die KI-Abteilung dieser Website stellt Dutzende von Tools vor. Diese Seite bietet einen Quervergleich, der Ihnen hilft, schnell die richtige Auswahl nach Ihren Anforderungen zu treffen. Klicken Sie auf die entsprechenden Links für die Installation und detaillierte Verwendung der einzelnen Tools.
+
+> Die Preisinformationen können sich je nach offizieller Politik ändern. Die folgende Tabelle dient nur als Referenz. Bitte beachten Sie die offiziellen Produktwebsites. „Lokal“ bedeutet, dass das Tool offline auf Ihrem eigenen Rechner läuft und die Daten nicht das Gerät verlassen.
+
+## KI-Editor / IDE
+
+Geeignet für Entwickler, die eine „nativ in den Editor integrierte KI“ wünschen.
+
+| Tool | Form | Lokal/Cloud | Abrechnungsmodell | Zielgruppe |
+|---|---|---|---|---|
+| [Cursor](/en/ai/cursor) | Eigenständiger Editor (VS Code-basiert) | Cloud-Modell | Kostenlose Stufe + Abonnement | Für diejenigen, die eine sofort einsatzbereite KI-IDE wünschen |
+| [Windsurf](/en/ai/windsurf) | Eigenständiger Editor | Cloud-Modell | Kostenlose Stufe + Abonnement | Bevorzugt agentenbasierte Arbeitsabläufe |
+| [Zed](/en/ai/zed) | Hochleistungs-nativer Editor | Cloud-Modell / kann lokal angeschlossen werden | Open Source, KI-Funktionen in kostenloser Stufe | Für diejenigen, die Leichtigkeit und Geschwindigkeit suchen |
+
+## KI-Codierungsassistent (CLI)
+
+Codierungs-Agenten, die im Terminal arbeiten – geeignet für Szenarien, in denen Sie die Befehlszeile gewohnt sind und dateiübergreifende Änderungen vornehmen müssen.
+
+| Tool | Backend-Modell | Lokal/Cloud | Abrechnungsmodell | Anmerkungen |
+|---|---|---|---|---|
+| [Claude Code](/en/ai/claude-code) | Anthropic Claude | Cloud | Abonnement oder API-Abrechnung | Nativer Terminal-Agent, geschickt bei großen Änderungen |
+| [Gemini CLI](/en/ai/gemini-cli) | Google Gemini | Cloud | Kostenlose Stufe + API-Abrechnung | Hat eine großzügige kostenlose Nutzungsgrenze |
+| [GitHub Copilot](/en/ai/github-copilot) | Mehrere Modelle | Cloud | Abonnement (Privat/Unternehmen) | Ausgereiftes Ökosystem, breite IDE-Integration |
+| [Aider](/en/ai/aider) | Beliebiges Modell/lokal anschließbar | Cloud oder lokal | Open Source (Abrechnung nach verwendetem Modell) | Tiefe Git-Integration |
+| [Cline](/en/ai/cline) | Beliebiges Modell/lokal anschließbar | Cloud oder lokal | Open Source (Abrechnung nach verwendetem Modell) | VS-Code-Plugin-Form |
+| [Continue](/en/ai/continue) | Beliebiges Modell/lokal anschließbar | Cloud oder lokal | Open Source (Abrechnung nach verwendetem Modell) | Hochgradig anpassbar |
+| [OpenCode](/en/ai/opencode) | Beliebiges Modell/lokal anschließbar | Cloud oder lokal | Open Source | Terminal-Codierungs-Agent |
+
+## Lokale große Modelle: Laufzeit
+
+Führen Sie große Modelle offline auf Ihrem eigenen Rechner aus. **Daten verlassen das Gerät überhaupt nicht** – geeignet für datenschutzsensible Nutzer oder solche, die API-Kosten sparen möchten. Erfordert ausreichend RAM/VRAM.
+
+| Tool | Positionierung | Einarbeitungsaufwand | Anmerkungen |
+|---|---|---|---|
+| [Ollama](/en/ai/ollama) | Ein Befehl zum Herunterladen und Ausführen von Modellen | ⭐ Am einfachsten | Erste Wahl für lokale Modelle, breites Ökosystem |
+| [LM Studio](/en/ai/lm-studio) | Grafische Benutzeroberfläche | ⭐ Einfach | Kostenlos geschlossene Quelle, geeignet für Nicht-Kommandozeilen-Benutzer |
+| [Jan](/en/ai/jan) | Grafische Benutzeroberfläche, Open Source | ⭐ Einfach | Open-Source-Alternative zu LM Studio |
+| [llama.cpp](/en/ai/llama-cpp) | Inferenz-Engine auf niedriger Ebene | ⭐⭐⭐ Fortgeschritten | Extrem leistungsfähig, Basis vieler Tools |
+| [llamafile](/en/ai/llamafile) | Einzeldatei-ausführbares Modell | ⭐⭐ Mittel | Verpackt das Modell in eine Datei |
+| [LocalAI](/en/ai/localai) | Lokaler Dienst kompatibel mit OpenAI API | ⭐⭐ Mittel | Bietet lokales Backend für bestehende Anwendungen |
+
+## KI-Bild und -Sprache
+
+| Tool | Verwendung | Lokal/Cloud | Anmerkungen |
+|---|---|---|---|
+| [Stable Diffusion WebUI](/en/ai/stable-diffusion) | Text-zu-Bild | Lokal | Umfassendste Funktionen, erfordert dedizierte GPU |
+| [ComfyUI](/en/ai/comfyui) | Knotenbasierter Text-zu-Bild-Workflow | Lokal | Visuell, orchestrierbar für komplexe Abläufe |
+| [OpenAI Whisper](/en/ai/whisper) | Sprache-zu-Text | Lokal | Mehrsprachige Erkennung, offline nutzbar |
+
+## KI-Plattformen und Automatisierung
+
+| Tool | Verwendung | Bereitstellung | Anmerkungen |
+|---|---|---|---|
+| [Dify](/en/ai/dify) | LLM-Anwendungsentwicklungsplattform | Selbst gehostet | Aufbau von RAG / Agenten-Anwendungen |
+| [n8n](/en/ai/n8n) | Workflow-Automatisierung | Selbst gehostet | Kann KI in Automatisierungsabläufe einbinden |
+| [OpenClaw](/en/ai/openclaw) | Agenten-Automatisierung | Selbst gehostet | Aufgabenbasierte KI-Automatisierung |
+
+## Wie wählen? Nach Szenario
+
+- **Im Editor codieren, die unkomplizierteste Lösung wünschen** → [Cursor](/en/ai/cursor) oder [Windsurf](/en/ai/windsurf).
+- **Schwergewichtige Befehlszeilenbenutzer, große dateiübergreifende Änderungen** → [Claude Code](/en/ai/claude-code); wer mehr kostenlos nutzen möchte → [Gemini CLI](/en/ai/gemini-cli).
+- **Open-Source-Assistent + eigene/lokale Modelle nutzen** → [Aider](/en/ai/aider), [Cline](/en/ai/cline) oder [Continue](/en/ai/continue).
+- **Wert auf Privatsphäre / offline / API-Kosten sparen** → [Ollama](/en/ai/ollama) (Befehlszeile) oder [LM Studio](/en/ai/lm-studio), [Jan](/en/ai/jan) (grafische Oberfläche) zum Ausführen lokaler Modelle.
+- **Extrem hohe Inferenzleistung, Low-Level-Anpassungen** → [llama.cpp](/en/ai/llama-cpp).
+- **Text-zu-Bild** → Einsteiger [Stable Diffusion WebUI](/en/ai/stable-diffusion), für komplexe Workflows [ComfyUI](/en/ai/comfyui).
+- **KI-Anwendungen/Automatisierung aufbauen** → [Dify](/en/ai/dify) oder [n8n](/en/ai/n8n).
+
+## Hardware-Hinweise
+
+- **Cloud-Tools** (Cursor, Claude Code, Copilot usw.) haben geringe Hardwareanforderungen, benötigen aber eine Internetverbindung, und die Daten werden an den Dienstanbieter gesendet.
+- **Lokale Modelle** haben Anforderungen an RAM/VRAM: Ein 7B-Modell kann mit etwa 8 GB RAM ausprobiert werden; für größere Modelle wird eine dedizierte NVIDIA-GPU empfohlen (siehe [NVIDIA Optimus Dual-Grafikkarten-Konfiguration](/de/administration/nvidia-optimus)).
+
+Weiterführende Lektüre: [KI-Tool-Übersicht](/en/ai/) · [Ollama Lokales Großes Modell](/en/ai/ollama)

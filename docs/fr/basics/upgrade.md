@@ -1,0 +1,120 @@
+---
+title: "Mise à niveau de Debian 12 vers Debian 13"
+description: "Procédure complète pour mettre à niveau Debian 12 Bookworm vers Debian 13 Trixie, avec migration deb822 et vérifications post-mise à niveau"
+---
+
+# Mise à niveau de Debian 12 vers Debian 13
+
+Le processus de mise à niveau majeure de Debian est très fiable, mais nécessite tout de même de la prudence. Ce guide vous accompagne pour effectuer une mise à niveau en douceur de **Debian 12 « Bookworm »** vers **Debian 13 « Trixie »**.
+
+::: warning À lire avant la mise à niveau
+- **Sauvegardez impérativement vos données importantes** (au moins `/home` et `/etc`).
+- Effectuez l’opération dans un environnement réseau et électrique stable ; pour les ordinateurs portables, branchez l’alimentation.
+- Il est recommandé de lire l’ensemble de cet article avant de commencer. Pour un serveur de production, faites d’abord un essai dans un environnement de test.
+:::
+
+## Étape 1 : Mise à jour complète du système actuel
+
+Mettez d’abord votre Debian 12 existant à jour afin de minimiser les conflits lors de la mise à niveau :
+
+```bash
+sudo apt update
+sudo apt upgrade --without-new-pkgs
+sudo apt full-upgrade
+sudo apt autoremove
+```
+
+Vérifiez qu’il s’agit bien de Debian 12 :
+
+```bash
+lsb_release -a
+# Devrait afficher Release: 12, Codename: bookworm
+```
+
+## Étape 2 : Vérifier et noter les dépôts tiers installés
+
+Les dépôts tiers (comme ceux de Docker ou Chrome) peuvent ne pas être compatibles avec une version majeure ; il est conseillé de les **désactiver temporairement**, puis de les réactiver un par un après la mise à niveau :
+
+```bash
+# Lister tous les fichiers de sources
+ls /etc/apt/sources.list.d/
+```
+
+Vous pouvez déplacer temporairement les fichiers `.list` / `.sources` des dépôts tiers, en ne conservant que les dépôts officiels Debian pour l’opération.
+
+## Étape 3 : Modifier les dépôts logiciels pour trixie
+
+C’est l’étape centrale : remplacer le nom de code de la distribution de `bookworm` à `trixie`.
+
+**Si vous utilisez le format traditionnel `sources.list` :**
+
+```bash
+sudo sed -i 's/bookworm/trixie/g' /etc/apt/sources.list
+```
+
+**Si vous utilisez le format deb822** (Debian 12 peut aussi utiliser `/etc/apt/sources.list.d/debian.sources`) :
+
+```bash
+sudo sed -i 's/bookworm/trixie/g' /etc/apt/sources.list.d/debian.sources
+```
+
+::: tip Attention aux changements de noms des suites de sécurité
+L’ancienne suite de sécurité s’écrivait `bookworm-security`, la nouvelle correspond à `trixie-security`. La substitution ci-dessus traitera les deux en même temps. Ouvrez le fichier pour confirmer que tous les `bookworm*` sont bien devenus `trixie*`.
+:::
+
+N’oubliez pas de vérifier les autres fichiers de sources officiels dans `/etc/apt/sources.list.d/` et de les modifier également.
+
+## Étape 4 : Effectuer la mise à niveau
+
+```bash
+# 1. Rafraîchir la liste des paquets avec les nouveaux dépôts trixie
+sudo apt update
+
+# 2. Mise à niveau minimale (d’abord les paquets centraux, moins de risques de conflits)
+sudo apt upgrade --without-new-pkgs
+
+# 3. Mise à niveau complète (installe le nouveau noyau, gère les changements de dépendances, installe les nouveaux paquets)
+sudo apt full-upgrade
+```
+
+La mise à niveau complète télécharge beaucoup de fichiers et prend du temps. Il peut arriver que des conflits de fichiers de configuration apparaissent. En général, **choisir « installer la version du responsable du paquet » est plus sûr** (sauf si vous avez effectivement modifié cette configuration).
+
+## Étape 5 : Redémarrer et vérifier
+
+```bash
+sudo reboot
+```
+
+Après le redémarrage, vérifiez :
+
+```bash
+lsb_release -a
+# Devrait afficher Release: 13, Codename: trixie
+
+uname -r
+# Le noyau devrait être de la série 6.12
+```
+
+## Étape 6 : Nettoyage et finalisation après la mise à niveau
+
+```bash
+# Nettoyer les anciennes versions de paquets laissés par la mise à niveau
+sudo apt autoremove --purge
+
+# Optionnel : migrer les dépôts vers le format deb822 par défaut de Debian 13
+sudo apt modernize-sources
+```
+
+Ensuite, réactivez un par un les dépôts tiers que vous aviez désactivés, et vérifiez qu’ils fournissent une version pour trixie (ou compatible). Pour en savoir plus sur le format deb822, consultez [Format des sources deb822](/fr/administration/deb822).
+
+## Problèmes fréquents
+
+- **Mise à niveau interrompue / perte de connexion** : rétablissez la connexion et relancez `sudo apt full-upgrade` ; APT reprendra là où il s’est arrêté.
+- **Certains paquets sont « retenus » (kept back)** : exécutez `sudo apt full-upgrade` ; cela les résout généralement.
+- **Plusieurs versions majeures d’écart** (par exemple depuis Debian 11) : **ne sautez pas d’étape**, mettez d’abord à niveau vers Debian 12, puis vers Debian 13.
+
+## Résumé
+
+1. Mettre à jour le système actuel → 2. Gérer les dépôts tiers → 3. Remplacer le nom de code `bookworm`→`trixie` → 4. `update` + `upgrade` + `full-upgrade` → 5. Redémarrer et vérifier → 6. Nettoyer et migrer vers deb822.
+
+Lectures complémentaires : [Format des sources deb822](/fr/administration/deb822) · [Gestion des paquets APT](/fr/administration/packages)

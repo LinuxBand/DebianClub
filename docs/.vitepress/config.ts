@@ -141,7 +141,8 @@ gtag('config', 'G-KQDJQSRRNS');`]
               { text: '首次启动', link: '/basics/first-boot' },
               { text: 'Shell 与命令行', link: '/basics/command-line' },
               { text: '系统配置', link: '/basics/configuration' },
-              { text: '桌面环境', link: '/basics/desktop-environments' }
+              { text: '桌面环境', link: '/basics/desktop-environments' },
+              { text: '升级到 Debian 13', link: '/basics/upgrade' }
             ]
           },
           {
@@ -157,7 +158,10 @@ gtag('config', 'G-KQDJQSRRNS');`]
               { text: '计划任务', link: '/administration/cron' },
               { text: '防火墙', link: '/administration/firewall' },
               { text: '备份与恢复', link: '/administration/backup' },
-              { text: '磁盘管理', link: '/administration/disk-management' }
+              { text: '磁盘管理', link: '/administration/disk-management' },
+              { text: 'deb822 源格式', link: '/administration/deb822' },
+              { text: 'Backports', link: '/administration/backports' },
+              { text: 'NVIDIA Optimus 双显卡', link: '/administration/nvidia-optimus' }
             ]
           },
           {
@@ -179,6 +183,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
             items: [
               { text: 'LAMP/LEMP', link: '/server/lamp' },
               { text: 'Docker', link: '/server/docker' },
+              { text: 'Podman', link: '/server/podman' },
               { text: 'Kubernetes 入门', link: '/server/k8s' },
               { text: 'Kubernetes 进阶', link: '/server/kubernetes' },
               { text: '安全与合规', link: '/server/security' },
@@ -192,6 +197,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
             text: 'AI 工具',
             items: [
               { text: '总览', link: '/ai/' },
+              { text: '工具选型对比', link: '/ai/comparison' },
               { text: 'Claude Code', link: '/ai/claude-code' },
               { text: 'Cursor', link: '/ai/cursor' },
               { text: 'Windsurf', link: '/ai/windsurf' },
@@ -244,7 +250,8 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: '首次启动', link: '/basics/first-boot' },
                 { text: 'Shell 与命令行基础', link: '/basics/command-line' },
                 { text: '系统配置', link: '/basics/configuration' },
-                { text: '桌面环境', link: '/basics/desktop-environments' }
+                { text: '桌面环境', link: '/basics/desktop-environments' },
+                { text: '升级到 Debian 13', link: '/basics/upgrade' }
               ]
             }
           ],
@@ -262,7 +269,10 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: '计划任务', link: '/administration/cron' },
                 { text: '防火墙', link: '/administration/firewall' },
                 { text: '备份与恢复', link: '/administration/backup' },
-                { text: '磁盘与存储管理', link: '/administration/disk-management' }
+                { text: '磁盘与存储管理', link: '/administration/disk-management' },
+                { text: 'deb822 源格式', link: '/administration/deb822' },
+                { text: 'Backports', link: '/administration/backports' },
+                { text: 'NVIDIA Optimus 双显卡', link: '/administration/nvidia-optimus' }
               ]
             }
           ],
@@ -288,6 +298,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
               items: [
                 { text: 'LAMP/LEMP', link: '/server/lamp' },
                 { text: 'Docker', link: '/server/docker' },
+                { text: 'Podman', link: '/server/podman' },
                 { text: 'Kubernetes 入门', link: '/server/k8s' },
                 { text: 'Kubernetes 进阶', link: '/server/kubernetes' },
                 { text: '安全与合规', link: '/server/security' },
@@ -303,6 +314,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
               text: 'AI 编辑器 / IDE',
               items: [
                 { text: '总览', link: '/ai/' },
+                { text: '工具选型对比', link: '/ai/comparison' },
                 { text: 'Cursor', link: '/ai/cursor' },
                 { text: 'Windsurf', link: '/ai/windsurf' },
                 { text: 'Zed', link: '/ai/zed' }
@@ -432,6 +444,36 @@ gtag('config', 'G-KQDJQSRRNS');`]
           ]},
         ],
         sidebar: {
+          '/ja/administration/': [
+            {
+              text: 'システム管理',
+              items: [
+                { text: 'ネットワーク設定', link: '/ja/administration/network' },
+                { text: 'APT パッケージ管理', link: '/ja/administration/packages' },
+                { text: 'セキュリティ管理', link: '/ja/administration/security' },
+                { text: 'deb822 ソース形式（.sources）', link: '/ja/administration/deb822' },
+                { text: 'Backports 使用ガイド', link: '/ja/administration/backports' },
+                { text: 'NVIDIA Optimus デュアルGPU構成', link: '/ja/administration/nvidia-optimus' }
+              ]
+            }
+          ],
+          '/ja/server/': [
+            {
+              text: 'サーバー',
+              items: [
+                { text: 'LAMP/LEMP', link: '/ja/server/lamp' },
+                { text: 'Podman コンテナ管理', link: '/ja/server/podman' }
+              ]
+            }
+          ],
+          '/ja/ai/': [
+            {
+              text: 'AIツール',
+              items: [
+                { text: 'AIツール選定比較', link: '/ja/ai/comparison' }
+              ]
+            }
+          ],
           '/ja/variants/': [
             {
               text: 'Debian 派生ディストロ',
@@ -462,7 +504,8 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'インストールガイド', link: '/ja/basics/installation' },
                 { text: '初回起動設定', link: '/ja/basics/first-boot' },
                 { text: 'システム設定', link: '/ja/basics/configuration' },
-                { text: 'デスクトップ環境', link: '/ja/basics/desktop-environments' }
+                { text: 'デスクトップ環境', link: '/ja/basics/desktop-environments' },
+                { text: 'Debian 13 へアップグレード', link: '/ja/basics/upgrade' }
               ]
             }
           ],
@@ -517,6 +560,36 @@ gtag('config', 'G-KQDJQSRRNS');`]
           ]},
         ],
         sidebar: {
+          '/ko/administration/': [
+            {
+              text: '시스템 관리',
+              items: [
+                { text: '네트워크 구성', link: '/ko/administration/network' },
+                { text: 'APT 패키지 관리', link: '/ko/administration/packages' },
+                { text: '보안 관리', link: '/ko/administration/security' },
+                { text: 'deb822 소스 형식(.sources)', link: '/ko/administration/deb822' },
+                { text: 'Backports 사용 가이드', link: '/ko/administration/backports' },
+                { text: 'NVIDIA Optimus 이중 그래픽 카드 설정', link: '/ko/administration/nvidia-optimus' }
+              ]
+            }
+          ],
+          '/ko/server/': [
+            {
+              text: '서버',
+              items: [
+                { text: 'LAMP/LEMP', link: '/ko/server/lamp' },
+                { text: 'Podman 컨테이너 관리', link: '/ko/server/podman' }
+              ]
+            }
+          ],
+          '/ko/ai/': [
+            {
+              text: 'AI 도구',
+              items: [
+                { text: 'AI 도구 선정 비교', link: '/ko/ai/comparison' }
+              ]
+            }
+          ],
           '/ko/variants/': [
             {
               text: 'Debian 파생 배포판',
@@ -547,7 +620,8 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: '설치 가이드', link: '/ko/basics/installation' },
                 { text: '첫 번째 부팅 설정', link: '/ko/basics/first-boot' },
                 { text: '시스템 설정', link: '/ko/basics/configuration' },
-                { text: '데스크톱 환경', link: '/ko/basics/desktop-environments' }
+                { text: '데스크톱 환경', link: '/ko/basics/desktop-environments' },
+                { text: 'Debian 13으로 업그레이드', link: '/ko/basics/upgrade' }
               ]
             }
           ],
@@ -602,6 +676,36 @@ gtag('config', 'G-KQDJQSRRNS');`]
           ]},
         ],
         sidebar: {
+          '/de/administration/': [
+            {
+              text: 'Systemverwaltung',
+              items: [
+                { text: 'Netzwerkkonfiguration', link: '/de/administration/network' },
+                { text: 'APT-Paketverwaltung', link: '/de/administration/packages' },
+                { text: 'Sicherheitsmanagement', link: '/de/administration/security' },
+                { text: 'deb822-Quellenformat (.sources)', link: '/de/administration/deb822' },
+                { text: 'Backports-Leitfaden', link: '/de/administration/backports' },
+                { text: 'NVIDIA Optimus Dual-GPU', link: '/de/administration/nvidia-optimus' }
+              ]
+            }
+          ],
+          '/de/server/': [
+            {
+              text: 'Server',
+              items: [
+                { text: 'LAMP/LEMP', link: '/de/server/lamp' },
+                { text: 'Podman Container-Management', link: '/de/server/podman' }
+              ]
+            }
+          ],
+          '/de/ai/': [
+            {
+              text: 'KI-Tools',
+              items: [
+                { text: 'KI-Tool-Vergleich', link: '/de/ai/comparison' }
+              ]
+            }
+          ],
           '/de/variants/': [
             {
               text: 'Debian-Varianten',
@@ -632,7 +736,8 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Installationsanleitung', link: '/de/basics/installation' },
                 { text: 'Erster Start', link: '/de/basics/first-boot' },
                 { text: 'Systemkonfiguration', link: '/de/basics/configuration' },
-                { text: 'Desktop-Umgebungen', link: '/de/basics/desktop-environments' }
+                { text: 'Desktop-Umgebungen', link: '/de/basics/desktop-environments' },
+                { text: 'Auf Debian 13 upgraden', link: '/de/basics/upgrade' }
               ]
             }
           ],
@@ -687,6 +792,36 @@ gtag('config', 'G-KQDJQSRRNS');`]
           ]},
         ],
         sidebar: {
+          '/fr/administration/': [
+            {
+              text: 'Administration système',
+              items: [
+                { text: 'Configuration réseau', link: '/fr/administration/network' },
+                { text: 'Gestion des paquets APT', link: '/fr/administration/packages' },
+                { text: 'Gestion de la sécurité', link: '/fr/administration/security' },
+                { text: 'Format de source deb822 (.sources)', link: '/fr/administration/deb822' },
+                { text: 'Guide des Backports', link: '/fr/administration/backports' },
+                { text: 'NVIDIA Optimus double GPU', link: '/fr/administration/nvidia-optimus' }
+              ]
+            }
+          ],
+          '/fr/server/': [
+            {
+              text: 'Serveur',
+              items: [
+                { text: 'LAMP/LEMP', link: '/fr/server/lamp' },
+                { text: 'Gestion des conteneurs Podman', link: '/fr/server/podman' }
+              ]
+            }
+          ],
+          '/fr/ai/': [
+            {
+              text: 'Outils IA',
+              items: [
+                { text: 'Comparaison des outils d\'IA', link: '/fr/ai/comparison' }
+              ]
+            }
+          ],
           '/fr/variants/': [
             {
               text: 'Variantes Debian',
@@ -717,7 +852,8 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Guide d\'installation', link: '/fr/basics/installation' },
                 { text: 'Premier démarrage', link: '/fr/basics/first-boot' },
                 { text: 'Configuration du système', link: '/fr/basics/configuration' },
-                { text: 'Environnements de bureau', link: '/fr/basics/desktop-environments' }
+                { text: 'Environnements de bureau', link: '/fr/basics/desktop-environments' },
+                { text: 'Mise à niveau vers Debian 13', link: '/fr/basics/upgrade' }
               ]
             }
           ],
@@ -772,6 +908,36 @@ gtag('config', 'G-KQDJQSRRNS');`]
           ]},
         ],
         sidebar: {
+          '/es/administration/': [
+            {
+              text: 'Administración del sistema',
+              items: [
+                { text: 'Configuración de Red', link: '/es/administration/network' },
+                { text: 'Gestión de paquetes APT', link: '/es/administration/packages' },
+                { text: 'Gestión de Seguridad', link: '/es/administration/security' },
+                { text: 'Formato de fuente deb822 (.sources)', link: '/es/administration/deb822' },
+                { text: 'Guía de Backports', link: '/es/administration/backports' },
+                { text: 'NVIDIA Optimus gráficos duales', link: '/es/administration/nvidia-optimus' }
+              ]
+            }
+          ],
+          '/es/server/': [
+            {
+              text: 'Servidor',
+              items: [
+                { text: 'LAMP/LEMP', link: '/es/server/lamp' },
+                { text: 'Gestión de contenedores Podman', link: '/es/server/podman' }
+              ]
+            }
+          ],
+          '/es/ai/': [
+            {
+              text: 'Herramientas de IA',
+              items: [
+                { text: 'Comparativa de herramientas de IA', link: '/es/ai/comparison' }
+              ]
+            }
+          ],
           '/es/variants/': [
             {
               text: 'Variantes de Debian',
@@ -802,7 +968,8 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Guía de instalación', link: '/es/basics/installation' },
                 { text: 'Primer inicio', link: '/es/basics/first-boot' },
                 { text: 'Configuración del sistema', link: '/es/basics/configuration' },
-                { text: 'Entornos de escritorio', link: '/es/basics/desktop-environments' }
+                { text: 'Entornos de escritorio', link: '/es/basics/desktop-environments' },
+                { text: 'Actualizar a Debian 13', link: '/es/basics/upgrade' }
               ]
             }
           ],
@@ -857,6 +1024,36 @@ gtag('config', 'G-KQDJQSRRNS');`]
           ]},
         ],
         sidebar: {
+          '/pt/administration/': [
+            {
+              text: 'Administração do sistema',
+              items: [
+                { text: 'Configuração de Rede', link: '/pt/administration/network' },
+                { text: 'Gerenciamento de Pacotes APT', link: '/pt/administration/packages' },
+                { text: 'Gestão de Segurança', link: '/pt/administration/security' },
+                { text: 'Formato de fonte deb822 (.sources)', link: '/pt/administration/deb822' },
+                { text: 'Guia do Backports', link: '/pt/administration/backports' },
+                { text: 'NVIDIA Optimus GPU dupla', link: '/pt/administration/nvidia-optimus' }
+              ]
+            }
+          ],
+          '/pt/server/': [
+            {
+              text: 'Servidor',
+              items: [
+                { text: 'LAMP/LEMP', link: '/pt/server/lamp' },
+                { text: 'Gerenciamento de Contêineres Podman', link: '/pt/server/podman' }
+              ]
+            }
+          ],
+          '/pt/ai/': [
+            {
+              text: 'Ferramentas de IA',
+              items: [
+                { text: 'Comparação de ferramentas de IA', link: '/pt/ai/comparison' }
+              ]
+            }
+          ],
           '/pt/variants/': [
             {
               text: 'Variantes do Debian',
@@ -887,7 +1084,8 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Guia de instalação', link: '/pt/basics/installation' },
                 { text: 'Primeira inicialização', link: '/pt/basics/first-boot' },
                 { text: 'Configuração do sistema', link: '/pt/basics/configuration' },
-                { text: 'Ambientes de desktop', link: '/pt/basics/desktop-environments' }
+                { text: 'Ambientes de desktop', link: '/pt/basics/desktop-environments' },
+                { text: 'Atualizar para o Debian 13', link: '/pt/basics/upgrade' }
               ]
             }
           ],
@@ -969,7 +1167,8 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'First Boot', link: '/en/basics/first-boot' },
                 { text: 'Command Line Basics', link: '/en/basics/command-line' },
                 { text: 'Configuration', link: '/en/basics/configuration' },
-                { text: 'Desktop Environments', link: '/en/basics/desktop-environments' }
+                { text: 'Desktop Environments', link: '/en/basics/desktop-environments' },
+                { text: 'Upgrade to Debian 13', link: '/en/basics/upgrade' }
               ]
             }
           ],
@@ -982,7 +1181,10 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Network', link: '/en/administration/network' },
                 { text: 'Security', link: '/en/administration/security' },
                 { text: 'Backup & Recovery', link: '/en/administration/backup' },
-                { text: 'Disk Management', link: '/en/administration/disk-management' }
+                { text: 'Disk Management', link: '/en/administration/disk-management' },
+                { text: 'deb822 Source Format', link: '/en/administration/deb822' },
+                { text: 'Backports', link: '/en/administration/backports' },
+                { text: 'NVIDIA Optimus', link: '/en/administration/nvidia-optimus' }
               ]
             }
           ],
@@ -1001,6 +1203,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
               items: [
                 { text: 'LAMP/LEMP', link: '/en/server/lamp' },
                 { text: 'Docker', link: '/en/server/docker' },
+                { text: 'Podman', link: '/en/server/podman' },
                 { text: 'Kubernetes Intro', link: '/en/server/k8s' },
                 { text: 'Kubernetes Advanced', link: '/en/server/kubernetes' },
                 { text: 'Security', link: '/en/server/security' },
@@ -1016,6 +1219,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
               text: 'AI Editors / IDEs',
               items: [
                 { text: 'Overview', link: '/en/ai/' },
+                { text: 'Tool Comparison', link: '/en/ai/comparison' },
                 { text: 'Cursor', link: '/en/ai/cursor' },
                 { text: 'Windsurf', link: '/en/ai/windsurf' },
                 { text: 'Zed', link: '/en/ai/zed' }

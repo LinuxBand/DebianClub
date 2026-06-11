@@ -1,0 +1,135 @@
+---
+title: "Podman 컨테이너 관리"
+description: "Debian 13에서 Podman 설치 및 사용, 데몬리스, rootless 컨테이너 실행, Docker 명령어 호환"
+---
+
+# Podman 컨테이너 관리
+
+**Podman**은 오픈소스 컨테이너 엔진으로, Docker와 높은 호환성을 가지면서 두 가지 주요 장점이 있습니다:
+
+- **데몬리스(daemonless)**: Docker처럼 상주하는 root 데몬에 의존하지 않고, Podman은 일반 프로세스로 컨테이너를 직접 실행하여 공격 표면이 더 작습니다.
+- **Rootless 실행 가능**: 일반 사용자가 root 권한 없이도 컨테이너를 실행할 수 있어 보안성이 더 높습니다.
+
+Debian 13 공식 저장소에 Podman이 포함되어 있어, 타사 소스를 추가할 필요 없이 설치가 매우 간단합니다.
+
+## 설치
+
+```bash
+sudo apt update
+sudo apt install podman
+
+# 확인
+podman --version
+```
+
+`docker-compose` 스타일의 오케스트레이션이 필요하면 다음을 추가로 설치하세요:
+
+```bash
+sudo apt install podman-compose
+```
+
+## 기본 사용법
+
+Podman의 명령줄은 Docker와 거의 일대일로 대응됩니다:
+
+```bash
+# 컨테이너 실행
+podman run -d --name web -p 8080:80 docker.io/library/nginx
+
+# 실행 중인 컨테이너 확인
+podman ps
+
+# 모든 컨테이너 확인 (중지된 것 포함)
+podman ps -a
+
+# 로컬 이미지 확인
+podman images
+
+# 로그 확인 / 컨테이너 접속
+podman logs web
+podman exec -it web bash
+
+# 중지 및 삭제
+podman stop web
+podman rm web
+```
+
+> 참고: Podman은 기본적으로 이미지 레지스트리 접두사를 명시적으로 표시합니다(예: `docker.io/library/nginx`). `/etc/containers/registries.conf`에서 기본 검색 저장소를 구성할 수도 있습니다.
+
+## Docker 명령어 호환
+
+`docker` 명령어에 익숙하다면 호환 패키지를 설치하여 `docker`를 `podman`의 별칭으로 사용할 수 있습니다:
+
+```bash
+sudo apt install podman-docker
+```
+
+이후 `docker run ...`, `docker ps` 등의 명령어가 Podman으로 직접 전달됩니다.
+
+## Rootless 컨테이너
+
+일반 사용자가 `podman`을 직접 실행하면 rootless 모드로 동작하며, 추가 설정이 필요 없습니다. 이는 Docker와 비교하여 Podman의 가장 큰 장점입니다. 확인:
+
+```bash
+# 일반 사용자 (sudo 없이) 실행
+podman run --rm docker.io/library/alpine echo "Hello from rootless Podman"
+```
+
+Rootless 모드는 사용자 네임스페이스(user namespaces)에 의존합니다. Debian 13은 기본적으로 활성화되어 있습니다. `subuid/subgid` 관련 오류가 발생하면 `/etc/subuid` 및 `/etc/subgid`에 현재 사용자 항목이 있는지 확인하세요:
+
+```bash
+grep "$USER" /etc/subuid /etc/subgid
+# 없으면 수동으로 추가 (보통 설치 시 자동 구성됨)
+sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 "$USER"
+```
+
+## Pod: 네이티브 그룹 관리
+
+Podman의 이름은 Pod에서 유래했습니다(Kubernetes의 Pod 개념과 동일) — 여러 컨테이너를 하나의 그룹으로 묶어 네트워크 네임스페이스를 공유할 수 있습니다:
+
+```bash
+# pod를 생성하고 포트 노출
+podman pod create --name mypod -p 8080:80
+
+# 컨테이너를 pod에 추가
+podman run -d --pod mypod docker.io/library/nginx
+```
+
+## systemd로 컨테이너 관리 (Quadlet)
+
+컨테이너를 부팅 시 자동 시작하고 시스템에서 통합 관리하려면 **Quadlet** 사용을 권장합니다. `~/.config/containers/systemd/` (rootless) 또는 `/etc/containers/systemd/` (시스템 레벨)에 `.container` 유닛 파일을 생성하세요:
+
+```ini
+# ~/.config/containers/systemd/web.container
+[Container]
+Image=docker.io/library/nginx
+PublishPort=8080:80
+
+[Install]
+WantedBy=default.target
+```
+
+그런 다음 다시 로드하고 시작합니다:
+
+```bash
+systemctl --user daemon-reload
+systemctl --user start web
+```
+
+## Podman vs Docker 빠른 비교
+
+| 기능 | Podman | Docker |
+|---|---|---|
+| 데몬 | 없음 (daemonless) | 항상 실행 중인 데몬 |
+| Rootless | 기본 지원 | 추가 설정 필요 |
+| 명령줄 | Docker와 호환 | — |
+| systemd 통합 | 네이티브 Quadlet | 추가 패키징 필요 |
+| Debian 13 설치 | 공식 저장소에서 설치 | Docker 공식 저장소 추가 필요 |
+
+## 요약
+
+- `sudo apt install podman`으로 가능, 타사 소스 불필요.
+- 명령어는 Docker와 호환되며, `podman-docker`를 사용하면 `docker` 명령어를 직접 전달할 수 있습니다.
+- 일반 사용자도 rootless로 실행 가능하며, Quadlet과 함께 systemd로 관리할 수 있습니다.
+
+추가 읽기: [Docker 설치 및 사용](/en/server/docker) · [가상화](/en/server/virtualization)

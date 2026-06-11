@@ -1,0 +1,120 @@
+---
+title: "Actualización de Debian 12 a Debian 13"
+description: "Pasos completos para una actualización fluida de Debian 12 Bookworm a Debian 13 Trixie, incluyendo la migración a deb822 y la comprobación posterior a la actualización"
+---
+
+# Actualización de Debian 12 a Debian 13
+
+El proceso de actualización de versión principal de Debian es muy fiable, pero aún así requiere precaución. Este artículo te guiará para actualizar sin problemas tu **Debian 12 "Bookworm"** a **Debian 13 "Trixie"**.
+
+::: warning Leer antes de actualizar
+- **Haz una copia de seguridad de los datos importantes** (al menos de `/home` y `/etc`).
+- Realiza el proceso en un entorno de red y alimentación estables; en un portátil, conéctalo a la corriente.
+- Se recomienda leer todo el artículo antes de comenzar. Si es un servidor de producción, practica primero en un entorno de prueba.
+:::
+
+## Primer paso: actualizar completamente el sistema actual
+
+Actualiza el Debian 12 existente al último estado para reducir conflictos durante la actualización:
+
+```bash
+sudo apt update
+sudo apt upgrade --without-new-pkgs
+sudo apt full-upgrade
+sudo apt autoremove
+```
+
+Confirma que efectivamente es Debian 12:
+
+```bash
+lsb_release -a
+# Debería mostrar Release: 12, Codename: bookworm
+```
+
+## Segundo paso: comprobar y registrar los repositorios de terceros instalados
+
+Los repositorios de terceros (como los de Docker, Chrome) pueden no ser compatibles durante la actualización de versión principal. Se recomienda **desactivarlos temporalmente** y restaurarlos uno a uno después de la actualización:
+
+```bash
+# Ver todos los archivos de fuentes
+ls /etc/apt/sources.list.d/
+```
+
+Puedes mover temporalmente los archivos `.list` / `.sources` de terceros, conservando solo las fuentes oficiales de Debian para la actualización.
+
+## Tercer paso: modificar las fuentes de software a trixie
+
+Este es el paso central de la actualización: cambiar el nombre en clave de la distribución de `bookworm` a `trixie`.
+
+**Si usas el formato tradicional `sources.list`:**
+
+```bash
+sudo sed -i 's/bookworm/trixie/g' /etc/apt/sources.list
+```
+
+**Si usas el formato deb822** (Debian 12 también puede usar `/etc/apt/sources.list.d/debian.sources`):
+
+```bash
+sudo sed -i 's/bookworm/trixie/g' /etc/apt/sources.list.d/debian.sources
+```
+
+::: tip Cambio en los nombres de los repositorios de seguridad
+El repositorio de seguridad anterior se escribía como `bookworm-security`, la nueva versión corresponde a `trixie-security`. El reemplazo anterior lo manejará. Abre el archivo para confirmar que todos los `bookworm*` se han convertido en `trixie*`.
+:::
+
+No olvides revisar otros archivos de fuentes oficiales en `/etc/apt/sources.list.d/` y reemplazar también.
+
+## Cuarto paso: ejecutar la actualización
+
+```bash
+# 1. Refrescar la lista de paquetes con las nuevas fuentes trixie
+sudo apt update
+
+# 2. Actualización mínima (primero los paquetes centrales, menor riesgo de conflicto)
+sudo apt upgrade --without-new-pkgs
+
+# 3. Actualización completa (instalar nuevo kernel, manejar cambios de dependencias, instalar nuevos paquetes)
+sudo apt full-upgrade
+```
+
+La actualización completa descargará muchos archivos y llevará tiempo. Durante el proceso pueden aparecer conflictos de archivos de configuración; **normalmente es seguro elegir "instalar la versión del mantenedor del paquete"** (a menos que hayas modificado manualmente esa configuración).
+
+## Quinto paso: reiniciar y verificar
+
+```bash
+sudo reboot
+```
+
+Después de reiniciar, verifica:
+
+```bash
+lsb_release -a
+# Debería mostrar Release: 13, Codename: trixie
+
+uname -r
+# El kernel debería ser de la serie 6.12
+```
+
+## Sexto paso: limpieza y cierre posterior a la actualización
+
+```bash
+# Limpiar paquetes de versiones antiguas sobrantes de la actualización
+sudo apt autoremove --purge
+
+# Opcional: migrar las fuentes al formato deb822 predeterminado de Debian 13
+sudo apt modernize-sources
+```
+
+A continuación, restaura uno a uno los repositorios de terceros que habías desactivado y confirma que proporcionan versiones para trixie (o compatibles). Para más detalles sobre deb822, consulta [Formato de fuentes deb822](/es/administration/deb822).
+
+## Preguntas frecuentes
+
+- **Actualización interrumpida / pérdida de red**: Restaura la red y vuelve a ejecutar `sudo apt full-upgrade`; APT continuará desde donde se quedó.
+- **Algunos paquetes quedan "retenidos (kept back)"**: Normalmente se soluciona ejecutando `sudo apt full-upgrade`.
+- **Saltar varias versiones principales** (por ejemplo, desde Debian 11): **No saltes versiones**, primero actualiza a Debian 12 y luego a Debian 13.
+
+## Resumen
+
+1. Actualizar el sistema actual → 2. Gestionar los repositorios de terceros → 3. Cambiar el nombre en clave de las fuentes `bookworm`→`trixie` → 4. `update` + `upgrade` + `full-upgrade` → 5. Reiniciar y verificar → 6. Limpiar y migrar a deb822.
+
+Lectura adicional: [Formato de fuentes deb822](/es/administration/deb822) · [Gestión de paquetes APT](/es/administration/packages)

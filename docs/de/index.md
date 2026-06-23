@@ -6,8 +6,8 @@ hero:
   text: "Die komplette Debian-Anleitung für Einsteiger"
   tagline: "Debian 13 von Grund auf lernen · Die stabilste Linux-Distribution"
   image:
-    src: /images/debian-logo.svg
-    alt: Debian Logo
+    src: /images/hero-home.png
+    alt: Debian.Club Lernillustration
   actions:
     - theme: brand
       text: 🚀 Loslegen
@@ -52,7 +52,9 @@ features:
     details: Verfolgt die neuesten Änderungen in Debian 13 mit zeitnahen Inhaltsaktualisierungen
 ---
 
-## 🎯 Lernpfad
+## <i class="ph-duotone ph-target hi"></i> Lernpfad
+
+![Debian am Schreibtisch lernen](/images/scene-learn.png)
 
 <div class="learning-path">
 
@@ -82,7 +84,7 @@ Beherrschen Sie die täglichen Arbeits­abläufe
 
 </div>
 
-## 💡 Warum Debian wählen?
+## <i class="ph-duotone ph-lightbulb hi"></i> Warum Debian wählen?
 
 ::: tip 🔒 Stabil und zuverlässig
 Debian ist bekannt für seine hervorragende Stabilität und ist die bevorzugte Wahl für viele Server und kritische Systeme
@@ -104,7 +106,9 @@ Ein leistungsstarkes Sicherheits­team sorgt für die zeitnahe Veröffentlichung
 
 <TestimonialsSection />
 
-## 🎮 Schnellstart
+## <i class="ph-duotone ph-flask hi"></i> Schnellstart
+
+![Debian läuft auf vielen Geräten](/images/devices.png)
 
 Möchten Sie Debian schnell ausprobieren? Hier sind mehrere Möglichkeiten:
 
@@ -121,26 +125,4 @@ Möchten Sie Debian schnell ausprobieren? Hier sind mehrere Möglichkeiten:
   <strong>Beginnen Sie jetzt Ihre Debian-Reise!</strong>
 </div>
 
-## Linux-Dokumentations­allianz
-
-| Website | Beschreibung |
-|---------|--------------|
-| [Debian.Club](https://debian.club/) | Die komplette Debian-Anleitung für Einsteiger |
-| [Ubuntu.Fan](https://ubuntu.fan/) | Ubuntu-Community auf Chinesisch |
-| [RunEntLinux](https://runentlinux.com/) | Enterprise-Linux-Betriebsanleitung |
-| [AlmaLinuxCN](https://www.almalinux.com.cn/) | AlmaLinux-Community auf Chinesisch |
-
-Software-Lebenszyklen prüfen: [EOL.Wiki](https://eol.wiki/)
-
-KI-natives Open-Source-Server-Control-Panel: [WebCasa](https://web.casa)
-Leichtgewichtiger Webserver mit hoher Apache HTTPD-Kompatibilität: [LiteHTTPD](https://litehttpd.com)
-
-## Partner­links
-
-[Debian.Club](https://debian.club/) | [hestiacp.cn](https://hestiacp.cn/) | [PortCyou](https://portcyou.com/) | [CloudFan](https://cloud.fan/) | [BigKr](https://bigkr.com/) | [AlmaLinuxCN](https://www.almalinux.com.cn/)
-
-[P.Cafe](https://p.cafe/) | [RankFan](https://www.rank.fan/) | [APP on ARM](https://www.apponarm.com/) | [FreeHost](https://freehost.work/) | [MF8](https://mf8.biz/) | [AAT.ee](https://aat.ee/) | [II.Pe](https://ii.pe/)
-
-[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa) | [LiteHTTPD](https://litehttpd.com)
-
-[Weitere Partner­links →](/de/links)
+🔗 Weitere empfehlenswerte Seiten auf der Seite [Partnerlinks](/de/links)

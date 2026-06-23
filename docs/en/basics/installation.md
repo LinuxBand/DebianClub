@@ -5,6 +5,8 @@ description: Complete step-by-step Debian 13 installation guide with detailed in
 
 # Debian 13 Installation Guide
 
+![Debian installation steps](/images/install-journey.png)
+
 This tutorial provides a comprehensive guide to installing Debian 13. We assume you have already created a bootable installation media and are ready to begin the installation process.
 
 ## 🎯 Pre-Installation Preparation
@@ -152,6 +154,8 @@ Password: ************       # User password
 :::
 
 ## 💾 Disk Partitioning
+
+<DiskPartition />
 
 This is the most important step in the installation process!
 

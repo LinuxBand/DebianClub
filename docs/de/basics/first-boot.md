@@ -5,6 +5,8 @@ description: Ersteinrichtung nach der Installation von Debian 13
 
 # Erster-Start-Einrichtung
 
+<BootChain />
+
 ## Willkommen bei Debian!
 
 Herzlichen Glückwunsch zur erfolgreichen Installation von Debian 13!

@@ -5,6 +5,8 @@ description: Guide des environnements de bureau disponibles pour Debian 13
 
 # Environnements de bureau pour Debian 13
 
+![Environnements de bureau Debian](/images/desktops.png)
+
 Debian propose une grande variété d'environnements de bureau. Voici les plus populaires.
 
 ## GNOME (Recommandé pour les débutants)

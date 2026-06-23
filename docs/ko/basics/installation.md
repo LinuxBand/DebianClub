@@ -5,6 +5,8 @@ description: Debian 13 완전한 단계별 설치 가이드
 
 # Debian 13 설치 가이드
 
+![Debian 설치 단계](/images/install-journey.png)
+
 ## 설치 전 준비
 
 - ✅ 부팅 가능한 미디어 생성 완료

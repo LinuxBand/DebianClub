@@ -5,6 +5,8 @@ description: Leitfaden zu verfügbaren Desktop-Umgebungen für Debian 13
 
 # Desktop-Umgebungen für Debian 13
 
+![Debian-Desktop-Umgebungen](/images/desktops.png)
+
 Debian bietet eine große Auswahl an Desktop-Umgebungen.
 
 ## GNOME (Empfohlen für Einsteiger)

@@ -5,6 +5,8 @@ description: Manage users, groups, and permissions in Debian 13
 
 # User Management
 
+<Permissions />
+
 Learn how to create, manage, and secure user accounts in Debian 13.
 
 ## 👤 User Account Management

@@ -1,38 +1,58 @@
 # Enlaces de amigos
 
-## Alianza de Documentación Linux
+Los siguientes son sitios de documentación de referencia y socios de navegación que recomendamos, todos como enlaces dofollow. DR significa Domain Rating.
 
-| Sitio | Descripción |
-|-------|-------------|
-| [Debian.Club](https://debian.club/) | Guía completa de Debian para principiantes |
-| [Ubuntu.Fan](https://ubuntu.fan/) | Comunidad china de Ubuntu |
-| [RunEntLinux](https://runentlinux.com/) | Guía de operaciones de Linux empresarial |
-| [AlmaLinuxCN](https://www.almalinux.com.cn/) | Comunidad china de AlmaLinux |
-| [EOL.Wiki](https://eol.wiki/) | Rastreador del ciclo de vida de fin de soporte de software |
+## Sitios de documentación de referencia
 
-## Socios
+| Sitio | Descripción | DR |
+|------|------|------|
+| [Debian.Club](https://www.debian.club/) | Guía de iniciación y tutoriales en chino para Debian 13, ideal para aprender Debian desde cero. | 17 |
+| [Ubuntu.Fan](https://ubuntu.fan/) | Guía en chino sobre Ubuntu 26.04 LTS, que abarca la instalación, el escritorio, el entorno de desarrollo, el despliegue de servidores y la administración de sistemas. | 13 |
+| [AlmaLinux 中文社区](https://www.almalinux.com.cn/) | Documentación de la distribución AlmaLinux y recursos comunitarios para usuarios chinos. | 15 |
+| [RunEntLinux](https://runentlinux.com/) | Documentación práctica sobre Linux empresarial como CentOS, AlmaLinux, Rocky Linux y Oracle Linux. | 13 |
+| [EOL.Wiki](https://eol.wiki/) | Consulta el ciclo de vida, el historial de versiones y el estado de soporte de software, hardware y plataformas. | 14 |
+| [LiteHTTPD](https://litehttpd.com/) | Documentación de servidores web sobre LiteHTTPD, OpenLiteSpeed y la compatibilidad con .htaccess de Apache. | 14 |
+| [PortCyou](https://portcyou.com/) | Base de datos de consulta de números de puerto que ayuda a los desarrolladores a identificar el uso de puertos y evitar conflictos. | 18 |
+| [Rank.Fan](https://www.rank.fan/) | Informes de SEO, GEO y AIEO y herramientas de análisis de posicionamiento. | 16 |
+| [GEO.Fan](https://geo.fan/) | Sitio de documentación sobre optimización para motores generativos que ayuda a que el contenido sea confiable y citado por los motores de búsqueda y respuesta con IA. | 15 |
+| [MariaDB 中文社区](http://mariadb.edu.rich/) | Una base de conocimientos moderna de MariaDB para principiantes, desarrolladores de IA y usuarios de la nube. | — |
+| [Valkey 中文社区](https://valkey.edu.rich/) | Base de conocimientos de Valkey en chino que abarca la migración desde Redis, la búsqueda vectorial, la memoria de agentes, la nube gestionada y la hoja de ruta de versiones. | — |
+| [Libmir](https://libmir.org/) | Archivo de documentación y referencias para Mir y el ecosistema de computación numérica del lenguaje D. | 54 |
+| [MyDLL.Wang](https://mydll.wang/) | Guías de reparación oficiales y seguras para DLLs de Windows ausentes o dañadas. | 26 |
+| [DeepPoseKit](https://deepposekit.org/) | Documentación y materiales del proyecto de un conjunto de herramientas de estimación de pose 2D basado en aprendizaje profundo. | 35 |
+| [asimov.js](https://asimovjs.org/) | Documentación de un framework de Node.js para componer aplicaciones mediante plugins, inicializadores y scripts de CLI. | 36 |
+| [SilverBlog](https://silverblog.org/) | Una plantilla de blog oscura y rápida para el CMS EmDash, con soporte para Markdown y despliegue en Cloudflare o Node. | 34 |
+| [ClayGL](https://claygl.xyz/) | Documentación de una biblioteca de gráficos WebGL, con ejemplos y referencia de API para escenas 3D en el navegador. | 31 |
+| [IT Offers](https://itoffers.online/) | Una plataforma de código abierto de publicación y búsqueda de empleo para reclutadores y candidatos de TI. | 34 |
+| [Patet](https://patet.xyz/) | Guías, plantillas, listas de comprobación y notas de despliegue para lanzar proyectos de IA y desarrollo rápido. | 29 |
+| [SABWAP](https://sabwap.xyz/) | Una herramienta y experimento de conversión de sitios que transforma webs modernas en páginas WAP ligeras y centradas en el texto. | 30 |
+| [ThankToLaw](https://thanktolaw.com/) | Información jurídica y de cumplimiento sobre casos penales, accidentes de tráfico, delitos juveniles y más. | 21 |
+| [CMS Joomla Help](https://cms-joomla-help.com/) | Tutoriales de Joomla, correcciones de errores, listas de comprobación de migración, refuerzo de la seguridad y herramientas en línea. | 45 |
+| [ThemesCorners](https://www.themescorners.com/) | Temas de WordPress gratuitos y premium para casos de uso responsive, SEO y WooCommerce. | 44 |
+| [Material Theme](https://material-theme.dev/) | Documentación de la paleta de colores original de Material Theme y recursos del tema. | 34 |
+| [PasteCode](https://pastecode.xyz/) | Una biblioteca de prompts, reglas, listas de comprobación y fragmentos de contexto para agentes de codificación con IA. | 30 |
+| [TechVibe](https://techvibeblog.org/) | Noticias, guías y reseñas de tecnología sobre aplicaciones, juegos, streaming, móviles y la web moderna. | 31 |
+| [Jennafer Scott](https://jennaferscott.com/) | Planificadores imprimibles descargables, listas de comprobación, controladores de presupuesto y plantillas de organización personal. | 42 |
+| [Aquila Network](http://aquila.network/) | Un punto de entrada a recursos de redes y técnicos relacionados con Aquila Network. | 35 |
+| [OnARM.Net](https://onarm.net/) | Una base de datos de compatibilidad de aplicaciones y juegos de Windows on Arm para el estado nativo de Arm64 y emulado en Snapdragon y otros PC Arm. | — |
+| [Artem Star DevOps Blog](https://artemstar.com/) | Notas de campo sobre DevOps e infraestructura que abarcan Docker, Kubernetes, Terraform, Git y AWS. | 34 |
+| [flag92](https://flag92.com/zh/) | Un directorio de soluciones de atención al cliente con IA de código abierto, que mapea proyectos, stacks y despliegues para bots de soporte de bajo coste. | 42 |
+| [LLStack](https://www.llstack.com/) | Un panel de control de servidor Linux de código abierto y alto rendimiento construido sobre LiteHttpd, compatible con .htaccess de Apache. | 21 |
 
-| Sitio | Descripción |
-|-------|-------------|
-| [hestiacp.cn](https://hestiacp.cn/) | Documentación china de HestiaCP |
-| [PortCyou](https://portcyou.com/) | Herramienta de monitoreo de puertos |
-| [CloudFan](https://cloud.fan/) | Directorio de servicios en la nube |
-| [BigKr](https://bigkr.com/) | Directorio de recursos tecnológicos |
-| [WebCasa](https://web.casa) | Panel de control de servidor de código abierto nativo con IA |
-| [LiteHTTPD](https://litehttpd.com) | Servidor web ligero altamente compatible con Apache HTTPD |
-| [LLStack](https://llstack.com) | Entorno de desarrollo full-stack basado en Linux |
+## Socios de navegación
 
-## Comunidad y herramientas
-
-| Sitio | Descripción |
-|-------|-------------|
-| [P.Cafe](https://p.cafe/) | Comunidad tecnológica |
-| [RankFan](https://www.rank.fan/) | Herramienta de consulta de rankings |
-| [APP on ARM](https://www.apponarm.com/) | Ecosistema de aplicaciones ARM |
-| [FreeHost](https://freehost.work/) | Recursos de alojamiento gratuito |
-| [MF8](https://mf8.biz/) | Directorio tecnológico MF8 |
-| [AAT.ee](https://aat.ee/) | Directorio de aplicaciones y herramientas |
-| [II.Pe](https://ii.pe/) | Acortador de URL |
-| [ScreenHello](https://www.screenhello.com/) | Herramienta de compartición de pantalla |
-| [GEO.Fan](https://geo.fan/) | Consulta de información geográfica |
-| [Hicyou](https://hicyou.com/) | Plataforma de exhibición de proyectos |
+| Sitio | Descripción | DR |
+|------|------|------|
+| [aat.ee](https://www.aat.ee/) | Plataforma de descubrimiento y lanzamiento de productos para fundadores y desarrolladores, con listados de herramientas de IA, SaaS y nuevos proyectos. | 34 |
+| [MiFar](http://mifar.net/) | Un directorio para webmasters y desarrolladores que agrega sitios útiles y recursos de herramientas. | 2.7 |
+| [Qoo.IM](https://qoo.im/) | Directorio de herramientas de IA, que organiza las herramientas por escenario, como productividad, creatividad y desarrollo. | 14 |
+| [FastD](http://fastd.top/) | Una plataforma de directorio para indexación y descubrimiento rápidos, ideal para dar visibilidad a herramientas, productos y sitios de contenido. | 30 |
+| [Xlayers](http://xlayers.dev/) | Un directorio de recursos de diseño y desarrollo que agrega herramientas de front-end, producto y creatividad. | 36 |
+| [Upperstory](http://upperstory.io/) | Un directorio de productos independientes y herramientas de internet que ayuda a los usuarios a descubrir proyectos de calidad. | 55 |
+| [XemVIP](http://xemvip.com/) | Un directorio de recursos general con listados de sitios de entretenimiento, herramientas y contenido. | 51 |
+| [SkaChat](http://skachat.xyz/) | Un directorio de recursos centrado en herramientas de chat, redes sociales y en línea. | 29 |
+| [NexaBlocks](http://nexablocks.com/) | Un directorio de componentes de desarrollo, bloques y recursos de productos digitales. | 54 |
+| [BlackHawkGame](http://blackhawkegames.com/) | Un directorio de juegos y entretenimiento interactivo que agrega sitios y proyectos relacionados. | 72 |
+| [HiCyou](https://hicyou.com/) | Una plataforma de directorio SaaS de código abierto que ayuda a los productos a ganar visibilidad y backlinks. | 40 |
+| [BigKr](https://bigkr.com/) | Un directorio curado de herramientas de IA, SaaS y productos para creadores y usuarios empresariales. | 24 |
+| [MF8](https://www.mf8.biz/) | Un directorio curado de sitios web que vale la pena visitar. | 37 |

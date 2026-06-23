@@ -5,6 +5,8 @@ description: Learn how to manage the security of your Debian system, including u
 
 # Security Management
 
+![Server security hardening](/images/security.png)
+
 Ensuring the security of your Debian system is a core task in system administration. This guide covers several key areas to help you harden your system against potential threats.
 
 ## 🔐 User and Access Control

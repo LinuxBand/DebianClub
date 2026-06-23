@@ -5,8 +5,8 @@ hero:
   text: "Debian 初学者完全指南"
   tagline: "从零开始学习 Debian 13 · 最稳定的 Linux 发行版"
   image:
-    src: /images/debian-logo.svg
-    alt: Debian Logo
+    src: /images/hero-home.png
+    alt: Debian.Club 学习插画
   actions:
     - theme: brand
       text: "🚀 开始学习"
@@ -50,7 +50,9 @@ features:
     details: "紧跟 Debian 13 变化，内容及时更新。"
 ---
 
-## 🎯 4 步学会 Debian
+## <i class="ph-duotone ph-target hi"></i> 4 步学会 Debian
+
+![Debian 学习场景](/images/scene-learn.png)
 
 ### 1. 基础入门 · 了解与准备
 - [📘 Debian 13 介绍](/basics/introduction)
@@ -73,7 +75,7 @@ features:
 - [🌐 网络设置](/administration/network)
 - [🚀 常用应用](/applications/index)
 
-## 💡 为什么选择 Debian？
+## <i class="ph-duotone ph-lightbulb hi"></i> 为什么选择 Debian？
 
 ::: tip 稳定可靠
 Debian 以稳定著称，是服务器与关键系统的首选。
@@ -95,7 +97,9 @@ Debian 以稳定著称，是服务器与关键系统的首选。
 
 <TestimonialsSection />
 
-## 🎮 快速体验 Debian
+## <i class="ph-duotone ph-flask hi"></i> 快速体验 Debian
+
+![Debian 在多种设备上运行](/images/devices.png)
 
 | 方式 | 难度 | 时间 | 适合人群 |
 |---|---|---|---|
@@ -104,31 +108,8 @@ Debian 以稳定著称，是服务器与关键系统的首选。
 | 🔧 双系统安装 | ⭐⭐⭐ 中等 | ⏱️ 1 小时 | 准备深度使用 |
 | 🚀 完整替换 | ⭐⭐⭐⭐ 高级 | ⏱️ 2 小时 | Linux 爱好者 |
 
-## 🚀 开始你的 Debian 之旅
+## <i class="ph-duotone ph-rocket-launch hi"></i> 开始你的 Debian 之旅
 
 前往入门、下载或安装教程，立即开始使用 Debian。
 
-## Linux 文档联盟
-
-| 站点 | 描述 |
-|------|------|
-| [Debian.Club](https://debian.club/) | Debian 初学者完全指南 |
-| [Ubuntu.Fan](https://ubuntu.fan/) | Ubuntu 中文社区 |
-| [RunEntLinux](https://runentlinux.com/) | 企业级 Linux 运维指南 |
-| [AlmaLinuxCN](https://www.almalinux.com.cn/) | AlmaLinux 中文社区 |
-
-查看软件支持生命周期请看：[EOL.Wiki](https://eol.wiki/)
-
-更 AI Native 的开源服务器控制面板：[WebCasa](https://web.casa)
-
-高度兼容 Apache HTTPD 的轻量化 Web Server：[LiteHTTPD](https://litehttpd.com)
-
-## 友情链接
-
-[Debian.Club](https://debian.club/) | [hestiacp.cn](https://hestiacp.cn/) | [PortCyou](https://portcyou.com/) | [CloudFan](https://cloud.fan/) | [BigKr](https://bigkr.com/) | [AlmaLinuxCN](https://www.almalinux.com.cn/)
-
-[P.Cafe](https://p.cafe/) | [RankFan](https://www.rank.fan/) | [APP on ARM](https://www.apponarm.com/) | [FreeHost](https://freehost.work/) | [MF8](https://mf8.biz/) | [AAT.ee](https://aat.ee/) | [II.Pe](https://ii.pe/)
-
-[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa) | [LiteHTTPD](https://litehttpd.com) | [HiEmdash](https://hiemdash.com) | [QOO.IM](https://qoo.im)
-
-[更多友情链接 →](/links)
+🔗 更多优质站点见 [友情链接](/links)

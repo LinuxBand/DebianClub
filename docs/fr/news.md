@@ -11,6 +11,15 @@ Cette page résume les mises à jour importantes récentes du projet Debian, pou
 
 ### Sorties de versions
 
+#### Debian 12 (Bookworm) entre en phase LTS (2026-06-10)
+
+Le 10 juin 2026, Debian 12 (Bookworm) a atteint la fin du support de sécurité régulier assuré par l'équipe de sécurité Debian et est officiellement passée en phase de **support à long terme (LTS)**. Les mises à jour de sécurité sont désormais prises en charge par l'équipe Debian LTS (bénévoles et entreprises) et devraient se poursuivre jusqu'au **30 juin 2028**.
+
+- Les systèmes qui utilisent encore Debian 12 continueront de recevoir des mises à jour de sécurité, mais il est recommandé de planifier une mise à niveau vers Debian 13 (Trixie).
+- [À propos de Debian LTS](https://wiki.debian.org/LTS)
+- [Guide de mise à niveau vers Debian 13](/fr/basics/upgrade)
+- [Fin de vie des versions (EOL)](/fr/eol)
+
 #### Debian 13.5 et 12.14 publiées (2026-05-16)
 
 Le 16/05/2026, Debian a publié deux versions intermédiaires simultanément :
@@ -20,7 +29,7 @@ Le 16/05/2026, Debian a publié deux versions intermédiaires simultanément :
 - [Annonce officielle](https://www.debian.org/News/2026/2026051602)
 - [Télécharger Debian 13.5](/fr/download)
 
-#### Debian 13.4 publiée (2026-03-08)
+#### Debian 13.4 publiée (2026-03-14)
 
 Debian 13 (Trixie) a reçu sa quatrième mise à jour de point, **13.4**. Cette mise à jour se concentre sur les corrections de sécurité et les corrections de bugs critiques, avec des images d'installation mises à jour.
 
@@ -61,9 +70,9 @@ Debian a accueilli de nouveaux stagiaires Outreachy travaillant sur **Debian Ima
 
 ### Gouvernance du projet
 
-#### Élection DPL 2026
+#### Élection DPL 2026 : Sruthi Chandran élue
 
-L'élection du chef de projet Debian (DPL) est en cours :
+L'élection du DPL 2026 est terminée : **Sruthi Chandran** a été élue nouvelle cheffe du projet Debian. Son mandat a débuté le **21 avril 2026**, succédant à Andreas Tille, DPL pendant deux mandats. Seule candidate cette année, elle l'a emporté avec 289 voix contre 50 (None of the above).
 
 | Phase | Date |
 |-------|------|
@@ -72,8 +81,7 @@ L'élection du chef de projet Debian (DPL) est en cours :
 | Période de vote | 4–17 avril |
 | Début du nouveau mandat | 21 avril |
 
-Candidat : **Sruthi Chandran**
-
+- [Annonce des résultats de l'élection](https://bits.debian.org/2026/04/dpl-elections-2026.html)
 - [Détails de l'élection](https://www.debian.org/vote/2026/vote_001)
 
 #### Nouveaux développeurs
@@ -88,8 +96,8 @@ Debian continue d'accueillir de nouveaux membres :
 
 L'équipe de sécurité Debian continue de publier des avis DSA (Debian Security Advisory) et DLA (Debian LTS Advisory). Les paquets récemment mis à jour incluent incus, lxd, libpng1.6 et awstats.
 
-- La version stable (Debian 13) et l'ancienne stable (Debian 12) sont sous maintenance de sécurité active
-- LTS (Debian 11) continue également de publier des avis DLA
+- La version stable (Debian 13) est maintenue par l'équipe de sécurité
+- Debian 12 (Bookworm) est maintenue par l'équipe LTS depuis le 2026-06-10 ; le support LTS de Debian 11 (Bullseye) se termine le 2026-08-31
 - [Avis de sécurité](https://www.debian.org/security/)
 
 ---

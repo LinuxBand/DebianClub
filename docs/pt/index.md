@@ -6,8 +6,8 @@ hero:
   text: "O guia completo do Debian para iniciantes"
   tagline: "Aprenda Debian 13 do zero · A distribuição Linux mais estável"
   image:
-    src: /images/debian-logo.svg
-    alt: Logo do Debian
+    src: /images/hero-home.png
+    alt: Ilustração de aprendizado do Debian.Club
   actions:
     - theme: brand
       text: 🚀 Começar
@@ -52,7 +52,9 @@ features:
     details: Acompanhando as últimas mudanças do Debian 13, com atualizações de conteúdo oportunas
 ---
 
-## 🎯 Trilha de aprendizado
+## <i class="ph-duotone ph-target hi"></i> Trilha de aprendizado
+
+![Aprendendo Debian na mesa](/images/scene-learn.png)
 
 <div class="learning-path">
 
@@ -82,7 +84,7 @@ Domine as habilidades de operação do dia a dia
 
 </div>
 
-## 💡 Por que escolher o Debian?
+## <i class="ph-duotone ph-lightbulb hi"></i> Por que escolher o Debian?
 
 ::: tip 🔒 Estável e confiável
 O Debian é reconhecido pela sua excelente estabilidade, sendo a escolha preferida de muitos servidores e sistemas críticos
@@ -104,7 +106,9 @@ Mais de 50.000 pacotes de software pré-compilados disponíveis, com suporte par
 
 <TestimonialsSection />
 
-## 🎮 Experiência rápida
+## <i class="ph-duotone ph-flask hi"></i> Experiência rápida
+
+![Debian rodando em vários dispositivos](/images/devices.png)
 
 Quer experimentar o Debian rapidamente? Aqui estão algumas opções:
 
@@ -121,26 +125,4 @@ Quer experimentar o Debian rapidamente? Aqui estão algumas opções:
   <strong>Comece sua jornada com o Debian agora!</strong>
 </div>
 
-## Aliança de Documentação Linux
-
-| Site | Descrição |
-|------|-----------|
-| [Debian.Club](https://debian.club/) | Guia completo do Debian para iniciantes |
-| [Ubuntu.Fan](https://ubuntu.fan/) | Comunidade chinesa do Ubuntu |
-| [RunEntLinux](https://runentlinux.com/) | Guia de operações de Linux empresarial |
-| [AlmaLinuxCN](https://www.almalinux.com.cn/) | Comunidade chinesa do AlmaLinux |
-
-Consulte o ciclo de vida do suporte de software em: [EOL.Wiki](https://eol.wiki/)
-
-Painel de controle de servidor de código aberto nativo com IA: [WebCasa](https://web.casa)
-Servidor Web leve com alta compatibilidade com Apache HTTPD: [LiteHTTPD](https://litehttpd.com)
-
-## Links de amigos
-
-[Debian.Club](https://debian.club/) | [hestiacp.cn](https://hestiacp.cn/) | [PortCyou](https://portcyou.com/) | [CloudFan](https://cloud.fan/) | [BigKr](https://bigkr.com/) | [AlmaLinuxCN](https://www.almalinux.com.cn/)
-
-[P.Cafe](https://p.cafe/) | [RankFan](https://www.rank.fan/) | [APP on ARM](https://www.apponarm.com/) | [FreeHost](https://freehost.work/) | [MF8](https://mf8.biz/) | [AAT.ee](https://aat.ee/) | [II.Pe](https://ii.pe/)
-
-[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa) | [LiteHTTPD](https://litehttpd.com)
-
-[Mais links de amigos →](/pt/links)
+🔗 Mais sites de qualidade na página de [Links parceiros](/pt/links)

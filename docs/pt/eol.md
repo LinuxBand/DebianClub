@@ -5,6 +5,10 @@ description: Conheça o ciclo de vida e as datas de fim de suporte de cada vers�
 
 # Fim de vida das versões do Debian (EOL)
 
+![Ciclo de vida de suporte do Debian](/images/lifecycle.png)
+
+<ReleaseTimeline />
+
 Entender o ciclo de vida da versão do Debian que você está usando é fundamental para garantir que seu sistema continue recebendo atualizações de segurança e suporte técnico.
 
 ## Modelos de versões do Debian
@@ -28,7 +32,7 @@ A tabela abaixo lista as datas de lançamento e as datas de fim de vida (EOL) da
 | Codinome                     | Data de lançamento | Fim do suporte regular | Fim do suporte de longo prazo (LTS) |
 | :--------------------------- | :----------------- | :--------------------- | :---------------------------------- |
 | **Debian 13 (Trixie)**       | 2025-08-09         | ~ agosto 2028          | ~ agosto 2030                       |
-| **Debian 12 (Bookworm)**     | 2023-06-10         | ~ junho 2026           | ~ junho 2028                        |
+| **Debian 12 (Bookworm)**     | 2023-06-10         | 2026-06-10             | 2028-06-30                          |
 | **Debian 11 (Bullseye)**     | 2021-08-14         | julho 2024             | 2026-08-31                          |
 | **Debian 10 (Buster)**       | 2019-07-06         | 2022-09-10             | 2024-06-30                          |
 | **Debian 9 (Stretch)**       | 2017-06-17         | 2020-07-06             | 2022-06-30                          |
@@ -36,6 +40,10 @@ A tabela abaixo lista as datas de lançamento e as datas de fim de vida (EOL) da
 
 ::: tip
 Datas marcadas com `~` são estimativas e podem estar sujeitas a pequenas alterações. Acompanhe os anúncios oficiais do Debian para obter as informações mais precisas.
+:::
+
+::: warning O Debian 12 entrou em LTS
+O Debian 12 (Bookworm) chegou ao fim do suporte de segurança regular em **2026-06-10** e passou para a fase de Suporte de Longo Prazo, mantida pela equipe LTS até **2028-06-30**. Recomenda-se planejar a atualização para o Debian 13 (Trixie).
 :::
 
 É altamente recomendável planejar e atualizar para uma versão estável mais recente antes que o período LTS da sua versão atual termine, para garantir que seu sistema permaneça seguro.

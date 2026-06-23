@@ -5,6 +5,8 @@ description: Maîtrisez le système de gestion de paquets APT de Debian 13, appr
 
 # Système de gestion de paquets APT
 
+![Gestion des paquets APT](/images/apt.png)
+
 APT (Advanced Package Tool) est l'outil central de gestion des paquets du système Debian. Ce tutoriel vous apprendra à utiliser APT pour installer, mettre à jour et supprimer des paquets logiciels.
 
 ## 🎯 Concepts de base d'APT

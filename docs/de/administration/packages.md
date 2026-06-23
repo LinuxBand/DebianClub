@@ -5,6 +5,8 @@ description: Beherrschen Sie das APT-Paketverwaltungssystem von Debian 13, lerne
 
 # APT-Paketverwaltungssystem
 
+![APT-Paketverwaltung](/images/apt.png)
+
 APT (Advanced Package Tool) ist das zentrale Paketverwaltungswerkzeug des Debian-Systems. Dieses Tutorial zeigt Ihnen, wie Sie mit APT Pakete installieren, aktualisieren und entfernen.
 
 ## 🎯 Grundkonzepte von APT

@@ -5,6 +5,8 @@ description: Comparación detallada y guía de selección para Debian 11, 12 y 1
 
 # Guía de comparación de versiones de Debian
 
+![Ramas stable, testing y unstable de Debian](/images/branches.png)
+
 ::: info Acerca de esta página
 Esta página ofrece una comparación detallada de las principales diferencias entre Debian 13 (Trixie), Debian 12 (Bookworm) y Debian 11 (Bullseye) para ayudarle a elegir la versión más adecuada.
 :::

@@ -5,6 +5,10 @@ description: Découvrez le cycle de vie et les dates de fin de support de chaque
 
 # Fin de vie des versions Debian (EOL)
 
+![Cycle de vie du support de Debian](/images/lifecycle.png)
+
+<ReleaseTimeline />
+
 Comprendre le cycle de vie de la version Debian que vous utilisez est essentiel pour s'assurer que votre système continue de recevoir des mises à jour de sécurité et un support technique.
 
 ## Modèles de versions Debian
@@ -28,7 +32,7 @@ Le tableau ci-dessous liste les dates de publication et de fin de vie (EOL) des 
 | Nom de code                | Date de publication | Fin du support standard | Fin du support à long terme (LTS) |
 | :------------------------- | :------------------ | :---------------------- | :--------------------------------- |
 | **Debian 13 (Trixie)**     | 2025-08-09          | ~ août 2028             | ~ août 2030                        |
-| **Debian 12 (Bookworm)**   | 2023-06-10          | ~ juin 2026             | ~ juin 2028                        |
+| **Debian 12 (Bookworm)**   | 2023-06-10          | 2026-06-10              | 2028-06-30                         |
 | **Debian 11 (Bullseye)**   | 2021-08-14          | Juillet 2024            | 2026-08-31                         |
 | **Debian 10 (Buster)**     | 2019-07-06          | 2022-09-10              | 2024-06-30                         |
 | **Debian 9 (Stretch)**     | 2017-06-17          | 2020-07-06              | 2022-06-30                         |
@@ -36,6 +40,10 @@ Le tableau ci-dessous liste les dates de publication et de fin de vie (EOL) des 
 
 ::: tip
 Les dates marquées d'un `~` sont des estimations susceptibles de légères modifications. Veuillez suivre les annonces officielles de Debian pour obtenir les informations les plus précises.
+:::
+
+::: warning Debian 12 est entrée en phase LTS
+Debian 12 (Bookworm) a atteint la fin du support de sécurité régulier le **2026-06-10** et est passée en phase de support à long terme, assurée par l'équipe LTS jusqu'au **2028-06-30**. Une mise à niveau vers Debian 13 (Trixie) est recommandée.
 :::
 
 Il est vivement recommandé de planifier et d'effectuer la mise à niveau vers une version stable plus récente avant la fin de la période LTS de votre version actuelle, afin de garantir la sécurité de votre système.

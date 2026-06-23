@@ -5,6 +5,8 @@ description: Debian 11・12・13 の詳細な比較と選択ガイド
 
 # Debian バージョン比較ガイド
 
+![Debian の stable・testing・unstable ブランチ](/images/branches.png)
+
 ::: info このページについて
 このページでは、Debian 13 (Trixie)、Debian 12 (Bookworm)、Debian 11 (Bullseye) の主な違いを詳しく比較し、最適なバージョン選びをサポートします。
 :::

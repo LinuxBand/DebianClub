@@ -1,105 +1,89 @@
 <template>
   <footer class="custom-footer">
-    <div class="featured-badges">
-      <a href="https://hicyou.com/" target="_blank" rel="noopener noreferrer">
-        <img
-          :src="hicyouBadgeUrl"
-          alt="Featured on Hicyou"
-          class="badge-image"
-        />
+    <nav class="nav-sites" aria-label="导航站合作伙伴 / Navigation partners">
+      <a
+        v-for="site in navSites"
+        :key="site.url"
+        :href="site.url"
+        target="_blank"
+        rel="noopener"
+        class="nav-site"
+      >
+        <img :src="site.logo" alt="" class="nav-logo" loading="lazy" />
+        <span class="nav-name">{{ site.name }}</span>
       </a>
-      <a href="https://www.aat.ee/" target="_blank" rel="noopener noreferrer">
-        <img
-          :src="aatBadgeUrl"
-          alt="Featured on AAT"
-          class="badge-image"
-        />
-      </a>
-      <a href="https://www.mf8.biz" target="_blank" rel="noopener noreferrer">
-        <img
-          :src="mf8BadgeUrl"
-          alt="已收录于 米饭粑"
-          class="badge-image"
-        />
-      </a>
-      <a href="https://bigkr.com" target="_blank" rel="noopener noreferrer">
-        <img
-          :src="bigkrBadgeUrl"
-          alt="Featured on BigKr"
-          class="badge-image"
-        />
-      </a>
-      <a href="https://litehttpd.com" target="_blank" rel="noopener noreferrer">
-        <img
-          :src="litehttpdBadgeUrl"
-          alt="Featured on LiteHTTPD"
-          class="badge-image"
-        />
-      </a>
-    </div>
+    </nav>
   </footer>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useData } from 'vitepress'
-
-const { isDark } = useData()
-
-const hicyouBadgeUrl = computed(() => {
-  return isDark.value
-    ? 'https://hicyou.com/badge/featured-dark.svg'
-    : 'https://hicyou.com/badge/featured-light.svg'
-})
-
-const aatBadgeUrl = computed(() => {
-  return isDark.value
-    ? 'https://www.aat.ee/images/badges/top1-dark.svg'
-    : 'https://www.aat.ee/images/badges/top1-light.svg'
-})
-
-const mf8BadgeUrl = computed(() => {
-  return isDark.value
-    ? 'https://www.mf8.biz/badge/badge_dark.svg'
-    : 'https://www.mf8.biz/badge/badge_light.svg'
-})
-
-const bigkrBadgeUrl = computed(() => {
-  return isDark.value
-    ? 'https://bigkr.com/badge/badge_dark.svg'
-    : 'https://bigkr.com/badge/badge_light.svg'
-})
-
-const litehttpdBadgeUrl = computed(() => {
-  return isDark.value
-    ? 'https://litehttpd.com/badge/badge_dark.svg'
-    : 'https://litehttpd.com/badge/badge_light.svg'
-})
+// 数据来源：directories-links 项目 link.json -> footer_navigation_sites（导航站）
+// 所有外链均为 dofollow（不要添加 rel="nofollow"）。
+const navSites = [
+  { name: 'aat.ee', url: 'https://www.aat.ee/', logo: '/assets/logos/aat-ee.svg' },
+  { name: 'MiFar', url: 'http://mifar.net/', logo: '/assets/logos/mifar.svg' },
+  { name: 'Qoo.IM', url: 'https://qoo.im/', logo: '/assets/logos/qoo-im.svg' },
+  { name: 'FastD', url: 'http://fastd.top/', logo: '/assets/logos/fastd.svg' },
+  { name: 'Xlayers', url: 'http://xlayers.dev/', logo: '/assets/logos/xlayers.svg' },
+  { name: 'Upperstory', url: 'http://upperstory.io/', logo: '/assets/logos/upperstory.svg' },
+  { name: 'XemVIP', url: 'http://xemvip.com/', logo: '/assets/logos/xemvip.svg' },
+  { name: 'SkaChat', url: 'http://skachat.xyz/', logo: '/assets/logos/skachat.svg' },
+  { name: 'NexaBlocks', url: 'http://nexablocks.com/', logo: '/assets/logos/nexablocks.svg' },
+  { name: 'BlackHawkGame', url: 'http://blackhawkegames.com/', logo: '/assets/logos/blackhawkgame.svg' },
+  { name: 'HiCyou', url: 'https://hicyou.com/', logo: '/assets/logos/hicyou.svg' },
+  { name: 'BigKr', url: 'https://bigkr.com/', logo: '/assets/logos/bigkr.svg' },
+  { name: 'MF8', url: 'https://www.mf8.biz/', logo: '/assets/logos/mf8.svg' },
+]
 </script>
 
 <style scoped>
 .custom-footer {
-  padding: 32px 24px;
-  text-align: center;
+  padding: 28px 24px;
   border-top: 1px solid var(--vp-c-divider);
   background-color: var(--vp-c-bg);
 }
 
-.featured-badges {
+.nav-sites {
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 16px;
+  align-items: stretch;
+  gap: 12px;
   flex-wrap: wrap;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-.badge-image {
-  height: 32px;
+.nav-site {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background-color: var(--vp-c-bg-soft);
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-site:hover {
+  border-color: var(--vp-c-brand-1);
+  transform: translateY(-2px);
+}
+
+.nav-logo {
+  height: 22px;
   width: auto;
-  transition: transform 0.2s ease;
+  display: block;
 }
 
-.badge-image:hover {
-  transform: scale(1.05);
+.nav-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--vp-c-text-2);
+  white-space: nowrap;
+}
+
+.nav-site:hover .nav-name {
+  color: var(--vp-c-brand-1);
 }
 </style>

@@ -1,11 +1,11 @@
-export const appName = 'My App';
-export const docsRoute = '/docs';
+export const appName = 'Debian.Club';
+export const docsRoute = '/';
 export const docsImageRoute = '/og/docs';
 export const docsContentRoute = '/llms.mdx/docs';
+export const siteUrl = 'https://www.debian.club';
 
-// fill this with your actual GitHub info, for example:
 export const gitConfig = {
-  user: 'fuma-nama',
-  repo: 'fumadocs',
+  user: 'LinuxBand',
+  repo: 'DebianClub',
   branch: 'main',
 };

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="communityGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#d41443;stop-opacity:0.1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="300" height="200" fill="url(#communityGradient)" rx="10"/>
+  
+  <!-- Central hub -->
+  <circle cx="150" cy="100" r="20" fill="#d41443"/>
+  <text x="150" y="105" text-anchor="middle" fill="white" font-size="12" font-weight="bold">💬</text>
+  
+  <!-- User nodes -->
+  <!-- Top users -->
+  <circle cx="100" cy="50" r="12" fill="#6366f1"/>
+  <text x="100" y="55" text-anchor="middle" fill="white" font-size="10">👤</text>
+  
+  <circle cx="200" cy="50" r="12" fill="#10b981"/>
+  <text x="200" y="55" text-anchor="middle" fill="white" font-size="10">👤</text>
+  
+  <!-- Side users -->
+  <circle cx="50" cy="100" r="12" fill="#f59e0b"/>
+  <text x="50" y="105" text-anchor="middle" fill="white" font-size="10">👤</text>
+  
+  <circle cx="250" cy="100" r="12" fill="#8b5cf6"/>
+  <text x="250" y="105" text-anchor="middle" fill="white" font-size="10">👤</text>
+  
+  <!-- Bottom users -->
+  <circle cx="100" cy="150" r="12" fill="#ef4444"/>
+  <text x="100" y="155" text-anchor="middle" fill="white" font-size="10">👤</text>
+  
+  <circle cx="200" cy="150" r="12" fill="#06b6d4"/>
+  <text x="200" y="155" text-anchor="middle" fill="white" font-size="10">👤</text>
+  
+  <!-- Connection lines -->
+  <line x1="100" y1="62" x2="140" y2="90" stroke="#d41443" stroke-width="2" opacity="0.5"/>
+  <line x1="200" y1="62" x2="160" y2="90" stroke="#d41443" stroke-width="2" opacity="0.5"/>
+  <line x1="62" y1="100" x2="130" y2="100" stroke="#d41443" stroke-width="2" opacity="0.5"/>
+  <line x1="238" y1="100" x2="170" y2="100" stroke="#d41443" stroke-width="2" opacity="0.5"/>
+  <line x1="100" y1="138" x2="140" y2="110" stroke="#d41443" stroke-width="2" opacity="0.5"/>
+  <line x1="200" y1="138" x2="160" y2="110" stroke="#d41443" stroke-width="2" opacity="0.5"/>
+  
+  <!-- Help icons -->
+  <text x="75" y="25" text-anchor="middle" fill="#6366f1" font-size="16">💡</text>
+  <text x="225" y="25" text-anchor="middle" fill="#10b981" font-size="16">🛠️</text>
+  <text x="25" y="100" text-anchor="middle" fill="#f59e0b" font-size="16">📖</text>
+  <text x="275" y="100" text-anchor="middle" fill="#8b5cf6" font-size="16">🤝</text>
+  <text x="75" y="180" text-anchor="middle" fill="#ef4444" font-size="16">❓</text>
+  <text x="225" y="180" text-anchor="middle" fill="#06b6d4" font-size="16">💬</text>
+</svg> 

@@ -3,8 +3,6 @@ title: "NVIDIA Optimus 이중 그래픽 카드 설정"
 description: "Debian 13 노트북에서 NVIDIA Optimus 하이브리드 그래픽 카드 구성, 드라이버 설치 및 PRIME 렌더링 오프로드 사용"
 ---
 
-# NVIDIA Optimus 이중 그래픽 카드 설정
-
 많은 노트북에는 **Intel/AMD 통합 그래픽 카드**와 **NVIDIA 독립 그래픽 카드**가 함께 탑재되어 있으며, NVIDIA는 이 기술을 **Optimus**라고 부릅니다. 평소에는 전력 효율이 좋은 내장 그래픽으로 화면을 구동하고, 고성능이 필요할 때(게임, 렌더링, CUDA) 독립 그래픽으로 전환합니다. 이 문서에서는 Debian 13에서 드라이버를 올바르게 설치하고 PRIME 렌더링 오프로드를 사용하는 방법을 설명합니다.
 
 ## 1단계: 하드웨어 확인

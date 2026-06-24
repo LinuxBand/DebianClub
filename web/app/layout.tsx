@@ -1,17 +1,8 @@
-import { Inter } from 'next/font/google';
-import { Provider } from '@/components/provider';
 import './global.css';
+import type { ReactNode } from 'react';
 
-const inter = Inter({
-  subsets: ['latin'],
-});
-
-export default function Layout({ children }: LayoutProps<'/'>) {
-  return (
-    <html lang="en" className={inter.className} suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen">
-        <Provider>{children}</Provider>
-      </body>
-    </html>
-  );
+// Root layout is a passthrough; the per-locale <html>/<body> live in app/[lang]/layout.tsx
+// so the `lang` attribute is correct for each language (i18n).
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return children;
 }

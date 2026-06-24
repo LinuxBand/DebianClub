@@ -7,9 +7,10 @@ import {
 } from 'fumadocs-ui/layouts/docs/page';
 import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/components/mdx';
+import { getPageImage } from '@/lib/source';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import type { Metadata } from 'next';
-import { abs, hreflang, languageAlternates, ogDefault, pageUrl } from '@/lib/seo';
+import { abs, hreflang, languageAlternates, pageUrl } from '@/lib/seo';
 import { appName, siteUrl } from '@/lib/shared';
 
 export default async function Page({
@@ -64,6 +65,7 @@ export async function generateMetadata({
   const canonical = abs(pageUrl(lang, slug));
   const title = page.data.title;
   const description = page.data.description ?? undefined;
+  const ogImage = abs(getPageImage(page).url);
   return {
     title,
     description,
@@ -78,8 +80,8 @@ export async function generateMetadata({
       type: 'article',
       siteName: appName,
       locale: hreflang(lang),
-      images: [ogDefault],
+      images: [ogImage],
     },
-    twitter: { card: 'summary_large_image', title, description, images: [ogDefault] },
+    twitter: { card: 'summary_large_image', title, description, images: [ogImage] },
   };
 }

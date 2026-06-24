@@ -13,14 +13,32 @@ import {
 import { useDocsSearch } from 'fumadocs-core/search/client';
 import { oramaStaticClient } from 'fumadocs-core/search/client/orama-static';
 import { create } from '@orama/orama';
+import { createTokenizer as createMandarin } from '@orama/tokenizers/mandarin';
+import { createTokenizer as createJapanese } from '@orama/tokenizers/japanese';
 import { useI18n } from 'fumadocs-ui/contexts/i18n';
 
-function initOrama() {
-  return create({
-    schema: { _: 'string' },
-    // https://docs.orama.com/docs/orama-js/supported-languages
-    language: 'english',
-  });
+const schema = { _: 'string' } as const;
+
+// Must match the per-locale tokenizers used to build the index
+// (app/api/search/route.ts), or CJK queries won't tokenize the same way.
+function initOrama(locale?: string) {
+  switch (locale) {
+    case 'zh':
+      return create({ schema, components: { tokenizer: createMandarin() } });
+    case 'ja':
+      return create({ schema, components: { tokenizer: createJapanese() } });
+    case 'de':
+      return create({ schema, language: 'german' });
+    case 'es':
+      return create({ schema, language: 'spanish' });
+    case 'fr':
+      return create({ schema, language: 'french' });
+    case 'pt':
+      return create({ schema, language: 'portuguese' });
+    default:
+      // en, ko (Korean is space-separated; english tokenizer is adequate)
+      return create({ schema, language: 'english' });
+  }
 }
 
 export default function DefaultSearchDialog(props: SharedProps) {

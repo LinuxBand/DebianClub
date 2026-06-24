@@ -8,6 +8,9 @@ export const i18n = defineI18n({
   defaultLanguage: 'zh',
   languages: ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt'],
   hideLocale: 'default-locale',
+  // No fallback: untranslated pages don't exist (matches the old site + avoids
+  // wrong-language content under localized URLs / misleading hreflang).
+  fallbackLanguage: null,
 });
 
 export const languageNames: Record<string, string> = {

@@ -297,3 +297,56 @@ const MAP: Record<string, LandingStrings> = { zh, en, de, es, fr, ja, ko, pt };
 export function pickLanding(locale: string | undefined): LandingStrings {
   return (locale && MAP[locale]) || en;
 }
+
+// Home stats + testimonials (the old site showed zh on Chinese, en elsewhere).
+export interface Stat {
+  number: string;
+  label: string;
+}
+export interface Testimonial {
+  name: string;
+  quote: string;
+  role: string;
+}
+export interface LandingExtras {
+  statsTitle: string;
+  voicesTitle: string;
+  stats: Stat[];
+  testimonials: Testimonial[];
+}
+
+const extrasZh: LandingExtras = {
+  statsTitle: 'Debian 数字概览',
+  voicesTitle: '社区之声',
+  stats: [
+    { number: '50,000+', label: '软件包' },
+    { number: '14+', label: '支持架构' },
+    { number: '1,000+', label: '活跃开发者' },
+    { number: '30+', label: '年历史' },
+  ],
+  testimonials: [
+    { name: 'Ian Murdock', role: 'Debian 创始人', quote: 'Debian 是我为创造一个任何人都能自由使用的操作系统而发起的项目。' },
+    { name: 'Linus Torvalds', role: 'Linux 内核创建者', quote: 'Debian 是一个伟大的发行版，它的包管理系统是 Linux 世界中最好的之一。' },
+    { name: 'System Admin', role: '资深运维工程师', quote: '我们在 500 多台服务器上运行 Debian，几年来零宕机。' },
+  ],
+};
+
+const extrasEn: LandingExtras = {
+  statsTitle: 'Debian by the Numbers',
+  voicesTitle: 'Community Voices',
+  stats: [
+    { number: '50,000+', label: 'Packages' },
+    { number: '14+', label: 'Architectures' },
+    { number: '1,000+', label: 'Active Developers' },
+    { number: '30+', label: 'Years of History' },
+  ],
+  testimonials: [
+    { name: 'Ian Murdock', role: 'Debian Founder', quote: 'Debian was created to be an operating system that anyone could freely use.' },
+    { name: 'Linus Torvalds', role: 'Linux Kernel Creator', quote: 'Debian is a great distribution with one of the best package management systems in the Linux world.' },
+    { name: 'System Admin', role: 'Senior SysAdmin', quote: 'We run Debian on 500+ servers with zero downtime for years.' },
+  ],
+};
+
+export function pickExtras(locale: string | undefined): LandingExtras {
+  return locale === 'zh' ? extrasZh : extrasEn;
+}

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { i18n } from '@/lib/i18n';
 import { source } from '@/lib/source';
-import { pickLanding } from '@/lib/landing';
+import { pickLanding, pickExtras } from '@/lib/landing';
 import { abs, hreflang, languageAlternates, ogDefault, pageUrl } from '@/lib/seo';
 import { appName } from '@/lib/shared';
 
@@ -34,6 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   const t = pickLanding(lang);
+  const x = pickExtras(lang);
   const prefix = lang === i18n.defaultLanguage ? '' : `/${lang}`;
   // Resolve a doc link to a locale where it actually exists (fallback is
   // disabled), so localized landings never link to missing pages: current
@@ -104,6 +105,37 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
                 ))}
               </ul>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* stats */}
+      <section className="border-y border-fd-border bg-fd-card/30 py-14">
+        <div className="mx-auto w-full max-w-6xl px-6">
+          <h2 className="mb-8 text-center text-2xl font-bold">{x.statsTitle}</h2>
+          <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
+            {x.stats.map((s) => (
+              <div key={s.label} className="text-center">
+                <div className="text-3xl font-bold text-fd-primary md:text-4xl">{s.number}</div>
+                <div className="mt-1 text-sm text-fd-muted-foreground">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* testimonials */}
+      <section className="mx-auto w-full max-w-6xl px-6 py-16">
+        <h2 className="mb-8 text-center text-2xl font-bold">{x.voicesTitle}</h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {x.testimonials.map((tm) => (
+            <figure key={tm.name} className="flex flex-col rounded-xl border border-fd-border bg-fd-card/40 p-5">
+              <blockquote className="flex-1 text-sm text-fd-foreground">“{tm.quote}”</blockquote>
+              <figcaption className="mt-4">
+                <div className="font-semibold text-fd-foreground">{tm.name}</div>
+                <div className="text-xs text-fd-muted-foreground">{tm.role}</div>
+              </figcaption>
+            </figure>
           ))}
         </div>
       </section>

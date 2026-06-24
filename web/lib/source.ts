@@ -18,7 +18,8 @@ export function getPageImage(page: (typeof source)['$inferPage']) {
 
   return {
     segments,
-    url: `${docsImageRoute}/${segments.join('/')}`,
+    // per-locale OG image route: /og/<lang>/docs/<slug>/image.png
+    url: `${docsImageRoute}/${page.locale ?? 'zh'}/${segments.join('/')}`,
   };
 }
 

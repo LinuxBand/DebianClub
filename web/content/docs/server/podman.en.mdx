@@ -1,0 +1,135 @@
+---
+title: "Podman Container Management"
+description: "Install and use Podman on Debian 13, daemonless, rootless container running, and compatible with Docker commands"
+---
+
+# Podman Container Management
+
+**Podman** is an open-source container engine, highly compatible with Docker, but with two key advantages:
+
+- **Daemonless**: Unlike Docker, which relies on a persistent root daemon, Podman runs containers as ordinary processes, reducing the attack surface.
+- **Rootless operation**: Ordinary users can run containers without root, improving security.
+
+Debian 13's official repositories include Podman, making installation very simple without adding third-party sources.
+
+## Installation
+
+```bash
+sudo apt update
+sudo apt install podman
+
+# Verify
+podman --version
+```
+
+If you need `docker-compose` style orchestration, you can install additionally:
+
+```bash
+sudo apt install podman-compose
+```
+
+## Basic Usage
+
+Podman's command line closely mirrors Docker:
+
+```bash
+# Run a container
+podman run -d --name web -p 8080:80 docker.io/library/nginx
+
+# List running containers
+podman ps
+
+# List all containers (including stopped)
+podman ps -a
+
+# List local images
+podman images
+
+# View logs / enter container
+podman logs web
+podman exec -it web bash
+
+# Stop and remove
+podman stop web
+podman rm web
+```
+
+> Note: Podman by default explicitly writes the image registry prefix (e.g. `docker.io/library/nginx`). You can configure default registries to search in `/etc/containers/registries.conf`.
+
+## Docker Command Compatibility
+
+If you are used to the `docker` command, you can install the compatibility package to make `docker` an alias for `podman`:
+
+```bash
+sudo apt install podman-docker
+```
+
+Afterwards, commands like `docker run ...`, `docker ps` will be forwarded directly to Podman.
+
+## Rootless Containers
+
+Running `podman` directly as a normal user puts it into rootless mode, requiring no extra configuration — this is Podman's biggest advantage over Docker. Verify:
+
+```bash
+# Run as a normal user (not sudo)
+podman run --rm docker.io/library/alpine echo "Hello from rootless Podman"
+```
+
+Rootless mode relies on user namespaces. Debian 13 enables them by default; if you encounter `subuid/subgid` errors, ensure your user has entries in `/etc/subuid` and `/etc/subgid`:
+
+```bash
+grep "$USER" /etc/subuid /etc/subgid
+# If not, add manually (usually auto-configured during installation)
+sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 "$USER"
+```
+
+## Pods: Native Group Management
+
+Podman takes its name from **Pod** (like the Kubernetes Pod concept) — it allows grouping multiple containers together, sharing a network namespace:
+
+```bash
+# Create a pod and expose a port
+podman pod create --name mypod -p 8080:80
+
+# Add a container to the pod
+podman run -d --pod mypod docker.io/library/nginx
+```
+
+## Managing Containers with systemd (Quadlet)
+
+To have containers start at boot and be managed by the system, use **Quadlet**. Create `.container` unit files in `~/.config/containers/systemd/` (rootless) or `/etc/containers/systemd/` (system-wide):
+
+```ini
+# ~/.config/containers/systemd/web.container
+[Container]
+Image=docker.io/library/nginx
+PublishPort=8080:80
+
+[Install]
+WantedBy=default.target
+```
+
+Then reload and start:
+
+```bash
+systemctl --user daemon-reload
+systemctl --user start web
+```
+
+## Podman vs Docker Quick Comparison
+
+| Feature | Podman | Docker |
+|---|---|---|
+| Daemon | None (daemonless) | Persistent daemon |
+| Rootless | Native default support | Requires extra configuration |
+| Command line | Compatible with Docker | — |
+| systemd integration | Native Quadlet | Requires extra wrapping |
+| Debian 13 installation | Direct from official repos | Requires adding Docker official repo |
+
+## Summary
+
+- Just `sudo apt install podman`, no third-party repositories needed.
+- Commands are compatible with Docker; you can use `podman-docker` to forward `docker` commands directly.
+- Ordinary users can run rootless, and combined with Quadlet, containers can be managed by systemd.
+
+Further reading: [Docker Installation and Usage](/en/server/docker) · [Virtualization](/en/server/virtualization)

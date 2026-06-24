@@ -1,0 +1,95 @@
+---
+title: "Backports 使用ガイド"
+description: "Debian 13 安定版で trixie-backports を使って新しいバージョンのソフトウェアを安全にインストールするための完全ガイド"
+---
+
+# Backports 使用ガイド
+
+Debian 安定版（Stable）は「安定」で知られていますが、ソフトウェアのバージョンは比較的保守的です。**Backports** は Debian 公式が提供する折衷案です。`testing` の新しいソフトウェアを現在の安定版向けに**再コンパイル**し、Stable から離れることなく、必要に応じて個別に新しいソフトウェアをインストールできます。
+
+Debian 13 の場合、対応するリポジトリは **`trixie-backports`** です。
+
+## いつ Backports を使うか
+
+- ✅ 特定のソフトウェアの新しいバージョンが必要な場合（例：新しいハードウェアをサポートするための新しいカーネル、新しい LibreOffice）。
+- ✅ システム全体の安定性を保ちつつ、一部のソフトウェアのみをアップグレードしたい場合。
+- ❌ 「すべて最新版にする」ためにすべてのパッケージを backports にすることは避けてください。安定性の利点が失われます。
+
+> Backports のソフトウェアは**Debian セキュリティチームによる通常のサポートを受けられず**、優先度も Stable より低いため、必要なときに必要なものだけインストールしてください。
+
+## trixie-backports を有効にする
+
+### 方法1: deb822 形式（推奨）
+
+`/etc/apt/sources.list.d/trixie-backports.sources` を作成します：
+
+```bash
+sudo tee /etc/apt/sources.list.d/trixie-backports.sources > /dev/null <<'EOF'
+Types: deb
+URIs: http://deb.debian.org/debian
+Suites: trixie-backports
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+EOF
+
+sudo apt update
+```
+
+### 方法2: 従来の一行形式
+
+公式の `debian.sources` の `Suites` 行に `Suites: trixie trixie-updates trixie-backports` のように追加するか、`sources.list` に次の行を追加します：
+
+```
+deb http://deb.debian.org/debian trixie-backports main contrib non-free non-free-firmware
+```
+
+2つの形式の違いについては [deb822 ソース形式](/ja/administration/deb822) を参照してください。
+
+## backports ソフトウェアのインストール
+
+有効化後、backports のデフォルト優先度は Stable よりも**低い**ため、通常の `apt install` では backports から自動的にインストール**されません**。`-t`（`--target-release`）で明示的に指定する必要があります：
+
+```bash
+# backports から最新の LibreOffice をインストール
+sudo apt install -t trixie-backports libreoffice
+
+# 新しいカーネルをインストール（新しいハードウェアに有用）
+sudo apt install -t trixie-backports linux-image-amd64
+```
+
+その後 `sudo apt upgrade` を実行すると、インストール済みの backports ソフトウェアは backports 内の新しいバージョンにアップグレードされますが、その他のソフトウェアは Stable のままです。
+
+## APT Pinning による詳細な制御（オプション）
+
+特定のパッケージを**デフォルトで** backports からインストールしたい場合は、`/etc/apt/preferences.d/backports` を作成します：
+
+```
+# backports のデフォルト優先度を stable より低くし、すべてのパッケージの自動アップグレードを防ぐ
+Package: *
+Pin: release n=trixie-backports
+Pin-Priority: 400
+
+# カーネル関連パッケージだけは backports から優先的にインストール（stable の 500 より高い優先度）
+Package: linux-image-* linux-headers-*
+Pin: release n=trixie-backports
+Pin-Priority: 501
+```
+
+- 優先度 `< 500`：明示的に `-t` を指定した場合のみインストール。
+- 優先度 `> 500`：自動的に backports のバージョンを優先。
+
+## アンインストールとロールバック
+
+backports のソフトウェアは通常のパッケージと同じようにアンインストールできます。Stable バージョンに戻したい場合は、バージョンを指定してインストールするか、一度アンインストールしてから Stable から再インストールします：
+
+```bash
+sudo apt install <パッケージ名>/trixie
+```
+
+## まとめ
+
+- Debian 13 では `trixie-backports` を使用して新しいソフトウェアを入手しつつ、システムの安定性を維持します。
+- インストールには必ず `apt install -t trixie-backports <パッケージ名>` を使用し、自動アップグレードは行われません。
+- 必要な時だけ有効にし、必要なものだけインストールします。backports は通常のセキュリティサポート対象外です。
+
+参考：[deb822 ソース形式](/ja/administration/deb822) · [APT パッケージ管理](/ja/administration/packages)

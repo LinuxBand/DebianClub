@@ -2,6 +2,7 @@ import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 import type { MDXComponents } from 'mdx/types';
 import { migrationStubs } from './mdx-stubs';
+import { ReleaseTimeline } from './infographics/ReleaseTimeline';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -9,6 +10,8 @@ export function getMDXComponents(components?: MDXComponents) {
     Tab,
     Tabs,
     ...migrationStubs,
+    // real (ported) components override their stubs:
+    ReleaseTimeline,
     ...components,
   } satisfies MDXComponents;
 }

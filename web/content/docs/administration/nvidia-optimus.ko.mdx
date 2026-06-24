@@ -1,0 +1,103 @@
+---
+title: "NVIDIA Optimus 이중 그래픽 카드 설정"
+description: "Debian 13 노트북에서 NVIDIA Optimus 하이브리드 그래픽 카드 구성, 드라이버 설치 및 PRIME 렌더링 오프로드 사용"
+---
+
+# NVIDIA Optimus 이중 그래픽 카드 설정
+
+많은 노트북에는 **Intel/AMD 통합 그래픽 카드**와 **NVIDIA 독립 그래픽 카드**가 함께 탑재되어 있으며, NVIDIA는 이 기술을 **Optimus**라고 부릅니다. 평소에는 전력 효율이 좋은 내장 그래픽으로 화면을 구동하고, 고성능이 필요할 때(게임, 렌더링, CUDA) 독립 그래픽으로 전환합니다. 이 문서에서는 Debian 13에서 드라이버를 올바르게 설치하고 PRIME 렌더링 오프로드를 사용하는 방법을 설명합니다.
+
+## 1단계: 하드웨어 확인
+
+```bash
+# 모든 그래픽 카드 나열, Intel/AMD 및 NVIDIA 동시 존재 확인
+lspci | grep -E "VGA|3D"
+```
+
+두 개의 그래픽 카드(예: Intel 하나와 NVIDIA 하나)가 보이면 Optimus 하이브리드 아키텍처에 해당합니다.
+
+## 2단계: non-free-firmware 및 non-free 소스 활성화
+
+NVIDIA 폐쇄형 드라이버는 `non-free` 구성 요소에 있습니다. 소프트웨어 소스에 `non-free`와 `non-free-firmware`가 포함되어 있는지 확인하세요(Debian 13 기본 deb822 형식은 [deb822 소스 형식](/ko/administration/deb822) 참조):
+
+```text
+Components: main contrib non-free non-free-firmware
+```
+
+수정 후 실행:
+
+```bash
+sudo apt update
+```
+
+## 3단계: NVIDIA 드라이버 설치
+
+Debian 공식 저장소에는 테스트를 거친 NVIDIA 드라이버가 포함되어 있으므로 **공식 패키지를 우선 사용**하고 NVIDIA 공식 웹사이트의 `.run` 설치 프로그램은 사용하지 마세요:
+
+```bash
+# 커널 헤더 설치 (드라이버 모듈 컴파일 필요)
+sudo apt install linux-headers-amd64
+
+# NVIDIA 드라이버 및 PRIME 지원 설치
+sudo apt install nvidia-driver firmware-misc-nonfree
+
+# 드라이버 로드를 위해 재부팅
+sudo reboot
+```
+
+설치 과정에서 DKMS를 통해 현재 커널용 모듈이 자동으로 컴파일됩니다. Debian의 `nvidia-driver` 패키지는 기본적으로 PRIME을 구성하므로, 부팅 시에도 내장 그래픽이 데스크탑을 구동하고 독립 그래픽은 필요할 때 활성화됩니다. 이는 노트북에서 원하는 절전 동작입니다.
+
+## 4단계: 확인
+
+```bash
+# 독립 그래픽 상태 확인 (드라이버가 정상이면 GPU 정보 출력)
+nvidia-smi
+
+# 현재 OpenGL 렌더러 확인 (기본적으로 Intel/AMD 내장 그래픽이어야 함)
+glxinfo | grep "OpenGL renderer"
+```
+
+`glxinfo`는 `mesa-utils` 패키지에 있습니다(`sudo apt install mesa-utils`).
+
+## 5단계: 필요 시 독립 그래픽으로 프로그램 실행 (PRIME Render Offload)
+
+평소에는 내장 그래픽으로 절전하고, 필요할 때만 **개별 프로그램**을 독립 그래픽에 맡겨 렌더링하는 것을 **PRIME 렌더링 오프로드**라고 합니다:
+
+```bash
+# 특정 프로그램을 독립 그래픽으로 실행
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia <프로그램 이름>
+
+# 예: 독립 그래픽으로 glxgears 테스트 실행
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia glxgears
+```
+
+편의를 위해 `~/.bashrc`에 별칭을 정의할 수 있습니다:
+
+```bash
+alias nv-run='__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia'
+# 이후: nv-run blender
+```
+
+데스크탑 환경(GNOME/KDE)에서는 일반적으로 애플리케이션 우클릭 메뉴에 '독립 그래픽으로 실행' 옵션이 제공되며, 내부적으로는 위 메커니즘이 사용됩니다.
+
+## CUDA / 계산 용도
+
+그래픽 렌더링이 아닌 CUDA 계산(예: AI 추론)만 실행하는 경우, 드라이버가 설치되고 `nvidia-smi`가 독립 그래픽을 인식하면 PRIME 오프로드가 필요하지 않습니다. CUDA 툴체인 설치:
+
+```bash
+sudo apt install nvidia-cuda-toolkit
+```
+
+## Wayland 및 일반적인 문제
+
+- **Wayland**: 최신 NVIDIA 드라이버는 Wayland를 비교적 잘 지원합니다. 화면 깨짐 또는 로그인 불가 문제가 발생하면 로그인 화면에서 **Xorg** 세션으로 전환하여 문제를 진단하세요.
+- **블랙 스크린 / 데스크탑 진입 불가**: GRUB 부팅 항목의 `linux` 줄 끝에 임시로 `nomodeset`을 추가하여 저해상도 데스크탑으로 진입한 후 드라이버 설치를 확인하세요.
+- **`nvidia-smi`에서 "No devices found" 오류**: 대부분 드라이버가 현재 커널에 대해 성공적으로 컴파일되지 않은 경우입니다. `linux-headers-amd64`가 설치되었는지 확인하고 `sudo apt install --reinstall nvidia-driver`를 다시 실행하세요.
+
+## 요약
+
+- `non-free` 소스 활성화 → `linux-headers-amd64` + `nvidia-driver` 설치 → 재부팅.
+- 기본적으로 내장 그래픽으로 절전, `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia`를 사용하여 필요 시 독립 그래픽 호출.
+- Debian 공식 드라이버 패키지를 우선 사용하고 공식 웹사이트의 `.run` 설치 프로그램은 피하세요.
+
+더 읽을거리: [하드웨어 호환성](/en/basics/hardware-compatibility) · [deb822 소스 형식](/ko/administration/deb822)

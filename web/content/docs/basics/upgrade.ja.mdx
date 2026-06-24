@@ -1,0 +1,124 @@
+---
+title: "Debian 12 から Debian 13 へのアップグレード"
+description: "Debian 12 Bookworm から Debian 13 Trixie へのスムーズなアップグレード手順（deb822 移行とアップグレード後の確認を含む）"
+---
+
+# Debian 12 から Debian 13 へのアップグレード
+
+Debian のメジャーバージョンアップグレードは非常に信頼性が高いですが、慎重な操作が必要です。この記事では、**Debian 12 "Bookworm"** から **Debian 13 "Trixie"** へのスムーズなアップグレード手順を説明します。
+
+<Callout type="warn" title="アップグレード前の注意事項">
+
+- **重要なデータは必ずバックアップ**（最低でも `/home` と `/etc` をバックアップ）。
+- 安定したネットワークと電源環境で実施し、ノートPCは電源に接続。
+- 作業前に全文を通読することを推奨。本番サーバーの場合は、テスト環境で事前に練習。
+
+</Callout>
+
+## ステップ 1：現在のシステムを完全に更新
+
+まず、現在の Debian 12 を最新の状態に更新し、アップグレード時の競合を減らします。
+
+```bash
+sudo apt update
+sudo apt upgrade --without-new-pkgs
+sudo apt full-upgrade
+sudo apt autoremove
+```
+
+現在のバージョンが Debian 12 であることを確認します。
+
+```bash
+lsb_release -a
+# Release: 12、Codename: bookworm と表示されるはず
+```
+
+## ステップ 2：インストール済みのサードパーティリポジトリを確認・記録
+
+サードパーティリポジトリ（Docker、Chrome などのリポジトリ）はメジャーバージョンアップグレード時に互換性がない可能性があるため、**一時的に無効化**し、アップグレード完了後に一つずつ復元することを推奨します。
+
+```bash
+# すべてのリポジトリファイルを確認
+ls /etc/apt/sources.list.d/
+```
+
+サードパーティの `.list` / `.sources` ファイルは一時的に別の場所に移動し、アップグレード中は Debian 公式リポジトリのみを使用します。
+
+## ステップ 3：ソースリストを trixie に変更
+
+これがアップグレードの核心ステップです。ディストリビューションのコードネームを `bookworm` から `trixie` に変更します。
+
+**従来の `sources.list` を使用している場合：**
+
+```bash
+sudo sed -i 's/bookworm/trixie/g' /etc/apt/sources.list
+```
+
+**deb822 形式を使用している場合**（Debian 12 では `/etc/apt/sources.list.d/debian.sources` も使用可能）：
+
+```bash
+sudo sed -i 's/bookworm/trixie/g' /etc/apt/sources.list.d/debian.sources
+```
+
+<Callout type="info" title="セキュリティスイート名の変更に注意">
+
+旧バージョンでは `bookworm-security` と記述されていましたが、新バージョンでは `trixie-security` になります。上記の置換で同時に処理されます。ファイルを開いて、すべての `bookworm*` が `trixie*` に変わっていることを確認してください。
+
+</Callout>
+
+`/etc/apt/sources.list.d/` にある他の公式リポジトリファイルも確認し、同様に置換します。
+
+## ステップ 4：アップグレードを実行
+
+```bash
+# 1. 新しい trixie リポジトリでパッケージリストを更新
+sudo apt update
+
+# 2. 最小限のアップグレード（まずコアパッケージをアップグレード、競合リスクが少ない）
+sudo apt upgrade --without-new-pkgs
+
+# 3. 完全アップグレード（新しいカーネルのインストール、依存関係の変更処理、新しいパッケージのインストール）
+sudo apt full-upgrade
+```
+
+完全アップグレードでは大量のファイルをダウンロードし、時間がかかります。設定ファイルの競合に関するプロンプトが表示される場合があります。**通常は「パッケージメンテナのバージョンをインストール」を選択するのが安全**です（自分でその設定を変更した場合を除く）。
+
+## ステップ 5：再起動して確認
+
+```bash
+sudo reboot
+```
+
+再起動後に確認：
+
+```bash
+lsb_release -a
+# Release: 13、Codename: trixie と表示されるはず
+
+uname -r
+# カーネルは 6.12 系列
+```
+
+## ステップ 6：アップグレード後のクリーンアップと仕上げ
+
+```bash
+# アップグレードで残った古いパッケージを削除
+sudo apt autoremove --purge
+
+# オプション：Debian 13 デフォルトの deb822 形式にソースリストを移行
+sudo apt modernize-sources
+```
+
+その後、一時的に無効にしたサードパーティリポジトリを一つずつ復元し、trixie（または互換性のある）バージョンを提供しているか確認します。deb822 の詳細については [deb822 ソース形式](/ja/administration/deb822) を参照してください。
+
+## よくある質問
+
+- **アップグレードが中断 / ネットワークが切れた場合**：ネットワークが復旧したら `sudo apt full-upgrade` を再実行すれば、APT が残りを続行します。
+- **一部のパッケージが「保留 (kept back)」される場合**：`sudo apt full-upgrade` を実行すれば通常解決します。
+- **複数のメジャーバージョンをまたぐ場合**（例：Debian 11 からの場合）：**バージョンを飛ばさない**でください。まず Debian 12 にアップグレードしてから、Debian 13 にアップグレードしてください。
+
+## まとめ
+
+1. 現在のシステムを更新 → 2. サードパーティリポジトリを処理 → 3. ソースリストコードネームを `bookworm`→`trixie` に変更 → 4. `update` + `upgrade` + `full-upgrade` → 5. 再起動・確認 → 6. クリーンアップし deb822 に移行。
+
+関連資料：[deb822 ソース形式](/ja/administration/deb822) · [APT パッケージ管理](/ja/administration/packages)

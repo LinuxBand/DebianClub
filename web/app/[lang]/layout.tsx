@@ -1,5 +1,6 @@
 import { Inter } from 'next/font/google';
 import { Provider } from '@/components/provider';
+import { CustomFooter } from '@/components/CustomFooter';
 import { provider } from '@/lib/i18n';
 import type { ReactNode } from 'react';
 
@@ -16,7 +17,10 @@ export default async function LangLayout({
   return (
     <html lang={lang} className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
-        <Provider i18n={provider(lang)}>{children}</Provider>
+        <Provider i18n={provider(lang)}>
+          {children}
+          <CustomFooter />
+        </Provider>
       </body>
     </html>
   );

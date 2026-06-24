@@ -3,6 +3,9 @@ import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 import type { MDXComponents } from 'mdx/types';
 import { migrationStubs } from './mdx-stubs';
 import { ReleaseTimeline } from './infographics/ReleaseTimeline';
+import { BootChain } from './infographics/BootChain';
+import { DiskPartition } from './infographics/DiskPartition';
+import { Permissions } from './infographics/Permissions';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -12,6 +15,9 @@ export function getMDXComponents(components?: MDXComponents) {
     ...migrationStubs,
     // real (ported) components override their stubs:
     ReleaseTimeline,
+    BootChain,
+    DiskPartition,
+    Permissions,
     ...components,
   } satisfies MDXComponents;
 }

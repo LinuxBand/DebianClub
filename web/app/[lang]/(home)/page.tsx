@@ -4,7 +4,7 @@ import { i18n } from '@/lib/i18n';
 import { source } from '@/lib/source';
 import { pickLanding, pickExtras } from '@/lib/landing';
 import { abs, hreflang, languageAlternates, ogDefault, pageUrl } from '@/lib/seo';
-import { appName } from '@/lib/shared';
+import { appName, siteUrl } from '@/lib/shared';
 
 export function generateStaticParams() {
   return i18n.languages.map((lang) => ({ lang }));
@@ -15,7 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const t = pickLanding(lang);
   const canonical = abs(pageUrl(lang, []));
   return {
-    title: appName,
+    // absolute bypasses the "%s | Debian.Club" template; keyword-rich for SERPs
+    title: { absolute: `${appName} — ${t.tagline}` },
     description: t.tagline,
     alternates: { canonical, languages: languageAlternates([], () => true) },
     openGraph: {
@@ -47,8 +48,30 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     return h;
   };
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${siteUrl}/#org`,
+        name: appName,
+        url: siteUrl,
+        logo: `${siteUrl}/images/debian-logo.svg`,
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${siteUrl}/#site`,
+        name: appName,
+        url: siteUrl,
+        inLanguage: hreflang(lang),
+        publisher: { '@id': `${siteUrl}/#org` },
+      },
+    ],
+  };
+
   return (
     <main className="flex flex-1 flex-col">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* hero */}
       <section className="mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-6 py-16 md:flex-row md:py-24">
         <div className="flex-1 text-center md:text-left">

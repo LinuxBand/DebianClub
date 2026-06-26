@@ -8,6 +8,7 @@ import {
 import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/components/mdx';
 import { getPageImage } from '@/lib/source';
+import { getBreadcrumbItems } from 'fumadocs-core/breadcrumb';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import type { Metadata } from 'next';
 import { abs, hreflang, languageAlternates, pageUrl } from '@/lib/seo';
@@ -38,9 +39,29 @@ export default async function Page({
       logo: { '@type': 'ImageObject', url: `${siteUrl}/images/debian-logo.svg` },
     },
   };
+  // BreadcrumbList from the page tree (named sections + page), e.g.
+  // Debian.Club > Administration > Users & permissions
+  const crumbs = getBreadcrumbItems(page.url, source.getPageTree(lang), { includePage: true })
+    .map((c) => ({ name: typeof c.name === 'string' ? c.name : '', url: c.url }))
+    .filter((c) => c.name !== '');
+  const breadcrumbItems: { name: string; url?: string }[] = [
+    { name: appName, url: pageUrl(lang, []) },
+    ...crumbs,
+  ];
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbItems.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      ...(c.url ? { item: abs(c.url) } : {}),
+    })),
+  };
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
@@ -80,7 +101,7 @@ export async function generateMetadata({
       type: 'article',
       siteName: appName,
       locale: hreflang(lang),
-      images: [ogImage],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
     },
     twitter: { card: 'summary_large_image', title, description, images: [ogImage] },
   };

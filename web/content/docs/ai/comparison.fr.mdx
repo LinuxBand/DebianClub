@@ -1,0 +1,78 @@
+---
+title: "Comparaison des outils d’IA"
+description: "Comparaison transversale de divers outils d’IA sur Debian — assistants de codage, éditeurs IA, grands modèles locaux, images et plateformes, avec recommandations de sélection"
+---
+
+La section IA de ce site présente des dizaines d’outils. Cette page les compare transversalement pour vous aider à choisir rapidement selon vos besoins. L’installation et l’utilisation détaillée de chaque outil sont accessibles en cliquant sur le lien correspondant.
+
+> Les tarifs peuvent changer selon la politique officielle. Le tableau ci-dessous est fourni à titre indicatif uniquement ; veuillez vous référer au site officiel de chaque produit. « Local » signifie qu’il peut fonctionner hors ligne sur votre propre machine, sans que les données ne quittent l’appareil.
+
+## Éditeurs d’IA / IDE
+
+Convient aux développeurs qui souhaitent une intégration native de l’IA dans leur éditeur.
+
+| Outil | Type | Local/Cloud | Mode de facturation | Public cible |
+|---|---|---|---|---|
+| [Cursor](/en/ai/cursor) | Éditeur autonome (dérivé de VS Code) | Cloud | Niveau gratuit + abonnement | Ceux qui veulent un IDE IA prêt à l’emploi |
+| [Windsurf](/en/ai/windsurf) | Éditeur autonome | Cloud | Niveau gratuit + abonnement | Ceux qui préfèrent un flux de travail agentique |
+| [Zed](/en/ai/zed) | Éditeur natif haute performance | Cloud / peut être local | Open source, fonctions IA gratuites | Ceux qui recherchent légèreté et rapidité |
+
+## Assistants de codage IA (CLI)
+
+Agents de codage fonctionnant dans le terminal, adaptés aux utilisateurs habitués à la ligne de commande ayant besoin de modifications transversales.
+
+| Outil | Modèle backend | Local/Cloud | Mode de facturation | Remarques |
+|---|---|---|---|---|
+| [Claude Code](/en/ai/claude-code) | Anthropic Claude | Cloud | Abonnement ou facturation API | Agent natif du terminal, excellent pour les modifications conséquentes |
+| [Gemini CLI](/en/ai/gemini-cli) | Google Gemini | Cloud | Niveau gratuit + facturation API | Quotas gratuits élevés |
+| [GitHub Copilot](/en/ai/github-copilot) | Multi-modèles | Cloud | Abonnement (individuel/entreprise) | Écosystème mature, large intégration dans les IDE |
+| [Aider](/en/ai/aider) | Modèle arbitraire/local | Cloud ou local | Open source (facturation selon le modèle utilisé) | Intégration poussée avec Git |
+| [Cline](/en/ai/cline) | Modèle arbitraire/local | Cloud ou local | Open source (facturation selon le modèle utilisé) | Sous forme d’extension VS Code |
+| [Continue](/en/ai/continue) | Modèle arbitraire/local | Cloud ou local | Open source (facturation selon le modèle utilisé) | Hautement personnalisable |
+| [OpenCode](/en/ai/opencode) | Modèle arbitraire/local | Cloud ou local | Open source | Agent de codage en terminal |
+
+## Exécution de grands modèles locaux
+
+Exécutez des grands modèles hors ligne sur votre propre machine – **aucune donnée ne quitte l’appareil**. Convient aux utilisateurs soucieux de leur vie privée ou souhaitant économiser les frais d’API. Nécessite une certaine quantité de RAM/VRAM.
+
+| Outil | Positionnement | Facilité de prise en main | Remarques |
+|---|---|---|---|
+| [Ollama](/en/ai/ollama) | Télécharger et exécuter un modèle en une commande | ⭐ Le plus simple | Choix privilégié pour les modèles locaux, vaste écosystème |
+| [LM Studio](/en/ai/lm-studio) | Interface graphique | ⭐ Simple | Gratuit (source fermée), adapté aux utilisateurs non CLI |
+| [Jan](/en/ai/jan) | Interface graphique, open source | ⭐ Simple | Alternative open source à LM Studio |
+| [llama.cpp](/en/ai/llama-cpp) | Moteur d’inférence bas niveau | ⭐⭐⭐ Avancé | Performances extrêmes, base de nombreux outils |
+| [llamafile](/en/ai/llamafile) | Modèle exécutable en un seul fichier | ⭐⭐ Intermédiaire | Empaquete un modèle en un seul fichier |
+| [LocalAI](/en/ai/localai) | Service local compatible avec l’API OpenAI | ⭐⭐ Intermédiaire | Backend local pour des applications existantes |
+
+## IA pour images et audio
+
+| Outil | Usage | Local/Cloud | Remarques |
+|---|---|---|---|
+| [Stable Diffusion WebUI](/en/ai/stable-diffusion) | Génération d’images à partir de texte | Local | Le plus complet, nécessite une carte graphique dédiée |
+| [ComfyUI](/en/ai/comfyui) | Flux de travail par nœuds pour la génération d’images | Local | Visualisation, permet d’orchestrer des processus complexes |
+| [OpenAI Whisper](/en/ai/whisper) | Transcription vocale en texte | Local | Reconnaissance multilingue, hors ligne |
+
+## Plateformes et automatisation IA
+
+| Outil | Usage | Déploiement | Remarques |
+|---|---|---|---|
+| [Dify](/en/ai/dify) | Plateforme de développement d’applications LLM | Auto-hébergé | Créer des applications RAG / agents |
+| [n8n](/en/ai/n8n) | Automatisation de flux de travail | Auto-hébergé | Peut intégrer l’IA dans des processus automatisés |
+| [OpenClaw](/en/ai/openclaw) | Automatisation d’agents | Auto-hébergé | Automatisation IA basée sur des tâches |
+
+## Comment choisir ? Par scénario
+
+- **Pour coder dans un éditeur et vouloir le plus simple** → [Cursor](/en/ai/cursor) ou [Windsurf](/en/ai/windsurf).
+- **Pour les utilisateurs intensifs de la ligne de commande, réalisant des modifications transversales majeures** → [Claude Code](/en/ai/claude-code) ; pour beaucoup d’utilisation gratuite → [Gemini CLI](/en/ai/gemini-cli).
+- **Pour un assistant open source avec des modèles intégrés/locaux** → [Aider](/en/ai/aider), [Cline](/en/ai/cline) ou [Continue](/en/ai/continue).
+- **Pour la confidentialité / le hors ligne / économiser les frais d’API** → Utiliser [Ollama](/en/ai/ollama) (ligne de commande) ou [LM Studio](/en/ai/lm-studio), [Jan](/en/ai/jan) (interface graphique) pour exécuter des modèles locaux.
+- **Pour des performances d’inférence extrêmes et une personnalisation bas niveau** → [llama.cpp](/en/ai/llama-cpp).
+- **Pour la génération d’images à partir de texte** → Débuter avec [Stable Diffusion WebUI](/en/ai/stable-diffusion), pour des flux de travail complexes utiliser [ComfyUI](/en/ai/comfyui).
+- **Pour construire des applications IA / automatisation** → [Dify](/en/ai/dify) ou [n8n](/en/ai/n8n).
+
+## Conseils matériels
+
+- **Outils cloud** (Cursor, Claude Code, Copilot, etc.) exigent peu de configuration locale, mais nécessitent une connexion Internet et les données sont envoyées au fournisseur.
+- **Modèles locaux** nécessitent de la mémoire/RAM/VRAM : un modèle de l’ordre de 7B nécessite environ 8 Go de RAM pour essayer ; pour des modèles plus grands, il est recommandé d’avoir une carte graphique NVIDIA dédiée (voir [Configuration NVIDIA Optimus double carte graphique](/fr/administration/nvidia-optimus)).
+
+Pour en savoir plus : [Vue d’ensemble des outils IA](/en/ai/) · [Ollama – grand modèle local](/en/ai/ollama)

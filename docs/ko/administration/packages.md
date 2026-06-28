@@ -5,6 +5,8 @@ description: Debian 13의 APT 패키지 관리 시스템을 마스터하고, 소
 
 # APT 패키지 관리 시스템
 
+![APT 패키지 관리](/images/apt.png)
+
 APT(Advanced Package Tool)는 Debian 시스템의 핵심 패키지 관리 도구입니다. 본 튜토리얼에서는 APT를 사용하여 소프트웨어 패키지를 설치, 업데이트, 삭제하는 방법을 가르쳐 드립니다.
 
 ## 🎯 APT 기본 개념

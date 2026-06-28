@@ -1,0 +1,112 @@
+---
+title: "deb822 Source Format (.sources)"
+description: "Complete guide to the deb822/.sources repository format, default in Debian 13, with field descriptions, third-party source configuration, and one-click migration"
+---
+
+Introduced in Debian 12 and becoming the default in **Debian 13 (Trixie)**, the **deb822** format is a clearer and more maintainable way to configure software repositories. It uses the `.sources` extension, with each source described as multi-line `key: value` pairs, replacing the traditional single-line `deb` syntax.
+
+## Traditional Format vs deb822 Format
+
+**Traditional single-line format** (`/etc/apt/sources.list`):
+
+```
+deb http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+deb http://security.debian.org/debian-security trixie-security main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian trixie-updates main contrib non-free non-free-firmware
+```
+
+**deb822 format** (`/etc/apt/sources.list.d/debian.sources`):
+
+```text
+Types: deb
+URIs: http://deb.debian.org/debian
+Suites: trixie trixie-updates
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+Types: deb
+URIs: http://security.debian.org/debian-security
+Suites: trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+```
+
+After a fresh installation of Debian 13, the official repositories are stored in `/etc/apt/sources.list.d/debian.sources`, while the traditional `/etc/apt/sources.list` is usually empty or absent.
+
+## Field Descriptions
+
+| Field | Description |
+|---|---|
+| `Types` | Source type. `deb` for binary packages; `deb-src` for source packages. Multiple values can be written, separated by spaces. |
+| `URIs` | Mirror URL. Multiple addresses can be written for mirror redundancy. |
+| `Suites` | Distribution/suite, such as `trixie`, `trixie-updates`, `trixie-backports`. Multiple values can be written. |
+| `Components` | Components: `main` (free software), `contrib`, `non-free`, `non-free-firmware` (non-free firmware). |
+| `Signed-By` | Path to the GPG public key (keyring) used to verify the source. **Always specify explicitly** to avoid relying on the globally trusted `apt-key`. |
+| `Enabled` | Optional. Set to `no` to temporarily disable a source without deleting it. |
+| `Architectures` | Optional. Limit architectures, e.g., `amd64`, `arm64`. |
+
+> A single `.sources` file can contain multiple source entries, separated by **one blank line**.
+
+## One-Click Migration: apt modernize-sources
+
+**APT 3.0**, included with Debian 13, provides an official migration command to automatically convert the old single-line format to deb822:
+
+```bash
+sudo apt modernize-sources
+```
+
+This command reads the existing `sources.list`, generates equivalent `.sources` files, and backs up the original file with a `.bak` extension. After running, execute `sudo apt update` to verify.
+
+## Adding Third-Party Sources (deb822 Syntax)
+
+For example, to add a third-party repository. **Step 1:** Download and convert its GPG public key into a keyring (do not use the deprecated `apt-key`):
+
+```bash
+sudo mkdir -p /etc/apt/keyrings
+wget -qO - https://example.com/key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/example.gpg
+```
+
+**Step 2:** Create a `.sources` file and reference the keyring with `Signed-By`:
+
+```bash
+sudo tee /etc/apt/sources.list.d/example.sources > /dev/null <<'EOF'
+Types: deb
+URIs: https://example.com/debian
+Suites: stable
+Components: main
+Signed-By: /etc/apt/keyrings/example.gpg
+Architectures: amd64
+EOF
+
+sudo apt update
+```
+
+`Signed-By` binds this public key **only** to this specific source, which is much more secure than the old global `apt-key` method – even if the third-party source is compromised, its key cannot be used to forge packages from the official repository.
+
+## Using Domestic Mirrors
+
+Simply change the `URIs` in the official `debian.sources` to a domestic mirror, for example, Tsinghua University mirror:
+
+```text
+Types: deb
+URIs: https://mirrors.tuna.tsinghua.edu.cn/debian
+Suites: trixie trixie-updates trixie-backports
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+Types: deb
+URIs: https://security.debian.org/debian-security
+Suites: trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+```
+
+After modification, be sure to run `sudo apt update`.
+
+## Summary
+
+- Debian 13 uses the deb822 (`.sources`) format by default; source files are located in `/etc/apt/sources.list.d/`.
+- Use `sudo apt modernize-sources` for one-click migration from the old format.
+- When adding third-party sources, always generate a keyring with `gpg --dearmor` and explicitly reference it in `Signed-By`; do not use `apt-key`.
+
+Further reading: [APT Package Management](/en/administration/packages) · [Backports Usage Guide](/en/administration/backports)

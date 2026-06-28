@@ -1,0 +1,75 @@
+---
+title: "Debian 14 (Forky)"
+description: "Debian 14 “Forky” 的最新动态——发布计划、当前状态与如何抢先体验下一代 Debian。"
+---
+
+![Debian 14（Forky）示意图](/images/hero-forky.png)
+
+<Callout type="info" title="本页关于下一代 Debian">
+
+**Debian 14** 的开发代号为 **Forky**，目前处于 **testing（测试）** 阶段，仍在活跃开发中。本页汇总 Forky 的当前状态、预计发布时间，以及如何抢先体验。当前的稳定版仍是 [Debian 13（Trixie）](/versions)。
+
+</Callout>
+
+## 📌 快速概览
+
+| 项目 | 信息 |
+|------|------|
+| **版本号** | Debian 14 |
+| **开发代号** | Forky（取自《玩具总动员 4》角色） |
+| **当前状态** | testing（测试版，开发中） |
+| **testing 分支启用** | 2025-08-13（Trixie 发布后不久） |
+| **预计发布** | 约 2027 年（具体日期未定） |
+| **基于** | 由 Debian 13（Trixie）的代码库演进而来 |
+
+> ⚠️ Forky 尚未发布，**不适合生产环境**。下文信息会随开发推进而变化。
+
+## 🧭 什么是 “Forky”
+
+按照 Debian 的传统，每个版本都以《玩具总动员》中的角色命名。**Forky** 是《玩具总动员 4》中的角色，将成为 Debian 14 的代号。
+
+Debian 14 当前是 Debian 的 **testing** 发行版：当 Debian 13（Trixie）于 2025 年 8 月 9 日发布为稳定版后，testing 分支随即以 Forky 为代号重新开始迭代（2025-08-13）。来自 unstable（Sid）的软件包在满足一定条件后会自动迁移进入 testing。
+
+## 🗓️ 发布计划
+
+Debian **不采用固定的发布日期**，而是“准备好了才发布”（release when ready）。按照过去每约两年一个稳定版的节奏，Debian 14 预计在 **2027 年左右** 发布。
+
+正式发布前通常会经历几个 **冻结（freeze）** 阶段，逐步收紧可进入 testing 的变更，以稳定即将发布的版本：
+
+1. **里程碑 / 过渡冻结** — 停止大规模库过渡
+2. **软冻结（Soft Freeze）** — 不再接受新软件包进入
+3. **硬冻结（Hard Freeze）** — 仅允许针对关键 bug 的修复
+4. **完全冻结（Full Freeze）** — 发布前最后定版
+
+截至目前，Debian 尚未公布 Forky 的具体冻结与发布日期。请以官方 [release.debian.org](https://release.debian.org/) 公告为准。
+
+## 🔍 如何关注进展
+
+- **发布状态**：[release.debian.org](https://release.debian.org/)
+- **官方发布信息页**：[Debian “forky” 发布信息](https://www.debian.org/releases/forky/)
+- **发布说明草稿**：[Forky Release Notes](https://www.debian.org/releases/forky/releasenotes)
+- **影响发布的严重 bug（RC bugs）**：[发布关键 bug 列表](https://bugs.debian.org/release-critical/)
+- **开发公告邮件列表**：[debian-devel-announce](https://lists.debian.org/debian-devel-announce/)
+
+## 🧪 想抢先体验？
+
+如果你希望提前试用 Debian 14，可以安装 **testing** 发行版。但请注意：
+
+- testing **不由 Debian 安全团队** 提供及时的安全更新——如需安全保障，请使用稳定版 Debian 13（Trixie）。
+- 软件包变动频繁，偶尔可能出现暂时性问题。
+- 建议仅在测试机、虚拟机或非关键环境中体验。
+
+<Callout type="info" title="新手建议">
+
+如果你是新手，或用于日常 / 生产用途，请继续使用 [Debian 13（Trixie）](/download)。等 Debian 14 正式发布、并出现首个点更新（如 14.1）后再升级会更稳妥。
+
+</Callout>
+
+## 🔗 相关链接
+
+- [Debian “forky” 发布信息（官方）](https://www.debian.org/releases/forky/)
+- [Debian 发布管理](https://release.debian.org/)
+- [Debian 最新动态](/news)
+- [版本对比](/comparison)
+- [版本支持周期 (EOL)](/eol)
+- [Debian 官方新闻](https://www.debian.org/News/)

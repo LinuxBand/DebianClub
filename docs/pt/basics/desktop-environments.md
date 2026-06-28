@@ -5,6 +5,8 @@ description: Guia dos ambientes desktop disponíveis para o Debian 13
 
 # Ambientes desktop para Debian 13
 
+![Ambientes de desktop do Debian](/images/desktops.png)
+
 O Debian oferece uma grande variedade de ambientes desktop.
 
 ## GNOME (Recomendado para iniciantes)

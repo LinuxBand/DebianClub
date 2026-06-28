@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="SkaChat">
+  <rect width="48" height="48" rx="12" fill="#0891B2"/>
+  <rect x="12" y="12" width="24" height="19" rx="5" fill="#fff"/>
+  <path d="M16 31h8l-8 6z" fill="#fff"/>
+  <path d="M24 16v8m0 0l-4-4m4 4l4-4" fill="none" stroke="#0891B2" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

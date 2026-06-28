@@ -5,6 +5,8 @@ description: Guia de instalação completo passo a passo para o Debian 13
 
 # Guia de instalação do Debian 13
 
+![Etapas de instalação do Debian](/images/install-journey.png)
+
 ## Preparação antes da instalação
 
 - ✅ Mídia inicializável criada

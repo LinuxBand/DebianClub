@@ -285,3 +285,16 @@
 body {
   transition: color 0.3s ease, background-color 0.3s ease;
 }
+
+/* Phosphor duotone 标题图标（替代 emoji） */
+.vp-doc h2 .hi,
+.vp-doc h3 .hi {
+  color: var(--vp-c-brand-1);
+  margin-right: 0.4em;
+  vertical-align: -0.1em;
+  font-size: 0.95em;
+  font-style: normal;
+}
+/* 标题图标不参与锚点悬浮符号布局 */
+.vp-doc h2 .hi::before,
+.vp-doc h3 .hi::before { font-style: normal; }

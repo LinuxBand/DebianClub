@@ -5,6 +5,8 @@ description: Configuración inicial después de instalar Debian 13
 
 # Configuración del primer arranque
 
+<BootChain />
+
 ## ¡Bienvenido a Debian!
 
 ¡Felicitaciones por instalar Debian 13 con éxito!

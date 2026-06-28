@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="terminalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#333333;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Terminal window -->
+  <rect x="5" y="10" width="90" height="60" fill="url(#terminalGradient)" rx="4" stroke="#555" stroke-width="1"/>
+  
+  <!-- Title bar -->
+  <rect x="5" y="10" width="90" height="15" fill="#444" rx="4"/>
+  <rect x="5" y="18" width="90" height="7" fill="#444"/>
+  
+  <!-- Window controls -->
+  <circle cx="15" cy="17.5" r="2" fill="#ff5f56"/>
+  <circle cx="25" cy="17.5" r="2" fill="#ffbd2e"/>
+  <circle cx="35" cy="17.5" r="2" fill="#27ca3f"/>
+  
+  <!-- Terminal content -->
+  <text x="10" y="35" fill="#00ff00" font-family="monospace" font-size="6">$ sudo apt update</text>
+  <text x="10" y="45" fill="#ffffff" font-family="monospace" font-size="4">Reading package lists...</text>
+  <text x="10" y="52" fill="#ffffff" font-family="monospace" font-size="4">Building dependency tree...</text>
+  <text x="10" y="59" fill="#00ff00" font-family="monospace" font-size="6">$ _</text>
+  
+  <!-- Cursor blink animation -->
+  <rect x="24" y="56" width="1" height="6" fill="#00ff00">
+    <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+  </rect>
+</svg> 

@@ -1,0 +1,73 @@
+---
+title: Debian 14 (Forky)
+description: Dernières nouvelles sur Debian 14 « Forky » — calendrier de sortie, état actuel et comment essayer le prochain Debian en avance.
+---
+
+# Debian 14 « Forky »
+
+![Illustration de Debian 14 (Forky)](/images/hero-forky.png)
+
+::: info À propos du prochain Debian
+**Debian 14** porte le nom de code de développement **Forky** et se trouve actuellement en phase de **testing**, en développement actif. Cette page résume l'état actuel de Forky, la date de sortie prévue et comment l'essayer en avance. La version stable actuelle reste [Debian 13 (Trixie)](/fr/versions).
+:::
+
+## 📌 Aperçu rapide
+
+| Élément | Détails |
+|---------|---------|
+| **Version** | Debian 14 |
+| **Nom de code** | Forky (un personnage de *Toy Story 4*) |
+| **État actuel** | testing (en développement) |
+| **Branche testing ouverte** | 2025-08-13 (peu après la sortie de Trixie) |
+| **Sortie prévue** | Autour de 2027 (aucune date fixe) |
+| **Basé sur** | Issu de la base de code de Debian 13 (Trixie) |
+
+> ⚠️ Forky n'est pas encore sorti et **ne convient pas à la production**. Les informations ci-dessous évolueront au fil du développement.
+
+## 🧭 Qu'est-ce que « Forky » ?
+
+Selon la tradition Debian, chaque version est nommée d'après un personnage de *Toy Story*. **Forky**, un personnage de *Toy Story 4*, sera le nom de code de Debian 14.
+
+Debian 14 est actuellement la distribution **testing** de Debian : après la sortie de Debian 13 (Trixie) en tant que version stable le 9 août 2025, la branche testing a été réinitialisée sous le nom de code Forky (2025-08-13). Les paquets d'unstable (Sid) migrent automatiquement vers testing une fois qu'ils remplissent certains critères.
+
+## 🗓️ Calendrier de sortie
+
+Debian **n'utilise pas de dates de sortie fixes** — il sort « quand il est prêt ». D'après le rythme d'environ deux ans des dernières versions stables, Debian 14 est attendu autour de **2027**.
+
+Avant la sortie officielle, Debian passe généralement par plusieurs phases de **gel (freeze)** qui restreignent progressivement ce qui peut entrer dans testing, afin de stabiliser la version à venir :
+
+1. **Gel des jalons / transitions** — les grandes transitions de bibliothèques s'arrêtent
+2. **Soft freeze (gel léger)** — plus aucun nouveau paquet accepté
+3. **Hard freeze (gel strict)** — uniquement les corrections de bogues critiques
+4. **Full freeze (gel total)** — stabilisation finale avant la sortie
+
+À ce jour, Debian n'a pas annoncé de dates précises de gel ni de sortie pour Forky. Référez-vous à la page officielle [release.debian.org](https://release.debian.org/) pour les dernières informations.
+
+## 🔍 Comment suivre l'avancement
+
+- **État de la sortie** : [release.debian.org](https://release.debian.org/)
+- **Page d'information officielle** : [Informations de sortie de Debian « forky »](https://www.debian.org/releases/forky/)
+- **Brouillon des notes de version** : [Notes de version de Forky](https://www.debian.org/releases/forky/releasenotes)
+- **Bogues critiques pour la sortie (RC)** : [Liste des bogues critiques](https://bugs.debian.org/release-critical/)
+- **Annonces de développement** : [debian-devel-announce](https://lists.debian.org/debian-devel-announce/)
+
+## 🧪 Envie de l'essayer en avance ?
+
+Si vous souhaitez prévisualiser Debian 14, vous pouvez installer la distribution **testing**. Gardez à l'esprit :
+
+- testing **n'est pas couverte par l'équipe de sécurité Debian** avec des mises à jour de sécurité rapides — utilisez Debian 13 (Trixie) stable si vous avez besoin de garanties de sécurité.
+- Les paquets changent fréquemment et des dysfonctionnements temporaires peuvent survenir.
+- Ne l'exécutez que sur des machines de test, des machines virtuelles ou des environnements non critiques.
+
+::: tip Conseil pour les débutants
+Si vous débutez avec Debian ou l'utilisez au quotidien / en production, restez sur [Debian 13 (Trixie)](/fr/download). Effectuer la mise à niveau après la sortie officielle de Debian 14 — et une fois sa première mise à jour intermédiaire (par ex. 14.1) publiée — est la voie la plus sûre.
+:::
+
+## 🔗 Liens utiles
+
+- [Informations de sortie de Debian « forky » (officiel)](https://www.debian.org/releases/forky/)
+- [Gestion des sorties Debian](https://release.debian.org/)
+- [Dernières nouvelles de Debian](/fr/news)
+- [Comparaison des versions](/fr/comparison)
+- [Fin de vie des versions (EOL)](/fr/eol)
+- [Actualités officielles Debian](https://www.debian.org/News/)

@@ -1,0 +1,101 @@
+---
+title: "NVIDIA Optimus 双显卡配置"
+description: "在 Debian 13 笔记本上配置 NVIDIA Optimus 混合显卡，安装驱动并使用 PRIME 渲染卸载"
+---
+
+很多笔记本同时配有 **Intel/AMD 集成显卡**和 **NVIDIA 独立显卡**，这套技术 NVIDIA 称为 **Optimus**。日常由省电的核显驱动屏幕，需要高性能时（游戏、渲染、CUDA）再切换到独显。本文介绍在 Debian 13 上正确安装驱动并使用 PRIME 渲染卸载。
+
+## 第一步：确认硬件
+
+```bash
+# 列出所有显卡，确认同时存在 Intel/AMD 和 NVIDIA
+lspci | grep -E "VGA|3D"
+```
+
+若能看到两块显卡（如一块 Intel 一块 NVIDIA），则属于 Optimus 混合架构。
+
+## 第二步：启用 non-free-firmware 与 non-free 源
+
+NVIDIA 闭源驱动位于 `non-free` 组件。请确认软件源已包含 `non-free` 和 `non-free-firmware`（Debian 13 默认的 deb822 写法见 [deb822 源格式](/administration/deb822)）：
+
+```text
+Components: main contrib non-free non-free-firmware
+```
+
+修改后运行：
+
+```bash
+sudo apt update
+```
+
+## 第三步：安装 NVIDIA 驱动
+
+Debian 官方仓库已包含经过测试的 NVIDIA 驱动，**优先使用官方包**而非 NVIDIA 官网的 `.run` 安装器：
+
+```bash
+# 安装内核头文件（编译驱动模块需要）
+sudo apt install linux-headers-amd64
+
+# 安装 NVIDIA 驱动与 PRIME 支持
+sudo apt install nvidia-driver firmware-misc-nonfree
+
+# 重启以加载驱动
+sudo reboot
+```
+
+安装过程会自动通过 DKMS 为当前内核编译模块。Debian 的 `nvidia-driver` 包默认配置了 PRIME，开机仍由核显驱动桌面，独显按需启用——这正是笔记本想要的省电行为。
+
+## 第四步：验证
+
+```bash
+# 查看独显状态（驱动正常时会列出 GPU 信息）
+nvidia-smi
+
+# 确认当前 OpenGL 渲染器（默认应为 Intel/AMD 核显）
+glxinfo | grep "OpenGL renderer"
+```
+
+`glxinfo` 来自 `mesa-utils` 包（`sudo apt install mesa-utils`）。
+
+## 第五步：按需用独显运行程序（PRIME Render Offload）
+
+日常用核显省电，只在需要时把**单个程序**交给独显渲染，这叫 **PRIME 渲染卸载**：
+
+```bash
+# 用独显运行某个程序
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia <程序名>
+
+# 例如用独显跑 glxgears 测试
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia glxgears
+```
+
+为方便使用，可在 `~/.bashrc` 中定义别名：
+
+```bash
+alias nv-run='__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia'
+# 之后即可：nv-run blender
+```
+
+桌面环境（GNOME/KDE）通常会在应用右键菜单提供「使用独立显卡运行」选项，底层正是上述机制。
+
+## CUDA / 计算用途
+
+若只是跑 CUDA 计算（如 AI 推理）而非图形渲染，驱动装好后 `nvidia-smi` 能识别独显即可，无需 PRIME 卸载。安装 CUDA 工具链：
+
+```bash
+sudo apt install nvidia-cuda-toolkit
+```
+
+## Wayland 与常见问题
+
+- **Wayland**：较新的 NVIDIA 驱动已较好支持 Wayland。若遇到花屏或无法登录，可在登录界面切换为 **Xorg** 会话排查。
+- **黑屏 / 无法进入桌面**：在 GRUB 启动项的 `linux` 行末尾临时加 `nomodeset` 进入低分辨率桌面，再检查驱动安装。
+- **`nvidia-smi` 报 “No devices found”**：多为驱动未随当前内核编译成功，检查是否装了 `linux-headers-amd64` 并重新 `sudo apt install --reinstall nvidia-driver`。
+
+## 小结
+
+- 启用 `non-free` 源 → 装 `linux-headers-amd64` + `nvidia-driver` → 重启。
+- 默认核显省电，用 `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia` 按需调用独显。
+- 优先用 Debian 官方驱动包，避免使用官网 `.run` 安装器。
+
+延伸阅读：[硬件兼容性](/basics/hardware-compatibility) · [deb822 源格式](/administration/deb822)

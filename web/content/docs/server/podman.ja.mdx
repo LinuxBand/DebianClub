@@ -1,0 +1,133 @@
+---
+title: "Podman コンテナ管理"
+description: "Debian 13 での Podman のインストールと使用方法。デーモンレスで rootless コンテナを実行し、Docker コマンドと互換性があります。"
+---
+
+**Podman** はオープンソースのコンテナエンジンで、Docker と高い互換性を持ちながら、次の 2 つの重要な利点があります。
+
+- **デーモンレス（daemonless）**：Docker のように常駐する root デーモンに依存せず、Podman は通常のプロセスとしてコンテナを実行するため、攻撃対象が小さくなります。
+- **Rootless 実行**：一般ユーザーが root 権限を必要とせずにコンテナを実行でき、セキュリティが向上します。
+
+Debian 13 の公式リポジトリには Podman が含まれており、サードパーティのソースを追加することなく、非常に簡単にインストールできます。
+
+## インストール
+
+```bash
+sudo apt update
+sudo apt install podman
+
+# 確認
+podman --version
+```
+
+`docker-compose` スタイルのオーケストレーションが必要な場合は、追加でインストールします。
+
+```bash
+sudo apt install podman-compose
+```
+
+## 基本的な使い方
+
+Podman のコマンドラインは Docker とほぼ一対一で対応しています。
+
+```bash
+# コンテナを実行
+podman run -d --name web -p 8080:80 docker.io/library/nginx
+
+# 実行中のコンテナを表示
+podman ps
+
+# すべてのコンテナを表示（停止中も含む）
+podman ps -a
+
+# ローカルイメージを表示
+podman images
+
+# ログの表示 / コンテナに入る
+podman logs web
+podman exec -it web bash
+
+# 停止して削除
+podman stop web
+podman rm web
+```
+
+> 注意：Podman はデフォルトでイメージレジストリの接頭辞（例：`docker.io/library/nginx`）を明示的に記述します。`/etc/containers/registries.conf` でデフォルト検索レジストリを設定することもできます。
+
+## Docker コマンドとの互換性
+
+`docker` コマンドに慣れている場合は、互換パッケージをインストールして、`docker` を `podman` のエイリアスとして使用できます。
+
+```bash
+sudo apt install podman-docker
+```
+
+これにより、`docker run ...`、`docker ps` などのコマンドが直接 Podman に転送されます。
+
+## Rootless コンテナ
+
+一般ユーザーがそのまま `podman` を実行すると rootless モードになり、追加の設定は不要です。これは Docker と比較した Podman の最大の利点です。確認してみましょう。
+
+```bash
+# 一般ユーザー（sudo なし）で実行
+podman run --rm docker.io/library/alpine echo "Hello from rootless Podman"
+```
+
+Rootless モードはユーザ名前空間に依存します。Debian 13 ではデフォルトで有効になっています。`subuid/subgid` に関するエラーが発生した場合は、`/etc/subuid` と `/etc/subgid` に現在のユーザーのエントリがあることを確認します。
+
+```bash
+grep "$USER" /etc/subuid /etc/subgid
+# ない場合は手動で追加（通常はインストール時に自動設定されます）
+sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 "$USER"
+```
+
+## Pod：ネイティブグループ管理
+
+Podman の名前は **Pod**（Kubernetes の Pod と同じ概念）に由来しています。複数のコンテナをグループ化し、ネットワーク名前空間を共有できます。
+
+```bash
+# pod を作成し、ポートを公開
+podman pod create --name mypod -p 8080:80
+
+# コンテナを pod に追加
+podman run -d --pod mypod docker.io/library/nginx
+```
+
+## systemd によるコンテナ管理（Quadlet）
+
+コンテナを自動起動させ、システムで一元管理するには、**Quadlet** の利用が推奨されます。`~/.config/containers/systemd/`（rootless の場合）または `/etc/containers/systemd/`（システム全体）に `.container` ユニットファイルを作成します。
+
+```ini
+# ~/.config/containers/systemd/web.container
+[Container]
+Image=docker.io/library/nginx
+PublishPort=8080:80
+
+[Install]
+WantedBy=default.target
+```
+
+その後、リロードして起動します。
+
+```bash
+systemctl --user daemon-reload
+systemctl --user start web
+```
+
+## Podman vs Docker クイック比較
+
+| 機能 | Podman | Docker |
+|---|---|---|
+| デーモン | なし（デーモンレス） | 常駐デーモンあり |
+| Rootless | デフォルトでネイティブ対応 | 追加設定が必要 |
+| コマンドライン | Docker と互換性あり | — |
+| systemd 統合 | ネイティブ Quadlet | 追加ラッパーが必要 |
+| Debian 13 でのインストール | 公式リポジトリから直接インストール | Docker 公式リポジトリの追加が必要 |
+
+## まとめ
+
+- `sudo apt install podman` でインストール可能。サードパーティのソースは不要。
+- コマンドは Docker と互換性があり、`podman-docker` を使用すると `docker` コマンドが直接転送される。
+- 一般ユーザーで rootless 実行でき、Quadlet を使えば systemd で管理できる。
+
+関連項目：[Docker インストールと使用方法](/en/server/docker) · [仮想化](/en/server/virtualization)

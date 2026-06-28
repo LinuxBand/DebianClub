@@ -5,6 +5,8 @@ description: Master APT package management in Debian 13 - install, update, and m
 
 # Package Management
 
+![APT package management](/images/apt.png)
+
 Learn how to effectively manage software packages in Debian 13 using APT and other package management tools.
 
 ## 📦 APT Package Manager

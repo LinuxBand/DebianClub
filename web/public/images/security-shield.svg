@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="checkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Shield background -->
+  <path d="M50,10 C30,10 10,20 10,30 L10,70 C10,90 30,110 50,110 C70,110 90,90 90,70 L90,30 C90,20 70,10 50,10 Z" 
+        fill="url(#shieldGradient)" stroke="#1e40af" stroke-width="2"/>
+  
+  <!-- Inner shield detail -->
+  <path d="M50,20 C35,20 20,27 20,35 L20,65 C20,80 35,95 50,95 C65,95 80,80 80,65 L80,35 C80,27 65,20 50,20 Z" 
+        fill="rgba(255,255,255,0.1)"/>
+  
+  <!-- Security checkmark -->
+  <circle cx="50" cy="55" r="18" fill="url(#checkGradient)"/>
+  <path d="M42,55 L47,60 L58,49" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Security badges -->
+  <circle cx="25" cy="35" r="3" fill="#fbbf24" opacity="0.8"/>
+  <circle cx="75" cy="35" r="3" fill="#fbbf24" opacity="0.8"/>
+  <circle cx="25" cy="75" r="3" fill="#fbbf24" opacity="0.8"/>
+  <circle cx="75" cy="75" r="3" fill="#fbbf24" opacity="0.8"/>
+  
+  <!-- Glow effect -->
+  <circle cx="50" cy="55" r="25" fill="none" stroke="rgba(59,130,246,0.3)" stroke-width="1">
+    <animate attributeName="r" values="25;30;25" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0.1;0.3" dur="2s" repeatCount="indefinite"/>
+  </circle>
+</svg> 

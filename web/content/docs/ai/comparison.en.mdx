@@ -1,0 +1,78 @@
+---
+title: "AI Tool Selection Comparison"
+description: "A horizontal comparison of various AI tools on Debian—coding assistants, AI editors, local large models, image and platform tools, with selection recommendations"
+---
+
+The AI section of this site covers dozens of tools. This page provides a horizontal comparison to help you quickly choose based on your needs. Click the corresponding links for installation and detailed usage of each tool.
+
+> Pricing information may change with official policies. The table below is for reference only; please refer to each product's official website for the latest information. "Local" means it can run offline on your own machine, and data never leaves your device.
+
+## AI Editors / IDEs
+
+Suitable for developers who want "native AI integration in the editor."
+
+| Tool | Form | Local/Cloud | Billing Model | Suitable For |
+|---|---|---|---|---|
+| [Cursor](/en/ai/cursor) | Standalone editor (VS Code fork) | Cloud model | Free tier + subscription | Those wanting an out-of-the-box AI IDE |
+| [Windsurf](/en/ai/windsurf) | Standalone editor | Cloud model | Free tier + subscription | Those preferring agent-style workflows |
+| [Zed](/en/ai/zed) | High-performance native editor | Cloud model / can connect to local | Open source, AI features with free tier | Those seeking lightweight speed |
+
+## AI Coding Assistants (CLI)
+
+Coding agents that work in the terminal, suitable for command-line lovers and cross-file modifications.
+
+| Tool | Backend Model | Local/Cloud | Billing Model | Notes |
+|---|---|---|---|---|
+| [Claude Code](/en/ai/claude-code) | Anthropic Claude | Cloud | Subscription or API billing | Terminal-native agent, excels at large changes |
+| [Gemini CLI](/en/ai/gemini-cli) | Google Gemini | Cloud | Free tier + API billing | Generous free quota |
+| [GitHub Copilot](/en/ai/github-copilot) | Multiple models | Cloud | Subscription (personal/enterprise) | Mature ecosystem, wide IDE integration |
+| [Aider](/en/ai/aider) | Can connect to any model / local | Cloud or local | Open source (billed by model used) | Deep Git integration |
+| [Cline](/en/ai/cline) | Can connect to any model / local | Cloud or local | Open source (billed by model used) | VS Code extension form |
+| [Continue](/en/ai/continue) | Can connect to any model / local | Cloud or local | Open source (billed by model used) | Highly customizable |
+| [OpenCode](/en/ai/opencode) | Can connect to any model / local | Cloud or local | Open source | Terminal coding agent |
+
+## Local Large Model Runtimes
+
+Run large models offline on your own machine—**data never leaves your device**, suitable for privacy-sensitive users or those wanting to save API costs. Requires some memory/VRAM.
+
+| Tool | Positioning | Ease of Use | Notes |
+|---|---|---|---|
+| [Ollama](/en/ai/ollama) | Pull and run models with one command | ⭐ Easiest | First choice for local models, wide ecosystem |
+| [LM Studio](/en/ai/lm-studio) | Graphical interface | ⭐ Easy | Closed-source free, suitable for non-command-line users |
+| [Jan](/en/ai/jan) | Graphical interface, open source | ⭐ Easy | Open-source alternative to LM Studio |
+| [llama.cpp](/en/ai/llama-cpp) | Low-level inference engine | ⭐⭐⭐ Advanced | Ultimate performance, base for many tools |
+| [llamafile](/en/ai/llamafile) | Single executable model file | ⭐⭐ Medium | Packages the model into one file |
+| [LocalAI](/en/ai/localai) | Local service compatible with OpenAI API | ⭐⭐ Medium | Local backend for existing applications |
+
+## AI Image and Speech
+
+| Tool | Purpose | Local/Cloud | Notes |
+|---|---|---|---|
+| [Stable Diffusion WebUI](/en/ai/stable-diffusion) | Text-to-image | Local | Most feature-rich, requires dedicated GPU |
+| [ComfyUI](/en/ai/comfyui) | Node-based text-to-image workflow | Local | Visual, orchestrate complex workflows |
+| [OpenAI Whisper](/en/ai/whisper) | Speech-to-text | Local | Multilingual recognition, offline-capable |
+
+## AI Platforms and Automation
+
+| Tool | Purpose | Deployment | Notes |
+|---|---|---|---|
+| [Dify](/en/ai/dify) | LLM application development platform | Self-hosted | Build RAG / agent applications |
+| [n8n](/en/ai/n8n) | Workflow automation | Self-hosted | Integrate AI into automation workflows |
+| [OpenClaw](/en/ai/openclaw) | Agent automation | Self-hosted | Task-based AI automation |
+
+## How to Choose? By Scenario
+
+- **Want to write code in an editor, most hassle-free** → [Cursor](/en/ai/cursor) or [Windsurf](/en/ai/windsurf).
+- **Heavy command-line user, need cross-file major changes** → [Claude Code](/en/ai/claude-code); want more free usage → [Gemini CLI](/en/ai/gemini-cli).
+- **Want open-source assistant with your own model / local model** → [Aider](/en/ai/aider), [Cline](/en/ai/cline), or [Continue](/en/ai/continue).
+- **Privacy-conscious / want offline / save API costs** → Use [Ollama](/en/ai/ollama) (command-line) or [LM Studio](/en/ai/lm-studio)/[Jan](/en/ai/jan) (graphical) to run local models.
+- **Pursue extreme inference performance, need low-level customization** → [llama.cpp](/en/ai/llama-cpp).
+- **Do text-to-image** → Start with [Stable Diffusion WebUI](/en/ai/stable-diffusion), use [ComfyUI](/en/ai/comfyui) for complex workflows.
+- **Build AI applications / automation** → [Dify](/en/ai/dify) or [n8n](/en/ai/n8n).
+
+## Hardware Tips
+
+- **Cloud tools** (Cursor, Claude Code, Copilot, etc.) have low local hardware requirements but need internet, and data is sent to the service provider.
+- **Local models** require memory/VRAM: A 7B-level model may work with about 8GB RAM; larger models are recommended with an NVIDIA dedicated GPU (see [NVIDIA Optimus dual graphics configuration](/en/administration/nvidia-optimus)).
+
+Further reading: [AI Tools Overview](/en/ai/) · [Ollama Local Large Models](/en/ai/ollama)

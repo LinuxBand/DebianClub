@@ -1,0 +1,122 @@
+---
+title: "从 Debian 12 升级到 Debian 13"
+description: "把 Debian 12 Bookworm 平滑升级到 Debian 13 Trixie 的完整步骤，含 deb822 迁移与升级后检查"
+---
+
+Debian 的大版本升级过程非常可靠，但仍需谨慎操作。本文带你把 **Debian 12 "Bookworm"** 平滑升级到 **Debian 13 "Trixie"**。
+
+<Callout type="warn" title="升级前必读">
+
+- **务必备份重要数据**（至少备份 `/home` 和 `/etc`）。
+- 在稳定的网络与电源环境下进行，笔记本请接通电源。
+- 建议先通读全文再动手。如果是生产服务器，先在测试环境演练。
+
+</Callout>
+
+## 第一步：完全更新当前系统
+
+先把现有的 Debian 12 更新到最新状态，减少升级时的冲突：
+
+```bash
+sudo apt update
+sudo apt upgrade --without-new-pkgs
+sudo apt full-upgrade
+sudo apt autoremove
+```
+
+确认当前确为 Debian 12：
+
+```bash
+lsb_release -a
+# 应显示 Release: 12，Codename: bookworm
+```
+
+## 第二步：检查并记录已装的第三方源
+
+第三方源（如 Docker、Chrome 的仓库）在大版本升级时可能不兼容，建议先**临时停用**，升级完成后再逐一恢复：
+
+```bash
+# 查看所有源文件
+ls /etc/apt/sources.list.d/
+```
+
+可以把第三方 `.list` / `.sources` 文件暂时移走，只保留 Debian 官方源进行升级。
+
+## 第三步：修改软件源为 trixie
+
+这是升级的核心步骤——把发行版代号从 `bookworm` 改为 `trixie`。
+
+**如果你使用传统的 `sources.list`：**
+
+```bash
+sudo sed -i 's/bookworm/trixie/g' /etc/apt/sources.list
+```
+
+**如果你使用 deb822 格式**（Debian 12 也可能用 `/etc/apt/sources.list.d/debian.sources`）：
+
+```bash
+sudo sed -i 's/bookworm/trixie/g' /etc/apt/sources.list.d/debian.sources
+```
+
+<Callout type="info" title="注意安全套件名变化">
+
+旧版安全源写作 `bookworm-security`，新版对应 `trixie-security`，上面的替换会一并处理。请打开文件确认，所有 `bookworm*` 都已变为 `trixie*`。
+
+</Callout>
+
+别忘了检查 `/etc/apt/sources.list.d/` 下的其他官方源文件，一并替换。
+
+## 第四步：执行升级
+
+```bash
+# 1. 用新的 trixie 源刷新软件包列表
+sudo apt update
+
+# 2. 最小化升级（先升级核心包，冲突风险较小）
+sudo apt upgrade --without-new-pkgs
+
+# 3. 完整升级（安装新内核、处理依赖变更、安装新包）
+sudo apt full-upgrade
+```
+
+完整升级会下载大量文件、耗时较长。期间可能弹出配置文件冲突提示，**通常选择「安装软件包维护者的版本」较为安全**（除非你确实手改过该配置）。
+
+## 第五步：重启并验证
+
+```bash
+sudo reboot
+```
+
+重启后验证：
+
+```bash
+lsb_release -a
+# 应显示 Release: 13，Codename: trixie
+
+uname -r
+# 内核应为 6.12 系列
+```
+
+## 第六步：升级后清理与收尾
+
+```bash
+# 清理升级遗留的旧版本包
+sudo apt autoremove --purge
+
+# 可选：把源迁移到 Debian 13 默认的 deb822 格式
+sudo apt modernize-sources
+```
+
+随后逐一恢复之前停用的第三方源，并确认它们提供了 trixie（或兼容）版本。关于 deb822 详见 [deb822 源格式](/administration/deb822)。
+
+## 常见问题
+
+- **升级中断 / 断网**：恢复网络后重新运行 `sudo apt full-upgrade`，APT 会接着完成。
+- **某些包被「保留 (kept back)」**：运行 `sudo apt full-upgrade` 通常即可解决。
+- **跨多个大版本**（如从 Debian 11）：**不要跳版**，应先升级到 Debian 12，再升级到 Debian 13。
+
+## 小结
+
+1. 更新当前系统 → 2. 处理第三方源 → 3. 源代号 `bookworm`→`trixie` → 4. `update` + `upgrade` + `full-upgrade` → 5. 重启验证 → 6. 清理并迁移到 deb822。
+
+延伸阅读：[deb822 源格式](/administration/deb822) · [APT 包管理](/administration/packages)

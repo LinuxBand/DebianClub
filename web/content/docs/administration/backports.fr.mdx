@@ -1,0 +1,95 @@
+---
+title: "Guide d'utilisation des Backports"
+description: "Guide complet pour installer en toute sécurité des versions plus récentes de logiciels via trixie-backports sur Debian 13 stable"
+---
+
+Debian Stable est réputé pour sa « stabilité », mais les versions logicielles y sont relativement conservatrices. Les **Backports** constituent une solution de compromis officielle de Debian : ils **recompilent** des logiciels plus récents issus de `testing` pour la version stable actuelle, vous permettant ainsi d'installer ponctuellement quelques logiciels plus récents sans quitter Stable.
+
+Pour Debian 13, le dépôt correspondant est **`trixie-backports`**.
+
+## Quand utiliser les Backports
+
+- ✅ Vous avez besoin d'une version plus récente d'un logiciel (par exemple, un noyau récent pour supporter du nouveau matériel, ou une version plus récente de LibreOffice).
+- ✅ Vous souhaitez que l'ensemble du système reste stable, en ne mettant à jour que certains logiciels.
+- ❌ N'utilisez pas les Backports pour « tout avoir en version récente » en installant tous les paquets en backport – cela annulerait l'avantage de stabilité de Stable.
+
+> Les logiciels des Backports **ne bénéficient pas du support de sécurité habituel de l'équipe Debian** et ont une priorité inférieure à ceux de Stable. Installez-les au cas par cas, uniquement quand vous en avez besoin.
+
+## Activer trixie-backports
+
+### Méthode 1 : format deb822 (recommandé)
+
+Créez le fichier `/etc/apt/sources.list.d/trixie-backports.sources` :
+
+```bash
+sudo tee /etc/apt/sources.list.d/trixie-backports.sources > /dev/null <<'EOF'
+Types: deb
+URIs: http://deb.debian.org/debian
+Suites: trixie-backports
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+EOF
+
+sudo apt update
+```
+
+### Méthode 2 : format ligne unique traditionnel
+
+Vous pouvez aussi ajouter directement `Suites` à la ligne `Suites` du fichier officiel `debian.sources` (par exemple `Suites: trixie trixie-updates trixie-backports`), ou ajouter dans `sources.list` :
+
+```
+deb http://deb.debian.org/debian trixie-backports main contrib non-free non-free-firmware
+```
+
+Pour la différence entre les deux formats, voir [format de source deb822](/fr/administration/deb822).
+
+## Installer des logiciels en backport
+
+Une fois activé, la priorité par défaut des backports est **inférieure** à celle de Stable. Par conséquent, une simple commande `apt install` **n'installera pas** automatiquement depuis les backports. Vous devez explicitement spécifier `-t` (`--target-release`) :
+
+```bash
+# Installation de la dernière version de LibreOffice depuis les backports
+sudo apt install -t trixie-backports libreoffice
+
+# Installation d'un noyau plus récent (très utile pour du nouveau matériel)
+sudo apt install -t trixie-backports linux-image-amd64
+```
+
+Les mises à jour ultérieures avec `sudo apt upgrade` mettront à jour les paquets déjà installés en backport vers leurs nouvelles versions dans les backports, tandis que les autres paquets resteront sur Stable.
+
+## Contrôle fin avec APT Pinning (optionnel)
+
+Si vous souhaitez que certains paquets soient **par défaut** installés depuis les backports, créez `/etc/apt/preferences.d/backports` :
+
+```
+# Donner une priorité par défaut plus faible aux backports que stable,
+# pour éviter la mise à jour automatique de tous les paquets.
+Package: *
+Pin: release n=trixie-backports
+Pin-Priority: 400
+
+# Permettre au noyau et à ses en-têtes d'être prioritaires depuis les backports
+# (priorité supérieure à 500 de stable)
+Package: linux-image-* linux-headers-*
+Pin: release n=trixie-backports
+Pin-Priority: 501
+```
+
+- Priorité `< 500` : installé seulement avec `-t` explicite.
+- Priorité `> 500` : la version backport est automatiquement préférée.
+
+## Désinstallation et retour arrière
+
+Les logiciels installés en backport se désinstallent comme des paquets normaux. Si vous souhaitez revenir à la version Stable, vous pouvez spécifier le numéro de version ou désinstaller puis réinstaller depuis Stable :
+
+```bash
+sudo apt install <nom_du_logiciel>/trixie
+```
+
+## Résumé
+
+- Debian 13 utilise `trixie-backports` pour obtenir des logiciels plus récents tout en gardant le système stable.
+- L'installation doit impérativement se faire avec `apt install -t trixie-backports <paquet>` ; il n'y a pas de mise à niveau automatique.
+- Activez et installez au cas par cas ; les backports ne bénéficient pas du support de sécurité habituel.
+
+Lectures complémentaires : [format de source deb822](/fr/administration/deb822) · [Gestion des paquets APT](/fr/administration/packages)

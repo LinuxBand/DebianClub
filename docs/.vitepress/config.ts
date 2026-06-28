@@ -3,7 +3,7 @@ import { withMermaid } from 'vitepress-plugin-mermaid'
 import llmstxt from 'vitepress-plugin-llms'
 
 const SITE_URL = 'https://www.debian.club'
-const OG_IMAGE = `${SITE_URL}/images/og-cover.svg`
+const OG_IMAGE = `${SITE_URL}/images/hero-home.png`
 
 // locale → hreflang value
 const LOCALES: Record<string, string> = {
@@ -48,8 +48,8 @@ export default withMermaid(defineConfig({
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'Debian.Club' }],
     ['meta', { property: 'og:image', content: OG_IMAGE }],
-    ['meta', { property: 'og:image:width', content: '1200' }],
-    ['meta', { property: 'og:image:height', content: '630' }],
+    ['meta', { property: 'og:image:width', content: '2048' }],
+    ['meta', { property: 'og:image:height', content: '1152' }],
     // Twitter Card
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'twitter:image', content: OG_IMAGE }],
@@ -228,6 +228,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
             items: [
               { text: '变体发行版', link: '/variants/' },
               { text: '最新动态', link: '/news' },
+              { text: 'Debian 14 (Forky)', link: '/debian-14' },
               { text: '友情链接', link: '/links' }
             ]
           },
@@ -409,6 +410,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: '版本对比', link: '/comparison' },
                 { text: '版本与发布', link: '/versions' },
                 { text: '生命周期 (EOL)', link: '/eol' },
+                { text: 'Debian 14 (Forky)', link: '/debian-14' },
                 { text: '友情链接', link: '/links' }
               ]
             }
@@ -440,6 +442,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
           { text: 'その他', items: [
             { text: 'Debian 派生ディストロ', link: '/ja/variants/' },
             { text: 'ニュース', link: '/ja/news' },
+            { text: 'Debian 14 (Forky)', link: '/ja/debian-14' },
             { text: 'リンク集', link: '/ja/links' }
           ]},
         ],
@@ -519,6 +522,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'バージョン比較', link: '/ja/comparison' },
                 { text: 'バージョン情報', link: '/ja/versions' },
                 { text: 'サポート終了 (EOL)', link: '/ja/eol' },
+                { text: 'Debian 14 (Forky)', link: '/ja/debian-14' },
                 { text: 'リンク集', link: '/ja/links' }
               ]
             },
@@ -556,6 +560,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
           { text: '더보기', items: [
             { text: 'Debian 파생 배포판', link: '/ko/variants/' },
             { text: '뉴스', link: '/ko/news' },
+            { text: 'Debian 14 (Forky)', link: '/ko/debian-14' },
             { text: '파트너 링크', link: '/ko/links' }
           ]},
         ],
@@ -635,6 +640,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: '버전 비교', link: '/ko/comparison' },
                 { text: '버전 정보', link: '/ko/versions' },
                 { text: '지원 종료 (EOL)', link: '/ko/eol' },
+                { text: 'Debian 14 (Forky)', link: '/ko/debian-14' },
                 { text: '파트너 링크', link: '/ko/links' }
               ]
             },
@@ -672,6 +678,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
           { text: 'Mehr', items: [
             { text: 'Debian-Varianten', link: '/de/variants/' },
             { text: 'Neuigkeiten', link: '/de/news' },
+            { text: 'Debian 14 (Forky)', link: '/de/debian-14' },
             { text: 'Partnerlinks', link: '/de/links' }
           ]},
         ],
@@ -751,6 +758,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Versionsvergleich', link: '/de/comparison' },
                 { text: 'Versionsinformationen', link: '/de/versions' },
                 { text: 'End-of-Life (EOL)', link: '/de/eol' },
+                { text: 'Debian 14 (Forky)', link: '/de/debian-14' },
                 { text: 'Partnerlinks', link: '/de/links' }
               ]
             },
@@ -788,6 +796,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
           { text: 'Plus', items: [
             { text: 'Variantes Debian', link: '/fr/variants/' },
             { text: 'Actualités', link: '/fr/news' },
+            { text: 'Debian 14 (Forky)', link: '/fr/debian-14' },
             { text: 'Liens partenaires', link: '/fr/links' }
           ]},
         ],
@@ -867,6 +876,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Comparaison des versions', link: '/fr/comparison' },
                 { text: 'Informations de version', link: '/fr/versions' },
                 { text: 'Fin de vie (EOL)', link: '/fr/eol' },
+                { text: 'Debian 14 (Forky)', link: '/fr/debian-14' },
                 { text: 'Liens partenaires', link: '/fr/links' }
               ]
             },
@@ -904,6 +914,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
           { text: 'Más', items: [
             { text: 'Variantes de Debian', link: '/es/variants/' },
             { text: 'Noticias', link: '/es/news' },
+            { text: 'Debian 14 (Forky)', link: '/es/debian-14' },
             { text: 'Enlaces de amigos', link: '/es/links' }
           ]},
         ],
@@ -983,6 +994,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Comparación de versiones', link: '/es/comparison' },
                 { text: 'Información de versiones', link: '/es/versions' },
                 { text: 'Fin de vida (EOL)', link: '/es/eol' },
+                { text: 'Debian 14 (Forky)', link: '/es/debian-14' },
                 { text: 'Enlaces de amigos', link: '/es/links' }
               ]
             },
@@ -1020,6 +1032,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
           { text: 'Mais', items: [
             { text: 'Variantes do Debian', link: '/pt/variants/' },
             { text: 'Notícias', link: '/pt/news' },
+            { text: 'Debian 14 (Forky)', link: '/pt/debian-14' },
             { text: 'Links parceiros', link: '/pt/links' }
           ]},
         ],
@@ -1099,6 +1112,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Comparação de versões', link: '/pt/comparison' },
                 { text: 'Informações de versão', link: '/pt/versions' },
                 { text: 'Fim de vida (EOL)', link: '/pt/eol' },
+                { text: 'Debian 14 (Forky)', link: '/pt/debian-14' },
                 { text: 'Links parceiros', link: '/pt/links' }
               ]
             },
@@ -1145,6 +1159,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
             items: [
               { text: 'Debian Variants', link: '/en/variants/' },
               { text: 'News', link: '/en/news' },
+              { text: 'Debian 14 (Forky)', link: '/en/debian-14' },
               { text: 'Friend Links', link: '/en/links' }
             ]
           },
@@ -1314,6 +1329,7 @@ gtag('config', 'G-KQDJQSRRNS');`]
                 { text: 'Comparison', link: '/en/comparison' },
                 { text: 'Versions', link: '/en/versions' },
                 { text: 'End of Life (EOL)', link: '/en/eol' },
+                { text: 'Debian 14 (Forky)', link: '/en/debian-14' },
                 { text: 'Friend Links', link: '/en/links' }
               ]
             }

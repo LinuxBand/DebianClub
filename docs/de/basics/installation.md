@@ -5,6 +5,8 @@ description: Vollständige Schritt-für-Schritt Installationsanleitung für Debi
 
 # Debian 13 Installationsanleitung
 
+![Debian-Installationsschritte](/images/install-journey.png)
+
 ## Vorbereitung vor der Installation
 
 - ✅ Bootfähiges Medium erstellt

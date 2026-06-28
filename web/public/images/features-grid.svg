@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gridGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f1f5f9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#d1d5db" stroke-width="1" opacity="0.3"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="400" fill="url(#gridGradient)"/>
+  <rect width="800" height="400" fill="url(#grid)"/>
+  
+  <!-- Feature icons -->
+  <!-- Row 1 -->
+  <circle cx="133" cy="100" r="30" fill="#d41443" opacity="0.1"/>
+  <text x="133" y="110" text-anchor="middle" font-size="24">🚀</text>
+  
+  <circle cx="267" cy="100" r="30" fill="#6366f1" opacity="0.1"/>
+  <text x="267" y="110" text-anchor="middle" font-size="24">👨‍🎓</text>
+  
+  <circle cx="400" cy="100" r="30" fill="#10b981" opacity="0.1"/>
+  <text x="400" y="110" text-anchor="middle" font-size="24">🔧</text>
+  
+  <!-- Row 2 -->
+  <circle cx="533" cy="100" r="30" fill="#f59e0b" opacity="0.1"/>
+  <text x="533" y="110" text-anchor="middle" font-size="24">🌍</text>
+  
+  <circle cx="667" cy="100" r="30" fill="#8b5cf6" opacity="0.1"/>
+  <text x="667" y="110" text-anchor="middle" font-size="24">📱</text>
+  
+  <circle cx="400" cy="300" r="30" fill="#ef4444" opacity="0.1"/>
+  <text x="400" y="310" text-anchor="middle" font-size="24">⚡</text>
+  
+  <!-- Connecting lines -->
+  <path d="M133,130 Q200,200 267,130" fill="none" stroke="#d41443" stroke-width="2" opacity="0.2"/>
+  <path d="M267,130 Q333,200 400,130" fill="none" stroke="#6366f1" stroke-width="2" opacity="0.2"/>
+  <path d="M400,130 Q467,200 533,130" fill="none" stroke="#10b981" stroke-width="2" opacity="0.2"/>
+  <path d="M533,130 Q600,200 667,130" fill="none" stroke="#f59e0b" stroke-width="2" opacity="0.2"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="50" cy="50" r="3" fill="#d41443" opacity="0.4"/>
+  <circle cx="750" cy="50" r="3" fill="#10b981" opacity="0.4"/>
+  <circle cx="50" cy="350" r="3" fill="#6366f1" opacity="0.4"/>
+  <circle cx="750" cy="350" r="3" fill="#f59e0b" opacity="0.4"/>
+  
+  <!-- Floating particles -->
+  <circle cx="200" cy="30" r="2" fill="#d41443" opacity="0.6">
+    <animate attributeName="cy" values="30;50;30" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="600" cy="370" r="2" fill="#10b981" opacity="0.6">
+    <animate attributeName="cy" values="370;350;370" dur="2s" repeatCount="indefinite"/>
+  </circle>
+</svg> 

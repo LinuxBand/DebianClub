@@ -5,6 +5,8 @@ description: Initial configuration and setup after installing Debian 13
 
 # First Boot Setup
 
+<BootChain />
+
 Complete the essential configuration steps after your first Debian 13 boot.
 
 ## 🎉 Welcome to Debian!

@@ -5,6 +5,8 @@ description: 掌握 Debian 13 的 APT 包管理系统，学会安装、更新和
 
 # APT 包管理系统
 
+![APT 包管理](/images/apt.png)
+
 APT（Advanced Package Tool）是 Debian 系统的核心包管理工具。本教程将教您如何使用 APT 安装、更新、删除软件包。
 
 ## 🎯 APT 基础概念

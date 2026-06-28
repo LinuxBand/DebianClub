@@ -5,6 +5,10 @@ description: Learn about the lifecycle and end-of-life dates for each Debian rel
 
 # Debian Release End-of-Life (EOL)
 
+![Debian release support lifecycle](/images/lifecycle.png)
+
+<ReleaseTimeline />
+
 Understanding the lifecycle of the Debian version you are using is crucial to ensure your system continues to receive security updates and technical support.
 
 ## Debian Release Models
@@ -28,7 +32,7 @@ The table below lists the release dates and End-of-Life (EOL) dates for recent D
 | Codename                 | Release Date | End of Regular Support | End of Long-Term Support (LTS) |
 | :----------------------- | :----------- | :--------------------- | :----------------------------- |
 | **Debian 13 (Trixie)**   | 2025-08-09   | ~ August 2028          | ~ August 2030                  |
-| **Debian 12 (Bookworm)** | 2023-06-10   | ~ June 2026            | ~ June 2028                    |
+| **Debian 12 (Bookworm)** | 2023-06-10   | 2026-06-10             | 2028-06-30                     |
 | **Debian 11 (Bullseye)** | 2021-08-14   | July 2024              | 2026-08-31                     |
 | **Debian 10 (Buster)**   | 2019-07-06   | 2022-09-10             | 2024-06-30                     |
 | **Debian 9 (Stretch)**   | 2017-06-17   | 2020-07-06             | 2022-06-30                     |
@@ -36,6 +40,10 @@ The table below lists the release dates and End-of-Life (EOL) dates for recent D
 
 ::: tip
 Dates marked with `~` are estimates and may be subject to minor changes. Please follow official Debian announcements for the most accurate information.
+:::
+
+::: warning Debian 12 has entered LTS
+Debian 12 (Bookworm) reached the end of regular security support on **2026-06-10** and moved to the Long-Term Support phase, maintained by the LTS team until **2028-06-30**. Planning an upgrade to Debian 13 (Trixie) is recommended.
 :::
 
 It is highly recommended that you plan and upgrade to a newer stable version before your current version's LTS period ends to ensure your system remains secure. 

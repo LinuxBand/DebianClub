@@ -5,6 +5,8 @@ description: Debian 13インストール後の初期設定
 
 # 初回起動設定
 
+<BootChain />
+
 ## Debianへようこそ！
 
 Debian 13のインストールに成功しました！

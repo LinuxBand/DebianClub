@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google';
 import { Provider } from '@/components/provider';
 import { CustomFooter } from '@/components/CustomFooter';
+import { Matomo } from '@/components/Matomo';
 import { provider } from '@/lib/i18n';
 import type { ReactNode } from 'react';
 
@@ -21,6 +22,7 @@ export default async function LangLayout({
           {children}
           <CustomFooter />
         </Provider>
+        {process.env.NODE_ENV === 'production' && <Matomo />}
       </body>
     </html>
   );

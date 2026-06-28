@@ -5,6 +5,8 @@ description: Aprende a gestionar la seguridad de un sistema Debian, incluyendo c
 
 # Gestión de Seguridad
 
+![Refuerzo de seguridad del servidor](/images/security.png)
+
 Garantizar la seguridad de un sistema Debian es una tarea central en la administración de sistemas. Esta guía cubrirá varias áreas clave para ayudarte a fortalecer tu sistema y protegerlo contra amenazas potenciales.
 
 ## 🔐 Usuarios y Control de Acceso

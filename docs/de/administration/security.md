@@ -5,6 +5,8 @@ description: Erfahren Sie, wie Sie die Sicherheit Ihres Debian-Systems verwalten
 
 # Sicherheitsmanagement
 
+![Server-Sicherheitshärtung](/images/security.png)
+
 Die Sicherung Ihres Debian-Systems ist eine Kernaufgabe der Systemadministration. Dieser Leitfaden behandelt mehrere Schlüsselbereiche, um Ihnen zu helfen, Ihr System zu härten und potenzielle Bedrohungen abzuwehren.
 
 ## 🔐 Benutzer und Zugriffskontrolle

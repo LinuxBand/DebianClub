@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#d41443;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#6366f1;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f8fafc" rx="10"/>
+  
+  <!-- Learning path line -->
+  <path d="M50,150 Q150,100 200,150 Q250,200 350,150" 
+        fill="none" stroke="url(#pathGradient)" stroke-width="4" stroke-dasharray="5,5"/>
+  
+  <!-- Step 1: Basic -->
+  <circle cx="50" cy="150" r="15" fill="#d41443"/>
+  <text x="50" y="155" text-anchor="middle" fill="white" font-size="12" font-weight="bold">1</text>
+  <text x="50" y="180" text-anchor="middle" fill="#374151" font-size="12">基础</text>
+  
+  <!-- Step 2: Install -->
+  <circle cx="150" cy="110" r="15" fill="#6366f1"/>
+  <text x="150" y="115" text-anchor="middle" fill="white" font-size="12" font-weight="bold">2</text>
+  <text x="150" y="95" text-anchor="middle" fill="#374151" font-size="12">安装</text>
+  
+  <!-- Step 3: Config -->
+  <circle cx="250" cy="190" r="15" fill="#f59e0b"/>
+  <text x="250" y="195" text-anchor="middle" fill="white" font-size="12" font-weight="bold">3</text>
+  <text x="250" y="220" text-anchor="middle" fill="#374151" font-size="12">配置</text>
+  
+  <!-- Step 4: Use -->
+  <circle cx="350" cy="150" r="15" fill="#10b981"/>
+  <text x="350" y="155" text-anchor="middle" fill="white" font-size="12" font-weight="bold">4</text>
+  <text x="350" y="180" text-anchor="middle" fill="#374151" font-size="12">使用</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="80" cy="80" r="3" fill="#d41443" opacity="0.3"/>
+  <circle cx="320" cy="70" r="3" fill="#10b981" opacity="0.3"/>
+  <circle cx="120" cy="230" r="3" fill="#6366f1" opacity="0.3"/>
+  <circle cx="280" cy="250" r="3" fill="#f59e0b" opacity="0.3"/>
+</svg> 

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="NexaBlocks">
+  <rect width="48" height="48" rx="12" fill="#2563EB"/>
+  <g fill="#fff">
+    <rect x="12" y="12" width="11" height="11" rx="2.5"/>
+    <rect x="25" y="12" width="11" height="11" rx="2.5" opacity="0.78"/>
+    <rect x="12" y="25" width="11" height="11" rx="2.5" opacity="0.78"/>
+    <rect x="25" y="25" width="11" height="11" rx="2.5" opacity="0.55"/>
+  </g>
+</svg>

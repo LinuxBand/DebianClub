@@ -1,0 +1,133 @@
+---
+title: "Podman 容器管理"
+description: "在 Debian 13 上安装与使用 Podman，无守护进程、可 rootless 运行容器，并兼容 Docker 命令"
+---
+
+**Podman** 是一个开源的容器引擎，与 Docker 高度兼容，但有两个关键优势：
+
+- **无守护进程（daemonless）**：不像 Docker 依赖常驻的 root 守护进程，Podman 直接以普通进程运行容器，攻击面更小。
+- **可 Rootless 运行**：普通用户无需 root 即可运行容器，安全性更高。
+
+Debian 13 官方仓库已收录 Podman，安装非常简单，无需添加第三方源。
+
+## 安装
+
+```bash
+sudo apt update
+sudo apt install podman
+
+# 验证
+podman --version
+```
+
+如需 `docker-compose` 风格的编排，可额外安装：
+
+```bash
+sudo apt install podman-compose
+```
+
+## 基本用法
+
+Podman 的命令行与 Docker 几乎一一对应：
+
+```bash
+# 运行一个容器
+podman run -d --name web -p 8080:80 docker.io/library/nginx
+
+# 查看运行中的容器
+podman ps
+
+# 查看所有容器（含已停止）
+podman ps -a
+
+# 查看本地镜像
+podman images
+
+# 查看日志 / 进入容器
+podman logs web
+podman exec -it web bash
+
+# 停止并删除
+podman stop web
+podman rm web
+```
+
+> 注意：Podman 默认会显式写出镜像仓库前缀（如 `docker.io/library/nginx`）。也可在 `/etc/containers/registries.conf` 中配置默认搜索的仓库。
+
+## 兼容 Docker 命令
+
+如果你习惯 `docker` 命令，可以安装兼容包，让 `docker` 成为 `podman` 的别名：
+
+```bash
+sudo apt install podman-docker
+```
+
+之后 `docker run ...`、`docker ps` 等命令会直接转发给 Podman。
+
+## Rootless 容器
+
+普通用户直接运行 `podman` 即为 rootless 模式，无需任何额外配置——这是 Podman 相比 Docker 的最大亮点。验证：
+
+```bash
+# 以普通用户（非 sudo）运行
+podman run --rm docker.io/library/alpine echo "Hello from rootless Podman"
+```
+
+Rootless 模式依赖用户命名空间（user namespaces）。Debian 13 默认已启用；如遇 `subuid/subgid` 相关报错，确认 `/etc/subuid` 和 `/etc/subgid` 中有当前用户的条目：
+
+```bash
+grep "$USER" /etc/subuid /etc/subgid
+# 若没有，可手动添加（一般安装时已自动配置）
+sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 "$USER"
+```
+
+## Pod：原生分组管理
+
+Podman 的名字来自 **Pod**（与 Kubernetes 的 Pod 概念一致）——可以把多个容器编为一组，共享网络命名空间：
+
+```bash
+# 创建一个 pod 并暴露端口
+podman pod create --name mypod -p 8080:80
+
+# 把容器加入 pod
+podman run -d --pod mypod docker.io/library/nginx
+```
+
+## 用 systemd 管理容器（Quadlet）
+
+让容器开机自启、由系统统一管理，推荐使用 **Quadlet**。在 `~/.config/containers/systemd/`（rootless）或 `/etc/containers/systemd/`（系统级）创建 `.container` 单元文件：
+
+```ini
+# ~/.config/containers/systemd/web.container
+[Container]
+Image=docker.io/library/nginx
+PublishPort=8080:80
+
+[Install]
+WantedBy=default.target
+```
+
+然后重载并启动：
+
+```bash
+systemctl --user daemon-reload
+systemctl --user start web
+```
+
+## Podman vs Docker 速览
+
+| 特性 | Podman | Docker |
+|---|---|---|
+| 守护进程 | 无（daemonless） | 有常驻守护进程 |
+| Rootless | 原生默认支持 | 需额外配置 |
+| 命令行 | 与 Docker 兼容 | — |
+| systemd 集成 | 原生 Quadlet | 需额外封装 |
+| Debian 13 安装 | 官方源直接安装 | 需添加 Docker 官方源 |
+
+## 小结
+
+- `sudo apt install podman` 即可，无需第三方源。
+- 命令与 Docker 兼容，可用 `podman-docker` 让 `docker` 命令直接转发。
+- 普通用户即 rootless 运行，配合 Quadlet 可由 systemd 托管。
+
+延伸阅读：[Docker 安装与使用](/server/docker) · [虚拟化](/server/virtualization)

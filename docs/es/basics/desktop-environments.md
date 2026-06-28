@@ -5,6 +5,8 @@ description: Guía de entornos de escritorio disponibles para Debian 13
 
 # Entornos de escritorio para Debian 13
 
+![Entornos de escritorio de Debian](/images/desktops.png)
+
 Debian ofrece una gran variedad de entornos de escritorio.
 
 ## GNOME (Recomendado para principiantes)

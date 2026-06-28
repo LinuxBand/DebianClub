@@ -1,0 +1,133 @@
+---
+title: "Gestión de contenedores con Podman"
+description: "Instalación y uso de Podman en Debian 13, sin demonio, ejecución rootless de contenedores y compatibilidad con comandos de Docker"
+---
+
+**Podman** es un motor de contenedores de código abierto, altamente compatible con Docker, pero con dos ventajas clave:
+
+- **Sin demonio (daemonless)**: a diferencia de Docker, que depende de un demonio raíz residente, Podman ejecuta los contenedores directamente como procesos normales, reduciendo la superficie de ataque.
+- **Ejecución rootless**: los usuarios normales pueden ejecutar contenedores sin necesidad de ser root, lo que mejora la seguridad.
+
+Los repositorios oficiales de Debian 13 ya incluyen Podman, por lo que la instalación es muy sencilla y no requiere añadir repositorios de terceros.
+
+## Instalación
+
+```bash
+sudo apt update
+sudo apt install podman
+
+# Verificar
+podman --version
+```
+
+Si se desea una orquestación al estilo `docker-compose`, se puede instalar adicionalmente:
+
+```bash
+sudo apt install podman-compose
+```
+
+## Uso básico
+
+La línea de comandos de Podman es casi uno a uno con la de Docker:
+
+```bash
+# Ejecutar un contenedor
+podman run -d --name web -p 8080:80 docker.io/library/nginx
+
+# Ver contenedores en ejecución
+podman ps
+
+# Ver todos los contenedores (incluidos los detenidos)
+podman ps -a
+
+# Ver imágenes locales
+podman images
+
+# Ver registros / acceder al contenedor
+podman logs web
+podman exec -it web bash
+
+# Detener y eliminar
+podman stop web
+podman rm web
+```
+
+> Nota: Podman suele escribir explícitamente el prefijo del repositorio de imágenes (por ejemplo, `docker.io/library/nginx`). También se puede configurar el repositorio de búsqueda predeterminado en `/etc/containers/registries.conf`.
+
+## Compatibilidad con comandos de Docker
+
+Si está acostumbrado al comando `docker`, puede instalar el paquete de compatibilidad para que `docker` se convierta en un alias de `podman`:
+
+```bash
+sudo apt install podman-docker
+```
+
+A partir de entonces, comandos como `docker run ...`, `docker ps`, etc., se redirigirán directamente a Podman.
+
+## Contenedores rootless
+
+Un usuario normal puede ejecutar `podman` directamente en modo rootless, sin necesidad de configuración adicional: este es el mayor atractivo de Podman frente a Docker. Verifique:
+
+```bash
+# Ejecutar como usuario normal (sin sudo)
+podman run --rm docker.io/library/alpine echo "Hello from rootless Podman"
+```
+
+El modo rootless depende de los espacios de nombres de usuario (user namespaces). Debian 13 lo tiene habilitado por defecto; si aparece un error relacionado con `subuid/subgid`, verifique que en `/etc/subuid` y `/etc/subgid` exista una entrada para el usuario actual:
+
+```bash
+grep "$USER" /etc/subuid /etc/subgid
+# Si no existe, se puede añadir manualmente (normalmente se configura automáticamente al instalar)
+sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 "$USER"
+```
+
+## Pod: gestión nativa de grupos
+
+El nombre de Podman proviene de **Pod** (concepto similar al Pod de Kubernetes): permite agrupar varios contenedores en un mismo grupo compartiendo el espacio de nombres de red:
+
+```bash
+# Crear un pod y exponer un puerto
+podman pod create --name mypod -p 8080:80
+
+# Añadir un contenedor al pod
+podman run -d --pod mypod docker.io/library/nginx
+```
+
+## Gestión de contenedores con systemd (Quadlet)
+
+Para que los contenedores se inicien automáticamente al arrancar y sean gestionados por el sistema, se recomienda usar **Quadlet**. Cree archivos de unidad `.container` en `~/.config/containers/systemd/` (rootless) o en `/etc/containers/systemd/` (a nivel del sistema):
+
+```ini
+# ~/.config/containers/systemd/web.container
+[Container]
+Image=docker.io/library/nginx
+PublishPort=8080:80
+
+[Install]
+WantedBy=default.target
+```
+
+Luego recargue e inicie:
+
+```bash
+systemctl --user daemon-reload
+systemctl --user start web
+```
+
+## Comparativa rápida: Podman vs Docker
+
+| Característica | Podman | Docker |
+|---|---|---|
+| Demonio | No (daemonless) | Demonio residente |
+| Rootless | Soporte nativo por defecto | Requiere configuración adicional |
+| Línea de comandos | Compatible con Docker | — |
+| Integración con systemd | Quadlet nativo | Requiere empaquetado adicional |
+| Instalación en Debian 13 | Desde los repositorios oficiales | Requiere añadir repositorio oficial de Docker |
+
+## Resumen
+
+- `sudo apt install podman` es suficiente, no necesita repositorios de terceros.
+- Los comandos son compatibles con Docker; puede usar `podman-docker` para que el comando `docker` redirija directamente.
+- Los usuarios normales ejecutan contenedores en modo rootless; junto con Quadlet, pueden ser gestionados por systemd.
+
+Lecturas adicionales: [Instalación y uso de Docker](/en/server/docker) · [Virtualización](/en/server/virtualization)

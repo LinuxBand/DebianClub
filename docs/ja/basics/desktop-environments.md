@@ -5,6 +5,8 @@ description: Debian 13で利用可能なデスクトップ環境ガイド
 
 # Debian 13のデスクトップ環境
 
+![Debian のデスクトップ環境](/images/desktops.png)
+
 Debianはさまざまなデスクトップ環境を提供しています。
 
 ## GNOME（初心者に推奨）

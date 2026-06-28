@@ -6,8 +6,8 @@ hero:
   text: "Complete Debian Guide for Beginners"
   tagline: "Learn Debian 13 from Zero - The Most Stable Linux Distribution"
   image:
-    src: /images/debian-logo.svg
-    alt: Debian Logo
+    src: /images/hero-home.png
+    alt: Debian.Club learning illustration
   actions:
     - theme: brand
       text: 🚀 Get Started
@@ -52,7 +52,9 @@ features:
     details: Following the latest Debian 13 changes, timely content updates
 ---
 
-## 🎯 Learning Path
+## <i class="ph-duotone ph-target hi"></i> Learning Path
+
+![Learning Debian at a desk](/images/scene-learn.png)
 
 <div class="learning-path">
 
@@ -82,7 +84,7 @@ Master daily operation skills
 
 </div>
 
-## 💡 Why Choose Debian?
+## <i class="ph-duotone ph-lightbulb hi"></i> Why Choose Debian?
 
 ::: tip 🔒 Stable and Reliable
 Debian is renowned for its excellent stability, the preferred choice for many servers and critical systems
@@ -104,7 +106,9 @@ Over 50,000 pre-compiled software packages available, with support for multiple 
 
 <TestimonialsSection />
 
-## 🎮 Quick Experience
+## <i class="ph-duotone ph-flask hi"></i> Quick Experience
+
+![Debian running on many devices](/images/devices.png)
 
 Want to quickly experience Debian? Here are several options:
 
@@ -121,27 +125,4 @@ Want to quickly experience Debian? Here are several options:
   <strong>Start your Debian journey now!</strong>
 </div>
 
-## Linux Documentation Alliance
-
-| Site | Description |
-|------|-------------|
-| [Debian.Club](https://debian.club/) | Complete Debian Guide for Beginners |
-| [Ubuntu.Fan](https://ubuntu.fan/) | Ubuntu Chinese Community |
-| [RunEntLinux](https://runentlinux.com/) | Enterprise Linux Operations Guide |
-| [AlmaLinuxCN](https://www.almalinux.com.cn/) | AlmaLinux Chinese Community |
-
-Check software support lifecycle at: [EOL.Wiki](https://eol.wiki/)
-
-AI Native open-source server control panel: [WebCasa](https://web.casa)
-
-Lightweight Web Server highly compatible with Apache HTTPD: [LiteHTTPD](https://litehttpd.com)
-
-## Friend Links
-
-[Debian.Club](https://debian.club/) | [hestiacp.cn](https://hestiacp.cn/) | [PortCyou](https://portcyou.com/) | [CloudFan](https://cloud.fan/) | [BigKr](https://bigkr.com/) | [AlmaLinuxCN](https://www.almalinux.com.cn/)
-
-[P.Cafe](https://p.cafe/) | [RankFan](https://www.rank.fan/) | [APP on ARM](https://www.apponarm.com/) | [FreeHost](https://freehost.work/) | [MF8](https://mf8.biz/) | [AAT.ee](https://aat.ee/) | [II.Pe](https://ii.pe/)
-
-[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa) | [LiteHTTPD](https://litehttpd.com)
-
-[More friend links →](/en/links)
+🔗 More quality sites on the [Friend Links](/en/links) page

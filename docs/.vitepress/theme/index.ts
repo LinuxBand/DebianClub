@@ -2,6 +2,7 @@ import { h, onMounted, watch } from 'vue'
 import { useRoute, useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import './custom.css'
+import '@phosphor-icons/web/duotone'
 import type { Theme } from 'vitepress'
 import { toRefs } from 'vue'
 
@@ -42,6 +43,10 @@ import VersionBadge from './components/VersionBadge.vue'
 import StatsSection from './components/StatsSection.vue'
 import TestimonialsSection from './components/TestimonialsSection.vue'
 import DownloadPage from './components/DownloadPage.vue'
+import DiskPartition from './components/DiskPartition.vue'
+import ReleaseTimeline from './components/ReleaseTimeline.vue'
+import BootChain from './components/BootChain.vue'
+import Permissions from './components/Permissions.vue'
 
 // Nolebase 阅读增强
 import {
@@ -74,6 +79,10 @@ export default {
     app.component('StatsSection', StatsSection)
     app.component('TestimonialsSection', TestimonialsSection)
     app.component('DownloadPage', DownloadPage)
+    app.component('DiskPartition', DiskPartition)
+    app.component('ReleaseTimeline', ReleaseTimeline)
+    app.component('BootChain', BootChain)
+    app.component('Permissions', Permissions)
 
     // 进度条
     vitepressBprogress({ app, router, siteData })

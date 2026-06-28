@@ -11,6 +11,15 @@ description: Debian 프로젝트의 최근 업데이트, 커뮤니티 이벤트 
 
 ### 버전 릴리스
 
+#### Debian 12(Bookworm) LTS 단계 진입 (2026-06-10)
+
+2026년 6월 10일, Debian 12(Bookworm)는 Debian 보안팀의 정규 보안 지원이 종료되고 공식적으로 **장기 지원(LTS)** 단계로 전환되었습니다. 이후 보안 업데이트는 Debian LTS 팀(자원봉사자 및 기업)이 담당하며, **2028년 6월 30일**까지 계속될 예정입니다.
+
+- Debian 12를 계속 사용하는 시스템도 보안 업데이트를 받을 수 있지만, Debian 13(Trixie)으로의 업그레이드를 계획하는 것이 좋습니다.
+- [Debian LTS 안내](https://wiki.debian.org/LTS)
+- [Debian 13 업그레이드 가이드](/ko/basics/upgrade)
+- [릴리스 지원 종료(EOL)](/ko/eol)
+
 #### Debian 13.5 및 12.14 릴리스 (2026-05-16)
 
 2026년 5월 16일, Debian은 두 개의 포인트 릴리스를 동시에 발표했습니다:
@@ -20,7 +29,7 @@ description: Debian 프로젝트의 최근 업데이트, 커뮤니티 이벤트 
 - [공식 공지](https://www.debian.org/News/2026/2026051602)
 - [Debian 13.5 다운로드](/ko/download)
 
-#### Debian 13.4 릴리스 (2026-03-08)
+#### Debian 13.4 릴리스 (2026-03-14)
 
 Debian 13 (Trixie)의 네 번째 포인트 업데이트 **13.4**가 출시되었습니다. 이번 업데이트는 보안 수정 및 심각한 버그 수정에 중점을 두었으며, 설치 이미지도 업데이트되었습니다.
 
@@ -61,9 +70,9 @@ Debian은 **Debian Images Testing with OpenQA** 분야에서 새로운 Outreachy
 
 ### 프로젝트 거버넌스
 
-#### 2026년 DPL 선거
+#### 2026년 DPL 선거: Sruthi Chandran 당선
 
-Debian 프로젝트 리더(DPL) 선거가 진행 중입니다:
+2026년 DPL 선거가 종료되었으며 **Sruthi Chandran**이 새로운 Debian 프로젝트 리더로 당선되었습니다. 임기는 **2026년 4월 21일**에 시작되었으며, 두 번 연임한 Andreas Tille의 뒤를 잇습니다. 올해 유일한 후보였으며 289표 대 50표(None of the above)로 당선되었습니다.
 
 | 단계 | 날짜 |
 |------|------|
@@ -72,8 +81,7 @@ Debian 프로젝트 리더(DPL) 선거가 진행 중입니다:
 | 투표 기간 | 4월 4일–17일 |
 | 새 임기 시작 | 4월 21일 |
 
-후보자: **Sruthi Chandran**
-
+- [선거 결과 발표](https://bits.debian.org/2026/04/dpl-elections-2026.html)
 - [선거 상세 정보](https://www.debian.org/vote/2026/vote_001)
 
 #### 새로운 개발자
@@ -88,8 +96,8 @@ Debian은 계속해서 새로운 멤버를 환영합니다:
 
 Debian 보안팀은 DSA(Debian Security Advisory) 및 DLA(Debian LTS Advisory) 공지를 계속 발행하고 있습니다. 최근 업데이트된 패키지로는 incus, lxd, libpng1.6, awstats 등이 있습니다.
 
-- 안정 버전(Debian 13)과 구 안정 버전(Debian 12) 모두 활성 보안 유지관리 중
-- LTS(Debian 11)도 DLA 공지를 계속 발행 중
+- 안정 버전(Debian 13)은 보안팀이 유지관리합니다
+- Debian 12(Bookworm)는 2026-06-10부터 LTS 팀이 유지관리하며, Debian 11(Bullseye)의 LTS 지원은 2026-08-31에 종료됩니다
 - [보안 공지](https://www.debian.org/security/)
 
 ---

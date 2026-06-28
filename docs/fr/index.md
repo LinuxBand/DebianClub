@@ -6,8 +6,8 @@ hero:
   text: "Le guide complet Debian pour débutants"
   tagline: "Apprenez Debian 13 de zéro · La distribution Linux la plus stable"
   image:
-    src: /images/debian-logo.svg
-    alt: Logo Debian
+    src: /images/hero-home.png
+    alt: Illustration d'apprentissage Debian.Club
   actions:
     - theme: brand
       text: 🚀 Commencer
@@ -52,7 +52,9 @@ features:
     details: Suivant les dernières évolutions de Debian 13 avec des mises à jour de contenu régulières
 ---
 
-## 🎯 Parcours d'apprentissage
+## <i class="ph-duotone ph-target hi"></i> Parcours d'apprentissage
+
+![Apprendre Debian à son bureau](/images/scene-learn.png)
 
 <div class="learning-path">
 
@@ -82,7 +84,7 @@ Maîtrisez les opérations du quotidien
 
 </div>
 
-## 💡 Pourquoi choisir Debian ?
+## <i class="ph-duotone ph-lightbulb hi"></i> Pourquoi choisir Debian ?
 
 ::: tip 🔒 Stable et fiable
 Debian est réputée pour son excellente stabilité, le choix privilégié pour de nombreux serveurs et systèmes critiques
@@ -104,7 +106,9 @@ Plus de 50 000 paquets logiciels précompilés disponibles, avec support pour pl
 
 <TestimonialsSection />
 
-## 🎮 Essai rapide
+## <i class="ph-duotone ph-flask hi"></i> Essai rapide
+
+![Debian sur de nombreux appareils](/images/devices.png)
 
 Vous souhaitez essayer Debian rapidement ? Voici plusieurs options :
 
@@ -121,26 +125,4 @@ Vous souhaitez essayer Debian rapidement ? Voici plusieurs options :
   <strong>Commencez votre aventure Debian maintenant !</strong>
 </div>
 
-## Alliance de documentation Linux
-
-| Site | Description |
-|------|-------------|
-| [Debian.Club](https://debian.club/) | Le guide complet Debian pour débutants |
-| [Ubuntu.Fan](https://ubuntu.fan/) | Communauté Ubuntu en chinois |
-| [RunEntLinux](https://runentlinux.com/) | Guide d'exploitation Linux d'entreprise |
-| [AlmaLinuxCN](https://www.almalinux.com.cn/) | Communauté AlmaLinux en chinois |
-
-Consultez le cycle de vie des logiciels sur : [EOL.Wiki](https://eol.wiki/)
-
-Panneau de contrôle serveur open-source natif IA : [WebCasa](https://web.casa)
-Serveur Web léger hautement compatible avec Apache HTTPD : [LiteHTTPD](https://litehttpd.com)
-
-## Liens partenaires
-
-[Debian.Club](https://debian.club/) | [hestiacp.cn](https://hestiacp.cn/) | [PortCyou](https://portcyou.com/) | [CloudFan](https://cloud.fan/) | [BigKr](https://bigkr.com/) | [AlmaLinuxCN](https://www.almalinux.com.cn/)
-
-[P.Cafe](https://p.cafe/) | [RankFan](https://www.rank.fan/) | [APP on ARM](https://www.apponarm.com/) | [FreeHost](https://freehost.work/) | [MF8](https://mf8.biz/) | [AAT.ee](https://aat.ee/) | [II.Pe](https://ii.pe/)
-
-[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa) | [LiteHTTPD](https://litehttpd.com)
-
-[Plus de liens partenaires →](/fr/links)
+🔗 Plus de sites de qualité sur la page [Liens partenaires](/fr/links)

@@ -1,0 +1,101 @@
+---
+title: "NVIDIA Optimus デュアルGPU構成"
+description: "Debian 13 ノートパソコンで NVIDIA Optimus ハイブリッドグラフィックスを構成し、ドライバをインストールして PRIME レンダリングオフロードを使用する"
+---
+
+多くのノートパソコンは **Intel/AMD 統合グラフィックス** と **NVIDIA ディスクリートグラフィックス** を同時に搭載しており、NVIDIA はこの技術を **Optimus** と呼んでいます。普段は省電力な内蔵GPUが画面を駆動し、高性能が必要なとき（ゲーム、レンダリング、CUDA）にディスクリートGPUに切り替えます。この記事では Debian 13 で正しくドライバをインストールし、PRIME レンダリングオフロードを使用する方法を説明します。
+
+## ステップ1: ハードウェアの確認
+
+```bash
+# すべてのGPUを表示し、Intel/AMD と NVIDIA が同時に存在することを確認
+lspci | grep -E "VGA|3D"
+```
+
+GPUが2つ表示されれば（例：Intel と NVIDIA）、Optimus ハイブリッドアーキテクチャです。
+
+## ステップ2: non-free-firmware と non-free リポジトリを有効化
+
+NVIDIA のクローズドソースドライバは `non-free` コンポーネントにあります。ソースリストに `non-free` と `non-free-firmware` が含まれていることを確認してください（Debian 13 のデフォルトの deb822 形式については [deb822 ソース形式](/ja/administration/deb822) を参照）：
+
+```text
+Components: main contrib non-free non-free-firmware
+```
+
+変更後、以下を実行します：
+
+```bash
+sudo apt update
+```
+
+## ステップ3: NVIDIA ドライバのインストール
+
+Debian 公式リポジトリにはテスト済みの NVIDIA ドライバが含まれています。**NVIDIA 公式サイトの `.run` インストーラではなく、公式パッケージを優先**してください：
+
+```bash
+# カーネルヘッダをインストール（ドライバモジュールのコンパイルに必要）
+sudo apt install linux-headers-amd64
+
+# NVIDIA ドライバと PRIME サポートをインストール
+sudo apt install nvidia-driver firmware-misc-nonfree
+
+# 再起動してドライバを読み込む
+sudo reboot
+```
+
+インストール処理は自動的に DKMS を介して現在のカーネル用にモジュールをコンパイルします。Debian の `nvidia-driver` パッケージは PRIME がデフォルトで設定されており、起動時は内蔵GPUが画面を駆動し、ディスクリートGPUは必要に応じて有効になります——これがノートパソコンに望ましい省電力動作です。
+
+## ステップ4: 確認
+
+```bash
+# ディスクリートGPUの状態を表示（ドライバが正常な場合、GPU情報が表示される）
+nvidia-smi
+
+# 現在の OpenGL レンダラを確認（デフォルトでは Intel/AMD 内蔵GPU）
+glxinfo | grep "OpenGL renderer"
+```
+
+`glxinfo` は `mesa-utils` パッケージに含まれています（`sudo apt install mesa-utils`）。
+
+## ステップ5: 必要に応じてディスクリートGPUでプログラムを実行（PRIME レンダリングオフロード）
+
+普段は内蔵GPUで省電力にし、必要なときだけ**個別のプログラム**をディスクリートGPUに任せることを **PRIME レンダリングオフロード** と呼びます：
+
+```bash
+# 特定のプログラムをディスクリートGPUで実行
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia <プログラム名>
+
+# 例：glxgears テストをディスクリートGPUで実行
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia glxgears
+```
+
+使いやすくするため、`~/.bashrc` にエイリアスを定義しておくと便利です：
+
+```bash
+alias nv-run='__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia'
+# これにより、nv-run blender のように使用可能
+```
+
+デスクトップ環境（GNOME/KDE）では、通常アプリケーションの右クリックメニューに「ディスクリートGPUで実行」というオプションが表示されますが、その背後では上記の仕組みが動作しています。
+
+## CUDA / 計算目的
+
+グラフィックスレンダリングではなく CUDA 計算（例：AI 推論）だけを実行する場合は、ドライバがインストールされていて `nvidia-smi` でディスクリートGPUが認識されれば十分であり、PRIME オフロードは不要です。CUDA ツールチェーンをインストールします：
+
+```bash
+sudo apt install nvidia-cuda-toolkit
+```
+
+## Wayland とよくある問題
+
+- **Wayland**：比較的新しい NVIDIA ドライバでは Wayland のサポートが改善されています。画面の乱れやログインできない場合は、ログイン画面で **Xorg** セッションに切り替えて調査してください。
+- **ブラック画面 / デスクトップに入れない**：GRUB のブートエントリで `linux` 行の末尾に一時的に `nomodeset` を追加して低解像度のデスクトップで起動し、ドライバのインストールを確認します。
+- **`nvidia-smi` が "No devices found" と表示する**：多くの場合、現在のカーネル向けにドライバが正常にコンパイルされていません。`linux-headers-amd64` がインストールされているか確認し、`sudo apt install --reinstall nvidia-driver` を再実行してください。
+
+## まとめ
+
+- `non-free` リポジトリを有効化 → `linux-headers-amd64` + `nvidia-driver` をインストール → 再起動。
+- デフォルトでは内蔵GPUで省電力動作し、`__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia` を使用して必要に応じてディスクリートGPUを呼び出す。
+- Debian 公式ドライバパッケージを優先し、公式サイトの `.run` インストーラは避ける。
+
+関連リンク：[ハードウェア互換性](/en/basics/hardware-compatibility) · [deb822 ソース形式](/ja/administration/deb822)

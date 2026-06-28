@@ -5,6 +5,8 @@ description: Choose and configure the perfect desktop environment for your Debia
 
 # Desktop Environments
 
+![Debian desktop environments](/images/desktops.png)
+
 Explore different desktop environments available for Debian 13 and choose the one that best fits your needs.
 
 ## 🎨 Popular Desktop Environments

@@ -1,0 +1,73 @@
+---
+title: Debian 14 (Forky)
+description: Debian 14 「Forky」 최신 소식 — 릴리스 일정, 현재 상태 및 차기 Debian을 미리 사용해 보는 방법.
+---
+
+# Debian 14 「Forky」
+
+![Debian 14(Forky) 일러스트](/images/hero-forky.png)
+
+::: info 차기 Debian 정보
+**Debian 14**의 개발 코드명은 **Forky**이며, 현재 **testing(테스트)** 단계에서 활발히 개발 중입니다. 이 페이지에서는 Forky의 현재 상태, 예상 릴리스 시기, 그리고 미리 사용해 보는 방법을 정리합니다. 현재 안정 버전은 여전히 [Debian 13(Trixie)](/ko/versions)입니다.
+:::
+
+## 📌 빠른 개요
+
+| 항목 | 정보 |
+|------|------|
+| **버전** | Debian 14 |
+| **코드명** | Forky (『토이 스토리 4』 캐릭터) |
+| **현재 상태** | testing (개발 중) |
+| **testing 브랜치 시작** | 2025-08-13 (Trixie 릴리스 직후) |
+| **예상 릴리스** | 2027년경 (확정 날짜 없음) |
+| **기반** | Debian 13(Trixie) 코드베이스에서 발전 |
+
+> ⚠️ Forky는 아직 출시되지 않았으며 **프로덕션 환경에 적합하지 않습니다**. 아래 정보는 개발 진행에 따라 변경됩니다.
+
+## 🧭 「Forky」란?
+
+Debian의 전통에 따라 각 릴리스는 『토이 스토리』의 캐릭터 이름을 따릅니다. 『토이 스토리 4』의 캐릭터인 **Forky**가 Debian 14의 코드명이 됩니다.
+
+Debian 14는 현재 Debian의 **testing** 배포판입니다. Debian 13(Trixie)이 2025년 8월 9일 안정 버전으로 출시된 후, testing 브랜치는 Forky 코드명으로 다시 시작되었습니다(2025-08-13). unstable(Sid)의 패키지는 일정 조건을 충족하면 자동으로 testing으로 이동합니다.
+
+## 🗓️ 릴리스 일정
+
+Debian은 **고정된 릴리스 날짜를 사용하지 않으며**, "준비되면 출시한다"는 방침입니다. 최근 안정 버전이 약 2년 주기로 출시된 것을 고려하면, Debian 14는 **2027년경**으로 예상됩니다.
+
+공식 릴리스 전에 Debian은 일반적으로 여러 **프리즈(freeze)** 단계를 거쳐 testing에 들어올 수 있는 변경 사항을 점진적으로 제한하여 차기 릴리스를 안정화합니다:
+
+1. **마일스톤 / 트랜지션 프리즈** — 대규모 라이브러리 전환 중단
+2. **소프트 프리즈(Soft Freeze)** — 신규 패키지 수용 중단
+3. **하드 프리즈(Hard Freeze)** — 심각한 버그 수정만 허용
+4. **풀 프리즈(Full Freeze)** — 출시 전 최종 안정화
+
+현재까지 Debian은 Forky의 구체적인 프리즈 또는 릴리스 날짜를 발표하지 않았습니다. 최신 정보는 공식 [release.debian.org](https://release.debian.org/)를 확인하세요.
+
+## 🔍 진행 상황을 확인하려면
+
+- **릴리스 상태**: [release.debian.org](https://release.debian.org/)
+- **공식 릴리스 정보 페이지**: [Debian 「forky」 릴리스 정보](https://www.debian.org/releases/forky/)
+- **릴리스 노트 초안**: [Forky Release Notes](https://www.debian.org/releases/forky/releasenotes)
+- **릴리스에 영향을 주는 심각한 버그(RC bugs)**: [릴리스 크리티컬 버그 목록](https://bugs.debian.org/release-critical/)
+- **개발 공지 메일링 리스트**: [debian-devel-announce](https://lists.debian.org/debian-devel-announce/)
+
+## 🧪 미리 사용해 보고 싶다면
+
+Debian 14를 미리 사용해 보고 싶다면 **testing** 배포판을 설치할 수 있습니다. 다만 다음 사항에 유의하세요:
+
+- testing은 **Debian 보안팀의** 신속한 보안 업데이트 대상이 아닙니다. 보안 보장이 필요하면 안정 버전 Debian 13(Trixie)을 사용하세요.
+- 패키지가 자주 변경되며 일시적인 문제가 발생할 수 있습니다.
+- 테스트 머신, 가상 머신 또는 중요하지 않은 환경에서만 실행하는 것이 좋습니다.
+
+::: tip 초보자를 위한 조언
+Debian을 처음 사용하거나 일상 / 프로덕션 용도로 사용한다면 [Debian 13(Trixie)](/ko/download)을 계속 사용하세요. Debian 14가 정식 출시되고 첫 포인트 업데이트(예: 14.1)가 나온 후에 업그레이드하는 것이 더 안전합니다.
+:::
+
+## 🔗 관련 링크
+
+- [Debian 「forky」 릴리스 정보 (공식)](https://www.debian.org/releases/forky/)
+- [Debian 릴리스 관리](https://release.debian.org/)
+- [Debian 최신 소식](/ko/news)
+- [버전 비교](/ko/comparison)
+- [릴리스 지원 종료(EOL)](/ko/eol)
+- [Debian 공식 뉴스](https://www.debian.org/News/)

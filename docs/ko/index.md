@@ -6,8 +6,8 @@ hero:
   text: "초보자를 위한 완전한 Debian 가이드"
   tagline: "처음부터 Debian 13 배우기 · 가장 안정적인 Linux 배포판"
   image:
-    src: /images/debian-logo.svg
-    alt: Debian 로고
+    src: /images/hero-home.png
+    alt: Debian.Club 학습 일러스트
   actions:
     - theme: brand
       text: 🚀 시작하기
@@ -52,7 +52,9 @@ features:
     details: 최신 Debian 13 변경 사항을 추적하며 콘텐츠를 적시에 업데이트
 ---
 
-## 🎯 학습 경로
+## <i class="ph-duotone ph-target hi"></i> 학습 경로
+
+![책상에서 Debian 학습](/images/scene-learn.png)
 
 <div class="learning-path">
 
@@ -82,7 +84,7 @@ Debian을 더 편리하게 만들기
 
 </div>
 
-## 💡 왜 Debian을 선택하나요?
+## <i class="ph-duotone ph-lightbulb hi"></i> 왜 Debian을 선택하나요?
 
 ::: tip 🔒 안정적이고 신뢰할 수 있음
 Debian은 뛰어난 안정성으로 세계적으로 유명하며, 많은 서버와 중요 시스템에서 선호되는 선택입니다
@@ -104,7 +106,9 @@ Debian은 진정한 자유 소프트웨어이며, 영원히 무료이고 오픈 
 
 <TestimonialsSection />
 
-## 🎮 빠른 체험
+## <i class="ph-duotone ph-flask hi"></i> 빠른 체험
+
+![다양한 기기에서 실행되는 Debian](/images/devices.png)
 
 Debian을 빠르게 체험하고 싶으신가요? 다음과 같은 여러 가지 방법이 있습니다:
 
@@ -121,26 +125,4 @@ Debian을 빠르게 체험하고 싶으신가요? 다음과 같은 여러 가지
   <strong>지금 바로 Debian 여정을 시작하세요!</strong>
 </div>
 
-## Linux 문서 동맹
-
-| 사이트 | 설명 |
-|--------|------|
-| [Debian.Club](https://debian.club/) | 초보자를 위한 완전한 Debian 가이드 |
-| [Ubuntu.Fan](https://ubuntu.fan/) | Ubuntu 중국어 커뮤니티 |
-| [RunEntLinux](https://runentlinux.com/) | 엔터프라이즈 Linux 운영 가이드 |
-| [AlmaLinuxCN](https://www.almalinux.com.cn/) | AlmaLinux 중국어 커뮤니티 |
-
-소프트웨어 지원 수명 주기 확인: [EOL.Wiki](https://eol.wiki/)
-
-AI 네이티브 오픈 소스 서버 제어판: [WebCasa](https://web.casa)
-Apache HTTPD와 높은 호환성을 갖춘 경량 웹 서버: [LiteHTTPD](https://litehttpd.com)
-
-## 친구 링크
-
-[Debian.Club](https://debian.club/) | [hestiacp.cn](https://hestiacp.cn/) | [PortCyou](https://portcyou.com/) | [CloudFan](https://cloud.fan/) | [BigKr](https://bigkr.com/) | [AlmaLinuxCN](https://www.almalinux.com.cn/)
-
-[P.Cafe](https://p.cafe/) | [RankFan](https://www.rank.fan/) | [APP on ARM](https://www.apponarm.com/) | [FreeHost](https://freehost.work/) | [MF8](https://mf8.biz/) | [AAT.ee](https://aat.ee/) | [II.Pe](https://ii.pe/)
-
-[ScreenHello](https://www.screenhello.com/) | [EOL.Wiki](https://eol.wiki/) | [GEO.Fan](https://geo.fan/) | [WebCasa](https://web.casa) | [LiteHTTPD](https://litehttpd.com)
-
-[더 많은 친구 링크 →](/ko/links)
+🔗 더 많은 추천 사이트는 [파트너 링크](/ko/links) 페이지에서

@@ -1,0 +1,112 @@
+---
+title: "deb822 源格式（.sources）"
+description: "Debian 13 默认采用的 deb822/.sources 软件源格式完整指南，含字段说明、第三方源配置与一键迁移"
+---
+
+从 Debian 12 开始引入、并在 **Debian 13 (Trixie)** 中成为默认的 **deb822** 格式，是一种更清晰、更易维护的软件源配置方式。它使用 `.sources` 扩展名，每个源以多行「键: 值」的形式描述，取代了传统的单行 `deb` 写法。
+
+## 传统格式 vs deb822 格式
+
+**传统单行格式**（`/etc/apt/sources.list`）：
+
+```
+deb http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+deb http://security.debian.org/debian-security trixie-security main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian trixie-updates main contrib non-free non-free-firmware
+```
+
+**deb822 格式**（`/etc/apt/sources.list.d/debian.sources`）：
+
+```text
+Types: deb
+URIs: http://deb.debian.org/debian
+Suites: trixie trixie-updates
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+Types: deb
+URIs: http://security.debian.org/debian-security
+Suites: trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+```
+
+Debian 13 全新安装后，官方源就保存在 `/etc/apt/sources.list.d/debian.sources` 中，而传统的 `/etc/apt/sources.list` 通常为空或不存在。
+
+## 字段说明
+
+| 字段 | 说明 |
+|---|---|
+| `Types` | 源类型。`deb` 表示二进制包；`deb-src` 表示源码包。可写多个，用空格分隔。 |
+| `URIs` | 镜像地址。可写多个地址实现镜像冗余。 |
+| `Suites` | 发行版/套件，如 `trixie`、`trixie-updates`、`trixie-backports`。可写多个。 |
+| `Components` | 组件。`main`（自由软件）、`contrib`、`non-free`、`non-free-firmware`（非自由固件）。 |
+| `Signed-By` | 用于验证该源的 GPG 公钥（keyring）路径。**推荐始终显式指定**，避免使用全局信任的 `apt-key`。 |
+| `Enabled` | 可选。设为 `no` 可临时停用某个源而无需删除。 |
+| `Architectures` | 可选。限定架构，如 `amd64`、`arm64`。 |
+
+> 一个 `.sources` 文件中可包含多个源条目，条目之间用**一个空行**分隔。
+
+## 一键迁移：apt modernize-sources
+
+Debian 13 自带的 **APT 3.0** 提供了官方迁移命令，可把旧的单行格式自动转换为 deb822：
+
+```bash
+sudo apt modernize-sources
+```
+
+该命令会读取现有的 `sources.list`，生成等价的 `.sources` 文件，并把原文件备份为 `.bak`。执行后运行 `sudo apt update` 验证即可。
+
+## 添加第三方源（deb822 写法）
+
+以添加某第三方仓库为例。**第一步**，下载并转换其 GPG 公钥为 keyring（不要使用已废弃的 `apt-key`）：
+
+```bash
+sudo mkdir -p /etc/apt/keyrings
+wget -qO - https://example.com/key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/example.gpg
+```
+
+**第二步**，创建 `.sources` 文件并用 `Signed-By` 引用该 keyring：
+
+```bash
+sudo tee /etc/apt/sources.list.d/example.sources > /dev/null <<'EOF'
+Types: deb
+URIs: https://example.com/debian
+Suites: stable
+Components: main
+Signed-By: /etc/apt/keyrings/example.gpg
+Architectures: amd64
+EOF
+
+sudo apt update
+```
+
+`Signed-By` 把这把公钥**只**绑定到这一个源，比旧的全局 `apt-key` 安全得多——即便第三方源被攻破，也无法用它的密钥伪造官方仓库的包。
+
+## 使用国内镜像
+
+把官方 `debian.sources` 的 `URIs` 改为国内镜像即可，例如清华大学源：
+
+```text
+Types: deb
+URIs: https://mirrors.tuna.tsinghua.edu.cn/debian
+Suites: trixie trixie-updates trixie-backports
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+Types: deb
+URIs: https://security.debian.org/debian-security
+Suites: trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+```
+
+修改后务必运行 `sudo apt update`。
+
+## 小结
+
+- Debian 13 默认使用 deb822（`.sources`）格式，源文件位于 `/etc/apt/sources.list.d/`。
+- 用 `sudo apt modernize-sources` 可一键从旧格式迁移。
+- 添加第三方源时，始终用 `gpg --dearmor` 生成 keyring 并在 `Signed-By` 中显式引用，不要再用 `apt-key`。
+
+延伸阅读：[APT 包管理](/administration/packages) · [Backports 使用指南](/administration/backports)

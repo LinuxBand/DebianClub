@@ -1,0 +1,93 @@
+---
+title: "Guia de Uso do Backports"
+description: "Guia completo para instalar versões mais recentes de software com segurança no Debian 13 estável através do trixie-backports"
+---
+
+O Debian Estável (Stable) é conhecido por sua "estabilidade", mas as versões dos softwares são relativamente conservadoras. **Backports** é a solução intermediária oficial do Debian: ele **recompila** softwares mais recentes do `testing` para a versão estável atual, permitindo que você instale alguns softwares mais novos sob demanda sem sair do Stable.
+
+Para o Debian 13, o repositório correspondente é **`trixie-backports`**.
+
+## Quando usar Backports
+
+- ✅ Quando precisar de uma versão mais recente de algum software (como um kernel novo para suportar hardware novo, ou um LibreOffice mais recente).
+- ✅ Quando desejar que o sistema como um todo permaneça estável, atualizando apenas softwares específicos.
+- ❌ Não use backports para "ter tudo na versão mais nova" instalando todos os pacotes como backports — isso faria você perder a vantagem da estabilidade do Stable.
+
+> Softwares nos Backports **não recebem suporte regular da equipe de segurança do Debian** e têm prioridade menor que o Stable. Instale apenas sob demanda.
+
+## Habilitando o trixie-backports
+
+### Método 1: Formato deb822 (recomendado)
+
+Crie o arquivo `/etc/apt/sources.list.d/trixie-backports.sources`:
+
+```bash
+sudo tee /etc/apt/sources.list.d/trixie-backports.sources > /dev/null <<'EOF'
+Types: deb
+URIs: http://deb.debian.org/debian
+Suites: trixie-backports
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+EOF
+
+sudo apt update
+```
+
+### Método 2: Formato tradicional de linha única
+
+Você também pode adicionar `Suites` diretamente na linha `Suites` do arquivo oficial `debian.sources` (ex.: `Suites: trixie trixie-updates trixie-backports`), ou adicionar em `sources.list`:
+
+```
+deb http://deb.debian.org/debian trixie-backports main contrib non-free non-free-firmware
+```
+
+Sobre a diferença entre os dois formatos, veja [Formato de fonte deb822](/pt/administration/deb822).
+
+## Instalando softwares dos backports
+
+Após habilitar, a prioridade padrão dos backports é **menor** que a do Stable, então um `apt install` comum **não** instalará automaticamente dos backports. É necessário usar `-t` (`--target-release`) explicitamente:
+
+```bash
+# Instalar a versão mais recente do LibreOffice dos backports
+sudo apt install -t trixie-backports libreoffice
+
+# Instalar um kernel mais novo (muito útil para hardware novo)
+sudo apt install -t trixie-backports linux-image-amd64
+```
+
+Posteriormente, o `sudo apt upgrade` atualizará os softwares já instalados dos backports para as novas versões disponíveis nos backports, enquanto os demais softwares continuarão vindos do Stable.
+
+## Controle fino com APT Pinning (opcional)
+
+Se desejar que alguns pacotes sejam **instalados por padrão** dos backports, crie o arquivo `/etc/apt/preferences.d/backports`:
+
+```
+# Fazer com que a prioridade padrão dos backports seja menor que a do stable, evitando atualizar todos os pacotes automaticamente
+Package: *
+Pin: release n=trixie-backports
+Pin-Priority: 400
+
+# Permitir que apenas pacotes relacionados ao kernel sejam instalados preferencialmente dos backports (prioridade maior que 500 do stable)
+Package: linux-image-* linux-headers-*
+Pin: release n=trixie-backports
+Pin-Priority: 501
+```
+
+- Prioridade `< 500`: Instala apenas com `-t` explícito.
+- Prioridade `> 500`: Usa a versão dos backports automaticamente com preferência.
+
+## Desinstalação e Reversão
+
+Softwares dos backports podem ser desinstalados como pacotes comuns. Se quiser reverter para a versão do Stable, especifique o número da versão ou desinstale e reinstale a partir do Stable:
+
+```bash
+sudo apt install <nome-do-pacote>/trixie
+```
+
+## Resumo
+
+- O Debian 13 usa `trixie-backports` para obter softwares mais recentes, mantendo o sistema estável.
+- A instalação deve ser feita com `apt install -t trixie-backports <nome-do-pacote>`, sem atualização automática.
+- Habilite sob demanda, instale sob demanda; backports não recebem suporte de segurança regular.
+
+Leitura adicional: [Formato de fonte deb822](/pt/administration/deb822) · [Gerenciamento de Pacotes APT](/pt/administration/packages)

@@ -5,6 +5,8 @@ description: Debian 13 설치 후 초기 설정
 
 # 첫 번째 부팅 설정
 
+<BootChain />
+
 ## Debian에 오신 것을 환영합니다!
 
 Debian 13 설치에 성공하셨습니다!

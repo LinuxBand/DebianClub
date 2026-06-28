@@ -5,6 +5,8 @@ description: Debian 13 完整安装过程的详细步骤指南，包含图文说
 
 # Debian 13 安装过程详解
 
+![Debian 安装步骤](/images/install-journey.png)
+
 本教程将详细指导您完成 Debian 13 的安装过程。我们假设您已经制作好了启动盘，现在准备开始安装。
 
 ## 🎯 安装前准备
@@ -152,6 +154,8 @@ Install with speech synthesis
 :::
 
 ## 💾 磁盘分区
+
+<DiskPartition />
 
 这是安装过程中最重要的步骤！
 

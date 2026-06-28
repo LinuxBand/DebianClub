@@ -11,6 +11,15 @@ description: Debian 项目近期更新、社区活动和版本发布动态
 
 ### 版本更新
 
+#### Debian 12（Bookworm）进入 LTS 阶段（2026-06-10）
+
+2026 年 6 月 10 日，Debian 12（Bookworm）结束了由安全团队提供的常规安全支持，正式转入**长期支持（LTS）**阶段。后续的安全更新将改由 Debian LTS 团队（志愿者与企业组成）负责，预计持续至 **2028 年 6 月 30 日**。
+
+- 仍在运行 Debian 12 的用户系统可继续获得安全更新，但建议尽早规划升级到 Debian 13（Trixie）。
+- [Debian LTS 说明](https://wiki.debian.org/LTS)
+- [升级到 Debian 13 指南](/basics/upgrade)
+- [查看版本生命周期 (EOL)](/eol)
+
 #### Debian 13.5 与 12.14 发布（2026-05-16）
 
 2026 年 5 月 16 日，Debian 同时发布了：
@@ -20,7 +29,7 @@ description: Debian 项目近期更新、社区活动和版本发布动态
 - [官方公告](https://www.debian.org/News/2026/2026051602)
 - [下载 Debian 13.5](/download)
 
-#### Debian 13.4 发布（2026-03-08）
+#### Debian 13.4 发布（2026-03-14）
 
 Debian 13（Trixie）发布了第四个点更新 **13.4**。此次更新重点包括安全修复和严重问题修正，同时同步更新了安装镜像。
 
@@ -61,9 +70,9 @@ Debian 迎来新一轮 Outreachy 实习生，参与 **Debian Images Testing with
 
 ### 项目治理
 
-#### 2026 年 DPL 选举
+#### 2026 年 DPL 选举：Sruthi Chandran 当选
 
-Debian 项目领导人（DPL）选举已启动：
+2026 年 DPL 选举已结束，**Sruthi Chandran** 当选新一任 Debian 项目领导人，任期已于 **2026 年 4 月 21 日** 开始，接替连任两届的 Andreas Tille。她是本届唯一候选人，最终以 289 票对 50 票（None of the above）当选。
 
 | 阶段 | 时间 |
 |------|------|
@@ -72,8 +81,7 @@ Debian 项目领导人（DPL）选举已启动：
 | 投票期 | 4 月 4 日 – 17 日 |
 | 新任期开始 | 4 月 21 日 |
 
-提名人：**Sruthi Chandran**
-
+- [选举结果公告](https://bits.debian.org/2026/04/dpl-elections-2026.html)
 - [选举详情](https://www.debian.org/vote/2026/vote_001)
 
 #### 新增开发者
@@ -88,8 +96,8 @@ Debian 持续吸纳新成员：
 
 Debian 安全团队持续发布 DSA（Debian Security Advisory）和 DLA（Debian LTS Advisory）公告。近期涉及的包括 incus、lxd、libpng1.6、awstats 等。
 
-- stable (Debian 13) 和 oldstable (Debian 12) 均在正常安全维护中
-- LTS 线（Debian 11）也持续发布 DLA 公告
+- stable（Debian 13）由安全团队正常维护
+- Debian 12（Bookworm）自 2026-06-10 起转由 LTS 团队维护；Debian 11（Bullseye）的 LTS 支持将于 2026-08-31 结束
 - [安全公告页面](https://www.debian.org/security/)
 
 ---

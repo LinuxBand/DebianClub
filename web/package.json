@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "node _migration/sync-links.mjs && next build && node _migration/flatten-default-locale.mjs",
+    "build": "node _migration/sync-links.mjs && next build && node _migration/flatten-default-locale.mjs && node _migration/split-search-index.mjs",
     "dev": "next dev",
     "start": "serve out",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",

@@ -4,9 +4,16 @@
   "description": "Debian 初学者完全指南 - Complete Debian Guide for Beginners",
   "type": "module",
   "scripts": {
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "dev": "pnpm --dir web dev",
+    "build": "corepack enable && pnpm --dir web install --frozen-lockfile && pnpm --dir web build",
+    "start": "pnpm --dir web start",
+    "types:check": "pnpm --dir web types:check",
+    "docs:dev": "pnpm --dir web dev",
+    "docs:build": "corepack enable && pnpm --dir web install --frozen-lockfile && pnpm --dir web build",
+    "docs:preview": "pnpm --dir web start",
+    "docs:vitepress:dev": "vitepress dev docs",
+    "docs:vitepress:build": "vitepress build docs",
+    "docs:vitepress:preview": "vitepress preview docs"
   },
   "keywords": [
     "debian",
@@ -14,7 +21,8 @@
     "tutorial",
     "beginner",
     "guide",
-    "vitepress"
+    "fumadocs",
+    "nextjs"
   ],
   "author": "Debian.Club",
   "license": "MIT",

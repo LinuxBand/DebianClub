@@ -1,11 +1,8 @@
-name = "debian-club"
+name = "debianclub"
 compatibility_date = "2024-06-07"
+pages_build_output_dir = "web/out"
 
 [build]
-command = "npm run docs:build"
+command = "corepack enable && pnpm --dir web install --frozen-lockfile && pnpm --dir web build"
 cwd = "."
-watch_dir = "docs"
-
-[[build.upload]]
-format = "service-worker"
-dir = "docs/.vitepress/dist" 
+watch_dir = "web"

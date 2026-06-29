@@ -4,77 +4,72 @@
 
 ## 项目简介
 
-Debian.Club 是一个专为 Debian 初学者设计的中英文双语教程网站，使用 VitePress 构建。我们的目标是让 Linux 新手能够轻松上手 Debian 13，从安装到日常使用，提供全方位的指导。
+Debian.Club 是一个专为 Debian 初学者设计的多语言教程网站，使用 Next.js 与 Fumadocs 构建。我们的目标是让 Linux 新手能够轻松上手 Debian 13，从安装到日常使用，提供全方位的指导。
 
 ## 特性
 
-- 🌍 **多语言支持** - 中文、英文，更多语言正在添加中
+- 🌍 **多语言支持** - 中文、英文、日语、韩语、法语、德语、西班牙语、葡萄牙语
 - 👨‍🎓 **初学者友好** - 详细的步骤说明和截图描述
 - 📱 **响应式设计** - 完美适配移动端和桌面端
 - 🔍 **全文搜索** - 快速找到需要的信息
-- ⚡ **快速加载** - 基于 VitePress 的高性能静态站点
+- ⚡ **快速加载** - 基于 Next.js 静态导出的高性能站点
 - 🛡️ **无障碍访问** - 遵循 WCAG 标准
 
 ## 技术栈
 
-- [VitePress](https://vitepress.dev/) - 静态站点生成器
-- [Vue.js 3](https://vuejs.org/) - 前端框架
+- [Next.js](https://nextjs.org/) - 静态导出与路由
+- [Fumadocs](https://fumadocs.dev/) - 文档站点框架
+- [React](https://react.dev/) - 前端框架
 - [TypeScript](https://www.typescriptlang.org/) - 类型安全
+- [Tailwind CSS](https://tailwindcss.com/) - 样式系统
 - [Markdown](https://daringfireball.net/projects/markdown/) - 内容格式
 
 ## 快速开始
 
 ### 环境要求
 
-- Node.js 18+ 
-- npm 或 yarn
+- Node.js 20+
+- pnpm
 
 ### 安装依赖
 
 ```bash
-npm install
+corepack enable
+pnpm --dir web install
 ```
 
 ### 本地开发
 
 ```bash
-npm run docs:dev
+pnpm dev
 ```
 
-访问 http://localhost:5173 查看网站
+访问 http://localhost:3000 查看网站
 
 ### 构建生产版本
 
 ```bash
-npm run docs:build
+pnpm build
 ```
 
 ### 预览生产版本
 
 ```bash
-npm run docs:preview
+pnpm start
 ```
 
 ## 目录结构
 
 ```
-docs/
-├── .vitepress/           # VitePress 配置
-│   ├── config.ts         # 主配置文件
-│   └── theme/            # 自定义主题
+web/
+├── app/                  # Next.js App Router 页面
+├── content/              # Fumadocs MDX 内容
+├── lib/                  # 站点配置与内容加载
 ├── public/               # 静态资源
-│   └── images/           # 图片资源
-├── basics/               # 基础教程 (中文)
-├── administration/       # 系统管理 (中文)
-├── applications/         # 应用程序 (中文)
-├── troubleshooting/      # 故障排除 (中文)
-├── en/                   # 英文版本
-│   ├── basics/
-│   ├── administration/
-│   ├── applications/
-│   └── troubleshooting/
-├── index.md              # 中文首页
-└── community.md          # 社区页面
+└── out/                  # 静态导出产物
+
+docs/
+└── ...                   # 旧 VitePress 内容，仅作迁移参考
 ```
 
 ## 贡献指南
@@ -99,7 +94,7 @@ docs/
 
 请遵循 [.cursorrules](./.cursorrules) 中定义的项目规范：
 
-- 使用 VitePress 标准结构
+- 使用 Next.js / Fumadocs 结构
 - 遵循多语言文件组织
 - 保持内容对初学者友好
 - 包含实际可用的代码示例
@@ -121,4 +116,4 @@ docs/
 
 ---
 
-**让 Debian 学习变得更简单！** 🎉 
+**让 Debian 学习变得更简单！** 🎉

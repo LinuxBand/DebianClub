@@ -43,8 +43,8 @@ export default async function Page({
   // Debian.Club > Administration > Users & permissions
   const crumbs = getBreadcrumbItems(page.url, source.getPageTree(lang), { includePage: true })
     .map((c) => ({ name: typeof c.name === 'string' ? c.name : '', url: c.url }))
-    .filter((c) => c.name !== '');
-  const breadcrumbItems: { name: string; url?: string }[] = [
+    .filter((c): c is { name: string; url: string } => c.name !== '' && typeof c.url === 'string');
+  const breadcrumbItems: { name: string; url: string }[] = [
     { name: appName, url: pageUrl(lang, []) },
     ...crumbs,
   ];
@@ -55,7 +55,7 @@ export default async function Page({
       '@type': 'ListItem',
       position: i + 1,
       name: c.name,
-      ...(c.url ? { item: abs(c.url) } : {}),
+      item: abs(c.url),
     })),
   };
   return (

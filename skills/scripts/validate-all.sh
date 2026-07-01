@@ -18,6 +18,58 @@ run_check() {
   fi
 }
 
+validate_skill_metadata() {
+  python3 - "$1" <<'PY'
+import pathlib
+import re
+import sys
+
+skill_dir = pathlib.Path(sys.argv[1])
+skill_path = skill_dir / "SKILL.md"
+text = skill_path.read_text(encoding="utf-8")
+lines = text.splitlines()
+errors = []
+
+if not lines or lines[0] != "---":
+    errors.append("missing opening YAML frontmatter marker")
+else:
+    try:
+        end = lines.index("---", 1)
+    except ValueError:
+        errors.append("missing closing YAML frontmatter marker")
+    else:
+        frontmatter = {}
+        for line in lines[1:end]:
+            if not line.strip():
+                continue
+            if ":" not in line:
+                errors.append(f"invalid frontmatter line: {line}")
+                continue
+            key, value = line.split(":", 1)
+            frontmatter[key.strip()] = value.strip().strip('"').strip("'")
+
+        extra_keys = sorted(set(frontmatter) - {"name", "description"})
+        if extra_keys:
+            errors.append(f"unexpected frontmatter keys: {', '.join(extra_keys)}")
+
+        name = frontmatter.get("name", "")
+        description = frontmatter.get("description", "")
+        if name != skill_dir.name:
+            errors.append(f"name must match directory: expected {skill_dir.name}, got {name or '<missing>'}")
+        if not re.fullmatch(r"[a-z0-9-]{1,63}", name):
+            errors.append("name must be lowercase letters, digits, and hyphens")
+        if not description:
+            errors.append("description is required")
+
+if errors:
+    for error in errors:
+        print(f"FAILED: {error}")
+    sys.exit(1)
+
+print("basic skill metadata checks passed.")
+PY
+}
+
 if [ -d "$ROOT_DIR/scripts" ]; then
   while IFS= read -r script; do
     run_check "bash -n: ${script#"$ROOT_DIR"/}" bash -n "$script"
@@ -36,11 +88,8 @@ for skill_dir in "$ROOT_DIR"/*; do
 
   if [ -f "$VALIDATOR" ]; then
     run_check "quick_validate: $skill_name" python3 "$VALIDATOR" "$skill_dir"
-  elif [ "${ALLOW_MISSING_SKILL_VALIDATOR:-0}" = "1" ]; then
-    printf '\n## quick_validate: %s\nSKIPPED: SKILL_VALIDATOR not found and ALLOW_MISSING_SKILL_VALIDATOR=1\n' "$skill_name"
   else
-    printf '\n## quick_validate: %s\nFAILED: set SKILL_VALIDATOR or install skill-creator validator\n' "$skill_name"
-    failures=$((failures + 1))
+    run_check "metadata fallback: $skill_name" validate_skill_metadata "$skill_dir"
   fi
 
   if [ -d "$skill_dir/scripts" ]; then

@@ -1,0 +1,7 @@
+Journal logs are safe to delete manually:
+
+```bash
+sudo rm -rf /var/log/journal/*
+```
+
+After that, restart journald if needed.

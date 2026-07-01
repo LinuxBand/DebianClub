@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian release, SSH access path, firewall rules, current Lynis findings, sysctl files, and whether out-of-band console recovery exists.
+
+Evidence:
+- Run `scripts/security-audit-probe.sh`, `scripts/network-diagnose.sh`, and `scripts/risk-check.sh -- "apply all Lynis hardening automatically"`.
+- Review SSH, PAM, profile, and sysctl settings as observed facts before changing them.
+
+Safe next checks:
+- Do not apply all Lynis warnings automatically on a remote SSH-only host. Prioritize changes by lockout risk and keep a second SSH session open.
+
+Proposed changes:
+- Requires user approval for each stage. Back up every changed file, use a timed rollback for firewall or SSH changes, verify login and service health, and rollback immediately from the saved configs if access degrades.

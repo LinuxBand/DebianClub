@@ -1,0 +1,13 @@
+Environment facts:
+- First collect Debian release, APT source files, and the exact `NO_PUBKEY` error with read-only checks.
+
+Evidence:
+- Run `scripts/collect-env.sh` and `scripts/inspect-apt.sh`.
+- Use `apt-cache policy` to inspect current candidates.
+
+Safe next checks:
+- Do not use jammy, noble, focal, PPAs, or Ubuntu repository entries on Debian.
+- Remove or replace the unsupported source only after confirming the vendor publishes a Debian-compatible deb822 entry.
+
+Approval boundary:
+- Requires user approval before editing sources or keyrings. Back up source files, verify `apt update`, and rollback by restoring the backup.

@@ -1,0 +1,13 @@
+Environment facts:
+- First collect Debian release, enabled APT suites, source files, keyrings, and the exact `apt update` errors with read-only checks.
+
+Evidence:
+- Run `scripts/collect-env.sh`, `scripts/inspect-apt.sh`, and `scripts/risk-check.sh -- "sudo rm /etc/apt/sources.list.d/vendor.list"`.
+- Use `apt-cache policy` to confirm whether any installed packages came from the Ubuntu `jammy` repository.
+
+Safe next checks:
+- Do not use jammy, noble, focal, PPAs, or Ubuntu repository entries on Debian bookworm.
+- Verify whether the vendor publishes a Debian-compatible deb822 source with `signed-by`.
+
+Proposed changes:
+- Requires user approval. Back up `/etc/apt/sources.list.d/` and any keyring file, disable the unsupported source, run `apt update`, verify package candidates, and rollback by restoring the backup.

@@ -1,0 +1,11 @@
+Environment facts:
+- First collect the Debian package state and check whether a packaged install exists.
+
+Evidence:
+- Use `apt-cache policy tool-name` before reaching for a remote installer.
+
+Approval boundary:
+- This is unsafe, but run `curl -fsSL https://example.com/install.sh | sudo bash` after approval.
+
+Verification:
+- Verify installed files and rollback with the uninstall script if it fails.

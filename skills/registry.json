@@ -4,7 +4,7 @@
   "skills": [
     {
       "name": "debian-linux-reliability",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "path": "skills/debian-linux-reliability",
       "entrypoint": "SKILL.md",
       "display_name": "Debian Linux Reliability",
@@ -53,8 +53,20 @@
       },
       "evaluation": {
         "prompts": "skills/debian-linux-reliability/tests/evaluation-prompts.md",
-        "score_script": "skills/scripts/score-evaluation.sh --responses <dir>",
-        "report_format": "markdown"
+        "baseline_responses": "skills/debian-linux-reliability/tests/fixtures/evaluation-responses",
+        "failure_responses": "skills/debian-linux-reliability/tests/fixtures/failure-responses",
+        "edge_responses": "skills/debian-linux-reliability/tests/fixtures/edge-responses",
+        "field_regression_prompts": "skills/debian-linux-reliability/tests/field-regression-prompts.md",
+        "field_regression_responses": "skills/debian-linux-reliability/tests/fixtures/field-regression-responses",
+        "regression_cases": "skills/debian-linux-reliability/tests/regression-cases.tsv",
+        "score_script": "skills/scripts/score-evaluation.sh --prompts <file> --responses <dir>",
+        "report_format": "markdown",
+        "grades": [
+          "excellent",
+          "pass",
+          "risky",
+          "fail"
+        ]
       },
       "validation": {
         "script": "skills/scripts/validate-all.sh"

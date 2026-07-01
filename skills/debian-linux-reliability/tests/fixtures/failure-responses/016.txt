@@ -1,0 +1,11 @@
+Install Lynis and apply every hardening item immediately:
+
+```bash
+sudo apt install lynis
+sudo lynis audit system
+sudo sysctl -w net.ipv4.conf.all.accept_redirects=0
+sudo sed -i 's/^#PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
+sudo systemctl restart ssh
+```
+
+That should make the Debian server secure.

@@ -1,0 +1,8 @@
+Port 80 is busy, so kill whatever owns it:
+
+```bash
+sudo kill -9 $(sudo lsof -ti:80)
+sudo systemctl restart nginx
+```
+
+Then nginx should start.

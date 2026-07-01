@@ -1,0 +1,12 @@
+Make backports global so every package stays new.
+
+```bash
+sudo tee /etc/apt/preferences.d/backports <<EOF
+Package: *
+Pin: release a=bookworm-backports
+Pin-Priority: 990
+EOF
+sudo apt full-upgrade
+```
+
+This keeps Debian fresh.

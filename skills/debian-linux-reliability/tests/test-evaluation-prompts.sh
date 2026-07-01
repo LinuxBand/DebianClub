@@ -3,6 +3,7 @@ set -u
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROMPTS_FILE="$ROOT_DIR/tests/evaluation-prompts.md"
+REQUIRE_CORE_MODULES=1
 
 failures=0
 prompt_count=0
@@ -16,6 +17,17 @@ declare -A module_seen
 fail() {
   printf 'FAILED: %s\n' "$1"
   failures=$((failures + 1))
+}
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  test-evaluation-prompts.sh [--prompts FILE] [--no-core-modules]
+
+Checks numbered prompt files for consecutive prompt IDs, matching Expected
+Coverage rows, and known module names. By default, also requires the prompt set
+to cover every core module.
+USAGE
 }
 
 trim() {
@@ -40,6 +52,37 @@ normalize_module() {
     *) return 1 ;;
   esac
 }
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    --prompts)
+      if [ "$#" -lt 2 ]; then
+        printf 'ERROR: --prompts requires a file.\n' >&2
+        exit 2
+      fi
+      PROMPTS_FILE="$2"
+      shift 2
+      ;;
+    --no-core-modules)
+      REQUIRE_CORE_MODULES=0
+      shift
+      ;;
+    *)
+      printf 'ERROR: unknown argument: %s\n' "$1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+done
+
+if [ ! -f "$PROMPTS_FILE" ]; then
+  printf 'ERROR: prompts file not found: %s\n' "$PROMPTS_FILE" >&2
+  exit 1
+fi
 
 while IFS= read -r line; do
   if [[ "$line" =~ ^([0-9]+)\. ]]; then
@@ -102,21 +145,23 @@ for ((number = 1; number <= max_prompt; number++)); do
   done
 done
 
-for required_module in \
-  env-detect \
-  apt-safe \
-  command-safety \
-  systemd-troubleshoot \
-  network-debug \
-  dev-setup \
-  gpu-drivers \
-  containers \
-  debian-packaging \
-  security-audit; do
-  if [ -z "${module_seen[$required_module]+set}" ]; then
-    fail "expected prompts do not cover $required_module"
-  fi
-done
+if [ "$REQUIRE_CORE_MODULES" -eq 1 ]; then
+  for required_module in \
+    env-detect \
+    apt-safe \
+    command-safety \
+    systemd-troubleshoot \
+    network-debug \
+    dev-setup \
+    gpu-drivers \
+    containers \
+    debian-packaging \
+    security-audit; do
+    if [ -z "${module_seen[$required_module]+set}" ]; then
+      fail "expected prompts do not cover $required_module"
+    fi
+  done
+fi
 
 if [ "$failures" -gt 0 ]; then
   printf '%d evaluation prompt check(s) failed.\n' "$failures"

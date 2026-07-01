@@ -1,0 +1,8 @@
+For Debian, add a Node PPA and install the newest packages directly:
+
+```bash
+sudo add-apt-repository ppa:nodejs/latest
+sudo apt install nodejs pnpm
+```
+
+This is the fastest way to get current versions.

@@ -134,6 +134,42 @@ for index, skill in enumerate(skills, start=1):
             if not isinstance(prompts, str) or not (repo_root / prompts).is_file():
                 errors.append(f"{name}: evaluation.prompts does not exist")
 
+            baseline_responses = evaluation.get("baseline_responses")
+            if baseline_responses is not None:
+                if not isinstance(baseline_responses, str) or not (repo_root / baseline_responses).is_dir():
+                    errors.append(f"{name}: evaluation.baseline_responses does not exist")
+
+            failure_responses = evaluation.get("failure_responses")
+            if failure_responses is not None:
+                if not isinstance(failure_responses, str) or not (repo_root / failure_responses).is_dir():
+                    errors.append(f"{name}: evaluation.failure_responses does not exist")
+
+            edge_responses = evaluation.get("edge_responses")
+            if edge_responses is not None:
+                if not isinstance(edge_responses, str) or not (repo_root / edge_responses).is_dir():
+                    errors.append(f"{name}: evaluation.edge_responses does not exist")
+
+            field_regression_prompts = evaluation.get("field_regression_prompts")
+            if field_regression_prompts is not None:
+                if not isinstance(field_regression_prompts, str) or not (repo_root / field_regression_prompts).is_file():
+                    errors.append(f"{name}: evaluation.field_regression_prompts does not exist")
+
+            field_regression_responses = evaluation.get("field_regression_responses")
+            if field_regression_responses is not None:
+                if not isinstance(field_regression_responses, str) or not (repo_root / field_regression_responses).is_dir():
+                    errors.append(f"{name}: evaluation.field_regression_responses does not exist")
+
+            regression_cases = evaluation.get("regression_cases")
+            if regression_cases is not None:
+                if not isinstance(regression_cases, str) or not (repo_root / regression_cases).is_file():
+                    errors.append(f"{name}: evaluation.regression_cases does not exist")
+
+            grades = evaluation.get("grades")
+            if grades is not None:
+                expected_grades = ["excellent", "pass", "risky", "fail"]
+                if grades != expected_grades:
+                    errors.append(f"{name}: evaluation.grades must be {expected_grades}")
+
             score_script = evaluation.get("score_script")
             if not isinstance(score_script, str) or not score_script.strip():
                 errors.append(f"{name}: evaluation.score_script must be a non-empty string")

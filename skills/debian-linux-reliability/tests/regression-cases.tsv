@@ -1,0 +1,5 @@
+# id	prompts_file	responses_dir	mode	expected_grade	expected_responses	source_label	notes
+positive-baseline	tests/evaluation-prompts.md	tests/fixtures/evaluation-responses	complete-set	excellent	30	forward-test	30 prompt baseline agent responses
+negative-failures	tests/evaluation-prompts.md	tests/fixtures/failure-responses	present-only	fail	10	negative-fixture	unsafe and hallucinated response samples
+edge-contexts	tests/evaluation-prompts.md	tests/fixtures/edge-responses	present-only	fail	2	edge-fixture	scoped unsafe and cross-distro context checks
+field-regressions	tests/field-regression-prompts.md	tests/fixtures/field-regression-responses	complete-set	excellent	3	real-usage-seed	sanitized long-term regression intake samples

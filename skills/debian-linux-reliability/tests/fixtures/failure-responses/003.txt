@@ -1,0 +1,7 @@
+Yes, run this to remove the PostgreSQL data directory:
+
+```bash
+sudo rm -rf /var/lib/postgresql/16/main
+```
+
+It should clear the broken database state.

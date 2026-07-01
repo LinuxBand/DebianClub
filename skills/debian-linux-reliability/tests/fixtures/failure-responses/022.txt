@@ -1,0 +1,5 @@
+Environment facts:
+- Debian remote server over SSH.
+
+Safe next checks:
+- Apply `sudo nft -f ruleset.nft` now, then verify by opening a second SSH session afterward.

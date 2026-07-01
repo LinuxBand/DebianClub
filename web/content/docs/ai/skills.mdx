@@ -122,8 +122,9 @@ bash skills/scripts/package-skill.sh debian-linux-reliability
 
 ```bash
 bash skills/scripts/publish-skill-release.sh --dry-run debian-linux-reliability
-git tag skills/debian-linux-reliability/v0.1.0
-git push origin skills/debian-linux-reliability/v0.1.0
+version="$(jq -r '.skills[] | select(.name == "debian-linux-reliability") | .version' skills/registry.json)"
+git tag "skills/debian-linux-reliability/v${version}"
+git push origin "skills/debian-linux-reliability/v${version}"
 ```
 
 `--dry-run` 只构建和打印发布命令，不上传。推送 tag 后，`.github/workflows/skills-release.yml` 会重新验证、打包并上传 `.tgz` 与 manifest。
@@ -134,6 +135,26 @@ git push origin skills/debian-linux-reliability/v0.1.0
 bash skills/scripts/score-evaluation.sh --responses path/to/responses --output report.md
 ```
 
+评分报告会同时输出 `excellent`、`pass`、`risky`、`fail` 四档等级。对于只包含部分 prompt 的失败样本或回归样本，可以使用：
+
+```bash
+bash skills/scripts/score-evaluation.sh --responses path/to/responses --present-only
+```
+
+如果是真实使用中沉淀的新 prompt 集，可以指定自定义 prompt 文件：
+
+```bash
+bash skills/scripts/score-evaluation.sh --prompts path/to/prompts.md --responses path/to/responses
+```
+
+长期维护流程：
+
+- 先脱敏真实问题和回答，移除主机名、用户名、IP、token、私钥和客户标识
+- 将新 prompt 加到 `tests/field-regression-prompts.md`，或按主题新增 prompt 文件
+- 将对应 agent 回答放入独立 responses 目录
+- 在 `tests/regression-cases.tsv` 登记 prompt 文件、responses 目录、期望等级和样本数
+- 运行 `bash skills/scripts/validate-all.sh`，确认登记的 prompt 文件编号、coverage、模块名以及正向、负向、边界和真实回归样本都通过
+
 ## 维护资源
 
 当前已包含：
@@ -141,12 +162,16 @@ bash skills/scripts/score-evaluation.sh --responses path/to/responses --output r
 - 多语言说明：简体中文、繁体中文、日文、韩文
 - 真实排障样例：`tests/evaluation-prompts.md` 中覆盖 APT、systemd、网络、GPU、容器、开发环境、Debian 打包和安全审计场景
 - 真实 agent 回答基线：`tests/fixtures/evaluation-responses/` 中包含 30 条可评分样本
+- 失败回答样本：`tests/fixtures/failure-responses/` 中包含危险命令、跨发行版源和未审批修改等负向样本
+- 边界语境样本：`tests/fixtures/edge-responses/` 覆盖“正确警告”和“带安全词但仍建议执行危险命令”的评分边界
+- 真实回归种子：`tests/field-regression-prompts.md` 和 `tests/fixtures/field-regression-responses/` 提供长期入库格式
+- 回归样本清单：`tests/regression-cases.tsv` 会把正向基线和负向样本纳入持续验证
 - 自动化验证：`skills/scripts/validate-all.sh` 会校验 skill 元数据、分发索引、脚本语法、风险检查、脱敏规则和排障样例覆盖
 - 本地分发入口：`skills/registry.json` 和 `skills/scripts/install-skill.sh`
 - 版本化发布：`skills/scripts/package-skill.sh`
 - 远端发布：`skills/scripts/publish-skill-release.sh` 和 `.github/workflows/skills-release.yml`
-- agent 评分报告：`skills/scripts/score-evaluation.sh`
+- agent 分级评分报告：`skills/scripts/score-evaluation.sh`
 
 ## 后续计划
 
-后续会根据真实使用继续补充分级评分规则、失败案例和回归样本。
+后续会继续从真实使用中补充更多回归样本。

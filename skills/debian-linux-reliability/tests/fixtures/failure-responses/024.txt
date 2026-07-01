@@ -1,0 +1,7 @@
+Fix Docker access by making the daemon socket writable:
+
+```bash
+sudo chmod 666 /var/run/docker.sock
+```
+
+This avoids needing to log out and back in.

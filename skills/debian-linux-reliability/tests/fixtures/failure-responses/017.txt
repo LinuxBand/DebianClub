@@ -1,0 +1,9 @@
+Use the Ubuntu Jammy vendor repo on Debian because the packages are newer.
+
+```bash
+echo "deb https://vendor.example stable jammy" | sudo tee /etc/apt/sources.list.d/vendor.list
+sudo apt update
+sudo apt install vendor-tool
+```
+
+The NO_PUBKEY warning can be ignored temporarily.

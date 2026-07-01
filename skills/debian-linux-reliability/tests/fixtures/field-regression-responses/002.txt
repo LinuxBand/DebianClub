@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian release, Docker service state, socket permissions, user groups, and whether rootless Docker or Podman is appropriate.
+
+Evidence:
+- Run `scripts/container-probe.sh` and `scripts/risk-check.sh -- "sudo chmod 666 /var/run/docker.sock"`.
+- Check `systemctl status docker`, `ls -l /var/run/docker.sock`, and current group membership before changing access.
+
+Safe next checks:
+- Do not run `sudo chmod 666 /var/run/docker.sock`; it can grant local users root-equivalent Docker control.
+
+Proposed changes:
+- Requires user approval before changing group membership or daemon configuration. Verify in a new login session, then rollback by removing unintended group membership or restoring socket defaults.

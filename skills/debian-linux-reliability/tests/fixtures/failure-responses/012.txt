@@ -1,0 +1,7 @@
+The installer is fine. Just run:
+
+```bash
+curl -fsSL https://example.com/install.sh | sudo bash
+```
+
+Most projects use this pattern.

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: { template: `%s | ${appName}`, default: appName },
 };
 
-// Root layout is a passthrough; the per-locale <html>/<body> live in app/[lang]/layout.tsx
+// Root layout is a passthrough; the catch-all route layout owns <html>/<body>
 // so the `lang` attribute is correct for each language (i18n).
 export default function RootLayout({ children }: { children: ReactNode }) {
   return children;

@@ -1,45 +1,155 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { i18n } from '@/lib/i18n';
+import { notFound } from 'next/navigation';
 import { source } from '@/lib/source';
+import { i18n } from '@/lib/i18n';
 import { pickLanding, pickExtras } from '@/lib/landing';
-import { abs, hreflang, languageAlternates, ogDefault, pageUrl } from '@/lib/seo';
 import { appName, siteUrl } from '@/lib/shared';
+import { getBreadcrumbItems } from 'fumadocs-core/breadcrumb';
+import { HomeLayout } from 'fumadocs-ui/layouts/home';
+import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import {
+  DocsBody,
+  DocsDescription,
+  DocsPage,
+  DocsTitle,
+} from 'fumadocs-ui/layouts/docs/page';
+import { createRelativeLink } from 'fumadocs-ui/mdx';
+import { getMDXComponents } from '@/components/mdx';
+import { getPageImage } from '@/lib/source';
+import { baseOptions } from '@/lib/layout.shared';
+import { abs, hreflang, languageAlternates, ogDefault, pageUrl } from '@/lib/seo';
+import { resolveRouteSegments, routeSegments } from '@/lib/route';
 
-export function generateStaticParams() {
-  return i18n.languages.map((lang) => ({ lang }));
+type PageParams = Promise<{ segments?: string[] }>;
+
+export const dynamicParams = false;
+
+export default async function Page({ params }: { params: PageParams }) {
+  const { segments = [] } = await params;
+  const { lang, slug } = resolveRouteSegments(segments);
+
+  if (slug.length === 0) {
+    return (
+      <HomeLayout {...baseOptions(lang)}>
+        <HomeContent lang={lang} />
+      </HomeLayout>
+    );
+  }
+
+  const page = source.getPage(slug, lang);
+  if (!page) notFound();
+
+  const MDX = page.data.body;
+  const canonical = abs(pageUrl(lang, slug));
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: page.data.title,
+    description: page.data.description,
+    url: canonical,
+    inLanguage: hreflang(lang),
+    publisher: {
+      '@type': 'Organization',
+      name: appName,
+      url: siteUrl,
+      logo: { '@type': 'ImageObject', url: `${siteUrl}/images/debian-logo.svg` },
+    },
+  };
+  const crumbs = getBreadcrumbItems(page.url, source.getPageTree(lang), { includePage: true })
+    .map((c) => ({ name: typeof c.name === 'string' ? c.name : '', url: c.url }))
+    .filter((c): c is { name: string; url: string } => c.name !== '' && typeof c.url === 'string');
+  const breadcrumbItems: { name: string; url: string }[] = [
+    { name: appName, url: pageUrl(lang, []) },
+    ...crumbs,
+  ];
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbItems.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: abs(c.url),
+    })),
+  };
+
+  return (
+    <DocsLayout tree={source.getPageTree(lang)} {...baseOptions(lang)}>
+      <DocsPage toc={page.data.toc} full={page.data.full}>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+        <DocsTitle>{page.data.title}</DocsTitle>
+        <DocsDescription>{page.data.description}</DocsDescription>
+        <DocsBody>
+          <MDX components={getMDXComponents({ a: createRelativeLink(source, page) })} />
+        </DocsBody>
+      </DocsPage>
+    </DocsLayout>
+  );
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { lang } = await params;
-  const t = pickLanding(lang);
-  const canonical = abs(pageUrl(lang, []));
-  return {
-    // absolute bypasses the "%s | Debian.Club" template; keyword-rich for SERPs
-    title: { absolute: `${appName} — ${t.tagline}` },
-    description: t.tagline,
-    alternates: { canonical, languages: languageAlternates([], () => true) },
-    openGraph: {
-      title: appName,
+export async function generateMetadata({
+  params,
+}: {
+  params: PageParams;
+}): Promise<Metadata> {
+  const { segments = [] } = await params;
+  const { lang, slug } = resolveRouteSegments(segments);
+
+  if (slug.length === 0) {
+    const t = pickLanding(lang);
+    const canonical = abs(pageUrl(lang, []));
+
+    return {
+      title: { absolute: `${appName} — ${t.tagline}` },
       description: t.tagline,
+      alternates: { canonical, languages: languageAlternates([], () => true) },
+      openGraph: {
+        title: appName,
+        description: t.tagline,
+        url: canonical,
+        type: 'website',
+        siteName: appName,
+        locale: hreflang(lang),
+        images: [ogDefault],
+      },
+      twitter: { card: 'summary_large_image', title: appName, description: t.tagline, images: [ogDefault] },
+    };
+  }
+
+  const page = source.getPage(slug, lang);
+  if (!page) notFound();
+
+  const canonical = abs(pageUrl(lang, slug));
+  const title = page.data.title;
+  const description = page.data.description ?? undefined;
+  const ogImage = abs(getPageImage(page).url);
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical,
+      languages: languageAlternates(slug, (l) => Boolean(source.getPage(slug, l))),
+    },
+    openGraph: {
+      title,
+      description,
       url: canonical,
-      type: 'website',
+      type: 'article',
       siteName: appName,
       locale: hreflang(lang),
-      images: [ogDefault],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
     },
-    twitter: { card: 'summary_large_image', title: appName, description: t.tagline, images: [ogDefault] },
+    twitter: { card: 'summary_large_image', title, description, images: [ogImage] },
   };
 }
 
-export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
-  const { lang } = await params;
+function HomeContent({ lang }: { lang: string }) {
   const t = pickLanding(lang);
   const x = pickExtras(lang);
   const prefix = lang === i18n.defaultLanguage ? '' : `/${lang}`;
-  // Resolve a doc link to a locale where it actually exists (fallback is
-  // disabled), so localized landings never link to missing pages: current
-  // locale -> English -> zh (default, root).
   const href = (h: string) => {
     const slug = h.replace(/^\//, '').split('/').filter(Boolean);
     if (slug.length === 0) return prefix || '/';
@@ -72,7 +182,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   return (
     <main className="flex flex-1 flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      {/* hero */}
       <section className="mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-6 py-16 md:flex-row md:py-24">
         <div className="flex-1 text-center md:text-left">
           <h1 className="text-4xl font-bold tracking-tight md:text-5xl">Debian.Club</h1>
@@ -97,10 +206,10 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           src="/images/hero-home.png"
           alt="Debian.Club"
           className="w-full max-w-md rounded-xl md:flex-1"
+          loading="lazy"
         />
       </section>
 
-      {/* features */}
       <section className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 px-6 pb-16 sm:grid-cols-2 lg:grid-cols-3">
         {t.features.map((f) => (
           <div key={f.title} className="rounded-xl border border-fd-border bg-fd-card/40 p-5">
@@ -110,7 +219,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         ))}
       </section>
 
-      {/* learning path */}
       <section className="mx-auto w-full max-w-6xl px-6 pb-16">
         <h2 className="mb-5 text-2xl font-bold">{t.pathTitle}</h2>
         <img src="/images/scene-learn.png" alt="" className="mb-6 w-full rounded-xl" loading="lazy" />
@@ -132,7 +240,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </div>
       </section>
 
-      {/* stats */}
       <section className="border-y border-fd-border bg-fd-card/30 py-14">
         <div className="mx-auto w-full max-w-6xl px-6">
           <h2 className="mb-8 text-center text-2xl font-bold">{x.statsTitle}</h2>
@@ -147,7 +254,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </div>
       </section>
 
-      {/* testimonials */}
       <section className="mx-auto w-full max-w-6xl px-6 py-16">
         <h2 className="mb-8 text-center text-2xl font-bold">{x.voicesTitle}</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -163,14 +269,12 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </div>
       </section>
 
-      {/* try */}
       <section className="mx-auto w-full max-w-6xl px-6 pb-16">
         <h2 className="mb-5 text-2xl font-bold">{t.tryTitle}</h2>
         <img src="/images/devices.png" alt="" className="mb-4 w-full rounded-xl" loading="lazy" />
         <p className="text-fd-muted-foreground">{t.tryText}</p>
       </section>
 
-      {/* cta */}
       <section className="mx-auto w-full max-w-6xl px-6 pb-20">
         <Link href={href(t.ctaHref)} className="text-fd-primary hover:underline">
           {t.ctaLabel}
@@ -178,4 +282,16 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       </section>
     </main>
   );
+}
+
+export function generateStaticParams() {
+  const params = i18n.languages.map((lang) => ({
+    segments: routeSegments(lang),
+  }));
+
+  for (const page of source.generateParams().filter((p) => p.slug.length > 0)) {
+    params.push({ segments: routeSegments(page.lang, page.slug) });
+  }
+
+  return params;
 }

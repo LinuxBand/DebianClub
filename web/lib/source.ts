@@ -3,9 +3,9 @@ import { loader } from 'fumadocs-core/source';
 import { docsContentRoute, docsImageRoute, docsRoute } from './shared';
 import { i18n } from './i18n';
 
-// See https://fumadocs.dev/docs/headless/source-api for more info
-// baseUrl '/' + i18n keeps the existing site's URL scheme exactly (SEO-preserving):
-// zh at root, others under /en /de … (hideLocale: 'default-locale').
+// See https://fumadocs.dev/docs/headless/source-api for more info.
+// The URL scheme is SEO-preserving: zh at root, other languages under
+// /en /de ... (hideLocale: 'default-locale').
 export const source = loader({
   baseUrl: docsRoute,
   i18n,

@@ -1,0 +1,12 @@
+Environment facts:
+- On Debian, first collect read-only unit metadata, service environment, and journal output instead of assuming shell variables exist for systemd.
+
+Evidence:
+- Run `scripts/systemd-diagnose.sh your.service` and include the `systemctl cat`, `systemctl show -p Environment`, and journal evidence.
+- Use `scripts/risk-check.sh -- "systemctl restart your.service"` before any restart.
+
+Safe next checks:
+- Verify whether the unit needs `Environment=`, `EnvironmentFile=`, `WorkingDirectory=`, or an absolute binary path.
+
+Approval boundary:
+- Requires user approval before editing the unit or restarting it. Back up the unit override, run `systemd-analyze verify`, then rollback with `systemctl revert` or restore the backup.

@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian release, kernel version, Secure Boot state, DKMS status, GPU model, and display manager logs with read-only checks.
+
+Evidence:
+- Run `scripts/gpu-probe.sh`, `scripts/collect-env.sh`, and `scripts/inspect-apt.sh nvidia-driver linux-headers-amd64`.
+- Review `apt-cache policy nvidia-driver`, DKMS build logs, and journal messages about module signing.
+
+Safe next checks:
+- Verify matching kernel headers, DKMS build status, and whether Secure Boot rejects the NVIDIA module before reinstalling packages.
+
+Approval boundary:
+- Requires user approval before enrolling keys, changing Secure Boot, or reinstalling drivers. Back up relevant config, verify module load and rendering, and rollback by booting the previous kernel.

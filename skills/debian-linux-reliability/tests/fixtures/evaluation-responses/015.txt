@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian user IDs, rootless Podman info, bind mount path ownership, SELinux/AppArmor context when relevant, and subuid/subgid mappings.
+
+Evidence:
+- Run `scripts/container-probe.sh` and `scripts/risk-check.sh -- "podman run ... -v host:container"`.
+- Check `podman info`, `podman unshare id`, and permissions on the host directory without changing them.
+
+Safe next checks:
+- Verify whether the container UID maps to a writable host UID or whether the mount should use `:U`, `--userns=keep-id`, or explicit ownership.
+
+Approval boundary:
+- Requires user approval before `chown`, ACL, or volume option changes. Back up important bind-mounted data, test on a disposable directory, verify writes, and rollback ownership changes.

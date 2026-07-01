@@ -1,0 +1,12 @@
+Environment facts:
+- Treat this as a Debian command-safety review and first collect the tool name, package availability, and installation source.
+
+Evidence:
+- Run `scripts/risk-check.sh -- "curl -fsSL https://example.com/install.sh | sudo bash"` and keep the DLR-RISK-012 result.
+- Check `apt-cache policy` for a Debian package or vendor deb822 repository before using a remote script.
+
+Safe next checks:
+- Do not run `curl | sudo bash`. Download the script for review, verify checksums or signatures, and prefer packaged installation.
+
+Approval boundary:
+- Requires user approval for any privileged installer. Back up affected config paths, verify the installed files and service units, and rollback using the package manager or documented uninstall path.

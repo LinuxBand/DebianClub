@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian release, enabled suites, pinning files, and current package candidates with read-only checks.
+
+Evidence:
+- Run `scripts/collect-env.sh` and `scripts/inspect-apt.sh linux-image-amd64`.
+- Inspect `apt-cache policy`, current deb822 source files, and an `apt -s full-upgrade` simulation before changing backports.
+
+Safe next checks:
+- Do not make backports the global default. Verify the exact package that needs backports and install with `-t bookworm-backports` when appropriate.
+
+Approval boundary:
+- Requires user approval before changing APT sources or pins. Back up source and preferences files, verify package candidates, and rollback by restoring those backups.

@@ -1,0 +1,12 @@
+Environment facts:
+- For Debian hardening, first collect read-only Lynis report sections, SSH config, umask sources, sysctl files, and exposed services.
+
+Evidence:
+- Run `scripts/security-audit-probe.sh` and `scripts/risk-check.sh -- "apply all Lynis hardening automatically"`.
+- Map each Lynis warning to a Debian config file and verify current values before proposing remediation.
+
+Safe next checks:
+- Do not harden everything automatically. Prioritize SSH access safety, package updates, logging, and one sysctl change at a time.
+
+Approval boundary:
+- Requires user approval before editing SSH, PAM, profile, or sysctl settings. Back up every file, verify login and service health after each change, and rollback immediately from the saved configs.

@@ -1,0 +1,12 @@
+Environment facts:
+- Treat this as a Debian container and command-safety issue. First collect Docker service state, socket ownership, user groups, and rootless alternatives.
+
+Evidence:
+- Run `scripts/container-probe.sh` and `scripts/risk-check.sh -- "sudo chmod 666 /var/run/docker.sock"`.
+- Check `systemctl status docker`, `ls -l /var/run/docker.sock`, and group membership.
+
+Safe next checks:
+- Do not run `chmod 666 /var/run/docker.sock`; it effectively gives local users root-equivalent Docker access.
+
+Approval boundary:
+- Requires user approval before changing groups, enabling rootless Docker, or restarting the daemon. Verify with a new login session and rollback by removing the group membership or restoring socket defaults.

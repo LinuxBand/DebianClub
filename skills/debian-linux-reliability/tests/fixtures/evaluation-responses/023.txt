@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian resolver state, `systemd-resolved` status, `/etc/resolv.conf`, routes, and NetworkManager state with read-only checks.
+
+Evidence:
+- Run `scripts/network-diagnose.sh debian.org` and `scripts/systemd-diagnose.sh systemd-resolved.service`.
+- Compare `resolvectl status`, `ip route`, and whether `/etc/resolv.conf` points to `127.0.0.53`.
+
+Safe next checks:
+- Verify that IP connectivity works while DNS fails, then determine whether resolved is stopped, masked, or bypassed.
+
+Approval boundary:
+- Requires user approval before restarting services or relinking resolver files. Back up `/etc/resolv.conf`, verify lookups, and rollback to the previous resolver configuration.

@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian package metadata, source tree layout, license files, build system, and existing `debian/` files with read-only checks.
+
+Evidence:
+- Run `scripts/packaging-probe.sh .` and keep its Debian packaging findings with the answer.
+- Inspect `debian/control`, `debian/rules`, `debian/changelog`, and any `lintian` output before proposing edits.
+
+Safe next checks:
+- Verify upstream build dependencies and whether the target is native, non-native, or backports packaging.
+
+Approval boundary:
+- Requires user approval before editing packaging files. Back up the `debian/` directory, build in a clean environment, verify with `lintian`, and rollback by restoring the backup.

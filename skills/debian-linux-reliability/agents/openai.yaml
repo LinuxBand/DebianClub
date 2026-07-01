@@ -1,0 +1,4 @@
+interface:
+  display_name: "Debian Linux Reliability"
+  short_description: "Safer Debian/Linux diagnostics for AI agents"
+  default_prompt: "Use $debian-linux-reliability to diagnose this Debian/Linux issue with verified facts and safe read-only checks."

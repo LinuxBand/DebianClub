@@ -1,0 +1,152 @@
+---
+title: "DebianClub AI Skills"
+description: "DebianClub AI Skills for safer Debian/Linux AI assistance with verified system facts and read-only diagnostics"
+---
+
+DebianClub AI Skills are reliability rules for AI coding assistants and terminal agents working on Debian/Linux systems. They do not replace documentation. They force the agent to identify the environment, verify package names, inspect logs, and review command risk before giving advice.
+
+The first skill in this repository is `skills/debian-linux-reliability/`. It uses one main skill with multiple focused submodules.
+
+<SkillsCatalog lang="en" />
+
+## Why This Exists
+
+AI mistakes on Linux often come from:
+
+- Applying Ubuntu, Arch, or macOS commands to Debian
+- Inventing package names
+- Ignoring stable, backports, testing, and unstable differences
+- Guessing service failures without checking `systemctl` and `journalctl`
+- Recommending risky commands such as `curl | sh`, `rm -rf`, or `chmod -R`
+- Missing WSL, containers, non-systemd environments, or non-amd64 architectures
+
+DebianClub AI Skills make the agent collect facts first.
+
+## Current Skill
+
+| Skill | Purpose | Default behavior |
+|---|---|---|
+| `debian-linux-reliability` | Debian/Linux development, administration, and troubleshooting reliability workflow | Read-only diagnosis, no automatic system modification |
+
+## Submodules
+
+`debian-linux-reliability` includes these modules:
+
+| Module | Scenario |
+|---|---|
+| Environment detection | Debian release, architecture, WSL, container, systemd, privilege |
+| APT safety | Package verification, repositories, backports, third-party sources |
+| Command safety | Deletion, disk, permission, and remote-script risk review |
+| systemd troubleshooting | Service state, unit files, journal logs |
+| Network debugging | DNS, routes, ports, firewall, network managers |
+| Development setup | Node, Python, Rust, Go, C/C++, Git, build dependencies |
+| GPU drivers | NVIDIA, AMD, Intel, Mesa, Wayland/X11, Secure Boot |
+| Containers | Podman, Docker, rootless mode, Compose, volume permissions, cgroup v2 |
+| Debian packaging | `debian/control`, `sbuild`, `lintian`, backports packaging |
+| Security audit | Lynis availability, audit interpretation, staged hardening plans |
+
+## Safety Policy
+
+The first version defaults to no automatic system modifications. Scripts only collect information. They do not install packages, delete files, edit configuration, or restart services.
+
+If the user wants the AI to perform a change, the agent must first explain:
+
+- Which files, packages, services, or network rules are affected
+- Why the change is needed
+- How to inspect before changing
+- How to verify after changing
+- How to roll back if it fails
+
+## DebianClub Documentation Binding
+
+The skill prefers DebianClub repository content for explanations, including:
+
+- [APT Package Management](/en/administration/packages)
+- [Debian Backports](/en/administration/backports)
+- [deb822 Sources](/en/administration/deb822)
+- [Network Configuration](/en/administration/network)
+- [NVIDIA Optimus](/en/administration/nvidia-optimus)
+- [Podman](/en/server/podman)
+- [System Security](/en/administration/security)
+
+Live state must still come from the user's machine. Documentation explains. Read-only probes verify current facts.
+
+## Usage
+
+In an AI agent that supports skills, invoke:
+
+```text
+Use $debian-linux-reliability to diagnose this Debian package installation issue.
+```
+
+Repository files:
+
+```text
+skills/debian-linux-reliability/SKILL.md
+skills/debian-linux-reliability/references/
+skills/debian-linux-reliability/scripts/
+```
+
+## Local Install
+
+The repository includes a user-local installer. By default, it installs to `${CODEX_HOME:-$HOME/.codex}/skills`. It does not use `sudo` and does not overwrite an existing install unless `--replace` is passed.
+
+```bash
+bash skills/scripts/install-skill.sh debian-linux-reliability
+```
+
+If the target already contains a skill with the same name, inspect it first. Replace it only when intended:
+
+```bash
+bash skills/scripts/install-skill.sh --replace debian-linux-reliability
+```
+
+Platforms or CLIs can read the distribution index:
+
+```text
+skills/registry.json
+/skills.json
+```
+
+## Release And Evaluation
+
+Build a versioned skill package:
+
+```bash
+bash skills/scripts/package-skill.sh debian-linux-reliability
+```
+
+The script writes a `.tgz` archive and a manifest with version, size, and SHA-256. The default output directory is `skills/dist/`, which is not tracked in git.
+
+Publish to a remote GitHub Release:
+
+```bash
+bash skills/scripts/publish-skill-release.sh --dry-run debian-linux-reliability
+git tag skills/debian-linux-reliability/v0.1.0
+git push origin skills/debian-linux-reliability/v0.1.0
+```
+
+`--dry-run` only builds artifacts and prints the release command. After the tag is pushed, `.github/workflows/skills-release.yml` validates, packages, and uploads the `.tgz` archive and manifest.
+
+Generate a score report from real agent responses:
+
+```bash
+bash skills/scripts/score-evaluation.sh --responses path/to/responses --output report.md
+```
+
+## Maintenance Resources
+
+The skill currently includes:
+
+- Multilingual notes: Simplified Chinese, Traditional Chinese, Japanese, and Korean
+- Realistic troubleshooting examples: `tests/evaluation-prompts.md` covers APT, systemd, networking, GPU, containers, development setup, Debian packaging, and security audit scenarios
+- Baseline agent responses: `tests/fixtures/evaluation-responses/` contains 30 scoreable samples
+- Automated validation: `skills/scripts/validate-all.sh` checks skill metadata, the distribution registry, shell syntax, risk checks, redaction rules, and troubleshooting prompt coverage
+- Local distribution entry points: `skills/registry.json` and `skills/scripts/install-skill.sh`
+- Versioned releases: `skills/scripts/package-skill.sh`
+- Remote releases: `skills/scripts/publish-skill-release.sh` and `.github/workflows/skills-release.yml`
+- Agent score reports: `skills/scripts/score-evaluation.sh`
+
+## Roadmap
+
+Next steps include tiered scoring rules, failure cases, and regression samples from real usage.

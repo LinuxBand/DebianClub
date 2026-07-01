@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian packaging metadata, changelog distribution, binary contents, upstream source form, and lintian command output with read-only checks.
+
+Evidence:
+- Run `scripts/packaging-probe.sh .` and keep the lintian findings with the answer.
+- Inspect `debian/changelog`, `debian/control`, installed files, and whether minified or generated source is missing.
+
+Safe next checks:
+- Verify the target distribution name, decide whether a manpage is required, and identify the original source for bundled assets before editing.
+
+Approval boundary:
+- Requires user approval before changing packaging files. Back up `debian/`, rebuild, verify with `lintian`, and rollback the packaging edits if the warnings are not resolved.

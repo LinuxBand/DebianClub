@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "source": "DebianClub",
+  "skills": [
+    {
+      "name": "debian-linux-reliability",
+      "version": "0.1.0",
+      "path": "skills/debian-linux-reliability",
+      "entrypoint": "SKILL.md",
+      "display_name": "Debian Linux Reliability",
+      "short_description": "Safer Debian/Linux diagnostics for AI agents",
+      "localized": {
+        "zh": {
+          "display_name": "Debian Linux Reliability",
+          "short_description": "面向 AI agent 的 Debian/Linux 安全诊断工作流",
+          "default_safety": "默认只读诊断，不自动修改系统。"
+        }
+      },
+      "default_prompt": "Use $debian-linux-reliability to diagnose this Debian/Linux issue with verified facts and safe read-only checks.",
+      "languages": [
+        "en",
+        "zh-CN",
+        "zh-TW",
+        "ja",
+        "ko"
+      ],
+      "modules": [
+        "env-detect",
+        "apt-safe",
+        "command-safety",
+        "systemd-troubleshoot",
+        "network-debug",
+        "dev-setup",
+        "gpu-drivers",
+        "containers",
+        "debian-packaging",
+        "security-audit",
+        "debianclub-sources"
+      ],
+      "default_safety": "Read-only diagnostics by default; no automatic system modification.",
+      "install": {
+        "local_script": "skills/scripts/install-skill.sh debian-linux-reliability",
+        "default_target": "${CODEX_HOME:-$HOME/.codex}/skills"
+      },
+      "distribution": {
+        "registry_route": "/skills.json",
+        "package_script": "skills/scripts/package-skill.sh debian-linux-reliability",
+        "publish_script": "skills/scripts/publish-skill-release.sh debian-linux-reliability",
+        "release_workflow": ".github/workflows/skills-release.yml",
+        "tag_pattern": "skills/debian-linux-reliability/v${version}",
+        "archive_pattern": "debian-linux-reliability-${version}.tgz",
+        "manifest_pattern": "debian-linux-reliability-${version}.manifest.json"
+      },
+      "evaluation": {
+        "prompts": "skills/debian-linux-reliability/tests/evaluation-prompts.md",
+        "score_script": "skills/scripts/score-evaluation.sh --responses <dir>",
+        "report_format": "markdown"
+      },
+      "validation": {
+        "script": "skills/scripts/validate-all.sh"
+      }
+    }
+  ]
+}

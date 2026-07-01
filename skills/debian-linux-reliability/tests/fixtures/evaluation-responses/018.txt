@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian suite, enabled backports entries, APT pins, held packages, and the exact full-upgrade simulation.
+
+Evidence:
+- Run `scripts/collect-env.sh` and `scripts/inspect-apt.sh linux-image-amd64`.
+- Review `apt-cache policy`, `/etc/apt/preferences.d/`, and `apt -s full-upgrade` before changing anything.
+
+Safe next checks:
+- Verify whether backports are pinned too high or globally preferred, then target only the needed kernel packages.
+
+Approval boundary:
+- Requires user approval before editing pins or upgrading. Back up APT preferences and source files, verify the candidate list, and rollback by restoring pins or booting the previous kernel.

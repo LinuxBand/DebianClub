@@ -1,0 +1,12 @@
+Environment facts:
+- Treat this as a destructive Debian command review and first collect read-only service, package, and storage facts.
+
+Evidence:
+- Run `scripts/risk-check.sh -- "sudo rm -rf /var/lib/postgresql/16/main"` and keep the DLR-RISK-003 result with the answer.
+- Check `systemctl status postgresql`, `pg_lsclusters` when available, and `dpkg -S /var/lib/postgresql/16/main` before changing anything.
+
+Safe next checks:
+- Do not run the deletion command. Verify whether this is an active PostgreSQL data directory and whether backups or snapshots exist.
+
+Approval boundary:
+- Requires user approval for any removal. Back up the cluster metadata and data first, stop the right service deliberately, then verify recovery or rollback by restoring the backup.

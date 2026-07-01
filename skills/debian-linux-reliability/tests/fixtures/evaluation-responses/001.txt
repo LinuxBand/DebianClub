@@ -1,0 +1,12 @@
+Environment facts:
+- First collect the Debian release and service state with read-only checks.
+
+Evidence:
+- Run `scripts/collect-env.sh` and `scripts/systemd-diagnose.sh nginx.service`.
+- Include DLR-SYS evidence from `systemctl status`, `systemctl cat`, and `journalctl`.
+
+Safe next checks:
+- Validate the nginx config before changing anything.
+
+Proposed changes:
+- Requires user approval. Back up the changed config, apply one change, then verify with `systemctl status nginx`.

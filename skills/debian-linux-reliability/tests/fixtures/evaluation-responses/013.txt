@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian release, WSL status, init system, SSH package state, and service manager capability with read-only checks.
+
+Evidence:
+- Run `scripts/collect-env.sh` and `scripts/systemd-diagnose.sh ssh`.
+- Check whether `systemctl` is available, whether WSL systemd integration is enabled, and `apt-cache policy openssh-server`.
+
+Safe next checks:
+- Verify whether SSH is managed by systemd, service scripts, or WSL configuration before suggesting restart commands.
+
+Approval boundary:
+- Requires user approval before enabling systemd in WSL or changing SSH config. Back up `sshd_config`, verify with `sshd -t`, and rollback by restoring the file.

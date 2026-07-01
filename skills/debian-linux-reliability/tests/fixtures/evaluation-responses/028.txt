@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian release, Node version, package manager, Python, make, g++, and the failing `node-gyp rebuild` log with read-only checks.
+
+Evidence:
+- Run `scripts/dev-probe.sh` and `scripts/inspect-apt.sh python3 make g++ build-essential`.
+- Check `apt-cache policy build-essential python3 make g++` and simulate `apt -s install build-essential python3`.
+
+Safe next checks:
+- Verify whether the native module also needs library-specific `-dev` packages before adding broad dependencies.
+
+Approval boundary:
+- Requires user approval before installing build tools. Back up lockfiles if edited, rebuild once, verify tests, and rollback package or lockfile changes if the build still fails.

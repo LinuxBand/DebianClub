@@ -1,0 +1,12 @@
+Environment facts:
+- For a Debian security review, first collect read-only release, exposed services, users, firewall state, update status, and audit tool availability.
+
+Evidence:
+- Run `scripts/security-audit-probe.sh`, `scripts/collect-env.sh`, and `scripts/inspect-apt.sh lynis unattended-upgrades`.
+- If Lynis is used, note that it is non-remediating but writes reports unless configured otherwise.
+
+Safe next checks:
+- Verify findings by category: remote access, package updates, firewall, logging, and service exposure before hardening.
+
+Approval boundary:
+- Requires user approval before installing tools or changing SSH, sysctl, or firewall settings. Back up configs, apply changes in stages, verify access, and rollback from saved files.

@@ -1,0 +1,12 @@
+Environment facts:
+- On Debian, first collect read-only DNS, route, resolver, and NetworkManager state before changing configuration.
+
+Evidence:
+- Run `scripts/network-diagnose.sh example.org` and `scripts/collect-env.sh`.
+- Compare `resolvectl status`, `/etc/resolv.conf`, `ip route`, and NetworkManager connection details.
+
+Safe next checks:
+- Verify IP connectivity separately from DNS, then check whether the active connection overrides DNS servers or search domains.
+
+Approval boundary:
+- Requires user approval before editing NetworkManager profiles or resolver files. Back up the connection profile, apply one change, verify lookups, and rollback by restoring the previous DNS settings.

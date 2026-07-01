@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian filesystem usage, journal disk usage, retention settings, and affected mount points with read-only checks.
+
+Evidence:
+- Run `scripts/collect-env.sh`, `scripts/systemd-diagnose.sh systemd-journald.service`, and `scripts/risk-check.sh -- "sudo rm -rf /var/log/journal/*"`.
+- Use `journalctl --disk-usage`, `du -xhd1 /var`, and `df -hT` before deleting anything.
+
+Safe next checks:
+- Do not run raw `rm -rf` on the journal directory. Prefer `journalctl --vacuum-size` or retention configuration after confirming logs are not needed.
+
+Approval boundary:
+- Requires user approval before vacuuming logs or editing journald config. Back up config, verify freed space and service health, and rollback retention changes if needed.

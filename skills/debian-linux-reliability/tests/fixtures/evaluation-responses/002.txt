@@ -1,0 +1,9 @@
+Use Debian-specific package checks before installing Docker.
+
+Observed facts:
+- First run `scripts/collect-env.sh` and `scripts/inspect-apt.sh docker.io docker-compose-plugin`.
+- Use `apt-cache policy` and `apt -s install docker.io docker-compose-plugin`.
+
+Approval boundary:
+- Do not change APT sources or install packages without user approval.
+- Verify the repository and roll back any source file change from a backup.

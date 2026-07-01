@@ -1,0 +1,152 @@
+---
+title: "DebianClub AI Skills"
+description: "DebianClub 提供的 Debian/Linux AI 可靠性 Skills，帮助 AI 助手先验证系统事实，再给出安全建议"
+---
+
+DebianClub AI Skills 是一组给 AI 编码助手和终端代理使用的 Debian/Linux 可靠性规则。它们的目标不是替代文档，而是让 AI 在回答之前先识别环境、验证包名、检查日志和评估命令风险。
+
+当前仓库内的首个 skill 是 `skills/debian-linux-reliability/`。它采用一个主 skill、多模块子功能的结构。
+
+<SkillsCatalog lang="zh" />
+
+## 为什么需要
+
+Linux 上的 AI 幻觉通常来自几个地方：
+
+- 把 Ubuntu、Arch、macOS 的命令套到 Debian 上
+- 编造不存在的软件包名
+- 忽略 Debian stable、backports、testing 的差异
+- 没看 `systemctl` 和 `journalctl` 就猜服务失败原因
+- 推荐 `curl | sh`、`rm -rf`、`chmod -R` 等高风险命令
+- 没识别 WSL、容器、无 systemd 环境或非 amd64 架构
+
+DebianClub AI Skills 要求 AI 先收集这些事实，再给出建议。
+
+## 当前 Skill
+
+| Skill | 作用 | 默认行为 |
+|---|---|---|
+| `debian-linux-reliability` | Debian/Linux 开发、运维和排障可靠性工作流 | 只读诊断，不自动修改系统 |
+
+## 子功能
+
+`debian-linux-reliability` 包含这些模块：
+
+| 模块 | 场景 |
+|---|---|
+| 环境识别 | Debian 版本、架构、WSL、容器、systemd、权限 |
+| APT 安全 | 包名验证、软件源、backports、第三方源 |
+| 命令安全 | 识别删除、磁盘、权限、远程脚本等高风险命令 |
+| systemd 排障 | 服务状态、unit 文件、journal 日志 |
+| 网络排障 | DNS、路由、端口、防火墙、网络管理器 |
+| 开发环境 | Node、Python、Rust、Go、C/C++、Git、构建依赖 |
+| GPU 驱动 | NVIDIA、AMD、Intel、Mesa、Wayland/X11、Secure Boot |
+| 容器 | Podman、Docker、rootless、Compose、卷权限、cgroup v2 |
+| Debian 打包 | `debian/control`、`sbuild`、`lintian`、backports 打包 |
+| 安全审计 | Lynis 可用性检查、审计输出解释、分阶段加固建议 |
+
+## 安全策略
+
+第一版默认禁止自动修改系统。脚本只收集信息，不安装软件、不删除文件、不编辑配置、不重启服务。
+
+如果用户希望 AI 执行修改，AI 必须先说明：
+
+- 会影响哪些文件、包、服务或网络规则
+- 为什么需要修改
+- 修改前如何检查
+- 修改后如何验证
+- 失败时如何回滚
+
+## 与 DebianClub 文档的关系
+
+这个 skill 会优先引用 DebianClub 仓库里的文档作为解释来源，例如：
+
+- [APT 包管理](/administration/packages)
+- [Debian Backports](/administration/backports)
+- [deb822 软件源](/administration/deb822)
+- [网络配置](/administration/network)
+- [NVIDIA Optimus](/administration/nvidia-optimus)
+- [Podman](/server/podman)
+- [系统安全](/administration/security)
+
+但实时状态必须以用户机器上的检查结果为准。文档负责解释，脚本负责验证当前系统事实。
+
+## 使用方式
+
+在支持 skills 的 AI agent 中，可以显式要求：
+
+```text
+Use $debian-linux-reliability to diagnose this Debian package installation issue.
+```
+
+如果只是阅读仓库，可以查看：
+
+```text
+skills/debian-linux-reliability/SKILL.md
+skills/debian-linux-reliability/references/
+skills/debian-linux-reliability/scripts/
+```
+
+## 本地安装
+
+仓库提供了一个用户目录安装脚本，默认安装到 `${CODEX_HOME:-$HOME/.codex}/skills`。它不会使用 `sudo`，也不会覆盖已有安装，除非显式传入 `--replace`。
+
+```bash
+bash skills/scripts/install-skill.sh debian-linux-reliability
+```
+
+如果目标目录已有同名 skill，先检查现有内容；确认要替换时再运行：
+
+```bash
+bash skills/scripts/install-skill.sh --replace debian-linux-reliability
+```
+
+平台或 CLI 可以读取分发索引：
+
+```text
+skills/registry.json
+/skills.json
+```
+
+## 发布与评估
+
+构建版本化 skill 包：
+
+```bash
+bash skills/scripts/package-skill.sh debian-linux-reliability
+```
+
+脚本会生成 `.tgz` 包和对应 manifest，包含版本号、大小和 SHA-256。默认输出目录是 `skills/dist/`，该目录不纳入版本库。
+
+发布到远端 GitHub Release：
+
+```bash
+bash skills/scripts/publish-skill-release.sh --dry-run debian-linux-reliability
+git tag skills/debian-linux-reliability/v0.1.0
+git push origin skills/debian-linux-reliability/v0.1.0
+```
+
+`--dry-run` 只构建和打印发布命令，不上传。推送 tag 后，`.github/workflows/skills-release.yml` 会重新验证、打包并上传 `.tgz` 与 manifest。
+
+对真实 agent 回答生成评分报告：
+
+```bash
+bash skills/scripts/score-evaluation.sh --responses path/to/responses --output report.md
+```
+
+## 维护资源
+
+当前已包含：
+
+- 多语言说明：简体中文、繁体中文、日文、韩文
+- 真实排障样例：`tests/evaluation-prompts.md` 中覆盖 APT、systemd、网络、GPU、容器、开发环境、Debian 打包和安全审计场景
+- 真实 agent 回答基线：`tests/fixtures/evaluation-responses/` 中包含 30 条可评分样本
+- 自动化验证：`skills/scripts/validate-all.sh` 会校验 skill 元数据、分发索引、脚本语法、风险检查、脱敏规则和排障样例覆盖
+- 本地分发入口：`skills/registry.json` 和 `skills/scripts/install-skill.sh`
+- 版本化发布：`skills/scripts/package-skill.sh`
+- 远端发布：`skills/scripts/publish-skill-release.sh` 和 `.github/workflows/skills-release.yml`
+- agent 评分报告：`skills/scripts/score-evaluation.sh`
+
+## 后续计划
+
+后续会根据真实使用继续补充分级评分规则、失败案例和回归样本。

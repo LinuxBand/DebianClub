@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian release codename, all APT source files, keyring paths, and the exact `apt update` error with read-only checks.
+
+Evidence:
+- Run `scripts/collect-env.sh`, `scripts/inspect-apt.sh`, and `scripts/risk-check.sh -- "apt update"`.
+- Inspect deb822 entries, `apt-cache policy`, and any source line that incorrectly references `jammy`.
+
+Safe next checks:
+- Do not add keys blindly. Verify the vendor supports Debian bookworm or trixie and uses a signed-by keyring path.
+
+Approval boundary:
+- Requires user approval before editing source files or keyrings. Back up `/etc/apt/sources.list.d/`, run `apt update`, and rollback by restoring the previous source file.

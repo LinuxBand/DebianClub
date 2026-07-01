@@ -1,0 +1,12 @@
+Environment facts:
+- On Debian, first collect read-only facts for release, kernel, GPU devices, display stack, and Secure Boot state.
+
+Evidence:
+- Run `scripts/collect-env.sh`, `scripts/gpu-probe.sh`, and `scripts/inspect-apt.sh nvidia-driver firmware-misc-nonfree mesa-utils`.
+- Check `apt-cache policy nvidia-driver` plus journal entries for the failed display manager before changing packages.
+
+Safe next checks:
+- Verify whether Wayland fails only with NVIDIA or also with Intel, and confirm whether DKMS modules loaded.
+
+Approval boundary:
+- Requires user approval before reinstalling drivers, changing kernel parameters, or disabling Secure Boot. Back up edited files and verify rollback by booting the previous kernel or reverting the display manager configuration.

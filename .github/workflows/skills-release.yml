@@ -1,0 +1,48 @@
+name: Skills Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      skill:
+        description: Skill name from skills/registry.json
+        required: true
+        default: debian-linux-reliability
+  push:
+    tags:
+      - 'skills/**/v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve skill name
+        id: skill
+        shell: bash
+        run: |
+          set -eu
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            skill="${{ inputs.skill }}"
+          else
+            tag="${GITHUB_REF_NAME}"
+            skill="${tag#skills/}"
+            skill="${skill%/v*}"
+          fi
+          printf 'skill=%s\n' "$skill" >> "$GITHUB_OUTPUT"
+
+      - name: Validate and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          args=(--repo "${GITHUB_REPOSITORY}")
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+            args+=(--verify-tag)
+          fi
+
+          skills/scripts/publish-skill-release.sh "${args[@]}" "${{ steps.skill.outputs.skill }}"

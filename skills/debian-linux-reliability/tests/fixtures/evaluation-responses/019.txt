@@ -1,0 +1,12 @@
+Environment facts:
+- On Debian, first collect read-only nginx service state, listening sockets, unit files, and journal output.
+
+Evidence:
+- Run `scripts/systemd-diagnose.sh nginx.service` and `scripts/network-diagnose.sh localhost`.
+- Use `ss -ltnp` and `systemctl status` to identify what already owns port 80 without killing processes.
+
+Safe next checks:
+- Verify whether another web server, stale nginx process, socket unit, or container is binding `0.0.0.0:80`.
+
+Approval boundary:
+- Requires user approval before stopping services or changing ports. Back up nginx config, test with `nginx -t`, verify service status, and rollback to the previous listener configuration.

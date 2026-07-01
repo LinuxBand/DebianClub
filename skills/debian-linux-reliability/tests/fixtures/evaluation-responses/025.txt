@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian or CI base image details, container privileges, kernel user namespace support, seccomp policy, and Podman storage driver with read-only checks.
+
+Evidence:
+- Run `scripts/container-probe.sh` and `scripts/collect-env.sh`.
+- Check `podman info`, `/proc/sys/kernel/unprivileged_userns_clone`, and CI runner capability settings.
+
+Safe next checks:
+- Verify whether the failure is caused by nested containers, missing user namespaces, seccomp, or a rootless storage limitation before changing the runner.
+
+Approval boundary:
+- Requires user approval before adding privileges or changing CI security settings. Back up runner config, test a minimal Podman command, and rollback to the previous runner policy.

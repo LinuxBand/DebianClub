@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian release, Python version, virtualenv path, PostgreSQL client packages, and the exact `pg_config` error.
+
+Evidence:
+- Run `scripts/dev-probe.sh` and `scripts/inspect-apt.sh libpq-dev python3-dev build-essential`.
+- Use `apt-cache policy libpq-dev` and `apt -s install libpq-dev python3-dev build-essential` before installing anything.
+
+Safe next checks:
+- Verify whether the project can use a wheel package or needs local compilation, then document the build dependencies in project setup files.
+
+Approval boundary:
+- Requires user approval before installing Debian packages. Back up dependency files, verify `pip install psycopg2` in a clean virtualenv, and rollback unneeded build packages.

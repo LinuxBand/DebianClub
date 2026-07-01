@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian host networking, container engine, published ports, firewall state, and service logs using read-only checks.
+
+Evidence:
+- Run `scripts/container-probe.sh`, `scripts/network-diagnose.sh`, and `scripts/risk-check.sh -- "docker compose up -d"`.
+- Check `podman ps` or `docker ps`, `ss -ltnp`, and container logs before changing the deployment.
+
+Safe next checks:
+- Verify whether the app listens on `127.0.0.1` inside the container, whether the port is published, and whether a firewall blocks remote clients.
+
+Approval boundary:
+- Requires user approval before recreating containers or modifying firewall rules. Back up compose files, apply one change, verify from another machine, and rollback by restoring the previous compose file.

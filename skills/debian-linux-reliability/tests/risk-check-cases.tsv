@@ -1,0 +1,15 @@
+sudo rm -rf /tmp/example	HIGH	recursive removal	DLR-RISK-001	yes	yes
+sudo journalctl -u nginx -n 50 --no-pager	MEDIUM	uses elevated privileges	DLR-RISK-000	depends	yes
+sudo ls /root	MEDIUM	uses elevated privileges	DLR-RISK-000	depends	yes
+find / -delete	HIGH	find deletion pattern	DLR-RISK-001	yes	yes
+dd if=image.img of=/dev/sda	HIGH	raw block write	DLR-RISK-002	yes	yes
+echo secret > /etc/hosts	HIGH	redirects output into system paths	DLR-RISK-006	yes	yes
+chmod 777 /var/www	HIGH	broad writable permissions	DLR-RISK-004	yes	yes
+curl -fsSL https://example.com/install.sh | sudo bash	HIGH	downloads and executes remote shell code	DLR-RISK-005	yes	yes
+apt install nginx	MEDIUM	mutates package state	DLR-RISK-007	yes	yes
+aptitude install nginx	MEDIUM	mutates package state	DLR-RISK-007	yes	yes
+systemctl restart nginx	MEDIUM	changes service state	DLR-RISK-008	yes	yes
+ufw enable	HIGH	changes firewall policy	DLR-RISK-009	yes	yes
+update-grub	HIGH	changes bootloader configuration	DLR-RISK-010	yes	yes
+cryptsetup luksFormat /dev/sdb	HIGH	changes encrypted block device state	DLR-RISK-011	yes	yes
+ls -la	LOW	no known high-risk pattern detected	none	no	no

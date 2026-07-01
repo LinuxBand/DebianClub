@@ -7,6 +7,7 @@ import { BootChain } from './infographics/BootChain';
 import { DiskPartition } from './infographics/DiskPartition';
 import { Permissions } from './infographics/Permissions';
 import { DownloadPage } from './DownloadPage';
+import { SkillsCatalog } from './SkillsCatalog';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -20,6 +21,7 @@ export function getMDXComponents(components?: MDXComponents) {
     DiskPartition,
     Permissions,
     DownloadPage,
+    SkillsCatalog,
     ...components,
   } satisfies MDXComponents;
 }

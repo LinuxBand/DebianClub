@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian release, Python version, virtualenv state, compiler tools, and the exact missing header from the build log.
+
+Evidence:
+- Run `scripts/dev-probe.sh` and `scripts/inspect-apt.sh python3-dev build-essential pkg-config`.
+- Use `apt-cache policy` and `apt -s install python3-dev build-essential pkg-config` before installing build dependencies.
+
+Safe next checks:
+- Verify which library header is missing, then map it to the correct `-dev` package instead of guessing from the Python package name.
+
+Approval boundary:
+- Requires user approval before installing packages. Back up dependency files if edited, verify the wheel build in a clean virtualenv, and rollback by removing unneeded build packages.

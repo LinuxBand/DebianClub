@@ -1,0 +1,12 @@
+Environment facts:
+- On a remote Debian server, first collect current SSH session details, firewall rules, default policy, and console recovery options with read-only checks.
+
+Evidence:
+- Run `scripts/network-diagnose.sh` and `scripts/risk-check.sh -- "nft -f ruleset.nft"`.
+- Inspect `nft list ruleset`, `ss -ltnp`, and the active SSH port before applying more rules.
+
+Safe next checks:
+- Verify an allow rule for the current SSH source and schedule an automatic rollback before changing nftables.
+
+Approval boundary:
+- Requires user approval before applying firewall changes. Back up the ruleset, test with a timed rollback, verify a second SSH session, and rollback by restoring the previous rules.

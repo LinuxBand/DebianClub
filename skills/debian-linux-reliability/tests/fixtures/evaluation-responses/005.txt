@@ -1,0 +1,12 @@
+Environment facts:
+- First collect the Debian release, enabled suites, CPU architecture, shell, and current Node toolchain with read-only checks.
+
+Evidence:
+- Run `scripts/collect-env.sh`, `scripts/dev-probe.sh`, and `scripts/inspect-apt.sh nodejs pnpm npm`.
+- Compare `apt-cache policy nodejs pnpm` and use `apt -s install nodejs pnpm` before recommending APT changes.
+
+Safe next checks:
+- For a current development setup, prefer a user-local version manager or an explicitly reviewed vendor repository instead of guessing package names.
+
+Approval boundary:
+- Requires user approval before adding repositories or installing packages. Back up any source file, verify `node --version` and `pnpm --version`, and rollback by removing the added source and package changes.

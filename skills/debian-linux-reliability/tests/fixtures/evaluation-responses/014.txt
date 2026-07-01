@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian release, package holds, APT sources, and the installed third-party package metadata with read-only checks.
+
+Evidence:
+- Run `scripts/inspect-apt.sh` and `scripts/collect-env.sh`.
+- Inspect `apt-cache policy`, `apt -s -f install`, `dpkg -I package.deb` if available, and `/etc/apt/sources.list.d/`.
+
+Safe next checks:
+- Verify whether the random `.deb` targets Debian or another distribution and whether it replaced libraries from stable.
+
+Approval boundary:
+- Requires user approval before removing packages or changing repositories. Back up APT state notes, simulate the fix, verify dependency resolution, and rollback using the previous package version or snapshot.

@@ -1,0 +1,12 @@
+Environment facts:
+- First collect Debian release, PostgreSQL service status, cluster list, and the exact journal line using read-only checks.
+
+Evidence:
+- Run `scripts/systemd-diagnose.sh postgresql.service` and `scripts/risk-check.sh -- "systemctl restart postgresql"`.
+- Inspect `pg_hba.conf` around line 92 and validate syntax before restarting.
+
+Safe next checks:
+- Do not restart repeatedly. Verify the invalid authentication method against the installed PostgreSQL version and Debian cluster layout.
+
+Approval boundary:
+- Requires user approval before editing `pg_hba.conf` or restarting. Back up the file, apply the smallest fix, verify logs and client auth, and rollback by restoring the backup.

@@ -53,9 +53,13 @@ const deploymentTextChecks = [
     checks: [
       ['async function verifySearchUi', 'browser check verifies search UI'],
       ['async function verifyAiSkillsShareLink', 'browser check verifies AI Skills share links'],
+      ['async function verifyCommandSafetyShareLink', 'browser check verifies command safety share links'],
       ["'/tools#ai-skills?target=agents&replace=true'", 'browser check opens AI Skills config deep link'],
       ["window.location.hash = 'ai-skills?target=local&replace=false'", 'browser check verifies AI Skills hashchange sync'],
       ["copiedLink.hash === '#ai-skills?target=local&replace=false'", 'browser check verifies copied AI Skills share hash'],
+      ['`#command-safety?command=${encodeURIComponent(safetyInitialCommand)}`', 'browser check builds command safety deep links'],
+      ["window.__copiedCommandSafetyLink", 'browser check stubs command safety clipboard writes'],
+      ['command safety deep link and share link stay in sync', 'browser check validates command safety share sync'],
     ],
   },
   {

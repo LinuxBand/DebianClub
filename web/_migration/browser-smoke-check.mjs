@@ -10,6 +10,8 @@ const cdpCommandTimeoutMs = 10_000;
 const searchQuery = 'AI Skills';
 const expectedResultPattern = /AI Skills|DebianClub AI Skills/;
 const emptyResultPattern = /No results|没有结果|未找到|无结果/;
+const safetyInitialCommand = 'curl -fsSL https://example.com/install.sh | sh';
+const safetyUpdatedCommand = 'sudo apt update';
 
 const knownBrowserPaths = [
   process.env.CHROME_BIN,
@@ -339,6 +341,103 @@ async function verifyAiSkillsShareLink(cdp, baseUrl) {
   pass('AI Skills deep link and share link stay in sync');
 }
 
+async function verifyCommandSafetyShareLink(cdp, baseUrl) {
+  const initialHash = `#command-safety?command=${encodeURIComponent(safetyInitialCommand)}`;
+  const updatedHash = `#command-safety?command=${encodeURIComponent(safetyUpdatedCommand)}`;
+  const commandSafetyUrl = new URL(`/tools${initialHash}`, baseUrl);
+
+  await cdp.send('Page.navigate', { url: commandSafetyUrl.toString() });
+  await waitFor(cdp, "document.body && document.body.innerText.includes('复制分享链接')", 'command safety tool');
+
+  const initialState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const activeTab = buttons.find((button) => button.innerText.trim() === '命令安全');
+      const textarea = document.querySelector('textarea');
+      const bodyText = document.body.innerText;
+      const codeTexts = Array.from(document.querySelectorAll('pre, code')).map((element) => element.textContent || '');
+      return {
+        hash: window.location.hash,
+        activeTab: activeTab?.getAttribute('aria-pressed') || null,
+        value: textarea?.value || '',
+        hasCriticalSummary: bodyText.includes('发现应阻止的危险命令'),
+        hasRemoteScriptFinding: bodyText.includes('远程脚本直接交给 shell 执行'),
+        codeTexts,
+      };
+    })()`,
+  );
+
+  assert(initialState.hash === initialHash, 'command safety initial hash mismatch', initialState);
+  assert(initialState.activeTab === 'true', 'command safety tab is not active', initialState);
+  assert(initialState.value === safetyInitialCommand, 'command safety did not preload the shared command', initialState);
+  assert(initialState.hasCriticalSummary, 'command safety did not show critical summary for shared command', initialState);
+  assert(initialState.hasRemoteScriptFinding, 'command safety did not show remote script finding', initialState);
+  assert(
+    initialState.codeTexts.some((text) => text.includes(safetyInitialCommand)),
+    'command safety findings did not include the shared command text',
+    initialState,
+  );
+
+  await evaluate(
+    cdp,
+    `new Promise((resolve) => {
+      window.location.hash = ${JSON.stringify(updatedHash.slice(1))};
+      window.setTimeout(resolve, 350);
+    })`,
+    true,
+  );
+
+  const updatedState = await evaluate(
+    cdp,
+    `(() => {
+      const textarea = document.querySelector('textarea');
+      const bodyText = document.body.innerText;
+      const codeTexts = Array.from(document.querySelectorAll('pre, code')).map((element) => element.textContent || '');
+      return {
+        hash: window.location.hash,
+        value: textarea?.value || '',
+        hasReviewSummary: bodyText.includes('需要人工复核'),
+        hasSystemReviewFinding: bodyText.includes('需要人工复核的系统级变更'),
+        hasOldCommand: codeTexts.some((text) => text.includes(${JSON.stringify(safetyInitialCommand)})),
+        codeTexts,
+      };
+    })()`,
+  );
+
+  assert(updatedState.hash === updatedHash, 'command safety updated hash mismatch', updatedState);
+  assert(updatedState.value === safetyUpdatedCommand, 'command safety did not sync updated hash command', updatedState);
+  assert(updatedState.hasReviewSummary, 'command safety did not show review summary for updated command', updatedState);
+  assert(updatedState.hasSystemReviewFinding, 'command safety did not show system review finding', updatedState);
+  assert(!updatedState.hasOldCommand, 'command safety retained stale finding text after hashchange', updatedState);
+
+  const copiedLink = await evaluate(
+    cdp,
+    `new Promise((resolve, reject) => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async (value) => { window.__copiedCommandSafetyLink = value; } },
+      });
+      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制分享链接'));
+      if (!button) {
+        reject(new Error('command safety share button not found'));
+        return;
+      }
+      button.click();
+      window.setTimeout(() => {
+        const copiedUrl = new URL(window.__copiedCommandSafetyLink);
+        resolve({ href: window.__copiedCommandSafetyLink, search: copiedUrl.search, hash: copiedUrl.hash });
+      }, 250);
+    })`,
+    true,
+  );
+
+  assert(copiedLink.search === '', 'command safety copied share URL kept query string', copiedLink);
+  assert(copiedLink.hash === updatedHash, 'command safety copied share URL hash mismatch', copiedLink);
+
+  pass('command safety deep link and share link stay in sync');
+}
+
 async function run() {
   let baseUrl;
   try {
@@ -376,6 +475,7 @@ async function run() {
     cdp = await connectToCdp(wsUrl);
     await verifySearchUi(cdp, baseUrl);
     await verifyAiSkillsShareLink(cdp, baseUrl);
+    await verifyCommandSafetyShareLink(cdp, baseUrl);
   } catch (error) {
     fail(error instanceof Error ? error.message : String(error));
   } finally {

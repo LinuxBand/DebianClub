@@ -49,6 +49,16 @@ const deploymentTextChecks = [
     ],
   },
   {
+    path: '_migration/browser-smoke-check.mjs',
+    checks: [
+      ['async function verifySearchUi', 'browser check verifies search UI'],
+      ['async function verifyAiSkillsShareLink', 'browser check verifies AI Skills share links'],
+      ["'/tools#ai-skills?target=agents&replace=true'", 'browser check opens AI Skills config deep link'],
+      ["window.location.hash = 'ai-skills?target=local&replace=false'", 'browser check verifies AI Skills hashchange sync'],
+      ["copiedLink.hash === '#ai-skills?target=local&replace=false'", 'browser check verifies copied AI Skills share hash'],
+    ],
+  },
+  {
     path: '_migration/smoke-check.mjs',
     checks: [
       ["'/tools#command-safety'", 'smoke covers Chinese command safety tool deep link'],

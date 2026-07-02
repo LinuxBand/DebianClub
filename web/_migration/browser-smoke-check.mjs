@@ -33,6 +33,13 @@ function pass(message) {
   console.log(`[browser-smoke] OK   ${message}`);
 }
 
+function assert(condition, message, details) {
+  if (!condition) {
+    const suffix = details ? `; details: ${JSON.stringify(details, null, 2)}` : '';
+    throw new Error(`${message}${suffix}`);
+  }
+}
+
 function resolveBaseUrl() {
   const arg = process.argv.find((value) => value.startsWith('--url='));
   const raw = arg?.slice('--url='.length) || process.env.SMOKE_BASE_URL || defaultBaseUrl;
@@ -241,6 +248,97 @@ async function verifySearchUi(cdp, baseUrl) {
   pass(`search UI returns results for ${searchQuery}`);
 }
 
+async function verifyAiSkillsShareLink(cdp, baseUrl) {
+  const aiSkillsUrl = new URL('/tools#ai-skills?target=agents&replace=true', baseUrl);
+
+  await cdp.send('Page.navigate', { url: aiSkillsUrl.toString() });
+  await cdp.waitForEvent('Page.loadEventFired');
+  await waitFor(cdp, "document.body && document.body.innerText.includes('复制 Skills 配置链接')", 'AI Skills tool');
+
+  const initialState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const activeTab = buttons.find((button) => button.innerText.trim() === 'AI Skills');
+      const target = buttons.find((button) => button.innerText.includes('Agents 目录'));
+      const commandText = Array.from(document.querySelectorAll('pre, code')).map((element) => element.textContent || '').join(' ');
+      return {
+        hash: window.location.hash,
+        activeTab: activeTab?.getAttribute('aria-pressed') || null,
+        targetPressed: target?.getAttribute('aria-pressed') || null,
+        checked: document.querySelector('input[type="checkbox"]')?.checked ?? null,
+        commandText,
+      };
+    })()`,
+  );
+
+  assert(initialState.hash === '#ai-skills?target=agents&replace=true', 'AI Skills initial hash mismatch', initialState);
+  assert(initialState.activeTab === 'true', 'AI Skills tab is not active', initialState);
+  assert(initialState.targetPressed === 'true', 'AI Skills target was not loaded from hash', initialState);
+  assert(initialState.checked === true, 'AI Skills replace flag was not loaded from hash', initialState);
+  assert(
+    initialState.commandText.includes('--replace --target "$HOME/.agents/skills"'),
+    'AI Skills command did not include the shared target and replace flag',
+    initialState,
+  );
+
+  await evaluate(
+    cdp,
+    `new Promise((resolve) => {
+      window.location.hash = 'ai-skills?target=local&replace=false';
+      window.setTimeout(resolve, 350);
+    })`,
+    true,
+  );
+
+  const updatedState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const target = buttons.find((button) => button.innerText.includes('仓库内本地目录'));
+      const commandText = Array.from(document.querySelectorAll('pre, code')).map((element) => element.textContent || '').join(' ');
+      return {
+        hash: window.location.hash,
+        targetPressed: target?.getAttribute('aria-pressed') || null,
+        checked: document.querySelector('input[type="checkbox"]')?.checked ?? null,
+        commandText,
+      };
+    })()`,
+  );
+
+  assert(updatedState.hash === '#ai-skills?target=local&replace=false', 'AI Skills updated hash mismatch', updatedState);
+  assert(updatedState.targetPressed === 'true', 'AI Skills local target was not selected after hashchange', updatedState);
+  assert(updatedState.checked === false, 'AI Skills replace flag was not cleared after hashchange', updatedState);
+  assert(updatedState.commandText.includes('--target ./skills-local'), 'AI Skills local command target is missing', updatedState);
+  assert(!updatedState.commandText.includes('--replace --target ./skills-local'), 'AI Skills local command kept replace flag', updatedState);
+
+  const copiedLink = await evaluate(
+    cdp,
+    `new Promise((resolve, reject) => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async (value) => { window.__copiedAiSkillsLink = value; } },
+      });
+      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制 Skills 配置链接'));
+      if (!button) {
+        reject(new Error('AI Skills share button not found'));
+        return;
+      }
+      button.click();
+      window.setTimeout(() => {
+        const copiedUrl = new URL(window.__copiedAiSkillsLink);
+        resolve({ href: window.__copiedAiSkillsLink, search: copiedUrl.search, hash: copiedUrl.hash });
+      }, 250);
+    })`,
+    true,
+  );
+
+  assert(copiedLink.search === '', 'AI Skills copied share URL kept query string', copiedLink);
+  assert(copiedLink.hash === '#ai-skills?target=local&replace=false', 'AI Skills copied share URL hash mismatch', copiedLink);
+
+  pass('AI Skills deep link and share link stay in sync');
+}
+
 async function run() {
   let baseUrl;
   try {
@@ -277,6 +375,7 @@ async function run() {
     const wsUrl = await waitForBrowserTarget(port);
     cdp = await connectToCdp(wsUrl);
     await verifySearchUi(cdp, baseUrl);
+    await verifyAiSkillsShareLink(cdp, baseUrl);
   } catch (error) {
     fail(error instanceof Error ? error.message : String(error));
   } finally {

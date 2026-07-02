@@ -82,6 +82,8 @@ const text = {
       goal: '目标',
       risk: '风险偏好',
       docs: '查看安装指南',
+      share: '复制安装配置链接',
+      shareCopied: '配置链接已复制',
     },
     desktop: {
       title: '桌面环境选择器',
@@ -168,6 +170,8 @@ const text = {
       goal: 'Goal',
       risk: 'Risk preference',
       docs: 'Read installation guide',
+      share: 'Copy install config link',
+      shareCopied: 'Config link copied',
     },
     desktop: {
       title: 'Desktop Picker',
@@ -278,6 +282,27 @@ const componentSets: Record<ComponentMode, { value: string; label: Record<ToolLa
     note: { zh: '适合 NVIDIA、Steam 或其他非自由软件需求。', en: 'Useful for NVIDIA, Steam, or other non-free software needs.' },
   },
 };
+
+const installDevices = {
+  vm: true,
+  laptop: true,
+  desktop: true,
+  server: true,
+} satisfies Record<InstallDevice, true>;
+
+const installGoals = {
+  learn: true,
+  daily: true,
+  server: true,
+  dev: true,
+  ai: true,
+} satisfies Record<InstallGoal, true>;
+
+const riskLevels = {
+  low: true,
+  balanced: true,
+  direct: true,
+} satisfies Record<RiskLevel, true>;
 
 const targetPaths: Record<SkillTarget, { label: Record<ToolLanguage, string>; target: string }> = {
   codex: { label: { zh: 'Codex 默认目录', en: 'Codex default' }, target: '"${CODEX_HOME:-$HOME/.codex}/skills"' },
@@ -792,7 +817,37 @@ function InstallTool({ lang }: { lang: ToolLanguage }) {
   const [device, setDevice] = useState<InstallDevice>('laptop');
   const [goal, setGoal] = useState<InstallGoal>('daily');
   const [risk, setRisk] = useState<RiskLevel>('balanced');
+  const [shareCopied, setShareCopied] = useState(false);
   const result = installRecommendation(device, goal, risk, lang);
+
+  useEffect(() => {
+    function syncInstallStateFromHash() {
+      const hashState = parseToolHash(window.location.hash);
+      if (hashState.id !== toolHashIds.install) return;
+
+      const nextDevice = hashState.params.get('device');
+      const nextGoal = hashState.params.get('goal');
+      const nextRisk = hashState.params.get('risk');
+
+      if (hasRecordKey(installDevices, nextDevice)) setDevice(nextDevice);
+      if (hasRecordKey(installGoals, nextGoal)) setGoal(nextGoal);
+      if (hasRecordKey(riskLevels, nextRisk)) setRisk(nextRisk);
+    }
+
+    syncInstallStateFromHash();
+    window.addEventListener('hashchange', syncInstallStateFromHash);
+    return () => window.removeEventListener('hashchange', syncInstallStateFromHash);
+  }, []);
+
+  async function copyShareLink() {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = `${toolHashIds.install}?device=${device}&goal=${goal}&risk=${risk}`;
+
+    await copyText(url.toString());
+    setShareCopied(true);
+    window.setTimeout(() => setShareCopied(false), 1400);
+  }
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.85fr)]">
@@ -851,6 +906,14 @@ function InstallTool({ lang }: { lang: ToolLanguage }) {
             ))}
           </ol>
         </div>
+        <button
+          type="button"
+          onClick={copyShareLink}
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-fd-border bg-fd-background px-3 text-sm font-medium text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+        >
+          {shareCopied ? <Check className="size-4" /> : <Clipboard className="size-4" />}
+          {shareCopied ? t.install.shareCopied : t.install.share}
+        </button>
         <a className="text-fd-primary no-underline hover:underline" href={docsHref[lang].install}>
           {t.install.docs}
         </a>

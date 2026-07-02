@@ -26,6 +26,8 @@ const routeChecks = [
 const toolHashRouteChecks = [
   '/tools#command-safety',
   '/en/tools#command-safety',
+  '/tools#command-safety?command=sudo%20apt%20update',
+  '/en/tools#command-safety?command=sudo%20apt%20update',
   '/tools#ai-skills',
   '/en/tools#ai-skills',
 ];

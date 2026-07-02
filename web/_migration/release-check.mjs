@@ -50,6 +50,8 @@ const deploymentTextChecks = [
     checks: [
       ["'/tools#command-safety'", 'smoke covers Chinese command safety tool deep link'],
       ["'/en/tools#command-safety'", 'smoke covers English command safety tool deep link'],
+      ["'/tools#command-safety?command=sudo%20apt%20update'", 'smoke covers Chinese prefilled command safety link'],
+      ["'/en/tools#command-safety?command=sudo%20apt%20update'", 'smoke covers English prefilled command safety link'],
       ["'/tools#ai-skills'", 'smoke covers Chinese AI Skills tool deep link'],
       ["'/en/tools#ai-skills'", 'smoke covers English AI Skills tool deep link'],
     ],
@@ -60,6 +62,10 @@ const deploymentTextChecks = [
       ["safety: 'command-safety'", 'command safety tool hash is mapped'],
       ["skills: 'ai-skills'", 'AI Skills tool hash is mapped'],
       ['function normalizeToolHash', 'tool hash parsing is centralized'],
+      ['function parseToolHash', 'tool hash parameters are parsed from the URL fragment'],
+      ['const maxSharedCommandLength = 4000', 'shared command links have a length cap'],
+      ["parseToolHash(window.location.hash).params.get('command')", 'command safety can preload a shared command from the URL fragment'],
+      ['url.searchParams.delete(\'command\')', 'command safety share links do not keep command query parameters'],
       ['decodeURIComponent(value)', 'encoded tool hashes are decoded'],
       ['window.addEventListener(\'hashchange\', syncFromHash)', 'tool tabs sync on hash changes'],
       ['window.history.replaceState(null, \'\', nextUrl)', 'tool tab clicks update shareable hash'],
@@ -67,11 +73,17 @@ const deploymentTextChecks = [
   },
   {
     path: 'content/docs/tools/index.mdx',
-    checks: [["/tools#command-safety", 'Chinese tools page documents command safety deep link']],
+    checks: [
+      ["/tools#command-safety", 'Chinese tools page documents command safety deep link'],
+      ['command=', 'Chinese tools page documents command prefill links'],
+    ],
   },
   {
     path: 'content/docs/tools/index.en.mdx',
-    checks: [["/en/tools#command-safety", 'English tools page documents command safety deep link']],
+    checks: [
+      ["/en/tools#command-safety", 'English tools page documents command safety deep link'],
+      ['command=', 'English tools page documents command prefill links'],
+    ],
   },
   {
     path: join('..', 'wrangler.toml'),

@@ -114,6 +114,8 @@ const text = {
       warning: '高风险',
       review: '复核',
       safer: '更安全做法',
+      share: '复制分享链接',
+      shareCopied: '链接已复制',
     },
     skills: {
       title: 'AI Skills 安装命令生成器',
@@ -196,6 +198,8 @@ const text = {
       warning: 'High risk',
       review: 'Review',
       safer: 'Safer approach',
+      share: 'Copy share link',
+      shareCopied: 'Link copied',
     },
     skills: {
       title: 'AI Skills Installer',
@@ -475,31 +479,34 @@ function classNames(...parts: Array<string | false | undefined>) {
   return parts.filter(Boolean).join(' ');
 }
 
+async function copyText(value: string) {
+  async function fallbackCopy() {
+    const textarea = document.createElement('textarea');
+    textarea.value = value;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+  }
+
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+    } else {
+      await fallbackCopy();
+    }
+  } catch {
+    await fallbackCopy();
+  }
+}
+
 function CopyButton({ value, label, copiedLabel }: { value: string; label: string; copiedLabel: string }) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
-    async function fallbackCopy() {
-      const textarea = document.createElement('textarea');
-      textarea.value = value;
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textarea);
-    }
-
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(value);
-      } else {
-        await fallbackCopy();
-      }
-    } catch {
-      await fallbackCopy();
-    }
-
+    await copyText(value);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1400);
   }
@@ -1105,9 +1112,12 @@ const riskBadgeClasses: Record<CommandRiskLevel, string> = {
   review: 'border-blue-500/40 bg-blue-500/15 text-blue-700 dark:text-blue-200',
 };
 
+const maxSharedCommandLength = 4000;
+
 function SafetyTool({ lang }: { lang: ToolLanguage }) {
   const t = text[lang];
   const [value, setValue] = useState('');
+  const [shareCopied, setShareCopied] = useState(false);
   const findings = useMemo(() => analyzeCommandRisk(value), [value]);
   const topRisk = highestRisk(findings);
   const summary = !topRisk
@@ -1122,6 +1132,27 @@ function SafetyTool({ lang }: { lang: ToolLanguage }) {
       ? 'curl -fsSL https://example.com/install.sh | sh\nsudo rm -rf /tmp/example\nsudo apt update'
       : 'curl -fsSL https://example.com/install.sh | sh\nsudo rm -rf /tmp/example\nsudo apt update';
 
+  useEffect(() => {
+    const hashCommand = parseToolHash(window.location.hash).params.get('command');
+    if (hashCommand !== null) setValue(hashCommand.slice(0, maxSharedCommandLength));
+  }, []);
+
+  async function copyShareLink() {
+    const url = new URL(window.location.href);
+    const sharedCommand = value.slice(0, maxSharedCommandLength);
+    url.searchParams.delete('command');
+
+    if (sharedCommand.trim()) {
+      url.hash = `${toolHashIds.safety}?command=${encodeURIComponent(sharedCommand)}`;
+    } else {
+      url.hash = toolHashIds.safety;
+    }
+
+    await copyText(url.toString());
+    setShareCopied(true);
+    window.setTimeout(() => setShareCopied(false), 1400);
+  }
+
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.9fr)]">
       <section className="space-y-3">
@@ -1135,14 +1166,24 @@ function SafetyTool({ lang }: { lang: ToolLanguage }) {
             className="min-h-72 w-full resize-y rounded-md border border-fd-border bg-fd-background p-3 font-mono text-sm leading-6 text-fd-foreground outline-none transition-colors placeholder:text-fd-muted-foreground focus:border-fd-primary"
           />
         </div>
-        <button
-          type="button"
-          onClick={() => setValue(sample)}
-          className="inline-flex h-9 items-center gap-2 rounded-md border border-fd-border bg-fd-background px-3 text-sm font-medium text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
-        >
-          <Clipboard className="size-4" />
-          {lang === 'zh' ? '填入示例' : 'Use sample'}
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setValue(sample)}
+            className="inline-flex h-9 items-center gap-2 rounded-md border border-fd-border bg-fd-background px-3 text-sm font-medium text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+          >
+            <Clipboard className="size-4" />
+            {lang === 'zh' ? '填入示例' : 'Use sample'}
+          </button>
+          <button
+            type="button"
+            onClick={copyShareLink}
+            className="inline-flex h-9 items-center gap-2 rounded-md border border-fd-border bg-fd-background px-3 text-sm font-medium text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+          >
+            {shareCopied ? <Check className="size-4" /> : <Clipboard className="size-4" />}
+            {shareCopied ? t.safety.shareCopied : t.safety.share}
+          </button>
+        </div>
       </section>
 
       <ResultPanel lang={lang} title={summary}>
@@ -1271,6 +1312,16 @@ function normalizeToolHash(hash: string) {
   }
 }
 
+function parseToolHash(hash: string) {
+  const value = hash.replace(/^#/, '');
+  const [rawId, query = ''] = value.split('?');
+
+  return {
+    id: normalizeToolHash(rawId),
+    params: new URLSearchParams(query),
+  };
+}
+
 function ToolBody({ active, lang }: { active: ToolId; lang: ToolLanguage }) {
   switch (active) {
     case 'mirror':
@@ -1311,7 +1362,7 @@ export function InteractiveTools({ lang = 'zh' }: { lang?: ToolLanguage }) {
 
   useEffect(() => {
     function syncFromHash() {
-      const hash = normalizeToolHash(window.location.hash);
+      const hash = parseToolHash(window.location.hash).id;
       const next = toolIdByHash[hash];
       if (next) setActive(next);
     }

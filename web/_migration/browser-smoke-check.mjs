@@ -1039,6 +1039,64 @@ async function verifyEnglishToolShareLinkPaths(cdp, baseUrl) {
   pass('English tool share links keep localized paths');
 }
 
+async function verifyFallbackLocaleToolShareLinkPaths(cdp, baseUrl) {
+  const tests = [
+    {
+      locale: 'de',
+      path: '/de/tools#mirrors?release=bookworm&mirror=debian-de&components=firmware',
+      buttonText: 'Copy mirror config link',
+    },
+    {
+      locale: 'es',
+      path: '/es/tools#install?device=laptop&goal=ai&risk=balanced',
+      buttonText: 'Copy install config link',
+    },
+    {
+      locale: 'fr',
+      path: '/fr/tools#desktop?hardware=modern&workflow=creative',
+      buttonText: 'Copy desktop config link',
+    },
+    {
+      locale: 'ja',
+      path: '/ja/tools#partitions?disk=standard&boot=single&encryption=home',
+      buttonText: 'Copy partition config link',
+    },
+    {
+      locale: 'ko',
+      path: '/ko/tools#troubleshoot?symptom=performance',
+      buttonText: 'Copy troubleshooting link',
+    },
+    {
+      locale: 'pt',
+      path: '/pt/tools#ai-skills?target=agents&replace=true',
+      buttonText: 'Copy Skills config link',
+    },
+  ];
+
+  for (const test of tests) {
+    const toolUrl = new URL(test.path, baseUrl);
+
+    await cdp.send('Page.navigate', { url: toolUrl.toString() });
+    await waitFor(
+      cdp,
+      `document.body && document.body.innerText.includes(${JSON.stringify(test.buttonText)})`,
+      `${test.locale} fallback tool share button`,
+    );
+
+    const copiedLink = await copyEnglishToolShareLink(cdp, test.buttonText);
+
+    assert(
+      copiedLink.pathname === `/${test.locale}/tools`,
+      `${test.locale} copied share URL did not keep localized fallback path`,
+      copiedLink,
+    );
+    assert(copiedLink.search === '', `${test.locale} copied share URL kept query string`, copiedLink);
+    assert(copiedLink.hash === toolUrl.hash, `${test.locale} copied share URL hash mismatch`, copiedLink);
+  }
+
+  pass('Fallback locale tool share links keep localized paths');
+}
+
 async function run() {
   let baseUrl;
   try {
@@ -1083,6 +1141,7 @@ async function run() {
     await verifyPartitionShareLink(cdp, baseUrl);
     await verifyTroubleshootShareLink(cdp, baseUrl);
     await verifyEnglishToolShareLinkPaths(cdp, baseUrl);
+    await verifyFallbackLocaleToolShareLinkPaths(cdp, baseUrl);
   } catch (error) {
     fail(error instanceof Error ? error.message : String(error));
   } finally {

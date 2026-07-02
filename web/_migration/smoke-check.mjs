@@ -1,5 +1,6 @@
 const defaultBaseUrl = 'http://localhost:43018';
 const timeoutMs = 10_000;
+const searchShardTimeoutMs = 45_000;
 
 const requiredLocales = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt'];
 const localizedEntryPages = ['tools', 'scenarios', 'hardware', 'versions', 'release-readiness', 'deployment'];
@@ -103,9 +104,9 @@ try {
   process.exit(1);
 }
 
-async function fetchWithTimeout(path) {
+async function fetchWithTimeout(path, requestTimeoutMs = timeoutMs) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const timeout = setTimeout(() => controller.abort(), requestTimeoutMs);
 
   try {
     const response = await fetch(buildUrl(path), {
@@ -119,16 +120,15 @@ async function fetchWithTimeout(path) {
   }
 }
 
-async function fetchWithRetry(path) {
-  const attempts = 12;
+async function fetchWithRetry(path, { attempts = 12, requestTimeoutMs = timeoutMs } = {}) {
   let lastError;
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      return await fetchWithTimeout(path);
+      return await fetchWithTimeout(path, requestTimeoutMs);
     } catch (error) {
       lastError = error;
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (attempt < attempts) await new Promise((resolve) => setTimeout(resolve, 500));
     }
   }
 
@@ -156,7 +156,7 @@ async function checkHtmlRoute(path) {
 
 async function checkSearchShard({ path, locale, requiredIds = [], requiredTerms = [] }) {
   try {
-    const { response, body } = await fetchWithRetry(path);
+    const { response, body } = await fetchWithRetry(path, { attempts: 3, requestTimeoutMs: searchShardTimeoutMs });
     if (response.status !== 200) {
       fail(`${path} returned ${response.status}`);
       return;

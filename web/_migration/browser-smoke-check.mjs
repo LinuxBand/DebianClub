@@ -7,6 +7,7 @@ const defaultBaseUrl = 'http://localhost:43018';
 const browserStartupTimeoutMs = readPositiveIntegerEnv('BROWSER_STARTUP_TIMEOUT_MS', 60_000);
 const pageTimeoutMs = 15_000;
 const cdpCommandTimeoutMs = 10_000;
+const navigationTimeoutMs = readPositiveIntegerEnv('BROWSER_NAVIGATION_TIMEOUT_MS', 30_000);
 const searchQuery = 'AI Skills';
 const expectedResultPattern = /AI Skills|DebianClub AI Skills/;
 const emptyResultPattern = /No results|没有结果|未找到|无结果/;
@@ -128,8 +129,9 @@ async function connectToCdp(wsUrl) {
     const message = JSON.parse(event.data);
 
     if (message.id && pending.has(message.id)) {
-      const { resolve, reject } = pending.get(message.id);
+      const { resolve, reject, timeout } = pending.get(message.id);
       pending.delete(message.id);
+      clearTimeout(timeout);
       if (message.error) reject(new Error(message.error.message));
       else resolve(message.result || {});
       return;
@@ -138,18 +140,18 @@ async function connectToCdp(wsUrl) {
     if (message.method) events.push(message.method);
   });
 
-  function send(method, params = {}) {
+  function send(method, params = {}, timeoutMs = cdpCommandTimeoutMs) {
     const id = nextId;
     nextId += 1;
     ws.send(JSON.stringify({ id, method, params }));
 
     return new Promise((resolve, reject) => {
-      pending.set(id, { resolve, reject });
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         if (!pending.has(id)) return;
         pending.delete(id);
         reject(new Error(`timed out waiting for ${method}`));
-      }, cdpCommandTimeoutMs);
+      }, timeoutMs);
+      pending.set(id, { resolve, reject, timeout });
     });
   }
 
@@ -202,11 +204,59 @@ async function waitFor(cdp, expression, label, timeoutMs = pageTimeoutMs) {
   throw new Error(`${label} did not become ready; last value: ${JSON.stringify(lastValue)}`);
 }
 
+async function navigateTo(cdp, url, { waitForLoad = false } = {}) {
+  await cdp.send('Page.navigate', { url: url.toString() }, navigationTimeoutMs);
+  if (waitForLoad) await cdp.waitForEvent('Page.loadEventFired', navigationTimeoutMs);
+}
+
+async function copyShareLink(cdp, { buttonText, storageKey, label }) {
+  return evaluate(
+    cdp,
+    `new Promise((resolve, reject) => {
+      const shareLabel = ${JSON.stringify(buttonText)};
+      const copyLabel = ${JSON.stringify(label)};
+      const copiedStorageKey = ${JSON.stringify(storageKey)};
+      window[copiedStorageKey] = undefined;
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async (value) => { window[copiedStorageKey] = value; } },
+      });
+      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes(shareLabel));
+      if (!button) {
+        reject(new Error(copyLabel + ' share button not found: ' + shareLabel));
+        return;
+      }
+      button.click();
+
+      const deadline = Date.now() + 2_000;
+      const checkCopiedLink = () => {
+        const copiedHref = window[copiedStorageKey];
+        if (copiedHref) {
+          const copiedUrl = new URL(copiedHref);
+          resolve({
+            href: copiedHref,
+            pathname: copiedUrl.pathname,
+            search: copiedUrl.search,
+            hash: copiedUrl.hash,
+          });
+          return;
+        }
+        if (Date.now() >= deadline) {
+          reject(new Error(copyLabel + ' share button did not write clipboard: ' + shareLabel));
+          return;
+        }
+        window.setTimeout(checkCopiedLink, 50);
+      };
+      checkCopiedLink();
+    })`,
+    true,
+  );
+}
+
 async function verifySearchUi(cdp, baseUrl) {
   await cdp.send('Page.enable');
   await cdp.send('Runtime.enable');
-  await cdp.send('Page.navigate', { url: baseUrl.toString() });
-  await cdp.waitForEvent('Page.loadEventFired');
+  await navigateTo(cdp, baseUrl, { waitForLoad: true });
 
   await waitFor(cdp, "document.body && document.body.innerText.includes('Debian.Club')", 'Debian.Club page');
 
@@ -269,8 +319,7 @@ async function verifySearchUi(cdp, baseUrl) {
 async function verifyAiSkillsShareLink(cdp, baseUrl) {
   const aiSkillsUrl = new URL('/tools#ai-skills?target=agents&replace=true', baseUrl);
 
-  await cdp.send('Page.navigate', { url: aiSkillsUrl.toString() });
-  await cdp.waitForEvent('Page.loadEventFired');
+  await navigateTo(cdp, aiSkillsUrl, { waitForLoad: true });
   await waitFor(cdp, "document.body && document.body.innerText.includes('复制 Skills 配置链接')", 'AI Skills tool');
 
   const initialState = await evaluate(
@@ -330,26 +379,11 @@ async function verifyAiSkillsShareLink(cdp, baseUrl) {
   assert(updatedState.commandText.includes('--target ./skills-local'), 'AI Skills local command target is missing', updatedState);
   assert(!updatedState.commandText.includes('--replace --target ./skills-local'), 'AI Skills local command kept replace flag', updatedState);
 
-  const copiedLink = await evaluate(
-    cdp,
-    `new Promise((resolve, reject) => {
-      Object.defineProperty(navigator, 'clipboard', {
-        configurable: true,
-        value: { writeText: async (value) => { window.__copiedAiSkillsLink = value; } },
-      });
-      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制 Skills 配置链接'));
-      if (!button) {
-        reject(new Error('AI Skills share button not found'));
-        return;
-      }
-      button.click();
-      window.setTimeout(() => {
-        const copiedUrl = new URL(window.__copiedAiSkillsLink);
-        resolve({ href: window.__copiedAiSkillsLink, search: copiedUrl.search, hash: copiedUrl.hash });
-      }, 250);
-    })`,
-    true,
-  );
+  const copiedLink = await copyShareLink(cdp, {
+    buttonText: '复制 Skills 配置链接',
+    storageKey: '__copiedAiSkillsLink',
+    label: 'AI Skills',
+  });
 
   assert(copiedLink.search === '', 'AI Skills copied share URL kept query string', copiedLink);
   assert(copiedLink.hash === '#ai-skills?target=local&replace=false', 'AI Skills copied share URL hash mismatch', copiedLink);
@@ -362,7 +396,7 @@ async function verifyCommandSafetyShareLink(cdp, baseUrl) {
   const updatedHash = `#command-safety?command=${encodeURIComponent(safetyUpdatedCommand)}`;
   const commandSafetyUrl = new URL(`/tools${initialHash}`, baseUrl);
 
-  await cdp.send('Page.navigate', { url: commandSafetyUrl.toString() });
+  await navigateTo(cdp, commandSafetyUrl);
   await waitFor(cdp, "document.body && document.body.innerText.includes('复制分享链接')", 'command safety tool');
 
   const initialState = await evaluate(
@@ -427,26 +461,11 @@ async function verifyCommandSafetyShareLink(cdp, baseUrl) {
   assert(updatedState.hasSystemReviewFinding, 'command safety did not show system review finding', updatedState);
   assert(!updatedState.hasOldCommand, 'command safety retained stale finding text after hashchange', updatedState);
 
-  const copiedLink = await evaluate(
-    cdp,
-    `new Promise((resolve, reject) => {
-      Object.defineProperty(navigator, 'clipboard', {
-        configurable: true,
-        value: { writeText: async (value) => { window.__copiedCommandSafetyLink = value; } },
-      });
-      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制分享链接'));
-      if (!button) {
-        reject(new Error('command safety share button not found'));
-        return;
-      }
-      button.click();
-      window.setTimeout(() => {
-        const copiedUrl = new URL(window.__copiedCommandSafetyLink);
-        resolve({ href: window.__copiedCommandSafetyLink, search: copiedUrl.search, hash: copiedUrl.hash });
-      }, 250);
-    })`,
-    true,
-  );
+  const copiedLink = await copyShareLink(cdp, {
+    buttonText: '复制分享链接',
+    storageKey: '__copiedCommandSafetyLink',
+    label: 'command safety',
+  });
 
   assert(copiedLink.search === '', 'command safety copied share URL kept query string', copiedLink);
   assert(copiedLink.hash === updatedHash, 'command safety copied share URL hash mismatch', copiedLink);
@@ -459,7 +478,7 @@ async function verifyMirrorShareLink(cdp, baseUrl) {
   const updatedHash = '#mirrors?release=trixie&mirror=ustc&components=firmware';
   const mirrorUrl = new URL(`/tools${initialHash}`, baseUrl);
 
-  await cdp.send('Page.navigate', { url: mirrorUrl.toString() });
+  await navigateTo(cdp, mirrorUrl);
   await waitFor(cdp, "document.body && document.body.innerText.includes('复制镜像配置链接')", 'mirror tool');
 
   const initialState = await evaluate(
@@ -531,26 +550,11 @@ async function verifyMirrorShareLink(cdp, baseUrl) {
   assert(updatedState.codeText.includes('Components: main non-free-firmware'), 'mirror snippet did not use firmware components', updatedState);
   assert(!updatedState.codeText.includes('bookworm-updates'), 'mirror snippet retained stale bookworm suite', updatedState);
 
-  const copiedLink = await evaluate(
-    cdp,
-    `new Promise((resolve, reject) => {
-      Object.defineProperty(navigator, 'clipboard', {
-        configurable: true,
-        value: { writeText: async (value) => { window.__copiedMirrorLink = value; } },
-      });
-      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制镜像配置链接'));
-      if (!button) {
-        reject(new Error('mirror share button not found'));
-        return;
-      }
-      button.click();
-      window.setTimeout(() => {
-        const copiedUrl = new URL(window.__copiedMirrorLink);
-        resolve({ href: window.__copiedMirrorLink, search: copiedUrl.search, hash: copiedUrl.hash });
-      }, 250);
-    })`,
-    true,
-  );
+  const copiedLink = await copyShareLink(cdp, {
+    buttonText: '复制镜像配置链接',
+    storageKey: '__copiedMirrorLink',
+    label: 'mirror',
+  });
 
   assert(copiedLink.search === '', 'mirror copied share URL kept query string', copiedLink);
   assert(copiedLink.hash === updatedHash, 'mirror copied share URL hash mismatch', copiedLink);
@@ -563,7 +567,7 @@ async function verifyInstallShareLink(cdp, baseUrl) {
   const updatedHash = '#install?device=laptop&goal=ai&risk=balanced';
   const installUrl = new URL(`/tools${initialHash}`, baseUrl);
 
-  await cdp.send('Page.navigate', { url: installUrl.toString() });
+  await navigateTo(cdp, installUrl);
   await waitFor(cdp, "document.body && document.body.innerText.includes('复制安装配置链接')", 'install tool');
 
   const initialState = await evaluate(
@@ -631,26 +635,11 @@ async function verifyInstallShareLink(cdp, baseUrl) {
   assert(updatedState.hasAiStep, 'install result did not use AI next step', updatedState);
   assert(!updatedState.hasOldLowRiskTitle, 'install result retained stale low-risk title', updatedState);
 
-  const copiedLink = await evaluate(
-    cdp,
-    `new Promise((resolve, reject) => {
-      Object.defineProperty(navigator, 'clipboard', {
-        configurable: true,
-        value: { writeText: async (value) => { window.__copiedInstallLink = value; } },
-      });
-      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制安装配置链接'));
-      if (!button) {
-        reject(new Error('install share button not found'));
-        return;
-      }
-      button.click();
-      window.setTimeout(() => {
-        const copiedUrl = new URL(window.__copiedInstallLink);
-        resolve({ href: window.__copiedInstallLink, search: copiedUrl.search, hash: copiedUrl.hash });
-      }, 250);
-    })`,
-    true,
-  );
+  const copiedLink = await copyShareLink(cdp, {
+    buttonText: '复制安装配置链接',
+    storageKey: '__copiedInstallLink',
+    label: 'install',
+  });
 
   assert(copiedLink.search === '', 'install copied share URL kept query string', copiedLink);
   assert(copiedLink.hash === updatedHash, 'install copied share URL hash mismatch', copiedLink);
@@ -663,7 +652,7 @@ async function verifyDesktopShareLink(cdp, baseUrl) {
   const updatedHash = '#desktop?hardware=modern&workflow=creative';
   const desktopUrl = new URL(`/tools${initialHash}`, baseUrl);
 
-  await cdp.send('Page.navigate', { url: desktopUrl.toString() });
+  await navigateTo(cdp, desktopUrl);
   await waitFor(cdp, "document.body && document.body.innerText.includes('复制桌面配置链接')", 'desktop tool');
 
   const initialState = await evaluate(
@@ -732,26 +721,11 @@ async function verifyDesktopShareLink(cdp, baseUrl) {
   assert(updatedState.codeText.includes('sudo apt install task-gnome-desktop'), 'desktop result did not use GNOME package command', updatedState);
   assert(!updatedState.hasOldXfceCommand, 'desktop result retained stale Xfce package command', updatedState);
 
-  const copiedLink = await evaluate(
-    cdp,
-    `new Promise((resolve, reject) => {
-      Object.defineProperty(navigator, 'clipboard', {
-        configurable: true,
-        value: { writeText: async (value) => { window.__copiedDesktopLink = value; } },
-      });
-      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制桌面配置链接'));
-      if (!button) {
-        reject(new Error('desktop share button not found'));
-        return;
-      }
-      button.click();
-      window.setTimeout(() => {
-        const copiedUrl = new URL(window.__copiedDesktopLink);
-        resolve({ href: window.__copiedDesktopLink, search: copiedUrl.search, hash: copiedUrl.hash });
-      }, 250);
-    })`,
-    true,
-  );
+  const copiedLink = await copyShareLink(cdp, {
+    buttonText: '复制桌面配置链接',
+    storageKey: '__copiedDesktopLink',
+    label: 'desktop',
+  });
 
   assert(copiedLink.search === '', 'desktop copied share URL kept query string', copiedLink);
   assert(copiedLink.hash === updatedHash, 'desktop copied share URL hash mismatch', copiedLink);
@@ -764,7 +738,7 @@ async function verifyPartitionShareLink(cdp, baseUrl) {
   const updatedHash = '#partitions?disk=standard&boot=single&encryption=home';
   const partitionUrl = new URL(`/tools${initialHash}`, baseUrl);
 
-  await cdp.send('Page.navigate', { url: partitionUrl.toString() });
+  await navigateTo(cdp, partitionUrl);
   await waitFor(cdp, "document.body && document.body.innerText.includes('复制分区配置链接')", 'partition tool');
 
   const initialState = await evaluate(
@@ -833,26 +807,11 @@ async function verifyPartitionShareLink(cdp, baseUrl) {
   assert(!updatedState.tableText.includes('数据盘'), 'partition table retained stale multi-disk data row', updatedState);
   assert(!updatedState.tableText.includes('existing EFI'), 'partition table retained stale dual-boot EFI text', updatedState);
 
-  const copiedLink = await evaluate(
-    cdp,
-    `new Promise((resolve, reject) => {
-      Object.defineProperty(navigator, 'clipboard', {
-        configurable: true,
-        value: { writeText: async (value) => { window.__copiedPartitionLink = value; } },
-      });
-      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制分区配置链接'));
-      if (!button) {
-        reject(new Error('partition share button not found'));
-        return;
-      }
-      button.click();
-      window.setTimeout(() => {
-        const copiedUrl = new URL(window.__copiedPartitionLink);
-        resolve({ href: window.__copiedPartitionLink, search: copiedUrl.search, hash: copiedUrl.hash });
-      }, 250);
-    })`,
-    true,
-  );
+  const copiedLink = await copyShareLink(cdp, {
+    buttonText: '复制分区配置链接',
+    storageKey: '__copiedPartitionLink',
+    label: 'partition',
+  });
 
   assert(copiedLink.search === '', 'partition copied share URL kept query string', copiedLink);
   assert(copiedLink.hash === updatedHash, 'partition copied share URL hash mismatch', copiedLink);
@@ -865,7 +824,7 @@ async function verifyTroubleshootShareLink(cdp, baseUrl) {
   const updatedHash = '#troubleshoot?symptom=performance';
   const troubleshootUrl = new URL(`/tools${initialHash}`, baseUrl);
 
-  await cdp.send('Page.navigate', { url: troubleshootUrl.toString() });
+  await navigateTo(cdp, troubleshootUrl);
   await waitFor(cdp, "document.body && document.body.innerText.includes('复制排障配置链接')", 'troubleshooting tool');
 
   const initialState = await evaluate(
@@ -935,26 +894,11 @@ async function verifyTroubleshootShareLink(cdp, baseUrl) {
   assert(!updatedState.hasOldNvidiaLink, 'troubleshooting result retained stale display link', updatedState);
   assert(!updatedState.hasOldGraphicsCommand, 'troubleshooting checks retained stale display command', updatedState);
 
-  const copiedLink = await evaluate(
-    cdp,
-    `new Promise((resolve, reject) => {
-      Object.defineProperty(navigator, 'clipboard', {
-        configurable: true,
-        value: { writeText: async (value) => { window.__copiedTroubleshootLink = value; } },
-      });
-      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制排障配置链接'));
-      if (!button) {
-        reject(new Error('troubleshooting share button not found'));
-        return;
-      }
-      button.click();
-      window.setTimeout(() => {
-        const copiedUrl = new URL(window.__copiedTroubleshootLink);
-        resolve({ href: window.__copiedTroubleshootLink, search: copiedUrl.search, hash: copiedUrl.hash });
-      }, 250);
-    })`,
-    true,
-  );
+  const copiedLink = await copyShareLink(cdp, {
+    buttonText: '复制排障配置链接',
+    storageKey: '__copiedTroubleshootLink',
+    label: 'troubleshooting',
+  });
 
   assert(copiedLink.search === '', 'troubleshooting copied share URL kept query string', copiedLink);
   assert(copiedLink.hash === updatedHash, 'troubleshooting copied share URL hash mismatch', copiedLink);
@@ -963,37 +907,11 @@ async function verifyTroubleshootShareLink(cdp, baseUrl) {
 }
 
 async function copyEnglishToolShareLink(cdp, buttonText) {
-  return evaluate(
-    cdp,
-    `new Promise((resolve, reject) => {
-      const shareLabel = ${JSON.stringify(buttonText)};
-      window.__copiedEnglishToolLink = undefined;
-      Object.defineProperty(navigator, 'clipboard', {
-        configurable: true,
-        value: { writeText: async (value) => { window.__copiedEnglishToolLink = value; } },
-      });
-      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes(shareLabel));
-      if (!button) {
-        reject(new Error(\`English share button not found: \${shareLabel}\`));
-        return;
-      }
-      button.click();
-      window.setTimeout(() => {
-        if (!window.__copiedEnglishToolLink) {
-          reject(new Error(\`English share button did not write clipboard: \${shareLabel}\`));
-          return;
-        }
-        const copiedUrl = new URL(window.__copiedEnglishToolLink);
-        resolve({
-          href: window.__copiedEnglishToolLink,
-          pathname: copiedUrl.pathname,
-          search: copiedUrl.search,
-          hash: copiedUrl.hash,
-        });
-      }, 250);
-    })`,
-    true,
-  );
+  return copyShareLink(cdp, {
+    buttonText,
+    storageKey: '__copiedEnglishToolLink',
+    label: 'English',
+  });
 }
 
 async function verifyEnglishToolShareLinkPaths(cdp, baseUrl) {
@@ -1038,7 +956,7 @@ async function verifyEnglishToolShareLinkPaths(cdp, baseUrl) {
   for (const test of tests) {
     const toolUrl = new URL(test.path, baseUrl);
 
-    await cdp.send('Page.navigate', { url: toolUrl.toString() });
+    await navigateTo(cdp, toolUrl);
     await waitFor(
       cdp,
       `document.body && document.body.innerText.includes(${JSON.stringify(test.buttonText)})`,
@@ -1092,7 +1010,7 @@ async function verifyFallbackLocaleToolShareLinkPaths(cdp, baseUrl) {
   for (const test of tests) {
     const toolUrl = new URL(test.path, baseUrl);
 
-    await cdp.send('Page.navigate', { url: toolUrl.toString() });
+    await navigateTo(cdp, toolUrl);
     await waitFor(
       cdp,
       `document.body && document.body.innerText.includes(${JSON.stringify(test.buttonText)})`,

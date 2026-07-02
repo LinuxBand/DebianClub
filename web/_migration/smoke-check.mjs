@@ -38,6 +38,8 @@ const toolHashRouteChecks = [
   '/en/tools#desktop?hardware=modern&workflow=creative',
   '/tools#partitions?disk=multi&boot=dual&encryption=full',
   '/en/tools#partitions?disk=standard&boot=single&encryption=home',
+  '/tools#troubleshoot?symptom=display',
+  '/en/tools#troubleshoot?symptom=performance',
 ];
 
 const searchChecks = requiredLocales.map((locale) => ({ path: `/api/search/${locale}`, locale }));

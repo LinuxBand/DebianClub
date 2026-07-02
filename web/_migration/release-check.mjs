@@ -62,6 +62,8 @@ const deploymentTextChecks = [
       ["'/en/tools#desktop?hardware=modern&workflow=creative'", 'smoke covers English desktop config deep link'],
       ["'/tools#partitions?disk=multi&boot=dual&encryption=full'", 'smoke covers Chinese partition config deep link'],
       ["'/en/tools#partitions?disk=standard&boot=single&encryption=home'", 'smoke covers English partition config deep link'],
+      ["'/tools#troubleshoot?symptom=display'", 'smoke covers Chinese troubleshooting config deep link'],
+      ["'/en/tools#troubleshoot?symptom=performance'", 'smoke covers English troubleshooting config deep link'],
     ],
   },
   {
@@ -71,6 +73,7 @@ const deploymentTextChecks = [
       ["install: 'install'", 'install tool hash is mapped'],
       ["desktop: 'desktop'", 'desktop tool hash is mapped'],
       ["partition: 'partitions'", 'partition tool hash is mapped'],
+      ["troubleshoot: 'troubleshoot'", 'troubleshooting tool hash is mapped'],
       ["safety: 'command-safety'", 'command safety tool hash is mapped'],
       ["skills: 'ai-skills'", 'AI Skills tool hash is mapped'],
       ['function normalizeToolHash', 'tool hash parsing is centralized'],
@@ -94,6 +97,9 @@ const deploymentTextChecks = [
       ["hashState.params.get('encryption')", 'partition tool can preload encryption from the URL fragment'],
       ["window.addEventListener('hashchange', syncPartitionStateFromHash)", 'partition tool syncs config on hash changes'],
       ['url.hash = `${toolHashIds.partition}?disk=${disk}&boot=${boot}&encryption=${encryption}`', 'partition tool share links keep config in the URL fragment'],
+      ["hashState.params.get('symptom')", 'troubleshooting tool can preload symptom from the URL fragment'],
+      ["window.addEventListener('hashchange', syncTroubleshootStateFromHash)", 'troubleshooting tool syncs config on hash changes'],
+      ['url.hash = `${toolHashIds.troubleshoot}?symptom=${symptom}`', 'troubleshooting tool share links keep config in the URL fragment'],
       ['const maxSharedCommandLength = 4000', 'shared command links have a length cap'],
       ["hashState.params.get('command')", 'command safety can preload a shared command from the URL fragment'],
       ["window.addEventListener('hashchange', syncSharedCommandFromHash)", 'command safety prefill syncs on hash changes'],
@@ -112,6 +118,7 @@ const deploymentTextChecks = [
       ['#install?device=', 'Chinese tools page documents install config links'],
       ['#desktop?hardware=', 'Chinese tools page documents desktop config links'],
       ['#partitions?disk=', 'Chinese tools page documents partition config links'],
+      ['#troubleshoot?symptom=', 'Chinese tools page documents troubleshooting config links'],
     ],
   },
   {
@@ -123,6 +130,7 @@ const deploymentTextChecks = [
       ['#install?device=', 'English tools page documents install config links'],
       ['#desktop?hardware=', 'English tools page documents desktop config links'],
       ['#partitions?disk=', 'English tools page documents partition config links'],
+      ['#troubleshoot?symptom=', 'English tools page documents troubleshooting config links'],
     ],
   },
   {

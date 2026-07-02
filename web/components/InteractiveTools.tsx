@@ -106,6 +106,8 @@ const text = {
       title: '排障问诊向导',
       symptom: '问题现象',
       docs: '查看排障文档',
+      share: '复制排障配置链接',
+      shareCopied: '配置链接已复制',
     },
     safety: {
       title: '命令安全检查器',
@@ -198,6 +200,8 @@ const text = {
       title: 'Troubleshooting Wizard',
       symptom: 'Symptom',
       docs: 'Read troubleshooting docs',
+      share: 'Copy troubleshooting link',
+      shareCopied: 'Config link copied',
     },
     safety: {
       title: 'Command Safety Checker',
@@ -1282,7 +1286,32 @@ const symptomData: Record<SymptomId, { title: Record<ToolLanguage, string>; comm
 function TroubleshootTool({ lang }: { lang: ToolLanguage }) {
   const t = text[lang];
   const [symptom, setSymptom] = useState<SymptomId>('network');
+  const [shareCopied, setShareCopied] = useState(false);
   const data = symptomData[symptom];
+
+  useEffect(() => {
+    function syncTroubleshootStateFromHash() {
+      const hashState = parseToolHash(window.location.hash);
+      if (hashState.id !== toolHashIds.troubleshoot) return;
+
+      const nextSymptom = hashState.params.get('symptom');
+      if (hasRecordKey(symptomData, nextSymptom)) setSymptom(nextSymptom);
+    }
+
+    syncTroubleshootStateFromHash();
+    window.addEventListener('hashchange', syncTroubleshootStateFromHash);
+    return () => window.removeEventListener('hashchange', syncTroubleshootStateFromHash);
+  }, []);
+
+  async function copyShareLink() {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = `${toolHashIds.troubleshoot}?symptom=${symptom}`;
+
+    await copyText(url.toString());
+    setShareCopied(true);
+    window.setTimeout(() => setShareCopied(false), 1400);
+  }
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.85fr)]">
@@ -1314,6 +1343,14 @@ function TroubleshootTool({ lang }: { lang: ToolLanguage }) {
             ))}
           </div>
         </div>
+        <button
+          type="button"
+          onClick={copyShareLink}
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-fd-border bg-fd-background px-3 text-sm font-medium text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+        >
+          {shareCopied ? <Check className="size-4" /> : <Clipboard className="size-4" />}
+          {shareCopied ? t.troubleshoot.shareCopied : t.troubleshoot.share}
+        </button>
         <a className="text-fd-primary no-underline hover:underline" href={docsHref[lang].troubleshoot}>
           {t.troubleshoot.docs}
         </a>

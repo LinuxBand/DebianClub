@@ -1,0 +1,98 @@
+---
+title: "AMD / Intel Graphics"
+description: "Firmware, Mesa, VA-API, video decode, browser hardware acceleration, and diagnostics for AMD and Intel graphics on Debian."
+---
+
+AMD and Intel graphics usually rely on open kernel drivers, Mesa user-space drivers, and firmware packages. Most issues are not solved by a vendor driver installer; they are caused by missing firmware, Mesa components, VA-API components, or an older kernel.
+
+## Identify Graphics Devices
+
+```bash
+lspci -nnk | grep -A4 -E "VGA|3D|Display"
+glxinfo -B 2>/dev/null || true
+vainfo 2>/dev/null || true
+```
+
+If `glxinfo` or `vainfo` is missing:
+
+```bash
+sudo apt install mesa-utils vainfo
+```
+
+## Common Packages
+
+| Use case | Packages |
+|----------|----------|
+| AMD GPU firmware | `firmware-amd-graphics` |
+| General Mesa OpenGL / Vulkan | `libgl1-mesa-dri mesa-vulkan-drivers` |
+| VA-API video decode | `mesa-va-drivers vainfo` |
+| Intel media driver | `intel-media-va-driver` |
+| Older Intel VA-API | `i965-va-driver` |
+
+Check availability and origin first:
+
+```bash
+apt policy firmware-amd-graphics mesa-va-drivers intel-media-va-driver i965-va-driver
+```
+
+## AMD Graphics
+
+AMD GPUs usually use the `amdgpu` kernel module:
+
+```bash
+lspci -nnk | grep -A4 -E "VGA|3D|Display"
+dmesg | grep -iE "amdgpu|firmware"
+```
+
+If logs mention missing firmware:
+
+```bash
+sudo apt update
+sudo apt install firmware-amd-graphics
+sudo reboot
+```
+
+Very new AMD GPUs may need a newer kernel, Mesa, and firmware. Prefer Debian backports before mixing third-party Mesa repositories or manually installed packages.
+
+## Intel Graphics
+
+Intel integrated graphics usually use `i915` or newer Intel graphics plumbing:
+
+```bash
+lspci -nnk | grep -A4 -E "VGA|3D|Display"
+dmesg | grep -iE "i915|xe|firmware"
+```
+
+If the desktop starts but video playback uses too much CPU, check VA-API first:
+
+```bash
+sudo apt install vainfo intel-media-va-driver mesa-va-drivers
+vainfo
+```
+
+Browsers also have their own hardware acceleration toggles and codec support, so `vainfo` alone does not prove browser video decode is active.
+
+## Video Decode Diagnostics
+
+| Symptom | Check |
+|---------|-------|
+| `vainfo` fails | Render device permissions and installed driver packages |
+| H.264 / HEVC playback burns CPU | `mesa-va-drivers`, `intel-media-va-driver`, browser settings |
+| Software rendering only | Whether `glxinfo -B` reports llvmpipe |
+| New GPU is partially detected | Whether kernel, Mesa, and firmware need backports |
+
+## Rollback And Conservative Path
+
+When Mesa and firmware come from Debian packages, rollback usually means returning to stable package versions or removing backports pinning. Do not remove core graphics packages blindly, because the desktop environment may be removed too.
+
+```bash
+apt policy mesa-va-drivers mesa-vulkan-drivers firmware-amd-graphics
+sudo apt install --reinstall libgl1-mesa-dri mesa-vulkan-drivers
+```
+
+If the graphical session is unusable, enter a TTY, collect logs, then decide whether to boot an older kernel or restore software rendering.
+
+## Official References
+
+- [Debian mesa-va-drivers package](https://packages.debian.org/trixie/mesa-va-drivers)
+- [Mesa platforms and drivers](https://docs.mesa3d.org/systems.html)

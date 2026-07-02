@@ -1,0 +1,109 @@
+---
+title: "Wi-Fi 与无线固件"
+description: "Debian 上 Intel、Realtek、Broadcom Wi-Fi 的芯片识别、firmware 包、离线安装、NetworkManager 和常见故障排查。"
+---
+
+Debian 的 Wi-Fi 问题通常分三类：设备没有被识别、驱动加载但缺 firmware、网络管理器配置错误。先识别芯片和内核模块，再安装 firmware。
+
+## 识别无线网卡
+
+```bash
+lspci -nnk | grep -A4 -i network
+lsusb
+rfkill list
+ip link
+dmesg | grep -iE "firmware|iwlwifi|rtw|rtl|brcm|ath"
+```
+
+看两件事：
+
+- 设备是否出现在 `lspci` 或 `lsusb`
+- `dmesg` 是否提示 failed to load firmware
+
+## 常见 firmware 包
+
+| 芯片 | 常见包 | 说明 |
+|------|--------|------|
+| Intel Wi-Fi | `firmware-iwlwifi` | 覆盖 iwlwifi 支持的 Intel 无线网卡 |
+| Realtek Wi-Fi / 蓝牙 / 有线 | `firmware-realtek` | 覆盖多类 Realtek 网络、蓝牙和音频芯片 |
+| Broadcom / Cypress | `firmware-brcm80211` | 覆盖 brcmsmac / brcmfmac 支持的无线网卡 |
+| Atheros / Qualcomm | `firmware-atheros` | 部分设备需要 |
+
+检查 APT 是否能看到这些包：
+
+```bash
+apt policy firmware-iwlwifi firmware-realtek firmware-brcm80211 firmware-atheros
+```
+
+如果显示找不到，先检查 APT 源是否包含 `non-free-firmware`。
+
+## 在线安装
+
+有临时网络时：
+
+```bash
+sudo apt update
+sudo apt install firmware-iwlwifi firmware-realtek firmware-brcm80211 firmware-atheros
+sudo reboot
+```
+
+不需要全部包都装。上面命令适合排障时快速覆盖常见芯片，后续可以保留实际需要的包。
+
+## 没有网络时
+
+优先使用这些备用网络：
+
+1. 有线 Ethernet
+2. 手机 USB 共享网络
+3. USB Wi-Fi 网卡
+4. 在另一台机器下载 `.deb` 后用 U 盘拷贝
+
+离线安装示例：
+
+```bash
+sudo apt install ./firmware-iwlwifi_*_all.deb
+sudo reboot
+```
+
+下载 `.deb` 时优先使用 Debian Packages 页面和与你系统版本一致的发行版，不要从未知网盘复制 firmware 文件。
+
+## NetworkManager 检查
+
+桌面版 Debian 通常使用 NetworkManager：
+
+```bash
+systemctl status NetworkManager --no-pager
+nmcli device
+nmcli radio wifi
+```
+
+如果 Wi-Fi 被软屏蔽：
+
+```bash
+rfkill list
+sudo rfkill unblock wifi
+```
+
+如果设备出现但无法扫描，先看 `dmesg` 和 `journalctl -u NetworkManager -b`，不要反复重装桌面环境。
+
+## 常见问题
+
+| 现象 | 优先检查 |
+|------|----------|
+| `ip link` 没有无线接口 | `lspci/lsusb` 是否识别设备，是否缺 firmware |
+| 有接口但无法打开 | `rfkill`、飞行模式、BIOS 无线开关 |
+| 能扫描但连不上 | 密码、认证方式、路由器频段、NetworkManager 日志 |
+| 重启后消失 | firmware 包是否安装到系统，是否只在安装器中临时加载 |
+| Realtek 新型号不工作 | 当前内核是否支持，是否需要 backports 内核 |
+
+## 安全建议
+
+- 不要从论坛附件直接复制 `.ko` 内核模块到系统目录。
+- 不要执行未知仓库提供的一键驱动安装脚本。
+- 如果必须编译第三方 DKMS 驱动，先记录内核版本和回滚方法。
+
+## 官方参考
+
+- [Debian firmware-iwlwifi 包](https://packages.debian.org/trixie/firmware-iwlwifi)
+- [Debian firmware-realtek 包](https://packages.debian.org/trixie/firmware-realtek)
+- [Debian firmware-brcm80211 包](https://packages.debian.org/trixie/firmware-brcm80211)

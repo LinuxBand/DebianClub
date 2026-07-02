@@ -1,0 +1,128 @@
+---
+title: "笔记本兼容"
+description: "Debian 笔记本兼容检查清单：触控板、Fn 键、电源配置、睡眠、摄像头、指纹、扩展坞和厂商固件。"
+---
+
+笔记本兼容性不是单个驱动问题，而是内核、firmware、桌面环境、电源管理、BIOS 和外设的组合。排查时先区分“硬件不识别”和“策略配置不合适”。
+
+## 硬件清单
+
+```bash
+lspci -nnk
+lsusb
+lsblk -o NAME,SIZE,TYPE,FSTYPE,MODEL
+upower -d
+fwupdmgr get-devices
+```
+
+如果 `fwupdmgr` 不存在：
+
+```bash
+sudo apt install fwupd
+```
+
+## 电源与性能
+
+GNOME 和 KDE 通常会集成 `power-profiles-daemon`：
+
+```bash
+systemctl status power-profiles-daemon --no-pager
+powerprofilesctl get 2>/dev/null || true
+```
+
+安装：
+
+```bash
+sudo apt install power-profiles-daemon
+```
+
+不要同时让多套电源管理工具接管同一设备。若使用 TLP，请确认它是否与桌面电源配置冲突。
+
+## 睡眠与唤醒
+
+先看系统支持的睡眠模式：
+
+```bash
+cat /sys/power/mem_sleep
+journalctl -b -1 -p warning --no-pager
+```
+
+排查顺序：
+
+1. 更新 BIOS / UEFI 到厂商稳定版本。
+2. 测试不接扩展坞和外接显示器的纯笔记本状态。
+3. 分别测试合盖、菜单 suspend、电源键 suspend。
+4. 如果新硬件频繁无法唤醒，再评估 backports 内核。
+
+## 触控板、键盘和 Fn 键
+
+```bash
+libinput list-devices 2>/dev/null || true
+sudo libinput debug-events
+```
+
+如果没有 `libinput` 工具：
+
+```bash
+sudo apt install libinput-tools
+```
+
+Fn 键通常通过 ACPI 或厂商 WMI 模块暴露。看日志：
+
+```bash
+dmesg | grep -iE "wmi|acpi|hotkey|thinkpad|asus|dell|hp"
+```
+
+## 摄像头和指纹
+
+```bash
+lsusb
+v4l2-ctl --list-devices 2>/dev/null || true
+```
+
+摄像头测试可使用浏览器、会议软件或 Cheese。指纹设备在 Linux 上支持差异很大，生产环境不要把指纹作为唯一登录方式。
+
+## 扩展坞和外接显示器
+
+扩展坞问题要拆开测试：
+
+1. 只接电源。
+2. 只接显示器。
+3. 只接网线。
+4. 再接 USB 外设。
+
+```bash
+journalctl -b -p warning --no-pager
+dmesg | grep -iE "usb|thunderbolt|typec|display|drm"
+```
+
+Thunderbolt / USB4 扩展坞还要检查 BIOS 安全级别和固件版本。
+
+## 常见品牌提示
+
+| 品牌或系列 | 常见关注点 |
+|------------|------------|
+| ThinkPad | 睡眠模式、指纹、电源阈值、TrackPoint |
+| Dell XPS / Latitude | 摄像头、声卡、固件更新、扩展坞 |
+| HP EliteBook | BIOS 设置、Fn 键、指纹、Wi-Fi |
+| ASUS / ROG | 独显模式、键盘灯、风扇控制 |
+| Framework | 模块化扩展卡、固件、较新内核 |
+
+这些不是固定结论，只是排查入口。最终仍以设备 ID、内核日志和 Debian 包为准。
+
+## 回滚策略
+
+- 改 BIOS 前拍照记录原设置。
+- 改内核前保留旧内核启动项。
+- 改电源管理前记录已启用服务。
+- 改显示驱动前确保可以进入 TTY。
+
+```bash
+systemctl list-unit-files | grep -E "tlp|power-profiles|thermald"
+apt policy linux-image-amd64 firmware-linux firmware-linux-nonfree
+```
+
+## 官方参考
+
+- [Debian power-profiles-daemon 包](https://packages.debian.org/en/trixie/power-profiles-daemon)
+- [Debian 安装手册：加载缺失固件](https://www.debian.org/releases/stable/amd64/ch06s04.en.html)

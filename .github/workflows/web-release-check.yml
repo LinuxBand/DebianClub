@@ -1,0 +1,82 @@
+name: Web Release Check
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - 'docs/**'
+      - 'skills/**'
+      - 'wrangler.toml'
+      - '.github/workflows/web-release-check.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'web/**'
+      - 'docs/**'
+      - 'skills/**'
+      - 'wrangler.toml'
+      - '.github/workflows/web-release-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-release-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Enable Corepack
+        shell: bash
+        run: corepack enable
+
+      - name: Install web dependencies
+        shell: bash
+        run: corepack pnpm --dir web install --frozen-lockfile
+
+      - name: Type check
+        shell: bash
+        run: corepack pnpm --dir web types:check
+
+      - name: Build static export
+        shell: bash
+        run: corepack pnpm --dir web build
+
+      - name: Start static preview
+        shell: bash
+        run: |
+          corepack pnpm --dir web exec serve out --listen 43018 > /tmp/debianclub-serve.log 2>&1 &
+          echo "$!" > /tmp/debianclub-serve.pid
+
+      - name: Smoke check static preview
+        shell: bash
+        env:
+          SMOKE_BASE_URL: http://127.0.0.1:43018
+        run: corepack pnpm --dir web smoke:check
+
+      - name: Stop static preview
+        if: always()
+        shell: bash
+        run: |
+          if [ -f /tmp/debianclub-serve.pid ]; then
+            kill "$(cat /tmp/debianclub-serve.pid)" || true
+          fi
+
+      - name: Release gate
+        shell: bash
+        run: corepack pnpm --dir web release:check

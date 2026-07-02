@@ -1,60 +1,129 @@
 ---
-title: "Version Comparison"
-description: "Detailed comparison and selection guide for Debian 11, 12, and 13"
+title: "Versions & Lifecycle"
+description: "Lifecycle, upgrade decisions, version selection, and maintenance windows for Debian stable, oldstable, LTS, testing, and unstable."
 ---
 
 ![Debian stable, testing and unstable branches](/images/branches.png)
 
-<Callout type="info" title="About this page">
+<Callout type="info" title="Maintenance status">
 
-This page provides a detailed comparison of the main differences between Debian 13 (Trixie), Debian 12 (Bookworm), and Debian 11 (Bullseye) to help you choose the most suitable version.
+This page is based on official Debian release information as of **2026-07-01**. Debian version status changes with point releases, security-support transitions, and LTS announcements. Before upgrading, check [Debian Releases](https://www.debian.org/releases/) and [Debian LTS](https://wiki.debian.org/LTS).
 
 </Callout>
 
-## 📋 Version Overview
+Debian version choice is not only about freshness. It also depends on the security support source, software stack, hardware support, team maintenance capacity, and upgrade window. This page expands `/versions` into a lifecycle decision guide.
 
-| Version Info | Debian 13 (Trixie) | Debian 12 (Bookworm) | Debian 11 (Bullseye) |
-|---|---|---|---|
-| **Release Status** | Current Stable | Old Stable | LTS |
-| **Release Date** | August 2025 | June 2023 | August 2021 |
-| **Latest Point Release** | 13.5 (2026-05-16) | 12.14 (2026-05-16) | — |
-| **End of Support** | ~2030 (incl. LTS) | ~June 2028 | August 2026 |
-| **Linux Kernel** | 6.12 | 6.1 LTS | 5.10 LTS |
-| **GNOME Version**| 48 | 43 | 3.38 |
+## Current Recommendation
 
-## ⚙️ Core Components & Dev Tools
+| Your situation | Recommended version | Why |
+|----------------|---------------------|-----|
+| New desktop, workstation, or server install | **Debian 13 (Trixie)** | Current stable, longest support runway, newer hardware and toolchain support |
+| Already on Debian 12 and cannot upgrade soon | **Debian 12 (Bookworm)** | Still maintainable, but migration to Debian 13 should be planned |
+| Still on Debian 11 | **Upgrade to Debian 12, then Debian 13** | Bullseye LTS is near its end and should not be used for new deployments |
+| Preview the next Debian | **Debian 14 (Forky/testing)** | Test machines, virtual machines, or non-critical environments only |
+| Debian development or packaging | **unstable (Sid)** | For developers; not recommended for production or daily primary systems |
 
-| Software/Tool | Trixie (Debian 13) | Bookworm (Debian 12) | Bullseye (Debian 11) |
-|---|---|---|---|
-| **GCC** | 14.2 | 12.2 | 10.2 |
-| **LLVM/Clang** | 16+ | 14.0 | 11.0 |
-| **Python** | 3.13 | 3.11 | 3.9 |
-| **Node.js** | 20.x | 18.13 | 12.22 |
-| **Go** | 1.21+ | 1.19 | 1.15 |
-| **Rust** | 1.70+ | 1.63 | 1.48 |
-| **PHP** | 8.3 | 8.2 | 7.4 |
+## Lifecycle Overview
 
-## 🎯 Version Selection Guide
+| Branch / version | Current role | Best for | Security support source | Action |
+|------------------|--------------|----------|-------------------------|--------|
+| Debian 13 (Trixie) | stable | New installs, production, desktops, servers | Debian Security Team | Default choice |
+| Debian 12 (Bookworm) | oldstable | Existing systems that cannot move yet | Regular security support is ending soon, then LTS | Schedule an upgrade |
+| Debian 11 (Bullseye) | LTS | Legacy systems only | Debian LTS Team | Migrate soon |
+| Debian 14 (Forky) | testing | Testing, compatibility work, contribution | Not equivalent to stable security support | Do not use for production |
+| Sid | unstable | Debian development and packaging | Maintainers and development flow | Requires self-service troubleshooting |
 
-### By Use Case
+## Version Timeline
 
-- **🖥️ Desktop User**:
-  - **Recommended**: Choose **Debian 13 (Trixie)**. It is the current stable release with the latest GNOME 48 / KDE Plasma 6.3 desktop environments.
-  - **Conservative Choice**: **Debian 12 (Bookworm)** as oldstable is still maintained, suitable for users who prefer not to migrate immediately.
+| Version | Release date | Regular security support | LTS end | Current advice |
+|---------|--------------|--------------------------|---------|----------------|
+| Debian 13 (Trixie) | 2025-08-09 | Estimated around 2028 | Estimated around 2030 | Preferred for new deployments |
+| Debian 12 (Bookworm) | 2023-06-10 | Until 2026-07-11 | 2028-06-30 | Plan upgrade |
+| Debian 11 (Bullseye) | 2021-08-14 | Ended | 2026-08-31 | Accelerate migration |
+| Debian 10 (Buster) | 2019-07-06 | Ended | 2024-06-30 | Should not remain internet-facing |
 
-- **💻 Developer**:
-  - **Modern App Development**: Choose **Debian 13 (Trixie)**. It includes GCC 14.2, Python 3.13, PHP 8.3 and the latest toolchains.
-  - **Compatibility First**: **Debian 12 (Bookworm)** is still receiving security updates, suitable for projects requiring an oldstable environment.
+`Estimated` means Debian 13 regular support and LTS transition dates are not final yet. Follow Debian official announcements.
 
-- **🖧 Server Administrator**:
-  - **New Deployments**: Highly recommend **Debian 13 (Trixie)**. As the current stable release, it has the latest security patches and a full support cycle.
-  - **Maintaining Old Systems**: **Debian 12 (Bookworm)** as oldstable is still maintained (until ~2028). **Debian 11 (Bullseye)** LTS support ends August 2026 — plan your upgrade soon.
+## Core Component Comparison
 
-### Upgrade Path
+| Software / component | Debian 13 (Trixie) | Debian 12 (Bookworm) | Debian 11 (Bullseye) |
+|----------------------|--------------------|-----------------------|----------------------|
+| Linux kernel | 6.12 series | 6.1 LTS series | 5.10 LTS series |
+| GNOME | 48 | 43 | 3.38 |
+| GCC | 14 | 12 | 10 |
+| Python | 3.13 | 3.11 | 3.9 |
+| PHP | Closer to the 8.4 / 8.3 ecosystem | 8.2 | 7.4 |
+| Node.js | 20 series | 18 series | 12 series |
+| OpenSSL | 3.x | 3.x | 1.1.1 era |
 
-- **From Debian 11**: Upgrade to **Debian 12** first, then to **Debian 13**. Cross-version upgrades should be done step by step.
-- **From Debian 12**: Recommended to upgrade to **Debian 13**. With multiple point releases (13.5), it is well-matured.
+For exact package versions, use [packages.debian.org](https://packages.debian.org/). Do not switch the whole operating system just for one package version until you have evaluated backports, containers, language runtime managers, or the application's own release channel.
 
----
+## Stable, Oldstable, Testing, Or Sid
 
-**Want to check a specific software version?** [Visit packages.debian.org](https://packages.debian.org/) | [View Installation Guide →](/en/basics/installation) 
+### stable
+
+Best for most users. Package versions do not receive frequent major upgrades, and security fixes arrive through the Debian Security Team and point releases. Servers, office computers, classrooms, and home services should start with stable.
+
+### oldstable
+
+Good for already deployed systems that cannot migrate immediately. Oldstable is not "bad", but it should not be the first choice for new deployments. After the LTS transition, support may not cover every package, so check whether your dependencies are in the LTS support scope.
+
+### testing
+
+Useful for preparing for the next Debian, checking hardware support, giving feedback, and contributing. Testing receives faster package changes, but its security-update path is different from stable and is not suitable for critical workloads.
+
+### unstable (Sid)
+
+Designed for Debian developers and package maintainers. Sid receives continuous new packages and transitions; users should understand apt transactions, dependency recovery, rollback, and bug reporting.
+
+## Upgrade Decision Table
+
+| Current system | Recommended action | Why |
+|----------------|--------------------|-----|
+| Debian 13 | Keep updated | Current stable; install security and point updates |
+| Debian 12 | Plan Debian 13 upgrade | Regular security support is near its end; LTS is not a reason to postpone indefinitely |
+| Debian 11 | Upgrade to Debian 12, then Debian 13 | Avoid jumping across multiple stable releases in one step |
+| Debian 10 or older | Reassess reinstall or staged migration | EOL exposure is high and direct multi-release upgrades are complex |
+| testing / Sid | Continue only with a clear purpose | Development branches are not production stable |
+
+## Pre-upgrade Checklist
+
+Before changing APT sources:
+
+1. Read the target release notes, especially major changes, removals, and known issues.
+2. Back up `/etc`, user data, databases, service configuration, and local scripts.
+3. Confirm the current system has no half-configured packages.
+4. Record third-party repositories, pinning, manually installed `.deb` files, and locally built software.
+5. Check disk space, especially `/`, `/boot`, and `/var`.
+6. Prepare a maintenance window and rollback path for servers.
+7. For remote machines, confirm console, KVM, rescue image, or cloud snapshot access.
+
+```bash
+cat /etc/debian_version
+apt update
+apt list --upgradable
+dpkg --audit
+apt-mark showhold
+df -h
+find /etc/apt -type f -maxdepth 3 -print
+```
+
+## Maintenance Rhythm
+
+| Cadence | What to do |
+|---------|------------|
+| Weekly | Install security updates and inspect failed services |
+| Monthly | Check upgrades, disk space, and backup restoreability |
+| After each point release | Decide whether to reboot and update installer images or templates |
+| After each stable release | Create migration plans for old systems |
+| Before LTS starts | Confirm whether important packages remain supported |
+| Before LTS ends | Upgrade, replace, or retire systems |
+
+## Related Pages
+
+- [Release End-of-Life (EOL)](/en/eol)
+- [Debian 14 (Forky)](/en/debian-14)
+- [System Upgrade Guide](/en/basics/upgrade)
+- [Debian Latest News](/en/news)
+- [Debian official release information](https://www.debian.org/releases/)
+- [Debian LTS](https://wiki.debian.org/LTS)

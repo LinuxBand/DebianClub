@@ -1,0 +1,119 @@
+---
+title: "安装与分发"
+description: "DebianClub AI Skills 的本地安装、替换安装、registry 读取、打包和发布前检查流程"
+---
+
+本页说明如何从 DebianClub 仓库安装 `debian-linux-reliability`，以及如何读取分发索引、构建本地包和做发布前检查。
+
+## 前提
+
+在仓库根目录执行命令：
+
+```bash
+cd DebianClub
+```
+
+本地安装脚本默认安装到：
+
+```text
+${CODEX_HOME:-$HOME/.codex}/skills
+```
+
+它不会使用 `sudo`，也不会覆盖已有安装，除非显式传入 `--replace`。
+
+## 本地安装
+
+```bash
+bash skills/scripts/install-skill.sh debian-linux-reliability
+```
+
+安装后目录应类似：
+
+```text
+~/.codex/skills/debian-linux-reliability/
+  SKILL.md
+  references/
+  scripts/
+  tests/
+```
+
+如果你的 Codex home 不在默认位置，可以指定目标目录：
+
+```bash
+bash skills/scripts/install-skill.sh --target "$HOME/.codex/skills" debian-linux-reliability
+```
+
+## 替换安装
+
+如果目标目录已有同名 skill，先查看已有内容：
+
+```bash
+ls "${CODEX_HOME:-$HOME/.codex}/skills/debian-linux-reliability"
+```
+
+确认需要替换时再执行：
+
+```bash
+bash skills/scripts/install-skill.sh --replace debian-linux-reliability
+```
+
+`--replace` 会把旧目录移动成带时间戳的 backup 目录，再安装新版本。
+
+## 分发索引
+
+平台或 CLI 可以读取仓库内分发索引：
+
+```text
+skills/registry.json
+```
+
+网站构建后也会暴露：
+
+```text
+/skills.json
+```
+
+registry 记录了 skill 名称、版本、入口文件、模块列表、安装脚本、验证脚本、发布脚本、评分脚本和语言列表。
+
+## 构建本地包
+
+构建版本化 `.tgz` 包：
+
+```bash
+bash skills/scripts/package-skill.sh debian-linux-reliability
+```
+
+默认输出到：
+
+```text
+skills/dist/
+```
+
+包旁边会生成 manifest，包含版本号、大小和 SHA-256。
+
+## 发布前检查
+
+发布前先用 dry-run：
+
+```bash
+bash skills/scripts/publish-skill-release.sh --dry-run debian-linux-reliability
+```
+
+它会验证、打包并打印发布命令，但不会上传到 GitHub Release。
+
+正式发布前还需要确保 tag 格式符合：
+
+```text
+skills/debian-linux-reliability/v${version}
+```
+
+## 常见问题
+
+| 问题 | 检查 |
+|------|------|
+| 提示目标目录已存在 | 是否需要 `--replace`，是否要保留旧安装 |
+| 找不到 skill | 是否在仓库根目录执行，`skills/debian-linux-reliability/SKILL.md` 是否存在 |
+| registry 版本不对 | 查看 `skills/registry.json` 中的 `version` |
+| 打包失败 | 先运行 `bash skills/scripts/validate-all.sh` |
+
+下一步：[使用方式](/ai/skills/usage)。

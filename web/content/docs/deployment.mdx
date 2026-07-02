@@ -1,0 +1,103 @@
+---
+title: "部署与运行"
+description: "DebianClub 静态站点部署手册：Cloudflare Pages 配置、构建产物、安全头、上线检查、回滚和运行监控。"
+---
+
+部署与运行阶段把发布准备中的质量门禁接到真实上线流程。DebianClub 当前按 Next.js 静态导出运行，部署目标是 Cloudflare Pages，产物目录是 `web/out`。
+
+## 部署模型
+
+| 层级 | 当前约定 | 需要保持 |
+|------|----------|----------|
+| 构建框架 | Next.js `output: 'export'` | 不依赖运行时 SSR |
+| 内容源 | `web/content/docs` | 中英文关键页必须有真实页面或可回退链接 |
+| 搜索索引 | `web/out/api/search/{locale}` | 每个语言独立分片，避免单文件过大 |
+| 静态资源 | `web/public` 复制到 `web/out` | 图片、favicon、robots、headers 必须随产物发布 |
+| 部署配置 | 根目录 `wrangler.toml` | `pages_build_output_dir` 指向 `web/out` |
+
+## 标准上线命令
+
+从仓库根目录执行：
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+corepack pnpm --dir web types:check
+corepack pnpm --dir web build
+corepack pnpm --dir web release:check
+```
+
+如果使用 Cloudflare Pages 的 Git 集成，构建命令保持为：
+
+```bash
+corepack pnpm --dir web install --frozen-lockfile
+corepack pnpm --dir web build
+```
+
+输出目录保持为：
+
+```text
+web/out
+```
+
+## CI 发布门禁
+
+仓库包含 `Web Release Check` workflow。它在 PR、`main` 分支相关路径变更和手动触发时运行：
+
+| 步骤 | 目的 |
+|------|------|
+| 安装依赖 | 使用 `web/pnpm-lock.yaml` 保持依赖可复现 |
+| 类型检查 | 验证 MDX、Next 路由类型和 TypeScript |
+| 静态构建 | 生成完整 `web/out` |
+| 冒烟检查 | 启动本地静态预览，验证关键路由和搜索 JSON |
+| 发布门禁 | 验证关键页面、搜索分片、headers 和部署配置 |
+
+该 workflow 只需要 `contents: read` 权限，不执行发布动作。真正部署仍由 Cloudflare Pages 或人工发布流程处理。
+
+## Headers 与缓存
+
+`web/public/_headers` 会复制到 `web/out/_headers`。当前策略分三类：
+
+| 路径 | 策略 |
+|------|------|
+| `/_next/static/*` | 内容哈希文件长期缓存 |
+| `/api/search/*` | JSON Content-Type 与中等缓存 |
+| `/og/docs/*`、`/images/*`、`/assets/*` | 静态资源按天缓存 |
+
+全站基础安全头应至少包含 `X-Content-Type-Options`、`Referrer-Policy`、`X-Frame-Options` 和 `Permissions-Policy`。如果以后加入第三方脚本或嵌入式内容，再单独评估 CSP，不要在不了解资源来源时直接加严格 CSP。
+
+## 上线前抽样
+
+本地预览启动后，可以直接运行冒烟脚本：
+
+```bash
+SMOKE_BASE_URL=http://localhost:43018 corepack pnpm --dir web smoke:check
+```
+
+脚本会检查中英文关键路径、`/api/search/zh`、`/api/search/en`、`sitemap.xml` 和 `robots.txt`。如需手工抽样，可使用：
+
+```bash
+for path in / /en /release-readiness /en/release-readiness /deployment /en/deployment /tools /en/tools /api/search/zh /api/search/en; do
+  curl -L -s -o /tmp/debianclub-deploy-check.html -w "%{http_code} $path\n" "http://localhost:43018$path"
+done
+```
+
+所有路径都应返回 `200`。如果端口不同，把 `43018` 换成当前预览端口。
+
+## 回滚流程
+
+上线后如果出现白屏、搜索不可用、路由 404 或资源 MIME 异常，按这个顺序处理：
+
+1. 在 Cloudflare Pages 回滚到上一条成功部署。
+2. 对比失败版本与上一版的 `web/out/_headers`、`web/out/api/search`、`web/out/sitemap.xml`。
+3. 复跑 `types:check`、`build`、`release:check`。
+4. 用最小路径集合验证 `/`、`/en`、`/deployment`、`/en/deployment`、`/api/search/zh`、`/api/search/en`。
+
+## 运行监控
+
+部署后优先看这些信号：
+
+- 首页、AI Skills、工具箱、部署页的 200 命中率。
+- `/api/search/{locale}` 的响应状态和文件大小。
+- 浏览器控制台是否存在 hydration mismatch、MIME type 或静态资源 404。
+- Cloudflare Pages 最近部署是否使用同一个提交和同一份 `web/out`。
+- 外部统计脚本被客户端插件拦截时，不应影响站点核心功能。

@@ -1,0 +1,119 @@
+---
+title: "Install & Distribution"
+description: "Install DebianClub AI Skills locally, replace an existing install, read the registry, build packages, and run release checks."
+---
+
+This page explains how to install `debian-linux-reliability` from the DebianClub repository, read the distribution registry, build a local package, and run pre-release checks.
+
+## Prerequisite
+
+Run commands from the repository root:
+
+```bash
+cd DebianClub
+```
+
+The installer defaults to:
+
+```text
+${CODEX_HOME:-$HOME/.codex}/skills
+```
+
+It does not use `sudo`, and it does not overwrite an existing install unless `--replace` is passed.
+
+## Local Install
+
+```bash
+bash skills/scripts/install-skill.sh debian-linux-reliability
+```
+
+After installation, the directory should look like:
+
+```text
+~/.codex/skills/debian-linux-reliability/
+  SKILL.md
+  references/
+  scripts/
+  tests/
+```
+
+If your Codex home is not the default, pass a target directory:
+
+```bash
+bash skills/scripts/install-skill.sh --target "$HOME/.codex/skills" debian-linux-reliability
+```
+
+## Replace Install
+
+If a skill with the same name already exists, inspect it first:
+
+```bash
+ls "${CODEX_HOME:-$HOME/.codex}/skills/debian-linux-reliability"
+```
+
+Replace only when intended:
+
+```bash
+bash skills/scripts/install-skill.sh --replace debian-linux-reliability
+```
+
+`--replace` moves the previous directory to a timestamped backup before installing the new version.
+
+## Distribution Registry
+
+Platforms or CLIs can read the repository registry:
+
+```text
+skills/registry.json
+```
+
+The built website also exposes:
+
+```text
+/skills.json
+```
+
+The registry records the skill name, version, entrypoint, module list, install script, validation script, release script, scoring script, and language list.
+
+## Build A Local Package
+
+Build a versioned `.tgz` archive:
+
+```bash
+bash skills/scripts/package-skill.sh debian-linux-reliability
+```
+
+The default output directory is:
+
+```text
+skills/dist/
+```
+
+The package is accompanied by a manifest containing version, size, and SHA-256.
+
+## Pre-release Check
+
+Start with dry-run mode:
+
+```bash
+bash skills/scripts/publish-skill-release.sh --dry-run debian-linux-reliability
+```
+
+It validates, packages, and prints the release command without uploading to GitHub Releases.
+
+Before a real release, the tag must follow:
+
+```text
+skills/debian-linux-reliability/v${version}
+```
+
+## Common Issues
+
+| Issue | Check |
+|-------|-------|
+| Destination already exists | Decide whether `--replace` is intended and whether to keep the old install |
+| Skill not found | Run from the repository root and confirm `skills/debian-linux-reliability/SKILL.md` exists |
+| Registry version is wrong | Check `version` in `skills/registry.json` |
+| Package build fails | Run `bash skills/scripts/validate-all.sh` first |
+
+Next: [Usage](/en/ai/skills/usage).

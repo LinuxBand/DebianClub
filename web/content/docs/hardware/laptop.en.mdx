@@ -1,0 +1,128 @@
+---
+title: "Laptop Compatibility"
+description: "Debian laptop checklist for touchpads, Fn keys, power profiles, suspend, webcams, fingerprint readers, docks, and vendor firmware."
+---
+
+Laptop compatibility is not a single driver problem. It is the combined behavior of kernel, firmware, desktop environment, power management, BIOS, and peripherals. First separate "hardware is not detected" from "policy is configured poorly".
+
+## Hardware Inventory
+
+```bash
+lspci -nnk
+lsusb
+lsblk -o NAME,SIZE,TYPE,FSTYPE,MODEL
+upower -d
+fwupdmgr get-devices
+```
+
+If `fwupdmgr` is missing:
+
+```bash
+sudo apt install fwupd
+```
+
+## Power And Performance
+
+GNOME and KDE commonly integrate with `power-profiles-daemon`:
+
+```bash
+systemctl status power-profiles-daemon --no-pager
+powerprofilesctl get 2>/dev/null || true
+```
+
+Install it with:
+
+```bash
+sudo apt install power-profiles-daemon
+```
+
+Do not let multiple power-management tools control the same device. If you use TLP, verify that it does not conflict with desktop power profiles.
+
+## Suspend And Resume
+
+Check supported sleep modes:
+
+```bash
+cat /sys/power/mem_sleep
+journalctl -b -1 -p warning --no-pager
+```
+
+Use this order:
+
+1. Update BIOS / UEFI to a stable vendor release.
+2. Test the laptop without docks or external displays.
+3. Test lid close, menu suspend, and power-button suspend separately.
+4. If new hardware still fails to resume, evaluate a backports kernel.
+
+## Touchpad, Keyboard, And Fn Keys
+
+```bash
+libinput list-devices 2>/dev/null || true
+sudo libinput debug-events
+```
+
+If libinput tools are missing:
+
+```bash
+sudo apt install libinput-tools
+```
+
+Fn keys are often exposed through ACPI or vendor WMI modules. Inspect logs:
+
+```bash
+dmesg | grep -iE "wmi|acpi|hotkey|thinkpad|asus|dell|hp"
+```
+
+## Webcam And Fingerprint
+
+```bash
+lsusb
+v4l2-ctl --list-devices 2>/dev/null || true
+```
+
+Test webcams with a browser, meeting app, or Cheese. Fingerprint support varies widely on Linux, so do not make fingerprint auth the only login path for production systems.
+
+## Docks And External Displays
+
+Break dock testing into smaller cases:
+
+1. Power only.
+2. Display only.
+3. Ethernet only.
+4. Then USB peripherals.
+
+```bash
+journalctl -b -p warning --no-pager
+dmesg | grep -iE "usb|thunderbolt|typec|display|drm"
+```
+
+Thunderbolt / USB4 docks also require checking BIOS security level and dock firmware version.
+
+## Vendor Notes
+
+| Brand or series | Common focus |
+|-----------------|--------------|
+| ThinkPad | Sleep mode, fingerprint, charge thresholds, TrackPoint |
+| Dell XPS / Latitude | Webcam, sound card, firmware updates, docks |
+| HP EliteBook | BIOS settings, Fn keys, fingerprint, Wi-Fi |
+| ASUS / ROG | dGPU mode, keyboard lighting, fan control |
+| Framework | Modular expansion cards, firmware, newer kernels |
+
+These are starting points, not fixed conclusions. Device IDs, kernel logs, and Debian packages are the source of truth.
+
+## Rollback Strategy
+
+- Photograph BIOS settings before changing them.
+- Keep older kernel boot entries before changing kernels.
+- Record enabled services before changing power management.
+- Ensure TTY access before changing graphics drivers.
+
+```bash
+systemctl list-unit-files | grep -E "tlp|power-profiles|thermald"
+apt policy linux-image-amd64 firmware-linux firmware-linux-nonfree
+```
+
+## Official References
+
+- [Debian power-profiles-daemon package](https://packages.debian.org/en/trixie/power-profiles-daemon)
+- [Debian Installation Guide: Loading Missing Firmware](https://www.debian.org/releases/stable/amd64/ch06s04.en.html)

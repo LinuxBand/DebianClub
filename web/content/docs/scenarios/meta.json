@@ -1,0 +1,9 @@
+{
+  "title": "场景方案",
+  "pages": [
+    "index",
+    "docker-host",
+    "development-workstation",
+    "home-server"
+  ]
+}

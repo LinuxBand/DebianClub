@@ -33,9 +33,12 @@ Terminal-based AI coding tools for command-line workflows.
 
 Debian/Linux reliability rules that make AI agents verify system facts before installing packages, debugging services, or changing configuration.
 
-| Skill | Description | Status |
+| Entry | Description | Status |
 |------|-------------|--------|
-| [DebianClub AI Skills](/en/ai/skills) | Debian/Linux environment detection, APT safety, command safety, systemd, networking, development setup, GPU, containers, security audits, and Debian packaging workflows | MVP |
+| [DebianClub AI Skills](/en/ai/skills) | Debian/Linux environment detection, APT safety, command safety, systemd, networking, development setup, GPU, containers, security audits, and Debian packaging workflows | Phase 2 |
+| [Install & Distribution](/en/ai/skills/install) | Local install, replace install, registry, packaging, and pre-release checks | Live |
+| [Usage](/en/ai/skills/usage) | Invoke the skill in an AI agent and require fact verification before advice | Live |
+| [Safety Boundary](/en/ai/skills/safety) | Read-only defaults, risky command detection, approval before changes, and log redaction | Live |
 
 ## Local LLM Runners
 
@@ -76,17 +79,21 @@ Many AI tools share common dependencies. Install these before proceeding with in
 
 ### Node.js
 
-Required for Claude Code, OpenCode, Gemini CLI, and other tools.
+Claude Code, OpenCode, Gemini CLI, and similar tools usually require Node.js 18+. Check whether the Debian repository version satisfies the target tool first:
 
 ```bash
-# Install Node.js 22.x LTS (via NodeSource)
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-sudo apt install -y nodejs
+apt-cache policy nodejs npm
+```
 
-# Verify
+If the repository version is sufficient, prefer Debian packages:
+
+```bash
+sudo apt install nodejs npm
 node --version
 npm --version
 ```
+
+If you truly need a third-party repository or installer script, review the source, GPG key, rollback path, and impact on the system Node.js package before making changes. Do not run unreviewed `curl | bash` commands.
 
 ### Python
 

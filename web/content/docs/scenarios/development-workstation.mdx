@@ -1,0 +1,114 @@
+---
+title: "开发工作站"
+description: "把 Debian 配成日常开发工作站，覆盖基础工具链、语言环境、容器、编辑器、SSH、备份和系统维护。"
+---
+
+开发工作站场景适合把 Debian 作为主力桌面或笔记本系统。目标是保留 Debian stable 的稳定性，同时让常用开发工具、语言环境和容器工作流足够顺手。
+
+## 适合谁
+
+- Web、后端、脚本、系统工具或开源项目开发者
+- 需要稳定桌面和长期可维护环境的学生、工程师和创作者
+- 想用容器隔离项目依赖，但仍以 Debian 作为主系统的人
+
+## 推荐硬件
+
+| 部件 | 建议 |
+|------|------|
+| CPU | 4 核以上更舒适 |
+| 内存 | 8 GB 起步，16 GB 以上适合容器和 IDE |
+| 磁盘 | 256 GB SSD 起步，项目和容器镜像多时建议 512 GB+ |
+| 显卡 | 普通开发优先 Intel/AMD；CUDA 或本地 AI 再规划 NVIDIA |
+
+笔记本用户先完成 [硬件兼容性](/basics/hardware-compatibility) 和 [桌面环境](/basics/desktop-environments) 的选择。
+
+## 安装路径
+
+1. 安装 Debian stable，选择一个主力桌面环境。
+2. 完成 [首次启动配置](/basics/first-boot)，更新系统并确认网络、输入法、电源管理正常。
+3. 安装基础开发工具。
+4. 使用项目级工具管理语言版本，避免把所有实验环境装进系统目录。
+5. 用容器或虚拟机隔离数据库、中间件和临时测试服务。
+
+## 基础软件包
+
+```bash
+sudo apt update
+sudo apt install build-essential git curl wget ca-certificates gnupg \
+  vim nano jq direnv shellcheck make pkg-config
+```
+
+常见语言运行时可以先使用 Debian 仓库版本：
+
+```bash
+sudo apt install python3 python3-venv python3-pip nodejs npm golang rustc cargo
+```
+
+如果项目需要精确版本，建议使用项目级版本管理或容器镜像，而不是替换系统自带运行时。
+
+## 项目目录
+
+保持简单、可备份：
+
+```text
+~/Projects/
+  company/
+  personal/
+  experiments/
+```
+
+建议：
+
+- 每个项目维护自己的 README、`.env.example` 和启动命令
+- 不把真实密钥写入仓库
+- 编译缓存、依赖目录和大文件按项目规则排除
+
+## 容器与本地服务
+
+开发机可以选 Docker 或 Podman：
+
+- 熟悉 Docker Compose：看 [Docker 安装与使用](/server/docker)
+- 希望 rootless 和 Debian 官方仓库安装：看 [Podman 容器管理](/server/podman)
+
+本地数据库、消息队列、搜索服务等优先绑定到 `127.0.0.1`，避免在公共 Wi-Fi 中暴露。
+
+## 安全配置
+
+开发机同样需要基础安全：
+
+- 使用普通用户开发，只有安装软件或改系统配置时才用 `sudo`
+- SSH 私钥放在 `~/.ssh/`，权限保持为 `600`
+- 不把 `.env`、token、私钥提交到 Git
+- 外出使用笔记本时启用磁盘加密和锁屏
+- 只在确实需要远程登录时启用 SSH 服务
+
+查看完整安全建议：[安全管理](/administration/security)。
+
+## 备份策略
+
+重点备份：
+
+- `~/Projects/`
+- `~/.ssh/`
+- 编辑器配置、shell 配置、Git 配置
+- 重要项目的本地数据库导出
+
+不建议只备份整个依赖目录。更好的方式是备份源码和锁文件，让依赖可以重新安装。
+
+## 常见问题
+
+| 问题 | 优先检查 |
+|------|----------|
+| 编译失败 | `build-essential`、`pkg-config`、项目 README 中的系统依赖 |
+| Python 包装不上 | 是否使用虚拟环境、是否缺少 `python3-dev` 或编译依赖 |
+| Node 项目版本不匹配 | 项目的 `.nvmrc`、`packageManager`、lockfile |
+| 容器服务无法访问 | 端口映射、服务绑定地址、防火墙 |
+| 磁盘变满 | 容器镜像、构建缓存、下载目录、旧日志 |
+
+## 下一步教程
+
+- [Shell 与命令行基础](/basics/command-line)
+- [APT 包管理](/administration/packages)
+- [Docker 安装与使用](/server/docker)
+- [Podman 容器管理](/server/podman)
+- [备份与恢复](/administration/backup)

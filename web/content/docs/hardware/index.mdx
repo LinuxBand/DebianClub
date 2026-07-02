@@ -1,0 +1,49 @@
+---
+title: "硬件兼容与驱动中心"
+description: "Debian 硬件兼容与驱动排查中心，覆盖 NVIDIA、AMD/Intel 显卡、Wi-Fi、蓝牙、声卡、笔记本与安装前检查。"
+---
+
+硬件兼容与驱动中心聚焦 Debian 用户最常见的硬件问题：安装前兼容性确认、显卡驱动、无线网卡、蓝牙、音频、摄像头、笔记本电源管理和故障回滚。
+
+## Phase 3 已上线
+
+| 专题 | 适合场景 | 状态 |
+|------|----------|------|
+| [安装前兼容性检查](/hardware/preinstall-check) | 买设备、换系统、重装前先判断风险 | 已上线 |
+| [NVIDIA 与 Optimus](/hardware/nvidia) | 独显、混合显卡、CUDA、本地 AI、黑屏排查 | 已上线 |
+| [AMD / Intel 图形](/hardware/graphics) | Mesa、firmware、VA-API、视频解码和桌面加速 | 已上线 |
+| [Wi-Fi 与无线固件](/hardware/wifi) | Intel、Realtek、Broadcom 无线网卡不可用 | 已上线 |
+| [蓝牙与音频](/hardware/bluetooth-audio) | 蓝牙耳机、麦克风、声卡无输出、PipeWire 排查 | 已上线 |
+| [笔记本兼容](/hardware/laptop) | 触控板、电源、睡眠、Fn 键、摄像头和扩展坞 | 已上线 |
+
+## 快速判断路径
+
+| 现象 | 先看 |
+|------|------|
+| 还没安装 Debian，不确定机器是否合适 | [安装前兼容性检查](/hardware/preinstall-check) |
+| 安装后黑屏、外接显示器异常、`nvidia-smi` 不工作 | [NVIDIA 与 Optimus](/hardware/nvidia) |
+| AMD / Intel 显卡桌面卡顿、浏览器视频解码占 CPU | [AMD / Intel 图形](/hardware/graphics) |
+| 安装时或首次启动后没有 Wi-Fi | [Wi-Fi 与无线固件](/hardware/wifi) |
+| 蓝牙耳机连上但没声音，麦克风不可选 | [蓝牙与音频](/hardware/bluetooth-audio) |
+| 合盖休眠、触控板、Fn 键或摄像头异常 | [笔记本兼容](/hardware/laptop) |
+
+## 统一排查原则
+
+1. 先识别硬件型号和内核模块，再安装驱动包。
+2. 优先使用 Debian 官方仓库和 backports，避免厂商 `.run` 安装器或未知脚本。
+3. 每次只改一个变量：firmware、内核、驱动、桌面会话不要同时改。
+4. 记录变更前后的命令输出，便于回滚和提问。
+5. 图形和网络驱动变更后，保留一个可进 TTY 或有线网络的备用路径。
+
+## 常用识别命令
+
+```bash
+lspci -nnk
+lsusb
+uname -a
+apt policy firmware-linux firmware-linux-nonfree nvidia-driver
+journalctl -b -p warning
+dmesg --level=err,warn
+```
+
+如果要分享日志，先删掉主机名、用户名、SSID、MAC 地址、公网 IP、序列号和路径中的个人信息。

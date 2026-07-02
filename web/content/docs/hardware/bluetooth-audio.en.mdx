@@ -1,0 +1,107 @@
+---
+title: "Bluetooth & Audio"
+description: "Troubleshoot Bluetooth headsets, microphones, sound cards, PipeWire, WirePlumber, BlueZ, and firmware on Debian."
+---
+
+Bluetooth and audio issues often overlap: a headset pairs but has no sound, a microphone is missing, or the Bluetooth module depends on the same firmware as the Wi-Fi chipset. Confirm devices, services, and session policy before focusing on desktop apps.
+
+## Base Services
+
+```bash
+systemctl --user status pipewire wireplumber --no-pager
+systemctl status bluetooth --no-pager
+bluetoothctl show
+wpctl status
+```
+
+A typical desktop should have PipeWire, WirePlumber, and BlueZ. If one layer is missing, the graphical settings panel may show only part of the device list.
+
+## Common Packages
+
+```bash
+sudo apt update
+sudo apt install pipewire-audio wireplumber bluez blueman pavucontrol
+```
+
+Realtek and Intel Bluetooth often share firmware packages with Wi-Fi. Check:
+
+```bash
+apt policy firmware-realtek firmware-iwlwifi
+dmesg | grep -iE "bluetooth|firmware|btusb|ibt|rtl"
+```
+
+## Bluetooth Headset Triage
+
+```bash
+bluetoothctl
+```
+
+Inside the interactive prompt:
+
+```text
+power on
+agent on
+default-agent
+scan on
+pair XX:XX:XX:XX:XX:XX
+trust XX:XX:XX:XX:XX:XX
+connect XX:XX:XX:XX:XX:XX
+```
+
+After connecting, use `wpctl status` to check whether a new output appears. If only low-quality headset mode is available, inspect the audio profile in desktop sound settings.
+
+## No Sound Or Missing Microphone
+
+```bash
+wpctl status
+pactl info
+pavucontrol
+```
+
+Use this order:
+
+1. Confirm the application is not muted in `pavucontrol`.
+2. Select the correct sound card or Bluetooth profile under output devices.
+3. Confirm the microphone is not muted under input devices.
+4. Restart user audio services.
+
+```bash
+systemctl --user restart pipewire wireplumber
+```
+
+## Common Problems
+
+| Symptom | Check first |
+|---------|-------------|
+| Bluetooth switch is missing | `bluetooth` service, `rfkill`, USB/PCI device detection |
+| Headset pairs but has no sound | `wireplumber`, audio profile, `wpctl status` |
+| Microphone is missing | Input mute state, app permissions, Bluetooth headset profile |
+| Bluetooth disappears after reboot | Installed firmware package and `dmesg` missing-firmware lines |
+| Bluetooth is unstable when Wi-Fi is active | Shared firmware, 2.4 GHz interference, power saving |
+
+## Collect Logs
+
+```bash
+journalctl -b -u bluetooth --no-pager
+journalctl --user -b -u pipewire -u wireplumber --no-pager
+dmesg | grep -iE "bluetooth|btusb|firmware|snd|audio"
+```
+
+Before sharing logs, redact device names, MAC addresses, SSIDs, usernames, and meeting app account details.
+
+## Rollback
+
+If extra audio components made things worse, return to the default Debian stack:
+
+```bash
+sudo apt install --reinstall pipewire-audio wireplumber bluez
+systemctl --user restart pipewire wireplumber
+sudo systemctl restart bluetooth
+```
+
+Do not run multiple audio servers and third-party Bluetooth daemons at the same time. Keep the basic PipeWire + WirePlumber + BlueZ stack while debugging.
+
+## Official References
+
+- [Debian wireplumber package](https://packages.debian.org/stable/wireplumber)
+- [WirePlumber Bluetooth configuration](https://pipewire.pages.freedesktop.org/wireplumber/daemon/configuration/bluetooth.html)

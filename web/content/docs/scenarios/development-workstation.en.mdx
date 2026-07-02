@@ -1,0 +1,114 @@
+---
+title: "Development Workstation"
+description: "Set up Debian as a daily development workstation with base toolchains, language runtimes, containers, editors, SSH, backups, and maintenance."
+---
+
+The Development Workstation scenario is for using Debian as your primary desktop or laptop system. The goal is to keep Debian stable while making common development tools, language environments, and container workflows comfortable.
+
+## Who It Is For
+
+- Web, backend, scripting, systems, and open-source developers
+- Students, engineers, and creators who want a stable long-term environment
+- Users who isolate project dependencies with containers while keeping Debian as the host OS
+
+## Recommended Hardware
+
+| Component | Recommendation |
+|-----------|----------------|
+| CPU | 4+ cores for a smoother experience |
+| Memory | 8 GB minimum, 16+ GB for containers and IDEs |
+| Disk | 256 GB SSD minimum, 512+ GB if you keep many projects and images |
+| GPU | Intel/AMD is simpler for general development; plan NVIDIA only for CUDA or local AI |
+
+Laptop users should check [Hardware Compatibility](/en/basics/hardware-compatibility) and choose a [Desktop Environment](/en/basics/desktop-environments) first.
+
+## Installation Path
+
+1. Install Debian stable with your preferred desktop environment.
+2. Complete [First Boot](/en/basics/first-boot), update the system, and verify network, input, and power management.
+3. Install the base development tools.
+4. Use project-level tooling for language versions instead of replacing system runtimes globally.
+5. Use containers or VMs for databases, middleware, and temporary test services.
+
+## Base Packages
+
+```bash
+sudo apt update
+sudo apt install build-essential git curl wget ca-certificates gnupg \
+  vim nano jq direnv shellcheck make pkg-config
+```
+
+Start with Debian-packaged runtimes:
+
+```bash
+sudo apt install python3 python3-venv python3-pip nodejs npm golang rustc cargo
+```
+
+If a project needs exact versions, use project-level version managers or container images instead of replacing system runtimes.
+
+## Project Layout
+
+Keep it simple and easy to back up:
+
+```text
+~/Projects/
+  company/
+  personal/
+  experiments/
+```
+
+Suggested rules:
+
+- Keep a README, `.env.example`, and start commands in each project
+- Never commit real secrets
+- Exclude dependency directories, build caches, and large generated files
+
+## Containers and Local Services
+
+Choose Docker or Podman:
+
+- If you rely on Docker Compose, see [Docker Setup & Usage](/en/server/docker)
+- If you prefer rootless containers from Debian repositories, see [Podman](/en/server/podman)
+
+Bind local databases, queues, and search services to `127.0.0.1` when possible so they are not exposed on public Wi-Fi.
+
+## Security Baseline
+
+A developer workstation still needs a baseline:
+
+- Develop as a normal user; use `sudo` only for package installs or system configuration
+- Keep SSH private keys under `~/.ssh/` with `600` permissions
+- Do not commit `.env` files, tokens, or private keys
+- Use disk encryption and screen lock on laptops
+- Enable SSH only when you actually need remote access
+
+For full guidance, see [Security Management](/en/administration/security).
+
+## Backup Strategy
+
+Prioritize:
+
+- `~/Projects/`
+- `~/.ssh/`
+- Editor, shell, and Git configuration
+- Database dumps for important local projects
+
+Avoid relying on backups of dependency directories. Back up source code and lockfiles so dependencies can be recreated.
+
+## Common Issues
+
+| Issue | Check first |
+|-------|-------------|
+| Build fails | `build-essential`, `pkg-config`, system dependencies from the project README |
+| Python package fails to install | Virtual environment, `python3-dev`, missing build libraries |
+| Node version mismatch | `.nvmrc`, `packageManager`, lockfile |
+| Container service is unreachable | Port mapping, bind address, firewall |
+| Disk fills up | Container images, build caches, downloads, old logs |
+
+## Next Guides
+
+- [Shell & Command Line Basics](/en/basics/command-line)
+- [APT Package Management](/en/administration/packages)
+- [Docker Setup & Usage](/en/server/docker)
+- [Podman](/en/server/podman)
+- [Backup & Restore](/en/administration/backup)

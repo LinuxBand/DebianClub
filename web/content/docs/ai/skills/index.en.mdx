@@ -1,0 +1,71 @@
+---
+title: "DebianClub AI Skills"
+description: "DebianClub AI Skills for safer Debian/Linux AI assistance with verified system facts and read-only diagnostics"
+---
+
+DebianClub AI Skills are reliability rules for AI coding assistants and terminal agents working on Debian/Linux systems. They do not replace documentation. They make the agent identify the environment, verify package names, inspect logs, and review command risk before giving advice.
+
+The first skill in this repository is `skills/debian-linux-reliability/`. It uses one main skill with focused submodules and defaults to read-only diagnostics with no automatic system modification.
+
+<SkillsCatalog lang="en" />
+
+## Section Guide
+
+| Page | What it solves |
+|------|----------------|
+| [Install & Distribution](/en/ai/skills/install) | Install from the repository, replace an existing install, read the registry, and build local packages |
+| [Usage](/en/ai/skills/usage) | Invoke the skill in an AI agent and separate facts, inference, and proposed changes |
+| [Modules](/en/ai/skills/modules) | Choose between environment, APT, command safety, systemd, networking, GPU, containers, and other modules |
+| [Safety Boundary](/en/ai/skills/safety) | Read-only defaults, approval before changes, risky command detection, and redaction rules |
+| [Evaluation & Maintenance](/en/ai/skills/evaluation) | Run validation, score real responses, add regression samples, and release versions |
+
+## Why This Exists
+
+AI mistakes on Linux often come from:
+
+- Applying Ubuntu, Arch, or macOS commands to Debian
+- Inventing package names
+- Ignoring stable, backports, testing, and unstable differences
+- Guessing service failures without checking `systemctl` and `journalctl`
+- Recommending risky commands such as `curl | sh`, `rm -rf`, or `chmod -R`
+- Missing WSL, containers, non-systemd environments, or non-amd64 architectures
+
+DebianClub AI Skills make the agent collect facts first.
+
+## Current Skill
+
+| Skill | Purpose | Default behavior |
+|---|---|---|
+| `debian-linux-reliability` | Debian/Linux development, administration, and troubleshooting reliability workflow | Read-only diagnosis, no automatic system modification |
+
+## DebianClub Documentation Binding
+
+The skill prefers DebianClub repository content for explanations, including:
+
+- [APT Package Management](/en/administration/packages)
+- [Debian Backports](/en/administration/backports)
+- [deb822 Sources](/en/administration/deb822)
+- [Network Configuration](/en/administration/network)
+- [NVIDIA Optimus](/en/administration/nvidia-optimus)
+- [Podman](/en/server/podman)
+- [System Security](/en/administration/security)
+
+Live state must still come from the user's machine. Documentation explains. Read-only probes verify current facts.
+
+## Quick Invocation
+
+In an AI agent that supports skills, invoke:
+
+```text
+Use $debian-linux-reliability to diagnose this Debian package installation issue.
+```
+
+Repository files:
+
+```text
+skills/debian-linux-reliability/SKILL.md
+skills/debian-linux-reliability/references/
+skills/debian-linux-reliability/scripts/
+```
+
+Next, read [Install & Distribution](/en/ai/skills/install), then [Usage](/en/ai/skills/usage).

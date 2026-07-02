@@ -1,0 +1,92 @@
+---
+title: "Safety Boundary"
+description: "Default read-only behavior, approval boundaries, risky command rules, and redaction requirements for DebianClub AI Skills."
+---
+
+The value of AI Skills is not only knowing Debian commands. The more important goal is preventing an agent from changing a system before it has enough evidence. `debian-linux-reliability` defaults to read-only diagnostics.
+
+## No Automatic Modification By Default
+
+By default, the agent must not automatically run or directly recommend these actions:
+
+- Install, remove, or upgrade packages
+- Edit `/etc/apt/`, `/etc/systemd/`, `/etc/network/`, `/boot/`, or `/etc/fstab`
+- Change firewall rules
+- Restart services or reboot the system
+- Modify disks, partitions, bootloaders, or permissions
+- Run remote scripts or pipe-to-shell commands
+
+If the user explicitly asks for a change, the agent must first explain the impact, inspection step, verification step, and rollback path.
+
+## Read-only First
+
+Prefer commands like:
+
+```bash
+cat /etc/os-release
+dpkg --print-architecture
+apt-cache policy package-name
+systemctl status service-name
+journalctl -u service-name --no-pager -n 100
+ss -tulpen
+ip route
+```
+
+Read-only does not mean safe to share without review. Logs and configuration can include tokens, usernames, hostnames, internal IPs, or private-key paths. Review and redact before sending output to external systems.
+
+## Risky Command Detection
+
+These command categories need extra review:
+
+| Type | Examples |
+|------|----------|
+| Remote scripts | `curl URL | sh`, `wget URL -O- | bash` |
+| Deletion | `rm -rf`, directory clearing, wildcard deletion |
+| Permissions | `chmod -R 777`, recursive `chown` |
+| Disk | `dd`, `mkfs`, `parted`, editing `/etc/fstab` |
+| Repositories | Adding third-party sources, importing GPG keys, changing codenames |
+| Services | Restarting ssh, display managers, networking, or firewall services |
+
+Review a single command with:
+
+```bash
+bash skills/debian-linux-reliability/scripts/risk-check.sh -- "command here"
+```
+
+## Change Proposal Template
+
+Any proposal that mutates the system should include:
+
+```text
+Will change:
+- ...
+
+Why:
+- ...
+
+Inspect before:
+- ...
+
+Apply:
+- ...
+
+Verify:
+- ...
+
+Rollback:
+- ...
+```
+
+## Redaction Requirements
+
+Before sharing logs, configuration, or agent responses, remove:
+
+- Tokens, API keys, passwords, cookies
+- Private keys and certificate contents
+- Customer names, hostnames, real usernames
+- Public IPs, internal topology, sensitive domains
+- Database connection strings and `.env` contents
+
+Built-in script redaction is a helper, not a replacement for human review.
+
+Next: [Evaluation & Maintenance](/en/ai/skills/evaluation).

@@ -1,0 +1,12 @@
+{
+  "title": "硬件与驱动",
+  "pages": [
+    "index",
+    "preinstall-check",
+    "nvidia",
+    "graphics",
+    "wifi",
+    "bluetooth-audio",
+    "laptop"
+  ]
+}

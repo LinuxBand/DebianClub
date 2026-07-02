@@ -1,0 +1,126 @@
+---
+title: "NVIDIA 与 Optimus"
+description: "在 Debian 上识别 NVIDIA 显卡、安装官方仓库驱动、验证 nvidia-smi、处理混合显卡、Wayland/X11、CUDA 和回滚。"
+---
+
+NVIDIA 是 Debian 桌面和本地 AI 场景里最常见的驱动风险点。优先使用 Debian 官方仓库中的 `nvidia-driver`，不要先使用 NVIDIA 官网 `.run` 安装器。
+
+## 先识别硬件
+
+```bash
+lspci -nnk | grep -A3 -E "VGA|3D|Display"
+uname -r
+mokutil --sb-state 2>/dev/null || true
+```
+
+如果看到 Intel/AMD 集显加 NVIDIA 独显，这是 Optimus / hybrid graphics。日常桌面通常由集显驱动，重负载应用再用独显渲染。
+
+## 软件源要求
+
+NVIDIA 专有驱动位于 Debian 的非自由相关组件中。检查组件：
+
+```bash
+grep -R "^Components:" /etc/apt/sources.list /etc/apt/sources.list.d/*.sources 2>/dev/null
+```
+
+Debian 12/13 常见配置：
+
+```text
+Components: main contrib non-free non-free-firmware
+```
+
+修改前先备份或记录原文件内容。使用 deb822 源时可通过 `sudoedit /etc/apt/sources.list.d/debian.sources` 调整 `Components:` 行。
+
+## 安装驱动
+
+```bash
+sudo apt update
+sudo apt install linux-headers-amd64 nvidia-detect
+nvidia-detect
+sudo apt install nvidia-driver firmware-misc-nonfree
+sudo reboot
+```
+
+`nvidia-detect` 会提示当前 GPU 推荐的驱动系列。旧显卡可能需要 legacy 驱动；如果提示不支持，不要强行安装当前驱动。
+
+## 验证
+
+重启后检查：
+
+```bash
+nvidia-smi
+lsmod | grep nvidia
+journalctl -b -k | grep -i nvidia
+```
+
+如果 `nvidia-smi` 能列出 GPU，说明内核模块和用户态工具基本可用。CUDA 或本地 AI 工具仍应单独验证。
+
+## Optimus 使用
+
+在混合显卡笔记本上，先确认桌面稳定，再测试独显渲染：
+
+```bash
+apt policy nvidia-driver
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia glxinfo -B
+```
+
+如果没有 `glxinfo`：
+
+```bash
+sudo apt install mesa-utils
+```
+
+Steam、Blender、浏览器和 AI 推理工具可以分别配置为按需使用独显。不要为了“切换到独显”而禁用集显，除非 BIOS 和显示输出拓扑明确要求。
+
+## Wayland 与 X11
+
+较新的 NVIDIA 驱动对 Wayland 支持已经改善，但故障排查时仍建议保留 X11 会话作为对照。遇到黑屏、登录循环或外接屏异常时：
+
+1. 在登录界面切换 GNOME on Xorg 或 X11 会话。
+2. 进入 TTY 后查看 `journalctl -b -p warning`。
+3. 临时在 GRUB 启动项的 `linux` 行末尾加入 `nomodeset` 进入低分辨率环境。
+4. 确认当前内核头文件和 `nvidia-kernel-dkms` 是否匹配。
+
+## CUDA 与本地 AI
+
+如果只是运行 Ollama、llama.cpp、PyTorch 或 Stable Diffusion，先确认驱动层正常：
+
+```bash
+nvidia-smi
+```
+
+再安装具体工具需要的 CUDA 运行时或 Python wheel。不要同时混用 Debian 包、NVIDIA CUDA 仓库和手工复制的 CUDA 文件，除非你清楚每个路径的优先级。
+
+## 回滚
+
+如果安装驱动后无法进入桌面：
+
+1. 在 GRUB 选择旧内核或 recovery mode。
+2. 进入 TTY。
+3. 先模拟卸载结果，确认不会移除无关桌面组件。
+4. 卸载 NVIDIA 驱动包并重启。
+
+```bash
+sudo apt -s purge nvidia-driver nvidia-kernel-dkms nvidia-smi nvidia-settings
+sudo apt purge nvidia-driver nvidia-kernel-dkms nvidia-smi nvidia-settings
+sudo apt install --reinstall xserver-xorg-video-nouveau
+sudo update-initramfs -u
+sudo reboot
+```
+
+如果系统启用了 Secure Boot，第三方内核模块可能需要 MOK 签名流程。排查时可以先确认 Secure Boot 状态，而不是直接关闭安全功能。
+
+## 常见问题
+
+| 现象 | 优先检查 |
+|------|----------|
+| `nvidia-smi` 报 No devices found | `linux-headers-amd64`、DKMS 构建日志、Secure Boot |
+| 登录后黑屏 | X11 会话、`nomodeset`、外接显示器、GDM 日志 |
+| 内核升级后驱动失效 | `dkms status`、当前内核头文件、是否使用 backports 内核 |
+| 风扇或功耗异常 | Optimus 是否按需渲染，是否让独显常驻 |
+| CUDA 工具找不到 GPU | 先确认 `nvidia-smi`，再查具体工具的 CUDA 运行时 |
+
+## 官方参考
+
+- [Debian nvidia-driver 包](https://packages.debian.org/trixie/nvidia-driver)
+- [Debian nvidia-graphics-drivers 源包](https://packages.debian.org/trixie/source/nvidia-graphics-drivers)

@@ -1,0 +1,126 @@
+---
+title: "NVIDIA & Optimus"
+description: "Identify NVIDIA GPUs on Debian, install repository drivers, verify nvidia-smi, handle hybrid graphics, Wayland/X11, CUDA, and rollback."
+---
+
+NVIDIA is one of the most common driver risk points for Debian desktops and local AI machines. Prefer Debian's repository package `nvidia-driver`; do not start with NVIDIA's `.run` installer.
+
+## Identify Hardware First
+
+```bash
+lspci -nnk | grep -A3 -E "VGA|3D|Display"
+uname -r
+mokutil --sb-state 2>/dev/null || true
+```
+
+If you see an Intel or AMD iGPU plus an NVIDIA dGPU, the machine uses Optimus / hybrid graphics. The desktop usually runs on the iGPU, while heavy applications can offload rendering to the dGPU.
+
+## Repository Requirements
+
+NVIDIA proprietary drivers live in Debian's non-free related archive components. Check components first:
+
+```bash
+grep -R "^Components:" /etc/apt/sources.list /etc/apt/sources.list.d/*.sources 2>/dev/null
+```
+
+A common Debian 12/13 setup is:
+
+```text
+Components: main contrib non-free non-free-firmware
+```
+
+Before editing, save or record the original file. With deb822 sources, use `sudoedit /etc/apt/sources.list.d/debian.sources` and adjust the `Components:` line.
+
+## Install Driver
+
+```bash
+sudo apt update
+sudo apt install linux-headers-amd64 nvidia-detect
+nvidia-detect
+sudo apt install nvidia-driver firmware-misc-nonfree
+sudo reboot
+```
+
+`nvidia-detect` reports the recommended driver series for the current GPU. Older GPUs may require legacy drivers; if the tool says the GPU is unsupported, do not force the current driver.
+
+## Verify
+
+After reboot:
+
+```bash
+nvidia-smi
+lsmod | grep nvidia
+journalctl -b -k | grep -i nvidia
+```
+
+If `nvidia-smi` lists the GPU, the kernel module and user-space tools are basically working. CUDA and local AI tools still need their own checks.
+
+## Optimus Usage
+
+On hybrid laptops, stabilize the desktop first, then test dGPU offload:
+
+```bash
+apt policy nvidia-driver
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia glxinfo -B
+```
+
+If `glxinfo` is missing:
+
+```bash
+sudo apt install mesa-utils
+```
+
+Steam, Blender, browsers, and inference tools can each be configured to use the dGPU on demand. Do not disable the iGPU just to "switch to NVIDIA" unless the BIOS and display wiring require it.
+
+## Wayland And X11
+
+Newer NVIDIA drivers have improved Wayland support, but X11 is still useful as a control path during troubleshooting. For black screens, login loops, or external display problems:
+
+1. Switch to GNOME on Xorg or another X11 session from the login screen.
+2. From a TTY, inspect `journalctl -b -p warning`.
+3. Temporarily add `nomodeset` to the `linux` line in GRUB to reach a low-resolution environment.
+4. Confirm the running kernel headers and `nvidia-kernel-dkms` match.
+
+## CUDA And Local AI
+
+For Ollama, llama.cpp, PyTorch, or Stable Diffusion, verify the driver first:
+
+```bash
+nvidia-smi
+```
+
+Then install the CUDA runtime or Python wheel required by the specific tool. Avoid mixing Debian packages, NVIDIA's CUDA repository, and manually copied CUDA files unless you understand path priority.
+
+## Rollback
+
+If the system cannot reach the desktop after driver installation:
+
+1. Select an older kernel or recovery mode in GRUB.
+2. Enter a TTY.
+3. Simulate removal first and confirm unrelated desktop packages will not be removed.
+4. Remove NVIDIA driver packages and reboot.
+
+```bash
+sudo apt -s purge nvidia-driver nvidia-kernel-dkms nvidia-smi nvidia-settings
+sudo apt purge nvidia-driver nvidia-kernel-dkms nvidia-smi nvidia-settings
+sudo apt install --reinstall xserver-xorg-video-nouveau
+sudo update-initramfs -u
+sudo reboot
+```
+
+If Secure Boot is enabled, third-party kernel modules may require the MOK signing flow. Check Secure Boot state before disabling security features.
+
+## Common Problems
+
+| Symptom | Check first |
+|---------|-------------|
+| `nvidia-smi` says No devices found | `linux-headers-amd64`, DKMS build logs, Secure Boot |
+| Black screen after login | X11 session, `nomodeset`, external display, GDM logs |
+| Driver breaks after kernel upgrade | `dkms status`, current kernel headers, backports kernel usage |
+| Fan or power draw is high | Whether Optimus offload is working or dGPU is always awake |
+| CUDA tool cannot find GPU | Verify `nvidia-smi`, then inspect the tool's CUDA runtime |
+
+## Official References
+
+- [Debian nvidia-driver package](https://packages.debian.org/trixie/nvidia-driver)
+- [Debian nvidia-graphics-drivers source package](https://packages.debian.org/trixie/source/nvidia-graphics-drivers)

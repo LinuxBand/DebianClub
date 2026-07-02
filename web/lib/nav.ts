@@ -17,8 +17,16 @@ interface NavLabels {
   network: string;
   security: string;
   server: string;
+  scenarios: string;
+  hardware: string;
   ai: string;
+  aiOverview: string;
+  aiSkills: string;
+  tools: string;
   more: string;
+  versions: string;
+  release: string;
+  deployment: string;
   debian14: string;
   news: string;
   eol: string;
@@ -39,8 +47,16 @@ const en: NavLabels = {
   network: 'Network',
   security: 'Security',
   server: 'Server',
+  scenarios: 'Scenarios',
+  hardware: 'Hardware',
   ai: 'AI Tools',
+  aiOverview: 'AI Tools Overview',
+  aiSkills: 'DebianClub AI Skills',
+  tools: 'Tools',
   more: 'More',
+  versions: 'Versions',
+  release: 'Release Readiness',
+  deployment: 'Deployment',
   debian14: 'Debian 14',
   news: 'News',
   eol: 'EOL',
@@ -61,8 +77,16 @@ const zh: NavLabels = {
   network: '网络',
   security: '安全',
   server: '服务器',
+  scenarios: '场景方案',
+  hardware: '硬件与驱动',
   ai: 'AI 工具',
+  aiOverview: 'AI 工具总览',
+  aiSkills: 'DebianClub AI Skills',
+  tools: '工具箱',
   more: '更多',
+  versions: '版本对比',
+  release: '发布准备',
+  deployment: '部署与运行',
   debian14: 'Debian 14',
   news: '最新动态',
   eol: '生命周期',
@@ -114,11 +138,24 @@ export function navLinks(locale: string): LinkItemType[] {
         { text: 'Kubernetes', url: u('/server/kubernetes') },
       ],
     },
-    { text: t.ai, url: u('/ai') },
+    {
+      type: 'menu',
+      text: t.ai,
+      items: [
+        { text: t.aiSkills, url: u('/ai/skills') },
+        { text: t.aiOverview, url: u('/ai') },
+      ],
+    },
     {
       type: 'menu',
       text: t.more,
       items: [
+        { text: t.scenarios, url: u('/scenarios') },
+        { text: t.hardware, url: u('/hardware') },
+        { text: t.tools, url: u('/tools') },
+        { text: t.versions, url: u('/versions') },
+        { text: t.release, url: u('/release-readiness') },
+        { text: t.deployment, url: u('/deployment') },
         { text: t.debian14, url: u('/debian-14') },
         { text: t.news, url: u('/news') },
         { text: t.eol, url: u('/eol') },

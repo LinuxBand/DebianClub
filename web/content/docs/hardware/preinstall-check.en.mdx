@@ -1,0 +1,95 @@
+---
+title: "Pre-install Compatibility Check"
+description: "Check CPU, graphics, Wi-Fi, Bluetooth, storage, suspend, and firmware risk before buying hardware, reinstalling, or moving to Debian."
+---
+
+The goal is not to prove that a machine has zero risk. The goal is to know whether it depends on extra firmware, proprietary drivers, a newer kernel, or vendor BIOS updates before you commit.
+
+## Who This Is For
+
+- You are buying a laptop, mini PC, workstation, or server
+- You are moving a Windows machine to Debian
+- You need stable hardware for family, team, or production use
+- The installer boots, but graphics, networking, or suspend behavior is uncertain
+
+## Prepare First
+
+| Item | Recommendation |
+|------|----------------|
+| Installer | Use the current stable official installer or live image |
+| Network | Keep Ethernet, a USB network adapter, or USB phone tethering available |
+| Firmware | Ensure APT sources include `non-free-firmware`; NVIDIA and other proprietary drivers also need `contrib non-free` |
+| Backup | Save BitLocker keys, recovery partitions, and important data before dual booting or reinstalling |
+| BIOS / UEFI | Record Secure Boot, SATA mode, TPM, virtualization, and graphics mode settings |
+
+## Live Environment Check
+
+Collect a hardware report from the live environment:
+
+```bash
+lspci -nnk
+lsusb
+lsblk -o NAME,SIZE,TYPE,FSTYPE,MODEL
+uname -a
+```
+
+For each device, check `Kernel driver in use`. If graphics, Wi-Fi, or storage has no driver in the live session, expect extra work after installation.
+
+## Risk Matrix
+
+| Hardware | Low risk | Medium risk | High risk |
+|----------|----------|-------------|-----------|
+| CPU / chipset | Mainstream Intel / AMD platform, available for a year or more | Very new mobile platform | Vendor-specific SoC or very new laptop platform |
+| Graphics | Intel / AMD iGPU reaches the desktop | NVIDIA hybrid graphics | Display output depends entirely on a proprietary dGPU driver |
+| Wi-Fi | Intel wireless adapter | Realtek / Broadcom adapter that needs firmware | New adapter with no mainline driver or only vendor source code |
+| Bluetooth | Shares an Intel / Realtek chipset with available firmware | Bluetooth audio profile problems | Device does not enumerate or drops constantly |
+| Storage | NVMe / SATA is visible | RAID / RST mode needs adjustment | Vendor-only storage driver |
+| Suspend | S3 / s2idle resumes reliably | Occasional resume failure | Lid, display, and power button resume paths are unreliable |
+
+## APT Component Check
+
+Debian 12 and newer official installer images can include firmware from `non-free-firmware`, but still check the installed APT components:
+
+```bash
+grep -R "^Components:" /etc/apt/sources.list /etc/apt/sources.list.d/*.sources 2>/dev/null
+```
+
+A common full component line on Debian 12/13 is:
+
+```text
+Components: main contrib non-free non-free-firmware
+```
+
+If you only need wireless or graphics firmware, `main non-free-firmware` is often enough. If you need NVIDIA proprietary drivers, Steam dependencies, or other non-free software, add `contrib non-free` as well.
+
+## Pre-install Test Checklist
+
+| Test | Command or action | Pass criteria |
+|------|-------------------|---------------|
+| Graphics | Reach desktop, change brightness, attach external display | Correct resolution, no flicker or black screen |
+| Wi-Fi | Join 2.4 GHz and 5 GHz networks | Gets an IP address and reconnects after network restart |
+| Bluetooth | Pair a headset or mouse | Connects, reconnects, and does not break Wi-Fi |
+| Audio | Play audio and test microphone | Inputs and outputs can be selected |
+| Webcam | Open Cheese, browser, or meeting app | Image appears and permissions work |
+| Suspend | Close lid, suspend manually, resume | No dead screen, no lost network, no freeze |
+| Storage | Check NVMe SMART and installer partition view | Disk is visible and partition table is sane |
+
+## When To Pause
+
+- The main network adapter is unusable and you have no wired or USB fallback
+- An NVIDIA-only machine cannot reach a TTY and BIOS cannot switch to hybrid or integrated mode
+- The installer cannot see the target disk, especially with RAID / RST / VMD setups
+- Work-critical webcam, fingerprint, pen, or dock hardware is completely unavailable
+- A company device has unmanaged Secure Boot, disk encryption, or remote management policy
+
+## Next Steps
+
+- Wireless issues: [Wi-Fi & Wireless Firmware](/en/hardware/wifi)
+- NVIDIA / CUDA / black screen: [NVIDIA & Optimus](/en/hardware/nvidia)
+- AMD / Intel acceleration: [AMD / Intel Graphics](/en/hardware/graphics)
+- Suspend, touchpad, and Fn keys: [Laptop Compatibility](/en/hardware/laptop)
+
+## Official References
+
+- [Debian Installation Guide: Loading Missing Firmware](https://www.debian.org/releases/stable/amd64/ch06s04.en.html)
+- [Debian 2022 General Resolution on non-free firmware](https://www.debian.org/vote/2022/vote_003)

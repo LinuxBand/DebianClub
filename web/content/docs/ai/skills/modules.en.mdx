@@ -1,0 +1,44 @@
+---
+title: "Modules"
+description: "Module routing for debian-linux-reliability: environment, APT safety, command safety, systemd, networking, development, GPU, containers, packaging, and security audit."
+---
+
+`debian-linux-reliability` is not a single fixed workflow. It selects modules by task. Complex issues can use multiple modules; for example, a Docker service startup issue may need containers, systemd, and networking.
+
+## Module Router
+
+| User task | Read reference | Optional read-only script |
+|---|---|---|
+| Identify Debian/Linux environment, release, architecture, WSL, container, VM, and systemd | `references/env-detect.md` | `scripts/collect-env.sh` |
+| Install packages, verify package names, inspect APT sources, backports, and third-party repos | `references/apt-safe.md` | `scripts/inspect-apt.sh [package ...]` |
+| Review shell commands for deletion, disk, permission, and remote-script risks | `references/command-safety.md` | `scripts/risk-check.sh -- "command"` |
+| Debug services, daemons, units, timers, sockets, and logs | `references/systemd-troubleshoot.md` | `scripts/systemd-diagnose.sh unit.service` |
+| Debug DNS, routes, ports, firewalls, NetworkManager, and systemd-networkd | `references/network-debug.md` | `scripts/network-diagnose.sh` |
+| Set up or repair Node, Python, Rust, Go, C/C++, and Git | `references/dev-setup.md` | `scripts/dev-probe.sh` |
+| Diagnose NVIDIA, AMD, Intel, Mesa, Wayland/X11, Optimus, Secure Boot, and DKMS | `references/gpu-drivers.md` | `scripts/gpu-probe.sh` |
+| Diagnose Podman, Docker, rootless containers, Compose, cgroup v2, and volume permissions | `references/containers.md` | `scripts/container-probe.sh` |
+| Work on Debian packaging, `debian/control`, `sbuild`, `lintian`, and backports | `references/debian-packaging.md` | `scripts/packaging-probe.sh` |
+| Run or interpret Linux security audits, Lynis output, and hardening gaps | `references/security-audit.md` | `scripts/security-audit-probe.sh` |
+| Link answers to DebianClub documentation | `references/debianclub-sources.md` | none |
+
+## Multi-module Examples
+
+| Scenario | Recommended modules |
+|----------|---------------------|
+| Docker Compose service is unreachable | `containers`, `network-debug`, `systemd-troubleshoot` |
+| Black screen after NVIDIA driver install | `env-detect`, `gpu-drivers`, `apt-safe`, `command-safety` |
+| `apt update` reports repository mismatch | `env-detect`, `apt-safe` |
+| Python package build fails | `dev-setup`, `apt-safe` |
+| Security audit results need prioritization | `security-audit`, `command-safety`, `debianclub-sources` |
+
+## Output Checkpoints
+
+Every module should leave auditable evidence in the answer:
+
+- Where current system facts came from
+- Which statements are logs, command output, or configuration facts
+- Which judgments are inference
+- Which commands are read-only
+- Which commands mutate the system and require user approval first
+
+Next: [Safety Boundary](/en/ai/skills/safety).

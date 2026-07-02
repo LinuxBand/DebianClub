@@ -1,0 +1,92 @@
+---
+title: "安全边界"
+description: "DebianClub AI Skills 的默认只读策略、审批边界、危险命令规则和日志脱敏要求"
+---
+
+AI Skills 的价值不只是“知道 Debian 命令”，更重要的是避免 AI 在事实不足时直接修改系统。`debian-linux-reliability` 默认只做只读诊断。
+
+## 默认不自动修改
+
+默认禁止 AI 自动执行或建议直接执行这些操作：
+
+- 安装、删除或升级软件包
+- 编辑 `/etc/apt/`、`/etc/systemd/`、`/etc/network/`、`/boot/`、`/etc/fstab`
+- 改防火墙规则
+- 重启服务或重启系统
+- 改磁盘、分区、引导器、权限
+- 运行远程脚本或 pipe-to-shell 命令
+
+如果用户明确要求修改，AI 也必须先说明影响范围、检查方式、验证方式和回滚方式。
+
+## 只读优先
+
+可以优先使用这些类型的命令：
+
+```bash
+cat /etc/os-release
+dpkg --print-architecture
+apt-cache policy package-name
+systemctl status service-name
+journalctl -u service-name --no-pager -n 100
+ss -tulpen
+ip route
+```
+
+只读不代表可以无脑分享输出。日志和配置中可能包含 token、用户名、主机名、内网 IP 或私钥路径，发送给外部系统前仍需要检查和脱敏。
+
+## 危险命令识别
+
+这些命令需要特别审查：
+
+| 类型 | 示例 |
+|------|------|
+| 远程脚本 | `curl URL | sh`、`wget URL -O- | bash` |
+| 删除 | `rm -rf`、清空目录、删除通配符 |
+| 权限 | `chmod -R 777`、递归 `chown` |
+| 磁盘 | `dd`、`mkfs`、`parted`、改 `/etc/fstab` |
+| 软件源 | 添加第三方源、导入 GPG key、改 codename |
+| 服务 | 重启 ssh、display manager、networking、防火墙 |
+
+审查单条命令可以使用：
+
+```bash
+bash skills/debian-linux-reliability/scripts/risk-check.sh -- "command here"
+```
+
+## 修改前说明模板
+
+任何会修改系统的建议都应包含：
+
+```text
+Will change:
+- ...
+
+Why:
+- ...
+
+Inspect before:
+- ...
+
+Apply:
+- ...
+
+Verify:
+- ...
+
+Rollback:
+- ...
+```
+
+## 脱敏要求
+
+分享日志、配置或 agent 回答前，移除：
+
+- token、API key、密码、cookie
+- 私钥和证书内容
+- 客户名称、主机名、真实用户名
+- 公网 IP、内网拓扑、敏感域名
+- 数据库连接串和 `.env` 内容
+
+内置脚本的脱敏是辅助措施，不应该替代人工检查。
+
+下一步：[评估与维护](/ai/skills/evaluation)。

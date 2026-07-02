@@ -13,9 +13,9 @@ pick this repo and set:
 | Production branch | `main` (or `feat/fumadocs-migration` while previewing) |
 | Framework preset | None / Next.js (Static HTML Export) |
 | **Root directory** | `web` |
-| **Build command** | `pnpm install && pnpm build` |
+| **Build command** | `corepack enable && pnpm install --frozen-lockfile && pnpm build` |
 | **Build output directory** | `out` |
-| Node version | `20` or newer (set `NODE_VERSION=20` env var) |
+| Node version | `24` or newer (set `NODE_VERSION=24` env var) |
 
 That's all. `web/public/_headers` is copied into `out/` and applies caching +
 the JSON content-type for the search index automatically.
@@ -33,14 +33,22 @@ the JSON content-type for the search index automatically.
 
 ```bash
 cd web
-pnpm build
-pnpm exec serve out -l 3000
+corepack pnpm build
+corepack pnpm exec serve out --listen 43018
+```
+
+In another shell, run the release and runtime gates:
+
+```bash
+corepack pnpm release:check
+SMOKE_BASE_URL=http://localhost:43018 corepack pnpm smoke:check
 ```
 
 ## CLI deploy (optional)
 
+From the repository root:
+
 ```bash
-cd web
-pnpm build
-npx wrangler pages deploy out --project-name debian-club
+corepack pnpm --dir web build
+npx wrangler pages deploy web/out --project-name debianclub
 ```

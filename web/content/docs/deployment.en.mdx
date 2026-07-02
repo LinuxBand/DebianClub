@@ -1,0 +1,103 @@
+---
+title: "Deployment"
+description: "DebianClub static deployment runbook: Cloudflare Pages config, build output, security headers, launch checks, rollback, and runtime monitoring."
+---
+
+Deployment connects the release readiness gates to the real launch path. DebianClub currently runs as a Next.js static export, deployed to Cloudflare Pages from `web/out`.
+
+## Deployment Model
+
+| Layer | Current contract | Keep intact |
+|-------|------------------|-------------|
+| Framework | Next.js `output: 'export'` | Do not depend on runtime SSR |
+| Content source | `web/content/docs` | Key Chinese and English pages must exist or link to valid fallbacks |
+| Search index | `web/out/api/search/{locale}` | Keep one shard per locale to avoid oversized files |
+| Static assets | `web/public` copied into `web/out` | Images, favicon, robots, and headers ship with the export |
+| Deployment config | Root `wrangler.toml` | `pages_build_output_dir` points to `web/out` |
+
+## Standard Launch Commands
+
+Run from the repository root:
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+corepack pnpm --dir web types:check
+corepack pnpm --dir web build
+corepack pnpm --dir web release:check
+```
+
+For Cloudflare Pages Git integration, keep the build command as:
+
+```bash
+corepack pnpm --dir web install --frozen-lockfile
+corepack pnpm --dir web build
+```
+
+Keep the output directory as:
+
+```text
+web/out
+```
+
+## CI Release Gate
+
+The repository includes the `Web Release Check` workflow. It runs on pull requests, relevant `main` branch changes, and manual dispatch:
+
+| Step | Purpose |
+|------|---------|
+| Install dependencies | Keep installs reproducible with `web/pnpm-lock.yaml` |
+| Type check | Validate MDX, Next route types, and TypeScript |
+| Static build | Generate the full `web/out` export |
+| Smoke check | Start a local static preview and verify key routes plus search JSON |
+| Release gate | Verify key pages, search shards, headers, and deployment config |
+
+The workflow only needs `contents: read` permission and does not publish. Actual deployment still belongs to Cloudflare Pages or the manual release path.
+
+## Headers And Caching
+
+`web/public/_headers` is copied to `web/out/_headers`. The current strategy has three groups:
+
+| Path | Policy |
+|------|--------|
+| `/_next/static/*` | Long cache for content-hashed files |
+| `/api/search/*` | JSON Content-Type and moderate cache |
+| `/og/docs/*`, `/images/*`, `/assets/*` | Daily cache for generated and static assets |
+
+Site-wide security headers should include at least `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, and `Permissions-Policy`. If the site later adds third-party scripts or embedded content, evaluate CSP separately instead of adding a strict CSP without mapping every resource source.
+
+## Pre-Launch Sampling
+
+After local preview is running, you can run the smoke script directly:
+
+```bash
+SMOKE_BASE_URL=http://localhost:43018 corepack pnpm --dir web smoke:check
+```
+
+The script checks key Chinese and English paths, `/api/search/zh`, `/api/search/en`, `sitemap.xml`, and `robots.txt`. For manual sampling, use:
+
+```bash
+for path in / /en /release-readiness /en/release-readiness /deployment /en/deployment /tools /en/tools /api/search/zh /api/search/en; do
+  curl -L -s -o /tmp/debianclub-deploy-check.html -w "%{http_code} $path\n" "http://localhost:43018$path"
+done
+```
+
+Every path should return `200`. If preview uses another port, replace `43018`.
+
+## Rollback Flow
+
+If a deployment introduces a blank screen, broken search, 404 routes, or MIME issues, handle it in this order:
+
+1. Roll back to the previous successful Cloudflare Pages deployment.
+2. Compare `web/out/_headers`, `web/out/api/search`, and `web/out/sitemap.xml` between the failed build and the previous build.
+3. Re-run `types:check`, `build`, and `release:check`.
+4. Validate the minimum route set: `/`, `/en`, `/deployment`, `/en/deployment`, `/api/search/zh`, `/api/search/en`.
+
+## Runtime Monitoring
+
+After launch, watch these signals first:
+
+- 200 responses for home, AI Skills, tools, and deployment pages.
+- Response status and file size for `/api/search/{locale}`.
+- Browser console errors for hydration mismatch, MIME type problems, or static asset 404s.
+- Whether the latest Cloudflare Pages deployment uses the expected commit and the same `web/out`.
+- Client-side blocking of external analytics scripts should not affect core site features.

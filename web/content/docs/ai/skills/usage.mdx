@@ -1,0 +1,99 @@
+---
+title: "使用方式"
+description: "如何在 AI agent 中调用 DebianClub AI Skills，并让回答先验证事实、再提出安全建议"
+---
+
+`debian-linux-reliability` 的核心目标是改变 AI agent 的工作顺序：先验证当前系统事实，再给出 Debian/Linux 建议。
+
+## 何时调用
+
+在这些任务中使用：
+
+- 安装或卸载 Debian 软件包
+- 排查 `apt`、软件源、backports 或第三方源问题
+- 排查 systemd 服务失败
+- 排查网络、DNS、端口、防火墙
+- 配置 Node、Python、Rust、Go、C/C++ 等开发环境
+- 处理 NVIDIA、AMD、Intel GPU 与桌面显示问题
+- 排查 Docker、Podman、Compose、rootless 容器
+- 做 Linux 安全审计或解释 Lynis 输出
+- 编写 Debian 打包、backports 或 `debian/control`
+
+## 调用模板
+
+在支持 skills 的 AI agent 中，可以直接写：
+
+```text
+Use $debian-linux-reliability to diagnose this Debian package installation issue.
+```
+
+更具体的提示更可靠：
+
+```text
+Use $debian-linux-reliability.
+Task: diagnose why nginx.service fails to start on Debian.
+Constraints: run read-only checks first, do not edit files or restart services until I approve.
+```
+
+## 推荐回答结构
+
+排障时建议要求 AI 使用这个结构：
+
+```text
+Environment facts:
+- ...
+
+Evidence:
+- ...
+
+Likely cause:
+- ...
+
+Safe next checks:
+- ...
+
+Proposed changes:
+- Requires approval before running.
+```
+
+这能强制 AI 区分已观察事实、推断和会修改系统的建议。
+
+## 安装任务示例
+
+不要直接问：
+
+```text
+Install package X on Debian.
+```
+
+更好的问法：
+
+```text
+Use $debian-linux-reliability.
+I want to install package X on Debian stable.
+First verify the release and package availability.
+If a third-party repository is needed, explain the trust boundary and rollback path before suggesting commands.
+```
+
+## 服务排障示例
+
+```text
+Use $debian-linux-reliability.
+nginx.service failed after I changed a site config.
+Collect read-only systemd and journal facts first.
+Do not restart nginx until you show the likely cause and the exact verification command.
+```
+
+## 代码与文档配合
+
+DebianClub 文档提供解释和教程，skill 脚本提供当前机器事实。不要把文档里的示例当成用户机器的真实状态。
+
+推荐顺序：
+
+1. 识别环境
+2. 查看当前配置、日志或包信息
+3. 对照 DebianClub 文档解释背景
+4. 给出只读检查
+5. 等用户确认后再给修改命令
+
+下一步：[模块说明](/ai/skills/modules)。

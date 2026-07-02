@@ -33,9 +33,12 @@ description: "Debian 上 AI 工具的安装与使用指南，涵盖编码助手�
 
 面向 Debian/Linux 的 AI 可靠性规则，让 AI 在安装软件、排查服务、修改配置前先验证系统事实。
 
-| Skill | 说明 | 状态 |
+| 入口 | 说明 | 状态 |
 |------|------|------|
-| [DebianClub AI Skills](/ai/skills) | Debian/Linux 环境识别、APT 安全、命令安全、systemd、网络、开发环境、GPU、容器、安全审计和 Debian 打包工作流 | MVP |
+| [DebianClub AI Skills](/ai/skills) | Debian/Linux 环境识别、APT 安全、命令安全、systemd、网络、开发环境、GPU、容器、安全审计和 Debian 打包工作流 | Phase 2 |
+| [安装与分发](/ai/skills/install) | 本地安装、替换安装、registry、打包和发布前检查 | 已上线 |
+| [使用方式](/ai/skills/usage) | 在 AI agent 中调用 skill，并要求先验证事实再给建议 | 已上线 |
+| [安全边界](/ai/skills/safety) | 默认只读、危险命令识别、修改前审批和日志脱敏 | 已上线 |
 
 ## 本地大模型
 
@@ -76,17 +79,21 @@ description: "Debian 上 AI 工具的安装与使用指南，涵盖编码助手�
 
 ### Node.js
 
-Claude Code、OpenCode、Gemini CLI 等工具需要 Node.js 18+。
+Claude Code、OpenCode、Gemini CLI 等工具通常需要 Node.js 18+。先检查 Debian 仓库版本是否满足目标工具要求：
 
 ```bash
-# 安装 Node.js 22.x (通过 NodeSource)
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-sudo apt install -y nodejs
+apt-cache policy nodejs npm
+```
 
-# 验证
+如果仓库版本满足要求，优先使用 Debian 软件包：
+
+```bash
+sudo apt install nodejs npm
 node --version
 npm --version
 ```
+
+如果确实需要第三方源或安装脚本，先确认来源、GPG key、回滚方式和对系统 Node.js 的影响，不要直接执行未经审查的 `curl | bash` 命令。
 
 ### Python
 

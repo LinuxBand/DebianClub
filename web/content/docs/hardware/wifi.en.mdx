@@ -1,0 +1,109 @@
+---
+title: "Wi-Fi & Wireless Firmware"
+description: "Chip identification, firmware packages, offline installation, NetworkManager checks, and common troubleshooting for Intel, Realtek, and Broadcom Wi-Fi on Debian."
+---
+
+Debian Wi-Fi issues usually fall into three groups: the device is not detected, the driver loads but firmware is missing, or the network manager is misconfigured. Identify the chipset and kernel module before installing firmware.
+
+## Identify The Adapter
+
+```bash
+lspci -nnk | grep -A4 -i network
+lsusb
+rfkill list
+ip link
+dmesg | grep -iE "firmware|iwlwifi|rtw|rtl|brcm|ath"
+```
+
+Look for two things:
+
+- Whether the device appears in `lspci` or `lsusb`
+- Whether `dmesg` reports failed firmware loading
+
+## Common Firmware Packages
+
+| Chipset | Common package | Notes |
+|---------|----------------|-------|
+| Intel Wi-Fi | `firmware-iwlwifi` | Covers Intel wireless adapters supported by iwlwifi |
+| Realtek Wi-Fi / Bluetooth / Ethernet | `firmware-realtek` | Covers multiple Realtek network, Bluetooth, and audio chips |
+| Broadcom / Cypress | `firmware-brcm80211` | Covers wireless adapters supported by brcmsmac / brcmfmac |
+| Atheros / Qualcomm | `firmware-atheros` | Needed by some devices |
+
+Check whether APT can see the packages:
+
+```bash
+apt policy firmware-iwlwifi firmware-realtek firmware-brcm80211 firmware-atheros
+```
+
+If they are unavailable, check that APT sources include `non-free-firmware`.
+
+## Online Installation
+
+With temporary network access:
+
+```bash
+sudo apt update
+sudo apt install firmware-iwlwifi firmware-realtek firmware-brcm80211 firmware-atheros
+sudo reboot
+```
+
+You do not need every package. This command is useful during triage; later you can keep only the package your hardware needs.
+
+## No Network Available
+
+Prefer these fallback paths:
+
+1. Wired Ethernet
+2. USB phone tethering
+3. USB Wi-Fi adapter
+4. Download `.deb` files on another machine and copy them by USB drive
+
+Offline installation example:
+
+```bash
+sudo apt install ./firmware-iwlwifi_*_all.deb
+sudo reboot
+```
+
+When downloading `.deb` files, prefer Debian Packages pages for your Debian release. Do not copy firmware files from unknown file shares.
+
+## NetworkManager Checks
+
+Debian desktop installations usually use NetworkManager:
+
+```bash
+systemctl status NetworkManager --no-pager
+nmcli device
+nmcli radio wifi
+```
+
+If Wi-Fi is soft-blocked:
+
+```bash
+rfkill list
+sudo rfkill unblock wifi
+```
+
+If the interface exists but cannot scan, inspect `dmesg` and `journalctl -u NetworkManager -b` before reinstalling desktop packages.
+
+## Common Problems
+
+| Symptom | Check first |
+|---------|-------------|
+| `ip link` has no wireless interface | Device detection in `lspci/lsusb`, missing firmware |
+| Interface exists but will not enable | `rfkill`, airplane mode, BIOS wireless switch |
+| Scans but cannot connect | Password, authentication mode, router band, NetworkManager logs |
+| Disappears after reboot | Whether firmware was installed into the target system or only loaded by the installer |
+| New Realtek adapter fails | Current kernel support and possible backports kernel need |
+
+## Safety Notes
+
+- Do not copy random `.ko` kernel modules from forum attachments into system directories.
+- Do not run unknown one-click driver installation scripts.
+- If third-party DKMS is unavoidable, record the kernel version and rollback method first.
+
+## Official References
+
+- [Debian firmware-iwlwifi package](https://packages.debian.org/trixie/firmware-iwlwifi)
+- [Debian firmware-realtek package](https://packages.debian.org/trixie/firmware-realtek)
+- [Debian firmware-brcm80211 package](https://packages.debian.org/trixie/firmware-brcm80211)

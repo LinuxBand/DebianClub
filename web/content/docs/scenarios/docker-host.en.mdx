@@ -1,0 +1,123 @@
+---
+title: "Docker Host"
+description: "Turn Debian into a stable Docker and Compose host for self-hosted apps, development environments, and small production services."
+---
+
+The Docker Host scenario is for a Debian machine dedicated to container services. The goal is not only to install Docker, but to plan repositories, user access, service directories, logs, reverse proxying, firewall rules, and backups together.
+
+## Who It Is For
+
+- Users self-hosting Git, monitoring, dashboards, databases, media libraries, or internal tools
+- Developers and small teams that need a stable Compose environment
+- Anyone turning an old server, mini PC, or cloud VM into a container node
+
+If you prefer rootless containers and tighter integration with Debian packages, start with [Podman](/en/server/podman).
+
+## Recommended Hardware
+
+| Component | Recommendation |
+|-----------|----------------|
+| CPU | 2 cores minimum, 4+ cores for multiple services |
+| Memory | 4 GB minimum, 8+ GB for databases and monitoring |
+| Disk | Prefer SSD; keep container data under `/srv` or on a separate data disk |
+| Network | Prefer wired networking; plan the firewall first on public servers |
+
+## Installation Path
+
+1. Install Debian stable with SSH server and standard system utilities.
+2. Complete [First Boot](/en/basics/first-boot) and [APT Package Management](/en/administration/packages).
+3. Follow [Docker Setup & Usage](/en/server/docker) to add Docker's repository and install the engine.
+4. Keep Compose projects under `/srv/containers/` instead of scattered home directories.
+5. For public access, use [Reverse Proxy](/en/server/reverse-proxy) for domains and HTTPS.
+
+## Base Packages
+
+```bash
+sudo apt update
+sudo apt install ca-certificates curl gnupg git ufw unattended-upgrades fail2ban rsync
+```
+
+Install Docker Engine, Buildx, and the Compose plugin from [Docker Setup & Usage](/en/server/docker). Avoid mixing older Debian Docker packages with packages from Docker's official repository.
+
+## Service Layout
+
+Keep each service in its own directory:
+
+```text
+/srv/containers/
+  reverse-proxy/
+    compose.yml
+    data/
+  app-name/
+    compose.yml
+    .env
+    data/
+```
+
+Suggested rules:
+
+- Version-control `compose.yml`, but never commit `.env`
+- Prefer explicit bind paths for data so backups are predictable
+- Mark databases, uploads, and configuration directories as backup priorities
+
+## Security Baseline
+
+Open only required ports:
+
+```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow OpenSSH
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw enable
+```
+
+Docker manages its own network rules. On public hosts, do not expose databases, Redis, or admin panels directly on `0.0.0.0`. Keep them inside Docker networks, or bind them to `127.0.0.1` and route through the reverse proxy.
+
+Adding a user to the `docker` group gives that user root-equivalent container control. Add only trusted users:
+
+```bash
+sudo usermod -aG docker "$USER"
+```
+
+Log in again, then verify:
+
+```bash
+docker ps
+```
+
+## Backup Strategy
+
+Prioritize:
+
+- `/srv/containers/`
+- Database dumps
+- Reverse proxy configuration and certificates
+- Service-related files under `/etc/`
+
+Preview rsync before running the real copy:
+
+```bash
+sudo rsync -avhn /srv/containers/ /backup/containers/
+```
+
+After confirming paths, remove `-n`. For the full model, see [Backup & Restore](/en/administration/backup).
+
+## Common Issues
+
+| Issue | Check first |
+|-------|-------------|
+| Container does not start | `docker compose logs`, image tags, environment variables |
+| Port already in use | `ss -tulpen`, Compose `ports` entries |
+| Reverse proxy returns 502 | Backend container name, Docker network, app bind address |
+| Data disappears | Anonymous volumes, backup coverage of the actual data path |
+| Permission errors | Bind path owner, container UID/GID, read-only mounts |
+
+## Next Guides
+
+- [Docker Setup & Usage](/en/server/docker)
+- [Podman](/en/server/podman)
+- [Reverse Proxy](/en/server/reverse-proxy)
+- [Firewall Configuration](/en/administration/firewall)
+- [Backup & Restore](/en/administration/backup)

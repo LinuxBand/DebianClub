@@ -1,9 +1,7 @@
 ---
-title: Dernières nouvelles de Debian
-description: Mises à jour récentes, événements communautaires et actualités des versions du projet Debian
+title: "Dernières nouvelles de Debian"
+description: "Mises à jour récentes, événements communautaires et actualités des versions du projet Debian"
 ---
-
-# Dernières nouvelles de Debian
 
 Cette page résume les mises à jour importantes récentes du projet Debian, pour vous tenir informé de la maintenance des versions, des événements communautaires et de la gouvernance du projet.
 
@@ -11,9 +9,9 @@ Cette page résume les mises à jour importantes récentes du projet Debian, pou
 
 ### Sorties de versions
 
-#### Debian 12 (Bookworm) entre en phase LTS (2026-06-10)
+#### Debian 12 (Bookworm) approche de la phase LTS (2026-07-11)
 
-Le 10 juin 2026, Debian 12 (Bookworm) a atteint la fin du support de sécurité régulier assuré par l'équipe de sécurité Debian et est officiellement passée en phase de **support à long terme (LTS)**. Les mises à jour de sécurité sont désormais prises en charge par l'équipe Debian LTS (bénévoles et entreprises) et devraient se poursuivre jusqu'au **30 juin 2028**.
+Le support de sécurité régulier de Debian 12 (Bookworm), assuré par l'équipe de sécurité Debian, est prévu jusqu'au **11 juillet 2026**. Ensuite, la version passera en phase de **support à long terme (LTS)**. Les mises à jour de sécurité seront prises en charge par l'équipe Debian LTS (bénévoles et entreprises) jusqu'au **30 juin 2028**.
 
 - Les systèmes qui utilisent encore Debian 12 continueront de recevoir des mises à jour de sécurité, mais il est recommandé de planifier une mise à niveau vers Debian 13 (Trixie).
 - [À propos de Debian LTS](https://wiki.debian.org/LTS)
@@ -97,7 +95,7 @@ Debian continue d'accueillir de nouveaux membres :
 L'équipe de sécurité Debian continue de publier des avis DSA (Debian Security Advisory) et DLA (Debian LTS Advisory). Les paquets récemment mis à jour incluent incus, lxd, libpng1.6 et awstats.
 
 - La version stable (Debian 13) est maintenue par l'équipe de sécurité
-- Debian 12 (Bookworm) est maintenue par l'équipe LTS depuis le 2026-06-10 ; le support LTS de Debian 11 (Bullseye) se termine le 2026-08-31
+- Debian 12 (Bookworm) doit passer à la maintenance de l'équipe LTS après le 2026-07-11 ; le support LTS de Debian 11 (Bullseye) se termine le 2026-08-31
 - [Avis de sécurité](https://www.debian.org/security/)
 
 ---

@@ -1,0 +1,71 @@
+---
+title: "DebianClub AI Skills"
+description: "DebianClub 提供的 Debian/Linux AI 可靠性 Skills，帮助 AI 助手先验证系统事实，再给出安全建议"
+---
+
+DebianClub AI Skills 是一组给 AI 编码助手和终端代理使用的 Debian/Linux 可靠性规则。它们的目标不是替代文档，而是让 AI 在回答之前先识别环境、验证包名、检查日志和评估命令风险。
+
+当前仓库内的首个 skill 是 `skills/debian-linux-reliability/`。它采用一个主 skill、多模块子功能的结构，默认只读诊断，不自动修改系统。
+
+<SkillsCatalog lang="zh" />
+
+## 专区导航
+
+| 页面 | 解决的问题 |
+|------|------------|
+| [安装与分发](/ai/skills/install) | 如何从仓库安装 skill、替换安装、读取 registry、构建本地包 |
+| [使用方式](/ai/skills/usage) | 如何在 AI agent 中调用 skill，如何让回答区分事实、推断和修改建议 |
+| [模块说明](/ai/skills/modules) | 环境识别、APT、命令安全、systemd、网络、GPU、容器等模块怎么选 |
+| [安全边界](/ai/skills/safety) | 默认只读、变更前审批、危险命令识别和脱敏规则 |
+| [评估与维护](/ai/skills/evaluation) | 如何运行验证、评分真实回答、沉淀回归样本和发布版本 |
+
+## 为什么需要
+
+Linux 上的 AI 幻觉通常来自几个地方：
+
+- 把 Ubuntu、Arch、macOS 的命令套到 Debian 上
+- 编造不存在的软件包名
+- 忽略 Debian stable、backports、testing 的差异
+- 没看 `systemctl` 和 `journalctl` 就猜服务失败原因
+- 推荐 `curl | sh`、`rm -rf`、`chmod -R` 等高风险命令
+- 没识别 WSL、容器、无 systemd 环境或非 amd64 架构
+
+DebianClub AI Skills 要求 AI 先收集这些事实，再给出建议。
+
+## 当前 Skill
+
+| Skill | 作用 | 默认行为 |
+|---|---|---|
+| `debian-linux-reliability` | Debian/Linux 开发、运维和排障可靠性工作流 | 只读诊断，不自动修改系统 |
+
+## 与 DebianClub 文档的关系
+
+这个 skill 会优先引用 DebianClub 仓库里的文档作为解释来源，例如：
+
+- [APT 包管理](/administration/packages)
+- [Debian Backports](/administration/backports)
+- [deb822 软件源](/administration/deb822)
+- [网络配置](/administration/network)
+- [NVIDIA Optimus](/administration/nvidia-optimus)
+- [Podman](/server/podman)
+- [系统安全](/administration/security)
+
+但实时状态必须以用户机器上的检查结果为准。文档负责解释，脚本负责验证当前系统事实。
+
+## 快速调用
+
+在支持 skills 的 AI agent 中，可以显式要求：
+
+```text
+Use $debian-linux-reliability to diagnose this Debian package installation issue.
+```
+
+如果只是阅读仓库，可以查看：
+
+```text
+skills/debian-linux-reliability/SKILL.md
+skills/debian-linux-reliability/references/
+skills/debian-linux-reliability/scripts/
+```
+
+下一步先看 [安装与分发](/ai/skills/install)，再看 [使用方式](/ai/skills/usage)。

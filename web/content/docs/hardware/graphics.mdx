@@ -1,0 +1,98 @@
+---
+title: "AMD / Intel 图形"
+description: "Debian 上 AMD 与 Intel 图形的 firmware、Mesa、VA-API、视频解码、浏览器硬件加速和故障排查。"
+---
+
+AMD 和 Intel 显卡通常优先使用内核中的开源驱动、Mesa 用户态驱动和 firmware 包。大多数问题不是“安装显卡驱动”，而是缺 firmware、Mesa 组件、VA-API 组件或太旧的内核。
+
+## 识别图形设备
+
+```bash
+lspci -nnk | grep -A4 -E "VGA|3D|Display"
+glxinfo -B 2>/dev/null || true
+vainfo 2>/dev/null || true
+```
+
+如果没有 `glxinfo` 或 `vainfo`：
+
+```bash
+sudo apt install mesa-utils vainfo
+```
+
+## 常用包
+
+| 场景 | 包 |
+|------|----|
+| AMD GPU firmware | `firmware-amd-graphics` |
+| 通用 Mesa OpenGL / Vulkan | `libgl1-mesa-dri mesa-vulkan-drivers` |
+| VA-API 视频解码 | `mesa-va-drivers vainfo` |
+| Intel 媒体驱动 | `intel-media-va-driver` |
+| 旧 Intel VA-API | `i965-va-driver` |
+
+先检查包是否存在和来源：
+
+```bash
+apt policy firmware-amd-graphics mesa-va-drivers intel-media-va-driver i965-va-driver
+```
+
+## AMD 图形
+
+AMD GPU 通常由 `amdgpu` 内核模块驱动：
+
+```bash
+lspci -nnk | grep -A4 -E "VGA|3D|Display"
+dmesg | grep -iE "amdgpu|firmware"
+```
+
+如果日志提示缺 firmware：
+
+```bash
+sudo apt update
+sudo apt install firmware-amd-graphics
+sudo reboot
+```
+
+很新的 AMD GPU 可能需要较新的内核、Mesa 和 firmware。优先考虑 Debian backports，不要先混用第三方 Mesa PPA 或手工安装包。
+
+## Intel 图形
+
+Intel 集显通常由 `i915` 或较新的 Intel 图形栈处理：
+
+```bash
+lspci -nnk | grep -A4 -E "VGA|3D|Display"
+dmesg | grep -iE "i915|xe|firmware"
+```
+
+如果桌面能正常启动，但视频播放 CPU 占用很高，优先检查 VA-API：
+
+```bash
+sudo apt install vainfo intel-media-va-driver mesa-va-drivers
+vainfo
+```
+
+浏览器还需要自己的硬件加速开关和编解码支持，不要只凭 `vainfo` 判断浏览器一定已经启用硬件解码。
+
+## 视频解码排查
+
+| 现象 | 检查 |
+|------|------|
+| `vainfo` 报错 | 当前用户是否有 render 设备权限，驱动包是否安装 |
+| 播放 H.264 / HEVC 占 CPU | `mesa-va-drivers`、`intel-media-va-driver`、浏览器设置 |
+| 只有软件渲染 | `glxinfo -B` 是否显示 llvmpipe |
+| 新 GPU 识别不完整 | 内核、Mesa、firmware 是否需要 backports |
+
+## 回滚和保守路径
+
+Mesa 和 firmware 都来自 Debian 包时，回滚通常是恢复 stable 包版本或移除 backports pinning。不要删除图形相关基础包，否则桌面环境可能被一起移除。
+
+```bash
+apt policy mesa-va-drivers mesa-vulkan-drivers firmware-amd-graphics
+sudo apt install --reinstall libgl1-mesa-dri mesa-vulkan-drivers
+```
+
+如果图形界面不可用，先进入 TTY，收集日志，再决定是否切换旧内核或恢复软件渲染。
+
+## 官方参考
+
+- [Debian mesa-va-drivers 包](https://packages.debian.org/trixie/mesa-va-drivers)
+- [Mesa 平台与驱动文档](https://docs.mesa3d.org/systems.html)

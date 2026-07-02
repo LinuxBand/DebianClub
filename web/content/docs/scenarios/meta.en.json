@@ -1,0 +1,9 @@
+{
+  "title": "Scenarios",
+  "pages": [
+    "index",
+    "docker-host",
+    "development-workstation",
+    "home-server"
+  ]
+}

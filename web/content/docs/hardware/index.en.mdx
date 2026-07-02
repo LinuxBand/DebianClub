@@ -1,0 +1,49 @@
+---
+title: "Hardware Compatibility & Driver Center"
+description: "Debian hardware compatibility and driver diagnostics for NVIDIA, AMD/Intel graphics, Wi-Fi, Bluetooth, audio, laptops, and pre-install checks."
+---
+
+The Hardware Compatibility & Driver Center focuses on the issues that most often block Debian users: pre-install compatibility checks, graphics drivers, Wi-Fi adapters, Bluetooth, audio, webcams, laptop power management, and safe rollback paths.
+
+## Phase 3 Live
+
+| Topic | Use it for | Status |
+|-------|------------|--------|
+| [Pre-install Compatibility Check](/en/hardware/preinstall-check) | Decide whether a machine is Debian-friendly before buying or reinstalling | Live |
+| [NVIDIA & Optimus](/en/hardware/nvidia) | Dedicated GPUs, hybrid graphics, CUDA, local AI, and black-screen triage | Live |
+| [AMD / Intel Graphics](/en/hardware/graphics) | Mesa, firmware, VA-API, video decode, and desktop acceleration | Live |
+| [Wi-Fi & Wireless Firmware](/en/hardware/wifi) | Intel, Realtek, and Broadcom wireless adapters that do not come up | Live |
+| [Bluetooth & Audio](/en/hardware/bluetooth-audio) | Bluetooth headsets, microphones, missing outputs, and PipeWire diagnostics | Live |
+| [Laptop Compatibility](/en/hardware/laptop) | Touchpads, power, suspend, Fn keys, webcams, and docks | Live |
+
+## Fast Path
+
+| Symptom | Start with |
+|---------|------------|
+| Debian is not installed yet and hardware risk is unclear | [Pre-install Compatibility Check](/en/hardware/preinstall-check) |
+| Black screen, external display issues, or `nvidia-smi` does not work | [NVIDIA & Optimus](/en/hardware/nvidia) |
+| AMD / Intel graphics feel slow or browser video decode burns CPU | [AMD / Intel Graphics](/en/hardware/graphics) |
+| No Wi-Fi during installation or after first boot | [Wi-Fi & Wireless Firmware](/en/hardware/wifi) |
+| Bluetooth headset connects but has no audio, or microphone is missing | [Bluetooth & Audio](/en/hardware/bluetooth-audio) |
+| Suspend, touchpad, Fn keys, webcam, or dock behavior is unreliable | [Laptop Compatibility](/en/hardware/laptop) |
+
+## Diagnostic Principles
+
+1. Identify the device model and kernel module before installing driver packages.
+2. Prefer Debian repositories and backports over vendor `.run` installers or unknown scripts.
+3. Change one variable at a time: firmware, kernel, driver, and desktop session should not all change together.
+4. Record command output before and after changes so rollback and support requests are easier.
+5. Keep a fallback path for graphics and networking changes, such as TTY access or wired Ethernet.
+
+## Common Identification Commands
+
+```bash
+lspci -nnk
+lsusb
+uname -a
+apt policy firmware-linux firmware-linux-nonfree nvidia-driver
+journalctl -b -p warning
+dmesg --level=err,warn
+```
+
+Before sharing logs, redact hostnames, usernames, SSIDs, MAC addresses, public IPs, serial numbers, and personal paths.

@@ -1,0 +1,123 @@
+---
+title: "Docker 主机"
+description: "把 Debian 配成稳定的 Docker / Compose 主机，适合自托管应用、开发环境和小型生产服务。"
+---
+
+Docker 主机场景适合把一台 Debian 机器专门用于运行容器服务。目标不是只安装 Docker，而是把软件源、用户权限、服务目录、日志、反向代理、防火墙和备份一起规划好。
+
+## 适合谁
+
+- 想自托管 Git、监控、看板、数据库、媒体库等服务的用户
+- 需要稳定 Compose 环境的开发者或小团队
+- 想把旧服务器、迷你主机或云主机整理成容器运行节点的人
+
+如果你更重视 rootless 和系统仓库集成，可以先看 [Podman 容器管理](/server/podman)。
+
+## 推荐硬件
+
+| 部件 | 建议 |
+|------|------|
+| CPU | 2 核起步，4 核以上更适合多服务 |
+| 内存 | 4 GB 起步，8 GB 以上更适合数据库和监控 |
+| 磁盘 | SSD 优先，容器数据单独放在 `/srv` 或独立数据盘 |
+| 网络 | 有线网络优先，公网服务器必须先规划防火墙 |
+
+## 安装路径
+
+1. 安装 Debian stable，选择 SSH server 和标准系统工具即可。
+2. 完成 [首次启动配置](/basics/first-boot) 和 [APT 包管理](/administration/packages)。
+3. 按 [Docker 安装与使用](/server/docker) 配置 Docker 官方软件源并安装 Engine。
+4. 将 Compose 项目统一放在 `/srv/containers/`，避免散落在用户家目录。
+5. 需要公网访问时，用 [反向代理](/server/reverse-proxy) 统一处理域名和 HTTPS。
+
+## 基础软件包
+
+```bash
+sudo apt update
+sudo apt install ca-certificates curl gnupg git ufw unattended-upgrades fail2ban rsync
+```
+
+Docker Engine、Buildx 和 Compose 插件请按 [Docker 安装与使用](/server/docker) 页面安装。不要同时混用 Debian 仓库的旧 Docker 包和 Docker 官方仓库包。
+
+## 服务目录
+
+推荐把每个服务拆成独立目录：
+
+```text
+/srv/containers/
+  reverse-proxy/
+    compose.yml
+    data/
+  app-name/
+    compose.yml
+    .env
+    data/
+```
+
+建议：
+
+- `compose.yml` 进入版本管理，但 `.env` 不提交
+- 数据卷尽量绑定到明确路径，便于备份
+- 数据库、上传文件、配置目录单独标记备份优先级
+
+## 安全配置
+
+先只开放必要端口：
+
+```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow OpenSSH
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw enable
+```
+
+注意 Docker 会管理自己的网络规则。公网主机不要把数据库、Redis、管理后台等服务直接映射到 `0.0.0.0`。优先让它们只在 Docker 网络内访问，或绑定到 `127.0.0.1` 后再由反向代理转发。
+
+把用户加入 `docker` 组后，该用户基本等价于拥有 root 级别的容器控制能力。只给可信用户加入：
+
+```bash
+sudo usermod -aG docker "$USER"
+```
+
+重新登录后再验证：
+
+```bash
+docker ps
+```
+
+## 备份策略
+
+重点备份：
+
+- `/srv/containers/`
+- 数据库导出文件
+- 反向代理配置和证书
+- `/etc/` 中与服务相关的配置
+
+先用预演模式检查 rsync 结果：
+
+```bash
+sudo rsync -avhn /srv/containers/ /backup/containers/
+```
+
+确认路径正确后再移除 `-n` 执行。完整备份策略见 [备份与恢复](/administration/backup)。
+
+## 常见问题
+
+| 问题 | 优先检查 |
+|------|----------|
+| 容器无法启动 | `docker compose logs`、镜像标签、环境变量 |
+| 端口被占用 | `ss -tulpen`、Compose `ports` 配置 |
+| 反向代理 502 | 后端容器名、Docker 网络、应用监听地址 |
+| 数据丢失 | 是否使用匿名卷、备份是否覆盖到真实数据目录 |
+| 权限错误 | 绑定目录属主、容器内 UID/GID、只读挂载 |
+
+## 下一步教程
+
+- [Docker 安装与使用](/server/docker)
+- [Podman 容器管理](/server/podman)
+- [反向代理](/server/reverse-proxy)
+- [防火墙配置](/administration/firewall)
+- [备份与恢复](/administration/backup)

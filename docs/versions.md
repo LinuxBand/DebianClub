@@ -1,60 +1,129 @@
 ---
-title: 版本对比
-description: Debian 11, 12, 13 各版本详细对比与选择指南
+title: "版本与生命周期"
+description: "Debian stable、oldstable、LTS、testing、unstable 的生命周期、升级决策、版本选择和维护窗口。"
 ---
-
-# Debian 版本对比指南
 
 ![Debian 稳定版、测试版与不稳定版分支](/images/branches.png)
 
-::: info 关于本页面
-本页面详细对比了 Debian 13 (Trixie)、Debian 12 (Bookworm) 和 Debian 11 (Bullseye) 三个版本的主要差异，帮助您选择最适合的版本。
-:::
+<Callout type="info" title="维护状态">
 
-## 📋 版本概览
+本页按 **2026-07-01** 的 Debian 官方发布信息整理。Debian 版本状态会随点更新、安全支持切换和 LTS 公告变化；执行升级前，请再次查看 [Debian 发布信息](https://www.debian.org/releases/) 与 [Debian LTS](https://wiki.debian.org/LTS)。
 
-| 版本信息 | Debian 13 (Trixie) | Debian 12 (Bookworm) | Debian 11 (Bullseye) |
-|---|---|---|---|
-| **发布状态** | 当前稳定版 (stable) | 旧稳定版 (oldstable) | LTS 支持中 |
-| **发布时间** | 2025 年 8 月 | 2023 年 6 月 | 2021 年 8 月 |
-| **最新点版本** | 13.5 (2026-05-16) | 12.14 (2026-05-16) | — |
-| **支持期限** | ~ 2030 年 (含 LTS) | ~ 2028 年 6 月 | 2026 年 8 月 |
-| **Linux 内核** | 6.12 | 6.1 LTS | 5.10 LTS |
-| **GNOME 版本**| 48 | 43 | 3.38 |
+</Callout>
 
-## ⚙️ 核心组件与开发工具
+Debian 的版本选择不只是“新不新”，还要看安全支持来源、软件栈版本、硬件支持、团队维护能力和升级窗口。本页把 `/versions` 从简单版本对比扩展为生命周期决策页。
 
-| 软件/工具 | Trixie (Debian 13) | Bookworm (Debian 12) | Bullseye (Debian 11) |
-|---|---|---|---|
-| **GCC** | 14.2 | 12.2 | 10.2 |
-| **LLVM/Clang** | 16+ | 14.0 | 11.0 |
-| **Python** | 3.13 | 3.11 | 3.9 |
-| **Node.js** | 20.x | 18.13 | 12.22 |
-| **Go** | 1.21+ | 1.19 | 1.15 |
-| **Rust** | 1.70+ | 1.63 | 1.48 |
-| **PHP** | 8.3 | 8.2 | 7.4 |
+## 当前推荐
 
-## 🎯 版本选择建议
+| 你的情况 | 推荐版本 | 理由 |
+|----------|----------|------|
+| 新装桌面、开发机、服务器 | **Debian 13 (Trixie)** | 当前 stable，安全支持周期最长，硬件和工具链更新 |
+| 已在 Debian 12，短期不能升级 | **Debian 12 (Bookworm)** | 仍可维护，但应规划迁移到 Debian 13 |
+| 仍在 Debian 11 | **尽快升级到 Debian 12，再升级 Debian 13** | Bullseye LTS 即将结束，不适合继续新增部署 |
+| 想提前体验下一代 Debian | **Debian 14 (Forky/testing)** | 仅建议测试机、虚拟机或非关键环境 |
+| 参与 Debian 开发或打包 | **unstable (Sid)** | 面向开发者，不建议生产和日常主力环境 |
 
-### 按使用场景推荐
+## 生命周期概览
 
-- **🖥️ 桌面用户**:
-  - **推荐**: 选择 **Debian 13 (Trixie)**。它是当前稳定版，带有最新的 GNOME 48 / KDE Plasma 6.3 桌面环境。
-  - **保守选择**: **Debian 12 (Bookworm)** 作为旧稳定版仍在维护中，适合不愿立即迁移的用户。
+| 分支 / 版本 | 当前角色 | 适合谁 | 安全维护来源 | 操作建议 |
+|-------------|----------|--------|--------------|----------|
+| Debian 13 (Trixie) | stable | 新装、生产、桌面、服务器 | Debian Security Team | 默认选择 |
+| Debian 12 (Bookworm) | oldstable | 暂时不能升级的旧系统 | 常规安全支持即将结束，随后转 LTS | 制定升级窗口 |
+| Debian 11 (Bullseye) | LTS | 仅限遗留系统 | Debian LTS Team | 尽快迁移 |
+| Debian 14 (Forky) | testing | 测试、适配、贡献 | 不等同 stable 安全支持 | 不用于生产 |
+| Sid | unstable | Debian 开发和打包 | 包维护者和开发流 | 需要能自行修复问题 |
 
-- **💻 开发者**:
-  - **现代应用开发**: 选择 **Debian 13 (Trixie)**。包含 GCC 14.2、Python 3.13、PHP 8.3 等最新工具链。
-  - **兼容性优先**: **Debian 12 (Bookworm)** 仍在安全维护中，适合需要 oldstable 环境的项目。
+## 版本时间线
 
-- **🖧 服务器管理员**:
-  - **新服务器部署**: 强烈推荐 **Debian 13 (Trixie)**。这是当前稳定版，拥有最新安全补丁和完整的支持周期。
-  - **维护旧系统**: 如果仍在使用 **Debian 12 (Bookworm)**，它作为 oldstable 仍在维护中（至 ~2028 年）。**Debian 11 (Bullseye)** LTS 支持将于 2026 年 8 月结束，应尽快规划升级。
+| 版本 | 发布日期 | 常规安全支持 | LTS 结束 | 当前建议 |
+|------|----------|--------------|----------|----------|
+| Debian 13 (Trixie) | 2025-08-09 | 预计约 2028 年 | 预计约 2030 年 | 新部署首选 |
+| Debian 12 (Bookworm) | 2023-06-10 | 至 2026-07-11 | 2028-06-30 | 规划升级 |
+| Debian 11 (Bullseye) | 2021-08-14 | 已结束 | 2026-08-31 | 加速迁移 |
+| Debian 10 (Buster) | 2019-07-06 | 已结束 | 2024-06-30 | 不应继续暴露在公网 |
 
-### 升级路径
+`预计` 日期表示 Debian 13 后续 regular support / LTS 切换尚未正式定稿，应以 Debian 官方公告为准。
 
-- **从 Debian 11 升级**: 建议先升级到 **Debian 12**，再升级到 **Debian 13**。跨大版本升级应逐步进行。
-- **从 Debian 12 升级**: 推荐升级到 **Debian 13**。Debian 13 已经发布多个点更新（13.5），足够成熟。
+## 核心组件对比
 
----
+| 软件 / 组件 | Debian 13 (Trixie) | Debian 12 (Bookworm) | Debian 11 (Bullseye) |
+|-------------|--------------------|-----------------------|----------------------|
+| Linux 内核 | 6.12 系列 | 6.1 LTS 系列 | 5.10 LTS 系列 |
+| GNOME | 48 | 43 | 3.38 |
+| GCC | 14 | 12 | 10 |
+| Python | 3.13 | 3.11 | 3.9 |
+| PHP | 8.4 / 8.3 生态更近 | 8.2 | 7.4 |
+| Node.js | 20 系列 | 18 系列 | 12 系列 |
+| OpenSSL | 3.x | 3.x | 1.1.1 时代 |
 
-**想了解特定软件的版本？** [访问 packages.debian.org](https://packages.debian.org/) | [查看安装指南 →](/basics/installation) 
+具体包版本请以 [packages.debian.org](https://packages.debian.org/) 为准。生产系统不要只为了某个单包版本切换发行版，优先评估 backports、容器、语言运行时管理器或应用自身发布渠道。
+
+## 选择 stable、oldstable、testing 还是 Sid
+
+### stable
+
+适合绝大多数用户。stable 的包版本不会频繁大升级，安全修复通过 Debian 安全团队和点更新进入系统。服务器、办公电脑、教学环境、家庭服务都应优先选择 stable。
+
+### oldstable
+
+适合已经部署并且短期无法迁移的系统。oldstable 不是“坏版本”，但新部署不应优先选择它。进入 LTS 后，支持范围可能不覆盖所有包，尤其要检查自己依赖的软件是否在 LTS 支持范围内。
+
+### testing
+
+适合提前适配下一代 Debian、测试硬件支持、参与反馈和贡献。testing 的包更新更快，但安全修复路径不同于 stable，不适合关键业务和对可用性要求高的日常主力机。
+
+### unstable (Sid)
+
+适合 Debian 开发者和包维护者。Sid 会持续接收新包和大变更，使用者需要能理解 apt 事务、包依赖、回滚和 bug 报告流程。
+
+## 升级决策表
+
+| 当前系统 | 推荐动作 | 原因 |
+|----------|----------|------|
+| Debian 13 | 保持更新 | 当前 stable，优先安装安全更新和点更新 |
+| Debian 12 | 规划升级 Debian 13 | 常规安全支持窗口接近结束，LTS 不适合长期拖延 |
+| Debian 11 | 先升级 Debian 12，再升级 Debian 13 | 避免跨多个 stable 版本直接升级 |
+| Debian 10 或更早 | 重新评估重装或分阶段迁移 | EOL 后暴露风险高，直接跨越升级复杂 |
+| testing / Sid | 明确用途后继续 | 不应把开发分支当成生产 stable |
+
+## 升级前检查清单
+
+升级前先完成这些检查，再开始修改 APT 源：
+
+1. 读目标版本的 release notes，尤其是重大变更、弃用项和已知问题。
+2. 完成系统备份，至少覆盖 `/etc`、用户数据、数据库、服务配置和自建脚本。
+3. 确认当前系统没有半配置包。
+4. 记录第三方仓库、pinning、手工安装的 `.deb` 和本地编译软件。
+5. 检查磁盘空间，尤其是 `/`、`/boot`、`/var`。
+6. 对服务器准备维护窗口和回滚路径。
+7. 对远程机器确认有控制台、KVM、救援系统或云厂商快照。
+
+```bash
+cat /etc/debian_version
+apt update
+apt list --upgradable
+dpkg --audit
+apt-mark showhold
+df -h
+find /etc/apt -type f -maxdepth 3 -print
+```
+
+## 维护节奏
+
+| 节奏 | 你应该做什么 |
+|------|--------------|
+| 每周 | 安装安全更新，查看失败的服务 |
+| 每月 | 检查可升级包、磁盘空间、备份是否可恢复 |
+| 每个点更新后 | 评估是否重启、是否更新安装镜像或模板 |
+| 每个 stable 发布后 | 给旧系统制定迁移计划 |
+| LTS 开始前 | 确认依赖包是否仍在支持范围内 |
+| LTS 结束前 | 完成升级、替换或下线 |
+
+## 相关页面
+
+- [版本支持周期 (EOL)](/eol)
+- [Debian 14 (Forky)](/debian-14)
+- [系统升级指南](/basics/upgrade)
+- [Debian 最新动态](/news)
+- [Debian 官方发布信息](https://www.debian.org/releases/)
+- [Debian LTS](https://wiki.debian.org/LTS)

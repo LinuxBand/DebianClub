@@ -5,6 +5,8 @@
   "scripts": {
     "build": "node _migration/sync-links.mjs && next build && node _migration/split-search-index.mjs",
     "dev": "next dev",
+    "release:check": "node _migration/release-check.mjs",
+    "smoke:check": "node _migration/smoke-check.mjs",
     "start": "serve out",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
     "postinstall": "fumadocs-mdx"

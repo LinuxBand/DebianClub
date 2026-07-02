@@ -1,0 +1,99 @@
+---
+title: "Usage"
+description: "Invoke DebianClub AI Skills in an AI agent so answers verify facts before proposing Debian/Linux changes."
+---
+
+`debian-linux-reliability` changes the order of work for an AI agent: verify current system facts first, then give Debian/Linux guidance.
+
+## When To Invoke
+
+Use it for:
+
+- Installing or removing Debian packages
+- Debugging `apt`, sources, backports, or third-party repositories
+- Debugging failed systemd services
+- Debugging networking, DNS, ports, or firewall rules
+- Setting up Node, Python, Rust, Go, C/C++, and other development toolchains
+- Handling NVIDIA, AMD, Intel GPU and desktop display issues
+- Debugging Docker, Podman, Compose, and rootless containers
+- Running Linux security audits or interpreting Lynis output
+- Working on Debian packaging, backports, or `debian/control`
+
+## Invocation Template
+
+In an AI agent that supports skills, write:
+
+```text
+Use $debian-linux-reliability to diagnose this Debian package installation issue.
+```
+
+More specific prompts are safer:
+
+```text
+Use $debian-linux-reliability.
+Task: diagnose why nginx.service fails to start on Debian.
+Constraints: run read-only checks first, do not edit files or restart services until I approve.
+```
+
+## Recommended Answer Shape
+
+For troubleshooting, ask the agent to use:
+
+```text
+Environment facts:
+- ...
+
+Evidence:
+- ...
+
+Likely cause:
+- ...
+
+Safe next checks:
+- ...
+
+Proposed changes:
+- Requires approval before running.
+```
+
+This forces the answer to separate observed facts, inference, and mutating proposals.
+
+## Installation Prompt Example
+
+Avoid asking only:
+
+```text
+Install package X on Debian.
+```
+
+Use:
+
+```text
+Use $debian-linux-reliability.
+I want to install package X on Debian stable.
+First verify the release and package availability.
+If a third-party repository is needed, explain the trust boundary and rollback path before suggesting commands.
+```
+
+## Service Debugging Example
+
+```text
+Use $debian-linux-reliability.
+nginx.service failed after I changed a site config.
+Collect read-only systemd and journal facts first.
+Do not restart nginx until you show the likely cause and the exact verification command.
+```
+
+## Code And Documentation Together
+
+DebianClub documentation explains concepts and procedures. Skill scripts verify the current machine. Do not treat documentation examples as live state from the user's system.
+
+Recommended sequence:
+
+1. Identify the environment
+2. Inspect current configuration, logs, or package facts
+3. Use DebianClub documentation for background
+4. Provide read-only checks
+5. Wait for approval before giving mutating commands
+
+Next: [Modules](/en/ai/skills/modules).

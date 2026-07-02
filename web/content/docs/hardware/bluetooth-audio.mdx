@@ -1,0 +1,107 @@
+---
+title: "蓝牙与音频"
+description: "Debian 上蓝牙耳机、麦克风、声卡、PipeWire、WirePlumber、BlueZ 和 firmware 的排查步骤。"
+---
+
+蓝牙和音频问题经常互相影响：耳机能配对但没有声音，麦克风不可选，或蓝牙模块依赖无线网卡 firmware。先确认设备、服务和会话管理器，再看桌面应用。
+
+## 基础服务
+
+```bash
+systemctl --user status pipewire wireplumber --no-pager
+systemctl status bluetooth --no-pager
+bluetoothctl show
+wpctl status
+```
+
+常见桌面应同时有 PipeWire、WirePlumber 和 BlueZ。缺少某一层时，图形设置面板可能只显示部分设备。
+
+## 常用包
+
+```bash
+sudo apt update
+sudo apt install pipewire-audio wireplumber bluez blueman pavucontrol
+```
+
+Realtek 或 Intel 蓝牙经常和 Wi-Fi 共用 firmware 包。可先检查：
+
+```bash
+apt policy firmware-realtek firmware-iwlwifi
+dmesg | grep -iE "bluetooth|firmware|btusb|ibt|rtl"
+```
+
+## 蓝牙耳机排查
+
+```bash
+bluetoothctl
+```
+
+在交互界面中：
+
+```text
+power on
+agent on
+default-agent
+scan on
+pair XX:XX:XX:XX:XX:XX
+trust XX:XX:XX:XX:XX:XX
+connect XX:XX:XX:XX:XX:XX
+```
+
+连接后用 `wpctl status` 查看是否出现新输出设备。若只有低质量通话模式，检查桌面音频设置中的 profile。
+
+## 没声音或麦克风不可用
+
+```bash
+wpctl status
+pactl info
+pavucontrol
+```
+
+处理顺序：
+
+1. 在 `pavucontrol` 中确认应用没有静音。
+2. 在输出设备中选择正确声卡或蓝牙 profile。
+3. 在输入设备中确认麦克风没有被静音。
+4. 重新启动用户音频服务。
+
+```bash
+systemctl --user restart pipewire wireplumber
+```
+
+## 常见问题
+
+| 现象 | 优先检查 |
+|------|----------|
+| 蓝牙开关不存在 | `bluetooth` 服务、`rfkill`、USB/PCI 设备是否出现 |
+| 耳机能配对但没声音 | `wireplumber`、音频 profile、`wpctl status` |
+| 麦克风不可选 | 输入设备静音、应用权限、蓝牙通话 profile |
+| 重启后蓝牙消失 | firmware 包是否安装，`dmesg` 是否报缺 firmware |
+| Wi-Fi 开启后蓝牙不稳定 | 同芯片 firmware、2.4 GHz 干扰、省电设置 |
+
+## 日志收集
+
+```bash
+journalctl -b -u bluetooth --no-pager
+journalctl --user -b -u pipewire -u wireplumber --no-pager
+dmesg | grep -iE "bluetooth|btusb|firmware|snd|audio"
+```
+
+分享日志前删除设备名称、MAC 地址、SSID、用户名和会议软件账户信息。
+
+## 回滚
+
+如果安装额外音频组件后更糟，先回到 Debian 默认栈：
+
+```bash
+sudo apt install --reinstall pipewire-audio wireplumber bluez
+systemctl --user restart pipewire wireplumber
+sudo systemctl restart bluetooth
+```
+
+不要同时安装多套音频服务器和第三方蓝牙守护进程。排查时先保持 PipeWire + WirePlumber + BlueZ 的基本组合。
+
+## 官方参考
+
+- [Debian wireplumber 包](https://packages.debian.org/stable/wireplumber)
+- [WirePlumber 蓝牙配置文档](https://pipewire.pages.freedesktop.org/wireplumber/daemon/configuration/bluetooth.html)

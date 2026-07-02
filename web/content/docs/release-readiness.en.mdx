@@ -1,0 +1,77 @@
+---
+title: "Release Readiness"
+description: "DebianClub pre-release quality gates for builds, search indexes, key routes, static export artifacts, and rollback checks."
+---
+
+Release readiness turns the Phase 0-5 content work into a deployable site. The focus is not adding more pages, but making sure high-traffic entries, search, static export output, and deployment boundaries work.
+
+## Release Gates
+
+Run at least these checks before each release:
+
+| Check | Goal | If it fails |
+|-------|------|-------------|
+| Type check | MDX, route types, and TypeScript pass | Fix component registration or type issues first |
+| Production build | Next.js static export completes | Inspect the failing page or component |
+| Search index | Per-locale search shards exist and stay below 25 MiB | Split the index again or reduce file size |
+| Key pages | Home, AI Skills, scenarios, hardware, versions, and tools load | Fix navigation, metadata, or content paths |
+| Static assets | Images, favicon, sitemap, robots, and skills registry exist | Fix public assets or export scripts |
+
+## Local Commands
+
+Run from the repository root:
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+corepack pnpm --dir web types:check
+corepack pnpm --dir web build
+corepack pnpm --dir web release:check
+```
+
+`release:check` verifies key HTML files, `skills.json`, `sitemap.xml`, `robots.txt`, and the `web/out/api/search/{locale}` search index shards.
+
+## Search Verification
+
+The search component fetches per-locale index paths:
+
+| Locale | Index path |
+|--------|------------|
+| Chinese | `/api/search/zh` |
+| English | `/api/search/en` |
+| German | `/api/search/de` |
+| Spanish | `/api/search/es` |
+| French | `/api/search/fr` |
+| Japanese | `/api/search/ja` |
+| Korean | `/api/search/ko` |
+| Portuguese | `/api/search/pt` |
+
+Do not treat `/api/search?locale=zh` as the frontend search path; under static export it may render as a directory page. The real client path is controlled by `web/components/search.tsx`.
+
+## Route Sampling
+
+After local preview is running, sample these routes:
+
+```bash
+for path in / /en /ai/skills /en/ai/skills /scenarios /en/scenarios /hardware /en/hardware /versions /en/versions /tools /en/tools; do
+  curl -L -s -o /tmp/debianclub-route-check.html -w "%{http_code} $path\n" "http://localhost:43018$path"
+done
+```
+
+Every route should return `200`. If the local preview uses another port, replace `43018`.
+
+## Pre-Deployment Checks
+
+- Confirm `web/out/api/search/*` stays below the Cloudflare Pages per-file limit.
+- Confirm Chinese and English navigation entries point to existing pages.
+- Confirm new content does not pipe remote installer scripts directly into a shell.
+- Confirm AI Skills install commands still call repository-local scripts.
+- Confirm tool outputs do not modify systems automatically; risky actions remain manual recommendations.
+
+## Rollback Strategy
+
+If search, navigation, or hydration breaks after deploy, roll back to the previous static output first, then inspect:
+
+1. Compare whether `web/out/api/search` is still a sharded directory.
+2. Check whether recent client components derive first-render text from browser-only state.
+3. Re-run `types:check`, `build`, and `release:check`.
+4. Validate the minimum route set: `/`, `/en`, `/tools`, `/en/tools`.

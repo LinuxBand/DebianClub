@@ -1,0 +1,129 @@
+---
+title: "家用服务器"
+description: "用 Debian 搭建低维护家用服务器，覆盖 SSH、自动更新、防火墙、文件共享、备份和运行服务的基本路线。"
+---
+
+家用服务器适合把旧电脑、迷你主机或低功耗设备变成家庭网络中的长期服务节点。它可以运行文件共享、照片管理、下载器、家庭仪表盘、轻量数据库或容器服务。
+
+## 适合谁
+
+- 想用闲置设备运行家庭服务的用户
+- 希望把照片、文档和备份集中管理的家庭或小团队
+- 想学习 Linux 运维，但不希望一开始就暴露公网服务的人
+
+## 推荐硬件
+
+| 部件 | 建议 |
+|------|------|
+| CPU | 低功耗 2 核以上即可，容器较多时建议 4 核 |
+| 内存 | 4 GB 起步，运行多个服务建议 8 GB |
+| 磁盘 | 系统盘和数据盘分开更好，重要数据不要只放单盘 |
+| 网络 | 有线网络优先，路由器内做 DHCP 保留地址 |
+| 电源 | 长期开机设备优先低功耗和稳定散热 |
+
+## 安装路径
+
+1. 安装 Debian stable，可以不安装桌面环境，只选择 SSH server 和标准系统工具。
+2. 首次启动后更新系统，创建普通用户，确认可以通过局域网 SSH 登录。
+3. 设置基础防火墙，只开放 SSH 和实际需要的服务端口。
+4. 启用自动安全更新和基本入侵防护。
+5. 规划数据目录、备份目标和恢复方式，再安装应用服务。
+
+## 基础软件包
+
+```bash
+sudo apt update
+sudo apt install openssh-server ufw unattended-upgrades fail2ban rsync smartmontools
+```
+
+如果需要用容器运行服务，再进入 [Docker 主机](/scenarios/docker-host) 或 [Podman 容器管理](/server/podman)。
+
+## 网络与访问
+
+家用服务器优先在局域网内使用：
+
+- 在路由器上为服务器做 DHCP 保留地址
+- 使用主机名或局域网 DNS 访问服务
+- 不要急着做公网端口转发
+- 需要公网访问时，优先使用 VPN、反向代理或受控隧道方案
+
+基础网络排查见 [网络配置](/administration/network)。
+
+## 安全配置
+
+先启用最小防火墙：
+
+```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow OpenSSH
+sudo ufw enable
+```
+
+确认 SSH 密钥登录可用后，再考虑禁用密码登录。修改前保持一个已有 SSH 会话不要断开：
+
+```bash
+sudoedit /etc/ssh/sshd_config.d/99-home-server.conf
+```
+
+可以写入：
+
+```text
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+```
+
+验证配置并重启 SSH：
+
+```bash
+sudo sshd -t
+sudo systemctl restart ssh
+```
+
+更完整的 SSH、防火墙、Fail2Ban 和自动更新说明见 [安全管理](/administration/security)。
+
+## 数据与备份
+
+建议把服务数据集中放在 `/srv`：
+
+```text
+/srv/
+  share/
+  photos/
+  backups/
+  containers/
+```
+
+重点备份：
+
+- `/srv/` 中的家庭数据和服务数据
+- `/etc/` 中的服务配置
+- 用户家目录中不可替代的文件
+- 数据库导出文件，而不只是数据库运行目录
+
+先用 `rsync -n` 预演：
+
+```bash
+sudo rsync -avhn /srv/ /backup/home-server/
+```
+
+完整策略见 [备份与恢复](/administration/backup)。
+
+## 常见问题
+
+| 问题 | 优先检查 |
+|------|----------|
+| 局域网访问不到 | 服务器 IP、路由器 DHCP、`ufw status`、服务监听地址 |
+| SSH 登录失败 | 用户名、密钥权限、`journalctl -u ssh` |
+| 磁盘空间不足 | 下载目录、容器镜像、旧备份、日志 |
+| 断电后服务没起来 | `systemctl is-enabled`、服务依赖、磁盘挂载 |
+| 备份不可恢复 | 是否做过恢复演练、备份目标是否覆盖所有数据目录 |
+
+## 下一步教程
+
+- [系统服务管理](/administration/services)
+- [防火墙配置](/administration/firewall)
+- [备份与恢复](/administration/backup)
+- [Docker 主机](/scenarios/docker-host)
+- [网络配置](/administration/network)

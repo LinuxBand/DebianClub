@@ -1,0 +1,129 @@
+---
+title: "Home Server"
+description: "Build a low-maintenance Debian home server with SSH, automatic updates, firewall rules, file sharing, backups, and a practical service path."
+---
+
+The Home Server scenario is for turning an old PC, mini PC, or low-power device into a long-running node on your home network. It can host file sharing, photo management, downloaders, dashboards, lightweight databases, or containerized services.
+
+## Who It Is For
+
+- Users running home services on spare hardware
+- Homes or small teams centralizing photos, documents, and backups
+- People learning Linux operations without exposing services to the public internet first
+
+## Recommended Hardware
+
+| Component | Recommendation |
+|-----------|----------------|
+| CPU | Low-power 2+ cores; 4 cores if you run many containers |
+| Memory | 4 GB minimum, 8 GB for several services |
+| Disk | Separate system and data disks if possible; do not keep important data on only one disk |
+| Network | Prefer wired networking; reserve an address in your router's DHCP settings |
+| Power | For always-on use, prefer low power draw and stable cooling |
+
+## Installation Path
+
+1. Install Debian stable without a desktop if you do not need one; select SSH server and standard system utilities.
+2. Update the system, create a normal user, and verify SSH access from your LAN.
+3. Set a basic firewall that exposes only SSH and the services you actually use.
+4. Enable automatic security updates and basic login protection.
+5. Plan data directories, backup targets, and recovery before installing applications.
+
+## Base Packages
+
+```bash
+sudo apt update
+sudo apt install openssh-server ufw unattended-upgrades fail2ban rsync smartmontools
+```
+
+If you want to run services in containers, continue with [Docker Host](/en/scenarios/docker-host) or [Podman](/en/server/podman).
+
+## Network and Access
+
+Start with LAN-only access:
+
+- Reserve a DHCP address for the server in your router
+- Use hostname or local DNS for service access
+- Do not rush into public port forwarding
+- For internet access, prefer VPN, reverse proxy, or a controlled tunnel
+
+For diagnostics, see [Network Configuration](/en/administration/network).
+
+## Security Baseline
+
+Start with a minimal firewall:
+
+```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow OpenSSH
+sudo ufw enable
+```
+
+After confirming SSH key login works, you can consider disabling password login. Keep an existing SSH session open while changing the configuration:
+
+```bash
+sudoedit /etc/ssh/sshd_config.d/99-home-server.conf
+```
+
+Use:
+
+```text
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+```
+
+Validate and restart SSH:
+
+```bash
+sudo sshd -t
+sudo systemctl restart ssh
+```
+
+For more on SSH, firewalling, Fail2Ban, and automatic updates, see [Security Management](/en/administration/security).
+
+## Data and Backups
+
+Keep service data under `/srv`:
+
+```text
+/srv/
+  share/
+  photos/
+  backups/
+  containers/
+```
+
+Prioritize:
+
+- Home and service data under `/srv/`
+- Service configuration under `/etc/`
+- Irreplaceable files in user home directories
+- Database dumps, not only live database directories
+
+Preview rsync with `-n`:
+
+```bash
+sudo rsync -avhn /srv/ /backup/home-server/
+```
+
+For the full model, see [Backup & Restore](/en/administration/backup).
+
+## Common Issues
+
+| Issue | Check first |
+|-------|-------------|
+| LAN access fails | Server IP, router DHCP, `ufw status`, service bind address |
+| SSH login fails | Username, key permissions, `journalctl -u ssh` |
+| Disk space fills up | Downloads, container images, old backups, logs |
+| Services do not start after power loss | `systemctl is-enabled`, service dependencies, disk mounts |
+| Backup cannot be restored | Recovery test, backup coverage of all data paths |
+
+## Next Guides
+
+- [Service Management](/en/administration/services)
+- [Firewall Configuration](/en/administration/firewall)
+- [Backup & Restore](/en/administration/backup)
+- [Docker Host](/en/scenarios/docker-host)
+- [Network Configuration](/en/administration/network)

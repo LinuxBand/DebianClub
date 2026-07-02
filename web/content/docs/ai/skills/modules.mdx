@@ -1,0 +1,44 @@
+---
+title: "模块说明"
+description: "debian-linux-reliability 的模块路由：环境识别、APT 安全、命令安全、systemd、网络、开发环境、GPU、容器、打包和安全审计"
+---
+
+`debian-linux-reliability` 不是一条固定流程，而是按任务选择模块。复杂问题可以同时使用多个模块，例如 Docker 服务启动失败可能同时需要容器、systemd 和网络模块。
+
+## 模块路由
+
+| 用户任务 | 读取参考 | 可选只读脚本 |
+|---|---|---|
+| 识别 Debian/Linux 环境、版本、架构、WSL、容器、VM、systemd | `references/env-detect.md` | `scripts/collect-env.sh` |
+| 安装软件包、验证包名、检查 APT 源、backports、第三方源 | `references/apt-safe.md` | `scripts/inspect-apt.sh [package ...]` |
+| 审查 shell 命令的删除、磁盘、权限、远程脚本风险 | `references/command-safety.md` | `scripts/risk-check.sh -- "command"` |
+| 排查服务、daemon、unit、timer、socket 和日志 | `references/systemd-troubleshoot.md` | `scripts/systemd-diagnose.sh unit.service` |
+| 排查 DNS、路由、端口、防火墙、NetworkManager、systemd-networkd | `references/network-debug.md` | `scripts/network-diagnose.sh` |
+| 设置或修复 Node、Python、Rust、Go、C/C++、Git | `references/dev-setup.md` | `scripts/dev-probe.sh` |
+| 诊断 NVIDIA、AMD、Intel、Mesa、Wayland/X11、Optimus、Secure Boot、DKMS | `references/gpu-drivers.md` | `scripts/gpu-probe.sh` |
+| 诊断 Podman、Docker、rootless、Compose、cgroup v2、卷权限 | `references/containers.md` | `scripts/container-probe.sh` |
+| 处理 Debian 打包、`debian/control`、`sbuild`、`lintian`、backports | `references/debian-packaging.md` | `scripts/packaging-probe.sh` |
+| 运行或解释 Linux 安全审计、Lynis、加固缺口 | `references/security-audit.md` | `scripts/security-audit-probe.sh` |
+| 将回答连接到 DebianClub 文档 | `references/debianclub-sources.md` | 无 |
+
+## 多模块组合
+
+| 场景 | 推荐模块 |
+|------|----------|
+| Docker Compose 服务无法访问 | `containers`、`network-debug`、`systemd-troubleshoot` |
+| NVIDIA 驱动安装后黑屏 | `env-detect`、`gpu-drivers`、`apt-safe`、`command-safety` |
+| `apt update` 报 repository mismatch | `env-detect`、`apt-safe` |
+| Python 包编译失败 | `dev-setup`、`apt-safe` |
+| 服务器安全审计后不知道怎么改 | `security-audit`、`command-safety`、`debianclub-sources` |
+
+## 输出检查点
+
+每个模块都应该在回答里留下可审计证据：
+
+- 当前系统事实来自哪里
+- 哪些信息是日志、命令输出或配置文件事实
+- 哪些判断只是推断
+- 哪些命令只读
+- 哪些命令会修改系统，必须先获得用户确认
+
+下一步：[安全边界](/ai/skills/safety)。

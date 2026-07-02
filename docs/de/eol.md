@@ -1,9 +1,7 @@
 ---
-title: Versionssupport-Ende (EOL)
-description: Informationen zum Lebenszyklus und den End-of-Life-Daten der einzelnen Debian-Versionen.
+title: "Versionssupport-Ende (EOL)"
+description: "Informationen zum Lebenszyklus und den End-of-Life-Daten der einzelnen Debian-Versionen."
 ---
-
-# Debian-Versionssupport-Ende (EOL)
 
 ![Debian-Release-Lebenszyklus](/images/lifecycle.png)
 
@@ -32,18 +30,22 @@ Die folgende Tabelle enthält die Veröffentlichungs- und End-of-Life-Daten der 
 | Codename                 | Veröffentlichungs­datum | Ende des regulären Supports | Ende des Langzeit­supports (LTS) |
 | :----------------------- | :---------------------- | :-------------------------- | :-------------------------------- |
 | **Debian 13 (Trixie)**   | 2025-08-09              | ~ August 2028               | ~ August 2030                     |
-| **Debian 12 (Bookworm)** | 2023-06-10              | 2026-06-10                  | 2028-06-30                        |
+| **Debian 12 (Bookworm)** | 2023-06-10              | 2026-07-11                  | 2028-06-30                        |
 | **Debian 11 (Bullseye)** | 2021-08-14              | Juli 2024                   | 2026-08-31                        |
 | **Debian 10 (Buster)**   | 2019-07-06              | 2022-09-10                  | 2024-06-30                        |
 | **Debian 9 (Stretch)**   | 2017-06-17              | 2020-07-06                  | 2022-06-30                        |
 | **Debian 8 (Jessie)**    | 2015-04-25              | 2018-06-17                  | 2020-06-30                        |
 
-::: tip
-Daten mit `~` sind Schätzungen und können leichten Änderungen unterliegen. Bitte verfolgen Sie die offiziellen Debian-Ankündigungen für die genauesten Informationen.
-:::
+<Callout type="info">
 
-::: warning Debian 12 ist in die LTS-Phase eingetreten
-Debian 12 (Bookworm) erreichte am **2026-06-10** das Ende des regulären Sicherheits­supports und wechselte in die Langzeit­support-Phase, die vom LTS-Team bis **2028-06-30** betreut wird. Ein Upgrade auf Debian 13 (Trixie) wird empfohlen.
-:::
+Daten mit `~` sind Schätzungen und können leichten Änderungen unterliegen. Bitte verfolgen Sie die offiziellen Debian-Ankündigungen für die genauesten Informationen.
+
+</Callout>
+
+<Callout type="warn" title="Debian 12 nähert sich der LTS-Phase">
+
+Der reguläre Sicherheits­support für Debian 12 (Bookworm) ist bis **2026-07-11** geplant. Danach übernimmt das LTS-Team die Wartung bis **2028-06-30**. Ein Upgrade auf Debian 13 (Trixie) wird empfohlen.
+
+</Callout>
 
 Es wird dringend empfohlen, das Upgrade auf eine neuere stabile Version zu planen und durchzuführen, bevor der LTS-Zeitraum Ihrer aktuellen Version endet, um die Sicherheit Ihres Systems zu gewährleisten.

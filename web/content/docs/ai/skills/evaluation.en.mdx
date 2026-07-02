@@ -1,0 +1,93 @@
+---
+title: "Evaluation & Maintenance"
+description: "Validate DebianClub AI Skills, score real agent responses, add regression samples, and release versions."
+---
+
+AI Skills require long-term maintenance. Rules alone are not enough; real prompts, unsafe answers, and edge cases must continuously verify whether agents follow read-only diagnostics and approval boundaries.
+
+## Full Validation
+
+Run the full validation suite:
+
+```bash
+bash skills/scripts/validate-all.sh
+```
+
+It checks:
+
+- Skill metadata
+- Registry format
+- Shell script syntax
+- Risk command checks
+- Redaction rules
+- Evaluation prompt coverage
+- Regression sample registration
+
+## Score Real Responses
+
+Generate a report from real agent responses:
+
+```bash
+bash skills/scripts/score-evaluation.sh --responses path/to/responses --output report.md
+```
+
+Grades:
+
+| Grade | Meaning |
+|-------|---------|
+| `excellent` | Evidence-based, complete, and no unsafe advice |
+| `pass` | Mostly reliable, with no critical safety issue |
+| `risky` | Incomplete or contains non-critical process risk |
+| `fail` | Missing key facts, unsafe commands, or untrustworthy answer |
+
+For partial prompt sets:
+
+```bash
+bash skills/scripts/score-evaluation.sh --responses path/to/responses --present-only
+```
+
+For custom prompt files:
+
+```bash
+bash skills/scripts/score-evaluation.sh --prompts path/to/prompts.md --responses path/to/responses
+```
+
+## Regression Sample Flow
+
+Recommended long-term flow:
+
+1. Collect real user prompts and agent answers
+2. Redact hostnames, usernames, IP addresses, tokens, private keys, and customer identifiers
+3. Add new prompts to `tests/field-regression-prompts.md`, or create a topic-specific prompt file
+4. Place matching responses in a dedicated responses directory
+5. Register the prompt file, responses directory, expected grade, and sample count in `tests/regression-cases.tsv`
+6. Run `bash skills/scripts/validate-all.sh`
+
+## Current Maintenance Resources
+
+The skill currently includes:
+
+- Multilingual notes: Simplified Chinese, Traditional Chinese, Japanese, and Korean
+- Realistic troubleshooting examples: APT, systemd, networking, GPU, containers, development setup, Debian packaging, and security audit
+- Baseline agent responses: 30 scoreable samples
+- Failure samples: dangerous commands, cross-distribution repositories, and unapproved mutations
+- Edge-context samples: safe warnings and unsafe answers that still contain safety words
+- Field regression seeds: long-term intake format
+
+## Release Version
+
+Build a package:
+
+```bash
+bash skills/scripts/package-skill.sh debian-linux-reliability
+```
+
+Run dry-run publishing:
+
+```bash
+bash skills/scripts/publish-skill-release.sh --dry-run debian-linux-reliability
+```
+
+After the release tag is pushed, `.github/workflows/skills-release.yml` validates, packages, and uploads the `.tgz` archive and manifest.
+
+Back to [DebianClub AI Skills](/en/ai/skills).

@@ -1,0 +1,95 @@
+---
+title: "安装前兼容性检查"
+description: "在购买设备、重装系统或切换到 Debian 前，检查 CPU、显卡、Wi-Fi、蓝牙、存储、睡眠和固件风险。"
+---
+
+安装前检查的目标不是追求“零风险”，而是提前知道哪些硬件会依赖额外 firmware、专有驱动、较新内核或厂商 BIOS 更新。
+
+## 适合谁
+
+- 准备购买新笔记本、迷你主机、工作站或服务器
+- 准备把 Windows 机器改装为 Debian
+- 需要给家人、团队或生产环境选择稳定硬件
+- 安装器启动正常，但网络、显卡或睡眠状态不确定
+
+## 先准备
+
+| 项目 | 建议 |
+|------|------|
+| 安装介质 | 使用当前 stable 的官方安装镜像或 live 镜像 |
+| 网络 | 准备有线网、USB 网卡或手机 USB 共享网络作为备用 |
+| 固件 | 确认 APT 源包含 `non-free-firmware`，NVIDIA 等专有驱动还需要 `contrib non-free` |
+| 备份 | 双系统或重装前先备份 BitLocker key、恢复分区和重要数据 |
+| BIOS / UEFI | 记录 Secure Boot、SATA mode、TPM、虚拟化、独显模式等设置 |
+
+## Live 环境检查
+
+进入 live 环境后先收集硬件清单：
+
+```bash
+lspci -nnk
+lsusb
+lsblk -o NAME,SIZE,TYPE,FSTYPE,MODEL
+uname -a
+```
+
+重点看每个设备后面的 `Kernel driver in use`。如果显卡、网卡或存储控制器没有驱动，安装后大概率也需要额外处理。
+
+## 风险矩阵
+
+| 硬件 | 低风险 | 中风险 | 高风险 |
+|------|--------|--------|--------|
+| CPU / 芯片组 | Intel / AMD 主流平台，上市一年以上 | 很新的移动平台 | 厂商定制 SoC 或非常新的笔记本平台 |
+| 图形 | Intel / AMD 集显可进入桌面 | NVIDIA 混合显卡 | 只提供独显输出且依赖专有驱动 |
+| Wi-Fi | Intel 无线网卡 | Realtek / Broadcom，需要 firmware | 新型号无主线驱动或只提供厂商源码 |
+| 蓝牙 | 与 Intel / Realtek Wi-Fi 同芯片且 firmware 可用 | 蓝牙音频协议异常 | 没有设备枚举或频繁掉线 |
+| 存储 | NVMe / SATA 可识别 | RAID / RST 模式需调整 | 需要厂商专用驱动 |
+| 睡眠 | S3 / s2idle 唤醒稳定 | 偶发无法唤醒 | 合盖、外接屏、电源键都不稳定 |
+
+## APT 组件检查
+
+Debian 12 及之后的官方安装镜像可以包含 `non-free-firmware` 中的固件，但安装后仍应确认 APT 源组件：
+
+```bash
+grep -R "^Components:" /etc/apt/sources.list /etc/apt/sources.list.d/*.sources 2>/dev/null
+```
+
+Debian 12/13 常见完整组件行如下：
+
+```text
+Components: main contrib non-free non-free-firmware
+```
+
+如果只需要无线或显卡 firmware，通常至少要有 `main non-free-firmware`。如果要安装 NVIDIA 专有驱动、Steam 依赖或其他非自由软件，再加入 `contrib non-free`。
+
+## 安装前测试清单
+
+| 测试 | 命令或动作 | 通过标准 |
+|------|------------|----------|
+| 显卡 | 进入桌面、调节亮度、外接显示器 | 分辨率正确，无闪屏或黑屏 |
+| Wi-Fi | 连接 2.4 GHz / 5 GHz 网络 | 能获得 IP，重启网络后仍可连接 |
+| 蓝牙 | 配对耳机或鼠标 | 可连接、重连，不影响 Wi-Fi |
+| 音频 | 播放声音、测试麦克风 | 输出和输入设备可切换 |
+| 摄像头 | 打开 Cheese、浏览器或会议软件 | 画面可用，权限提示正常 |
+| 睡眠 | 合盖、手动 suspend、唤醒 | 不丢网络，不黑屏，不死机 |
+| 存储 | 查看 NVMe SMART、安装器分区 | 磁盘可识别，分区表无异常 |
+
+## 什么时候应暂缓安装
+
+- 关键网络设备完全不可用，又没有备用有线或 USB 网卡
+- NVIDIA 独显机器无法进入 TTY，且 BIOS 无法切换混合/集显模式
+- 安装器无法识别目标磁盘，尤其是 RAID / RST / VMD 场景
+- 工作依赖的摄像头、指纹、电磁笔或扩展坞完全不可用
+- 公司设备开启了不可控的 Secure Boot、磁盘加密或远程管控策略
+
+## 下一步
+
+- 无线网络问题：看 [Wi-Fi 与无线固件](/hardware/wifi)
+- NVIDIA / CUDA / 黑屏：看 [NVIDIA 与 Optimus](/hardware/nvidia)
+- AMD / Intel 图形加速：看 [AMD / Intel 图形](/hardware/graphics)
+- 笔记本睡眠、触控板、Fn 键：看 [笔记本兼容](/hardware/laptop)
+
+## 官方参考
+
+- [Debian 安装手册：加载缺失固件](https://www.debian.org/releases/stable/amd64/ch06s04.en.html)
+- [Debian 关于 non-free firmware 的 2022 General Resolution](https://www.debian.org/vote/2022/vote_003)

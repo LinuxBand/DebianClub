@@ -8,6 +8,7 @@ import { DiskPartition } from './infographics/DiskPartition';
 import { Permissions } from './infographics/Permissions';
 import { DownloadPage } from './DownloadPage';
 import { SkillsCatalog } from './SkillsCatalog';
+import { InteractiveTools } from './InteractiveTools';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -22,6 +23,7 @@ export function getMDXComponents(components?: MDXComponents) {
     Permissions,
     DownloadPage,
     SkillsCatalog,
+    InteractiveTools,
     ...components,
   } satisfies MDXComponents;
 }

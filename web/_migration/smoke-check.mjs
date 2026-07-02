@@ -34,6 +34,8 @@ const toolHashRouteChecks = [
   '/en/tools#mirrors?release=bookworm&mirror=debian-de&components=firmware',
   '/tools#install?device=server&goal=server&risk=low',
   '/en/tools#install?device=laptop&goal=ai&risk=balanced',
+  '/tools#desktop?hardware=old&workflow=light',
+  '/en/tools#desktop?hardware=modern&workflow=creative',
 ];
 
 const searchChecks = requiredLocales.map((locale) => ({ path: `/api/search/${locale}`, locale }));

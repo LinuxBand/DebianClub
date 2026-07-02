@@ -90,6 +90,8 @@ const text = {
       hardware: '硬件性能',
       workflow: '工作流',
       docs: '查看桌面环境',
+      share: '复制桌面配置链接',
+      shareCopied: '配置链接已复制',
     },
     partition: {
       title: '分区方案生成器',
@@ -178,6 +180,8 @@ const text = {
       hardware: 'Hardware',
       workflow: 'Workflow',
       docs: 'Read desktop guide',
+      share: 'Copy desktop config link',
+      shareCopied: 'Config link copied',
     },
     partition: {
       title: 'Partition Planner',
@@ -303,6 +307,19 @@ const riskLevels = {
   balanced: true,
   direct: true,
 } satisfies Record<RiskLevel, true>;
+
+const desktopHardwareProfiles = {
+  old: true,
+  modest: true,
+  modern: true,
+} satisfies Record<DesktopHardware, true>;
+
+const desktopWorkflows = {
+  simple: true,
+  custom: true,
+  light: true,
+  creative: true,
+} satisfies Record<DesktopWorkflow, true>;
 
 const targetPaths: Record<SkillTarget, { label: Record<ToolLanguage, string>; target: string }> = {
   codex: { label: { zh: 'Codex 默认目录', en: 'Codex default' }, target: '"${CODEX_HOME:-$HOME/.codex}/skills"' },
@@ -955,7 +972,35 @@ function DesktopTool({ lang }: { lang: ToolLanguage }) {
   const t = text[lang];
   const [hardware, setHardware] = useState<DesktopHardware>('modern');
   const [workflow, setWorkflow] = useState<DesktopWorkflow>('simple');
+  const [shareCopied, setShareCopied] = useState(false);
   const result = desktopRecommendation(hardware, workflow, lang);
+
+  useEffect(() => {
+    function syncDesktopStateFromHash() {
+      const hashState = parseToolHash(window.location.hash);
+      if (hashState.id !== toolHashIds.desktop) return;
+
+      const nextHardware = hashState.params.get('hardware');
+      const nextWorkflow = hashState.params.get('workflow');
+
+      if (hasRecordKey(desktopHardwareProfiles, nextHardware)) setHardware(nextHardware);
+      if (hasRecordKey(desktopWorkflows, nextWorkflow)) setWorkflow(nextWorkflow);
+    }
+
+    syncDesktopStateFromHash();
+    window.addEventListener('hashchange', syncDesktopStateFromHash);
+    return () => window.removeEventListener('hashchange', syncDesktopStateFromHash);
+  }, []);
+
+  async function copyShareLink() {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = `${toolHashIds.desktop}?hardware=${hardware}&workflow=${workflow}`;
+
+    await copyText(url.toString());
+    setShareCopied(true);
+    window.setTimeout(() => setShareCopied(false), 1400);
+  }
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.85fr)]">
@@ -990,6 +1035,14 @@ function DesktopTool({ lang }: { lang: ToolLanguage }) {
       <ResultPanel lang={lang} title={`${t.recommended}: ${result.title}`}>
         <p>{result.why}</p>
         <CodeBlock lang={lang} value={result.packages} />
+        <button
+          type="button"
+          onClick={copyShareLink}
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-fd-border bg-fd-background px-3 text-sm font-medium text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+        >
+          {shareCopied ? <Check className="size-4" /> : <Clipboard className="size-4" />}
+          {shareCopied ? t.desktop.shareCopied : t.desktop.share}
+        </button>
         <a className="text-fd-primary no-underline hover:underline" href={docsHref[lang].desktop}>
           {t.desktop.docs}
         </a>

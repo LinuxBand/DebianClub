@@ -58,6 +58,8 @@ const deploymentTextChecks = [
       ["'/en/tools#mirrors?release=bookworm&mirror=debian-de&components=firmware'", 'smoke covers English mirror config deep link'],
       ["'/tools#install?device=server&goal=server&risk=low'", 'smoke covers Chinese install config deep link'],
       ["'/en/tools#install?device=laptop&goal=ai&risk=balanced'", 'smoke covers English install config deep link'],
+      ["'/tools#desktop?hardware=old&workflow=light'", 'smoke covers Chinese desktop config deep link'],
+      ["'/en/tools#desktop?hardware=modern&workflow=creative'", 'smoke covers English desktop config deep link'],
     ],
   },
   {
@@ -65,6 +67,7 @@ const deploymentTextChecks = [
     checks: [
       ["mirror: 'mirrors'", 'mirror tool hash is mapped'],
       ["install: 'install'", 'install tool hash is mapped'],
+      ["desktop: 'desktop'", 'desktop tool hash is mapped'],
       ["safety: 'command-safety'", 'command safety tool hash is mapped'],
       ["skills: 'ai-skills'", 'AI Skills tool hash is mapped'],
       ['function normalizeToolHash', 'tool hash parsing is centralized'],
@@ -79,6 +82,10 @@ const deploymentTextChecks = [
       ["hashState.params.get('risk')", 'install tool can preload risk from the URL fragment'],
       ["window.addEventListener('hashchange', syncInstallStateFromHash)", 'install tool syncs config on hash changes'],
       ['url.hash = `${toolHashIds.install}?device=${device}&goal=${goal}&risk=${risk}`', 'install tool share links keep config in the URL fragment'],
+      ["hashState.params.get('hardware')", 'desktop tool can preload hardware from the URL fragment'],
+      ["hashState.params.get('workflow')", 'desktop tool can preload workflow from the URL fragment'],
+      ["window.addEventListener('hashchange', syncDesktopStateFromHash)", 'desktop tool syncs config on hash changes'],
+      ['url.hash = `${toolHashIds.desktop}?hardware=${hardware}&workflow=${workflow}`', 'desktop tool share links keep config in the URL fragment'],
       ['const maxSharedCommandLength = 4000', 'shared command links have a length cap'],
       ["hashState.params.get('command')", 'command safety can preload a shared command from the URL fragment'],
       ["window.addEventListener('hashchange', syncSharedCommandFromHash)", 'command safety prefill syncs on hash changes'],
@@ -95,6 +102,7 @@ const deploymentTextChecks = [
       ['command=', 'Chinese tools page documents command prefill links'],
       ['#mirrors?release=', 'Chinese tools page documents mirror config links'],
       ['#install?device=', 'Chinese tools page documents install config links'],
+      ['#desktop?hardware=', 'Chinese tools page documents desktop config links'],
     ],
   },
   {
@@ -104,6 +112,7 @@ const deploymentTextChecks = [
       ['command=', 'English tools page documents command prefill links'],
       ['#mirrors?release=', 'English tools page documents mirror config links'],
       ['#install?device=', 'English tools page documents install config links'],
+      ['#desktop?hardware=', 'English tools page documents desktop config links'],
     ],
   },
   {

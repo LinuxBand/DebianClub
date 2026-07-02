@@ -56,6 +56,7 @@ const deploymentTextChecks = [
       ['async function verifyCommandSafetyShareLink', 'browser check verifies command safety share links'],
       ['async function verifyMirrorShareLink', 'browser check verifies mirror share links'],
       ['async function verifyInstallShareLink', 'browser check verifies install share links'],
+      ['async function verifyDesktopShareLink', 'browser check verifies desktop share links'],
       ["'/tools#ai-skills?target=agents&replace=true'", 'browser check opens AI Skills config deep link'],
       ["window.location.hash = 'ai-skills?target=local&replace=false'", 'browser check verifies AI Skills hashchange sync'],
       ["copiedLink.hash === '#ai-skills?target=local&replace=false'", 'browser check verifies copied AI Skills share hash'],
@@ -68,6 +69,9 @@ const deploymentTextChecks = [
       ["'#install?device=server&goal=server&risk=low'", 'browser check opens install config deep link'],
       ["window.__copiedInstallLink", 'browser check stubs install clipboard writes'],
       ['install deep link and share link stay in sync', 'browser check validates install share sync'],
+      ["'#desktop?hardware=old&workflow=light'", 'browser check opens desktop config deep link'],
+      ["window.__copiedDesktopLink", 'browser check stubs desktop clipboard writes'],
+      ['desktop deep link and share link stay in sync', 'browser check validates desktop share sync'],
     ],
   },
   {

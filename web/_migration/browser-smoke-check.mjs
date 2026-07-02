@@ -642,6 +642,107 @@ async function verifyInstallShareLink(cdp, baseUrl) {
   pass('install deep link and share link stay in sync');
 }
 
+async function verifyDesktopShareLink(cdp, baseUrl) {
+  const initialHash = '#desktop?hardware=old&workflow=light';
+  const updatedHash = '#desktop?hardware=modern&workflow=creative';
+  const desktopUrl = new URL(`/tools${initialHash}`, baseUrl);
+
+  await cdp.send('Page.navigate', { url: desktopUrl.toString() });
+  await waitFor(cdp, "document.body && document.body.innerText.includes('复制桌面配置链接')", 'desktop tool');
+
+  const initialState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const activeTab = buttons.find((button) => button.innerText.trim() === '桌面环境');
+      const hardware = buttons.find((button) => button.innerText.includes('旧机器 / 4GB RAM'));
+      const workflow = buttons.find((button) => button.innerText.includes('轻量优先'));
+      const bodyText = document.body.innerText;
+      const codeText = Array.from(document.querySelectorAll('pre, code')).map((element) => element.textContent || '').join('\\n');
+      return {
+        hash: window.location.hash,
+        activeTab: activeTab?.getAttribute('aria-pressed') || null,
+        hardwarePressed: hardware?.getAttribute('aria-pressed') || null,
+        workflowPressed: workflow?.getAttribute('aria-pressed') || null,
+        hasXfceTitle: bodyText.includes('推荐: Xfce'),
+        hasXfceReason: bodyText.includes('资源占用低，行为稳定'),
+        codeText,
+      };
+    })()`,
+  );
+
+  assert(initialState.hash === initialHash, 'desktop initial hash mismatch', initialState);
+  assert(initialState.activeTab === 'true', 'desktop tab is not active', initialState);
+  assert(initialState.hardwarePressed === 'true', 'desktop hardware was not loaded from hash', initialState);
+  assert(initialState.workflowPressed === 'true', 'desktop workflow was not loaded from hash', initialState);
+  assert(initialState.hasXfceTitle, 'desktop result did not use Xfce recommendation title', initialState);
+  assert(initialState.hasXfceReason, 'desktop result did not use Xfce recommendation reason', initialState);
+  assert(initialState.codeText.includes('sudo apt install task-xfce-desktop'), 'desktop result did not use Xfce package command', initialState);
+
+  await evaluate(
+    cdp,
+    `new Promise((resolve) => {
+      window.location.hash = ${JSON.stringify(updatedHash.slice(1))};
+      window.setTimeout(resolve, 350);
+    })`,
+    true,
+  );
+
+  const updatedState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const hardware = buttons.find((button) => button.innerText.includes('现代机器 / 16GB+'));
+      const workflow = buttons.find((button) => button.innerText.includes('触控板 / 创作'));
+      const bodyText = document.body.innerText;
+      const codeText = Array.from(document.querySelectorAll('pre, code')).map((element) => element.textContent || '').join('\\n');
+      return {
+        hash: window.location.hash,
+        hardwarePressed: hardware?.getAttribute('aria-pressed') || null,
+        workflowPressed: workflow?.getAttribute('aria-pressed') || null,
+        hasGnomeTitle: bodyText.includes('推荐: GNOME'),
+        hasGnomeReason: bodyText.includes('Wayland 支持成熟'),
+        hasOldXfceCommand: codeText.includes('sudo apt install task-xfce-desktop'),
+        codeText,
+      };
+    })()`,
+  );
+
+  assert(updatedState.hash === updatedHash, 'desktop updated hash mismatch', updatedState);
+  assert(updatedState.hardwarePressed === 'true', 'desktop hardware did not sync after hashchange', updatedState);
+  assert(updatedState.workflowPressed === 'true', 'desktop workflow did not sync after hashchange', updatedState);
+  assert(updatedState.hasGnomeTitle, 'desktop result did not use GNOME recommendation title', updatedState);
+  assert(updatedState.hasGnomeReason, 'desktop result did not use GNOME creative recommendation reason', updatedState);
+  assert(updatedState.codeText.includes('sudo apt install task-gnome-desktop'), 'desktop result did not use GNOME package command', updatedState);
+  assert(!updatedState.hasOldXfceCommand, 'desktop result retained stale Xfce package command', updatedState);
+
+  const copiedLink = await evaluate(
+    cdp,
+    `new Promise((resolve, reject) => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async (value) => { window.__copiedDesktopLink = value; } },
+      });
+      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制桌面配置链接'));
+      if (!button) {
+        reject(new Error('desktop share button not found'));
+        return;
+      }
+      button.click();
+      window.setTimeout(() => {
+        const copiedUrl = new URL(window.__copiedDesktopLink);
+        resolve({ href: window.__copiedDesktopLink, search: copiedUrl.search, hash: copiedUrl.hash });
+      }, 250);
+    })`,
+    true,
+  );
+
+  assert(copiedLink.search === '', 'desktop copied share URL kept query string', copiedLink);
+  assert(copiedLink.hash === updatedHash, 'desktop copied share URL hash mismatch', copiedLink);
+
+  pass('desktop deep link and share link stay in sync');
+}
+
 async function run() {
   let baseUrl;
   try {
@@ -682,6 +783,7 @@ async function run() {
     await verifyCommandSafetyShareLink(cdp, baseUrl);
     await verifyMirrorShareLink(cdp, baseUrl);
     await verifyInstallShareLink(cdp, baseUrl);
+    await verifyDesktopShareLink(cdp, baseUrl);
   } catch (error) {
     fail(error instanceof Error ? error.message : String(error));
   } finally {

@@ -59,7 +59,10 @@ const deploymentTextChecks = [
       ['async function verifyDesktopShareLink', 'browser check verifies desktop share links'],
       ['async function verifyPartitionShareLink', 'browser check verifies partition share links'],
       ['async function verifyTroubleshootShareLink', 'browser check verifies troubleshooting share links'],
+      ['async function verifyEnglishToolShareLinkPaths', 'browser check verifies English tool share paths'],
       ["'/tools#ai-skills?target=agents&replace=true'", 'browser check opens AI Skills config deep link'],
+      ["'/en/tools#ai-skills?target=agents&replace=true'", 'browser check opens English AI Skills config deep link'],
+      ["copiedLink.pathname === '/en/tools'", 'browser check keeps English paths in copied share links'],
       ["window.location.hash = 'ai-skills?target=local&replace=false'", 'browser check verifies AI Skills hashchange sync'],
       ["copiedLink.hash === '#ai-skills?target=local&replace=false'", 'browser check verifies copied AI Skills share hash'],
       ['`#command-safety?command=${encodeURIComponent(safetyInitialCommand)}`', 'browser check builds command safety deep links'],
@@ -80,6 +83,7 @@ const deploymentTextChecks = [
       ["'#troubleshoot?symptom=display'", 'browser check opens troubleshooting config deep link'],
       ["window.__copiedTroubleshootLink", 'browser check stubs troubleshooting clipboard writes'],
       ['troubleshooting deep link and share link stay in sync', 'browser check validates troubleshooting share sync'],
+      ['English tool share links keep localized paths', 'browser check validates English share link paths'],
     ],
   },
   {

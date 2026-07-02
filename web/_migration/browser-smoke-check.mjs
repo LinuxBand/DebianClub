@@ -946,6 +946,99 @@ async function verifyTroubleshootShareLink(cdp, baseUrl) {
   pass('troubleshooting deep link and share link stay in sync');
 }
 
+async function copyEnglishToolShareLink(cdp, buttonText) {
+  return evaluate(
+    cdp,
+    `new Promise((resolve, reject) => {
+      const shareLabel = ${JSON.stringify(buttonText)};
+      window.__copiedEnglishToolLink = undefined;
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async (value) => { window.__copiedEnglishToolLink = value; } },
+      });
+      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes(shareLabel));
+      if (!button) {
+        reject(new Error(\`English share button not found: \${shareLabel}\`));
+        return;
+      }
+      button.click();
+      window.setTimeout(() => {
+        if (!window.__copiedEnglishToolLink) {
+          reject(new Error(\`English share button did not write clipboard: \${shareLabel}\`));
+          return;
+        }
+        const copiedUrl = new URL(window.__copiedEnglishToolLink);
+        resolve({
+          href: window.__copiedEnglishToolLink,
+          pathname: copiedUrl.pathname,
+          search: copiedUrl.search,
+          hash: copiedUrl.hash,
+        });
+      }, 250);
+    })`,
+    true,
+  );
+}
+
+async function verifyEnglishToolShareLinkPaths(cdp, baseUrl) {
+  const tests = [
+    {
+      name: 'English command safety',
+      path: '/en/tools#command-safety?command=sudo%20apt%20update',
+      buttonText: 'Copy share link',
+    },
+    {
+      name: 'English AI Skills',
+      path: '/en/tools#ai-skills?target=agents&replace=true',
+      buttonText: 'Copy Skills config link',
+    },
+    {
+      name: 'English mirror',
+      path: '/en/tools#mirrors?release=bookworm&mirror=debian-de&components=firmware',
+      buttonText: 'Copy mirror config link',
+    },
+    {
+      name: 'English install',
+      path: '/en/tools#install?device=laptop&goal=ai&risk=balanced',
+      buttonText: 'Copy install config link',
+    },
+    {
+      name: 'English desktop',
+      path: '/en/tools#desktop?hardware=modern&workflow=creative',
+      buttonText: 'Copy desktop config link',
+    },
+    {
+      name: 'English partition',
+      path: '/en/tools#partitions?disk=standard&boot=single&encryption=home',
+      buttonText: 'Copy partition config link',
+    },
+    {
+      name: 'English troubleshooting',
+      path: '/en/tools#troubleshoot?symptom=performance',
+      buttonText: 'Copy troubleshooting link',
+    },
+  ];
+
+  for (const test of tests) {
+    const toolUrl = new URL(test.path, baseUrl);
+
+    await cdp.send('Page.navigate', { url: toolUrl.toString() });
+    await waitFor(
+      cdp,
+      `document.body && document.body.innerText.includes(${JSON.stringify(test.buttonText)})`,
+      `${test.name} share button`,
+    );
+
+    const copiedLink = await copyEnglishToolShareLink(cdp, test.buttonText);
+
+    assert(copiedLink.pathname === '/en/tools', `${test.name} copied share URL did not keep English path`, copiedLink);
+    assert(copiedLink.search === '', `${test.name} copied share URL kept query string`, copiedLink);
+    assert(copiedLink.hash === toolUrl.hash, `${test.name} copied share URL hash mismatch`, copiedLink);
+  }
+
+  pass('English tool share links keep localized paths');
+}
+
 async function run() {
   let baseUrl;
   try {
@@ -989,6 +1082,7 @@ async function run() {
     await verifyDesktopShareLink(cdp, baseUrl);
     await verifyPartitionShareLink(cdp, baseUrl);
     await verifyTroubleshootShareLink(cdp, baseUrl);
+    await verifyEnglishToolShareLinkPaths(cdp, baseUrl);
   } catch (error) {
     fail(error instanceof Error ? error.message : String(error));
   } finally {

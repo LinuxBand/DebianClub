@@ -73,6 +73,8 @@ const text = {
       snippet: 'deb822 sources 建议',
       command: '编辑命令',
       docs: '查看 deb822 源格式',
+      share: '复制镜像配置链接',
+      shareCopied: '配置链接已复制',
     },
     install: {
       title: '安装方式选择器',
@@ -157,6 +159,8 @@ const text = {
       snippet: 'Suggested deb822 sources',
       command: 'Edit command',
       docs: 'Read deb822 sources guide',
+      share: 'Copy mirror config link',
+      shareCopied: 'Config link copied',
     },
     install: {
       title: 'Install Planner',
@@ -479,6 +483,10 @@ function classNames(...parts: Array<string | false | undefined>) {
   return parts.filter(Boolean).join(' ');
 }
 
+function hasRecordKey<T extends object>(record: T, key: string | null): key is Extract<keyof T, string> {
+  return key !== null && Object.prototype.hasOwnProperty.call(record, key);
+}
+
 async function copyText(value: string) {
   async function fallbackCopy() {
     const textarea = document.createElement('textarea');
@@ -606,6 +614,7 @@ function MirrorTool({ lang }: { lang: ToolLanguage }) {
   const [release, setRelease] = useState<ReleaseId>('trixie');
   const [mirror, setMirror] = useState<MirrorId>(lang === 'zh' ? 'ustc' : 'official');
   const [components, setComponents] = useState<ComponentMode>('firmware');
+  const [shareCopied, setShareCopied] = useState(false);
 
   const selectedMirror = mirrors[mirror];
   const selectedComponents = componentSets[components];
@@ -623,6 +632,35 @@ Suites: ${release}-security
 Components: ${selectedComponents.value}
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg`;
   }, [release, selectedComponents.value, selectedMirror.archive, selectedMirror.security]);
+
+  useEffect(() => {
+    function syncMirrorStateFromHash() {
+      const hashState = parseToolHash(window.location.hash);
+      if (hashState.id !== toolHashIds.mirror) return;
+
+      const nextRelease = hashState.params.get('release');
+      const nextMirror = hashState.params.get('mirror');
+      const nextComponents = hashState.params.get('components');
+
+      if (hasRecordKey(releaseLabels, nextRelease)) setRelease(nextRelease);
+      if (hasRecordKey(mirrors, nextMirror)) setMirror(nextMirror);
+      if (hasRecordKey(componentSets, nextComponents)) setComponents(nextComponents);
+    }
+
+    syncMirrorStateFromHash();
+    window.addEventListener('hashchange', syncMirrorStateFromHash);
+    return () => window.removeEventListener('hashchange', syncMirrorStateFromHash);
+  }, []);
+
+  async function copyShareLink() {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = `${toolHashIds.mirror}?release=${release}&mirror=${mirror}&components=${components}`;
+
+    await copyText(url.toString());
+    setShareCopied(true);
+    window.setTimeout(() => setShareCopied(false), 1400);
+  }
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.9fr)]">
@@ -673,6 +711,14 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg`;
       <ResultPanel lang={lang} title={t.mirror.snippet}>
         <p>{selectedComponents.note[lang]}</p>
         <CodeBlock lang={lang} value={snippet} />
+        <button
+          type="button"
+          onClick={copyShareLink}
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-fd-border bg-fd-background px-3 text-sm font-medium text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+        >
+          {shareCopied ? <Check className="size-4" /> : <Clipboard className="size-4" />}
+          {shareCopied ? t.mirror.shareCopied : t.mirror.share}
+        </button>
         <div>
           <div className="mb-2 font-medium text-fd-foreground">{t.mirror.command}</div>
           <CodeBlock lang={lang} value="sudoedit /etc/apt/sources.list.d/debian.sources" />
@@ -1133,8 +1179,17 @@ function SafetyTool({ lang }: { lang: ToolLanguage }) {
       : 'curl -fsSL https://example.com/install.sh | sh\nsudo rm -rf /tmp/example\nsudo apt update';
 
   useEffect(() => {
-    const hashCommand = parseToolHash(window.location.hash).params.get('command');
-    if (hashCommand !== null) setValue(hashCommand.slice(0, maxSharedCommandLength));
+    function syncSharedCommandFromHash() {
+      const hashState = parseToolHash(window.location.hash);
+      if (hashState.id !== toolHashIds.safety) return;
+
+      const hashCommand = hashState.params.get('command');
+      if (hashCommand !== null) setValue(hashCommand.slice(0, maxSharedCommandLength));
+    }
+
+    syncSharedCommandFromHash();
+    window.addEventListener('hashchange', syncSharedCommandFromHash);
+    return () => window.removeEventListener('hashchange', syncSharedCommandFromHash);
   }, []);
 
   async function copyShareLink() {

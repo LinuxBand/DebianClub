@@ -30,6 +30,8 @@ const toolHashRouteChecks = [
   '/en/tools#command-safety?command=sudo%20apt%20update',
   '/tools#ai-skills',
   '/en/tools#ai-skills',
+  '/tools#mirrors?release=bookworm&mirror=official&components=full',
+  '/en/tools#mirrors?release=bookworm&mirror=debian-de&components=firmware',
 ];
 
 const searchChecks = requiredLocales.map((locale) => ({ path: `/api/search/${locale}`, locale }));

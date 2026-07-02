@@ -54,17 +54,26 @@ const deploymentTextChecks = [
       ["'/en/tools#command-safety?command=sudo%20apt%20update'", 'smoke covers English prefilled command safety link'],
       ["'/tools#ai-skills'", 'smoke covers Chinese AI Skills tool deep link'],
       ["'/en/tools#ai-skills'", 'smoke covers English AI Skills tool deep link'],
+      ["'/tools#mirrors?release=bookworm&mirror=official&components=full'", 'smoke covers Chinese mirror config deep link'],
+      ["'/en/tools#mirrors?release=bookworm&mirror=debian-de&components=firmware'", 'smoke covers English mirror config deep link'],
     ],
   },
   {
     path: 'components/InteractiveTools.tsx',
     checks: [
+      ["mirror: 'mirrors'", 'mirror tool hash is mapped'],
       ["safety: 'command-safety'", 'command safety tool hash is mapped'],
       ["skills: 'ai-skills'", 'AI Skills tool hash is mapped'],
       ['function normalizeToolHash', 'tool hash parsing is centralized'],
       ['function parseToolHash', 'tool hash parameters are parsed from the URL fragment'],
+      ["hashState.params.get('release')", 'mirror tool can preload release from the URL fragment'],
+      ["hashState.params.get('mirror')", 'mirror tool can preload mirror from the URL fragment'],
+      ["hashState.params.get('components')", 'mirror tool can preload components from the URL fragment'],
+      ["window.addEventListener('hashchange', syncMirrorStateFromHash)", 'mirror tool syncs config on hash changes'],
+      ['url.hash = `${toolHashIds.mirror}?release=${release}&mirror=${mirror}&components=${components}`', 'mirror tool share links keep config in the URL fragment'],
       ['const maxSharedCommandLength = 4000', 'shared command links have a length cap'],
-      ["parseToolHash(window.location.hash).params.get('command')", 'command safety can preload a shared command from the URL fragment'],
+      ["hashState.params.get('command')", 'command safety can preload a shared command from the URL fragment'],
+      ["window.addEventListener('hashchange', syncSharedCommandFromHash)", 'command safety prefill syncs on hash changes'],
       ['url.searchParams.delete(\'command\')', 'command safety share links do not keep command query parameters'],
       ['decodeURIComponent(value)', 'encoded tool hashes are decoded'],
       ['window.addEventListener(\'hashchange\', syncFromHash)', 'tool tabs sync on hash changes'],
@@ -76,6 +85,7 @@ const deploymentTextChecks = [
     checks: [
       ["/tools#command-safety", 'Chinese tools page documents command safety deep link'],
       ['command=', 'Chinese tools page documents command prefill links'],
+      ['#mirrors?release=', 'Chinese tools page documents mirror config links'],
     ],
   },
   {
@@ -83,6 +93,7 @@ const deploymentTextChecks = [
     checks: [
       ["/en/tools#command-safety", 'English tools page documents command safety deep link'],
       ['command=', 'English tools page documents command prefill links'],
+      ['#mirrors?release=', 'English tools page documents mirror config links'],
     ],
   },
   {

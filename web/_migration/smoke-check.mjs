@@ -23,6 +23,13 @@ const routeChecks = [
   '/en/scenarios/ops-jump-box',
 ];
 
+const toolHashRouteChecks = [
+  '/tools#command-safety',
+  '/en/tools#command-safety',
+  '/tools#ai-skills',
+  '/en/tools#ai-skills',
+];
+
 const searchChecks = requiredLocales.map((locale) => ({ path: `/api/search/${locale}`, locale }));
 
 const textChecks = [
@@ -165,6 +172,11 @@ async function checkTextRoute({ path, includes }) {
 console.log(`[smoke-check] base URL ${baseUrl.toString()}`);
 
 for (const path of routeChecks) {
+  await checkHtmlRoute(path);
+}
+
+// URL fragments stay client-side, but these checks keep shareable tool links in the release smoke set.
+for (const path of toolHashRouteChecks) {
   await checkHtmlRoute(path);
 }
 

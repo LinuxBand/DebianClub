@@ -15,6 +15,7 @@ Run at least these checks before each release:
 | Production build | Next.js static export completes | Inspect the failing page or component |
 | Search index | Per-locale search shards exist and stay below 25 MiB | Split the index again or reduce file size |
 | Key pages | Home, AI Skills, scenarios, hardware, versions, and tools load | Fix navigation, metadata, or content paths |
+| Tool deep links | Shareable links such as `/tools#command-safety` and `/en/tools#command-safety` keep opening | Fix the interactive tool hash map or documentation |
 | Static assets | Images, favicon, sitemap, robots, and skills registry exist | Fix public assets or export scripts |
 
 ## Local Commands
@@ -28,7 +29,7 @@ corepack pnpm --dir web build
 corepack pnpm --dir web release:check
 ```
 
-`release:check` verifies key HTML files, `skills.json`, `sitemap.xml`, `robots.txt`, and the `web/out/api/search/{locale}` search index shards.
+`release:check` verifies key HTML files, `skills.json`, `sitemap.xml`, `robots.txt`, the interactive tool deep-link contract, and the `web/out/api/search/{locale}` search index shards.
 
 ## Search Verification
 
@@ -52,7 +53,7 @@ Do not treat `/api/search?locale=zh` as the frontend search path; under static e
 After local preview is running, sample these routes:
 
 ```bash
-for path in / /en /ai/skills /en/ai/skills /scenarios /en/scenarios /hardware /en/hardware /versions /en/versions /tools /en/tools; do
+for path in / /en /ai/skills /en/ai/skills /scenarios /en/scenarios /hardware /en/hardware /versions /en/versions /tools /en/tools '/tools#command-safety' '/en/tools#command-safety'; do
   curl -L -s -o /tmp/debianclub-route-check.html -w "%{http_code} $path\n" "http://localhost:43018$path"
 done
 ```

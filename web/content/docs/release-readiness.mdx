@@ -15,6 +15,7 @@ description: "DebianClub 发布前质量门禁：构建、搜索索引、关键�
 | 生产构建 | Next.js 静态导出能完整生成 | 查看具体页面或组件报错 |
 | 搜索索引 | 每个语言索引分片存在且小于 25 MiB | 重新拆分索引或减少单文件体积 |
 | 关键页面 | 首页、AI Skills、场景、硬件、版本、工具箱可访问 | 修复导航、meta 或内容路径 |
+| 工具深链 | `/tools#command-safety`、`/en/tools#command-safety` 等分享链接保持可打开 | 修复交互工具 hash 映射或文档说明 |
 | 静态资源 | 图片、favicon、sitemap、robots、skills registry 存在 | 修复 public 或导出脚本 |
 
 ## 本地命令
@@ -28,7 +29,7 @@ corepack pnpm --dir web build
 corepack pnpm --dir web release:check
 ```
 
-`release:check` 会检查 `web/out` 中的关键 HTML、`skills.json`、`sitemap.xml`、`robots.txt`，以及 `web/out/api/search/{locale}` 搜索索引分片。
+`release:check` 会检查 `web/out` 中的关键 HTML、`skills.json`、`sitemap.xml`、`robots.txt`、交互工具深链契约，以及 `web/out/api/search/{locale}` 搜索索引分片。
 
 ## 搜索验证
 
@@ -52,7 +53,7 @@ corepack pnpm --dir web release:check
 本地预览启动后，抽样检查这些路径：
 
 ```bash
-for path in / /en /ai/skills /en/ai/skills /scenarios /en/scenarios /hardware /en/hardware /versions /en/versions /tools /en/tools; do
+for path in / /en /ai/skills /en/ai/skills /scenarios /en/scenarios /hardware /en/hardware /versions /en/versions /tools /en/tools '/tools#command-safety' '/en/tools#command-safety'; do
   curl -L -s -o /tmp/debianclub-route-check.html -w "%{http_code} $path\n" "http://localhost:43018$path"
 done
 ```

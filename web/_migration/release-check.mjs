@@ -46,6 +46,34 @@ const deploymentTextChecks = [
     ],
   },
   {
+    path: '_migration/smoke-check.mjs',
+    checks: [
+      ["'/tools#command-safety'", 'smoke covers Chinese command safety tool deep link'],
+      ["'/en/tools#command-safety'", 'smoke covers English command safety tool deep link'],
+      ["'/tools#ai-skills'", 'smoke covers Chinese AI Skills tool deep link'],
+      ["'/en/tools#ai-skills'", 'smoke covers English AI Skills tool deep link'],
+    ],
+  },
+  {
+    path: 'components/InteractiveTools.tsx',
+    checks: [
+      ["safety: 'command-safety'", 'command safety tool hash is mapped'],
+      ["skills: 'ai-skills'", 'AI Skills tool hash is mapped'],
+      ['function normalizeToolHash', 'tool hash parsing is centralized'],
+      ['decodeURIComponent(value)', 'encoded tool hashes are decoded'],
+      ['window.addEventListener(\'hashchange\', syncFromHash)', 'tool tabs sync on hash changes'],
+      ['window.history.replaceState(null, \'\', nextUrl)', 'tool tab clicks update shareable hash'],
+    ],
+  },
+  {
+    path: 'content/docs/tools/index.mdx',
+    checks: [["/tools#command-safety", 'Chinese tools page documents command safety deep link']],
+  },
+  {
+    path: 'content/docs/tools/index.en.mdx',
+    checks: [["/en/tools#command-safety", 'English tools page documents command safety deep link']],
+  },
+  {
     path: join('..', 'wrangler.toml'),
     checks: [
       ['name = "debianclub"', 'Cloudflare Pages project name is debianclub'],

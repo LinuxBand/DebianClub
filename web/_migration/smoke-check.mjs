@@ -69,6 +69,26 @@ const textChecks = [
   { path: '/robots.txt', includes: 'Sitemap:' },
 ];
 
+const responseHeaderChecks = [
+  {
+    path: '/',
+    headers: [
+      ['x-content-type-options', 'nosniff'],
+      ['referrer-policy', 'strict-origin-when-cross-origin'],
+      ['x-frame-options', 'SAMEORIGIN'],
+      ['permissions-policy', 'camera=(), microphone=(), geolocation=()'],
+    ],
+  },
+  {
+    path: '/api/search/zh',
+    headers: [
+      ['content-type', 'application/json; charset=utf-8'],
+      ['cache-control', 'public, max-age=3600'],
+      ['x-content-type-options', 'nosniff'],
+    ],
+  },
+];
+
 const failures = [];
 
 function resolveBaseUrl() {
@@ -104,28 +124,29 @@ try {
   process.exit(1);
 }
 
-async function fetchWithTimeout(path, requestTimeoutMs = timeoutMs) {
+async function fetchWithTimeout(path, requestTimeoutMs = timeoutMs, requestInit = {}) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), requestTimeoutMs);
 
   try {
     const response = await fetch(buildUrl(path), {
       redirect: 'follow',
+      ...requestInit,
       signal: controller.signal,
     });
-    const body = await response.text();
+    const body = requestInit.method === 'HEAD' ? '' : await response.text();
     return { response, body };
   } finally {
     clearTimeout(timeout);
   }
 }
 
-async function fetchWithRetry(path, { attempts = 12, requestTimeoutMs = timeoutMs } = {}) {
+async function fetchWithRetry(path, { attempts = 12, requestTimeoutMs = timeoutMs, requestInit = {} } = {}) {
   let lastError;
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      return await fetchWithTimeout(path, requestTimeoutMs);
+      return await fetchWithTimeout(path, requestTimeoutMs, requestInit);
     } catch (error) {
       lastError = error;
       if (attempt < attempts) await new Promise((resolve) => setTimeout(resolve, 500));
@@ -217,6 +238,60 @@ async function checkTextRoute({ path, includes }) {
   }
 }
 
+function shouldCheckResponseHeaders() {
+  if (process.env.SMOKE_CHECK_HEADERS === '1') return true;
+  if (process.env.SMOKE_CHECK_HEADERS === '0') return false;
+
+  return baseUrl.protocol === 'https:';
+}
+
+function firstStaticChunkPath(body) {
+  return body.match(/["'](\/_next\/static\/chunks\/[^"']+\.js)["']/)?.[1] || null;
+}
+
+async function checkResponseHeaders({ path, headers }) {
+  try {
+    const { response } = await fetchWithRetry(path, { attempts: 3, requestInit: { method: 'HEAD' } });
+    if (response.status !== 200) {
+      fail(`${path} header check returned ${response.status}`);
+      return;
+    }
+
+    for (const [name, expectedValue] of headers) {
+      const actualValue = response.headers.get(name);
+      if (!actualValue?.includes(expectedValue)) {
+        fail(`${path} header ${name} expected ${expectedValue}, got ${actualValue || '<missing>'}`);
+        return;
+      }
+    }
+
+    pass(`${path} returned expected response headers`);
+  } catch (error) {
+    fail(`${path} header request failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+async function checkStaticChunkHeaders() {
+  try {
+    const { body } = await fetchWithRetry('/');
+    const path = firstStaticChunkPath(body);
+    if (!path) {
+      fail('could not find a Next static chunk in /');
+      return;
+    }
+
+    await checkResponseHeaders({
+      path,
+      headers: [
+        ['cache-control', 'public, max-age=31536000, immutable'],
+        ['x-content-type-options', 'nosniff'],
+      ],
+    });
+  } catch (error) {
+    fail(`static chunk header check failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
 console.log(`[smoke-check] base URL ${baseUrl.toString()}`);
 
 for (const path of routeChecks) {
@@ -234,6 +309,16 @@ for (const check of searchChecks) {
 
 for (const check of textChecks) {
   await checkTextRoute(check);
+}
+
+if (shouldCheckResponseHeaders()) {
+  for (const check of responseHeaderChecks) {
+    await checkResponseHeaders(check);
+  }
+
+  await checkStaticChunkHeaders();
+} else {
+  console.log('[smoke-check] response header checks skipped for local static preview');
 }
 
 if (failures.length > 0) {

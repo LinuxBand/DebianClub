@@ -1,0 +1,163 @@
+---
+title: "运维跳板机"
+description: "用 Debian 搭建集中 SSH 入口，覆盖密钥、最小权限、日志审计、只读诊断、防火墙和回滚策略。"
+---
+
+运维跳板机适合把一台 Debian 主机作为团队进入内网服务器的集中入口。它不是“万能 root 机器”，而是一个受控的 SSH 入口、审计点和只读诊断工具箱。
+
+## 适合谁
+
+- 需要集中管理多台服务器 SSH 入口的小团队
+- 想统一密钥、日志、访问来源和排障工具的运维人员
+- 不希望每个人都直接从个人电脑连到所有生产机器的团队
+
+## 推荐硬件
+
+| 部件 | 建议 |
+|------|------|
+| CPU | 2 核即可，日志和审计较多时建议 4 核 |
+| 内存 | 2 GB 起步，4 GB 更舒适 |
+| 磁盘 | SSD，日志目录独立监控空间 |
+| 网络 | 固定内网地址，必要时双网口或独立管理网 |
+| 可用性 | 至少有控制台或带外入口，避免 SSH 配错后完全失联 |
+
+## 安装路径
+
+1. 安装 Debian stable，仅选择 SSH server 和标准系统工具。
+2. 建立普通运维账号和受控用户组，不允许共享 root 登录。
+3. 收紧 SSH，优先密钥登录，限制来源地址。
+4. 配置日志、时间同步和失败登录保护。
+5. 安装只读诊断工具，不把跳板机变成应用运行平台。
+
+## 基础软件包
+
+```bash
+sudo apt update
+sudo apt install openssh-server ufw fail2ban auditd rsyslog chrony \
+  mtr-tiny traceroute dnsutils jq tmux rsync
+```
+
+如果需要集中保存诊断输出，可以创建独立目录：
+
+```bash
+sudo install -d -m 2770 -o root -g adm /srv/jumpbox/reports
+```
+
+## SSH 基线
+
+创建独立配置文件：
+
+```bash
+sudoedit /etc/ssh/sshd_config.d/90-jump-box.conf
+```
+
+示例：
+
+```text
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+AllowGroups ops-ssh
+X11Forwarding no
+AllowTcpForwarding yes
+ClientAliveInterval 300
+ClientAliveCountMax 2
+```
+
+创建组并加入用户：
+
+```bash
+sudo groupadd ops-ssh
+sudo usermod -aG ops-ssh alice
+```
+
+验证配置：
+
+```bash
+sudo sshd -t
+sudo systemctl restart ssh
+```
+
+保持一个已有 SSH 会话不要断开，确认新会话可登录后再关闭。
+
+## 防火墙与来源限制
+
+跳板机只开放 SSH，并尽量限制来源网段：
+
+```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow from 203.0.113.0/24 to any port 22 proto tcp
+sudo ufw enable
+```
+
+把示例网段替换为你的办公网、VPN 或管理网地址。不要把 `22/tcp` 无限制开放给公网后再只依赖密码策略。
+
+## 最小权限
+
+推荐规则：
+
+- 跳板机账号不共享，按人建用户。
+- 生产机器上也使用个人账号或受控组，不直接共享 root。
+- 只给需要的人 sudo 权限，并使用 `/etc/sudoers.d/` 单独维护。
+- 跳板机上不保存生产数据库密码和长期 API token。
+- 自动化任务使用独立服务账号和独立密钥。
+
+## 只读诊断工具箱
+
+跳板机适合运行网络、DNS、端口和日志采集类检查：
+
+```bash
+dig debian.org
+mtr -rw example.internal
+nc -vz host.internal 22
+```
+
+对目标机器做变更前，先在目标机器上确认环境和变更窗口。跳板机不应该绕过目标机器的变更流程。
+
+## 日志与审计
+
+至少确认：
+
+```bash
+journalctl -u ssh -n 100
+sudo faillock --user alice
+sudo ausearch -m USER_LOGIN -ts today
+```
+
+不同 Debian 配置下 `faillock` 不一定启用；如果命令不可用，以 `journalctl`、`auth.log` 或集中日志平台为准。
+
+## 备份与回滚
+
+重点备份：
+
+- `/etc/ssh/`
+- `/etc/ufw/`
+- `/etc/fail2ban/`
+- `/etc/sudoers.d/`
+- 用户 `authorized_keys`
+
+改 SSH 或防火墙前，准备回滚方式：
+
+1. 保持当前 SSH 会话。
+2. 用 `sshd -t` 检查配置。
+3. 新开一个会话测试登录。
+4. 保留控制台或带外入口。
+
+## 常见问题
+
+| 问题 | 优先检查 |
+|------|----------|
+| 新用户无法登录 | `AllowGroups`、用户组、密钥权限、`journalctl -u ssh` |
+| 修改 SSH 后失联 | 是否保留旧会话、是否有控制台、`sshd -t` 是否通过 |
+| 防火墙误封 | 来源 IP、UFW 规则顺序、VPN 出口地址 |
+| 审计看不清 | 时间同步、日志保留、集中日志是否接入 |
+| 权限过大 | sudoers、共享账号、跳板机上保存的密钥和 token |
+
+## 下一步教程
+
+- [用户与权限](/administration/users)
+- [安全管理](/administration/security)
+- [防火墙配置](/administration/firewall)
+- [日志管理](/administration/logs)
+- [网络配置](/administration/network)

@@ -12,6 +12,12 @@ const routeChecks = [
   '/en/tools',
   '/ai/skills',
   '/en/ai/skills',
+  '/scenarios/nas-file-sharing',
+  '/en/scenarios/nas-file-sharing',
+  '/scenarios/local-ai-inference',
+  '/en/scenarios/local-ai-inference',
+  '/scenarios/ops-jump-box',
+  '/en/scenarios/ops-jump-box',
 ];
 
 const searchChecks = [

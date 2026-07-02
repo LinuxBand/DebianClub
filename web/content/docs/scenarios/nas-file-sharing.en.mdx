@@ -1,0 +1,161 @@
+---
+title: "NAS / File Sharing"
+description: "Build a Debian NAS for homes or small teams with disk layout, Samba, NFS, permissions, snapshots, backups, and LAN security boundaries."
+---
+
+The NAS / File Sharing scenario turns a Debian host into a central storage node on your local network. The priority is not only installing Samba, but planning disks, permissions, backups, and recovery boundaries before exposing shares.
+
+## Who It Is For
+
+- Users centralizing photos, documents, project archives, and home backups
+- Small teams sharing directories across Windows, macOS, and Linux clients
+- Home server users who want to separate storage duties from application hosting
+
+## Recommended Hardware
+
+| Component | Recommendation |
+|-----------|----------------|
+| CPU | Low-power 2+ cores; 4 cores for encryption or checksum-heavy tasks |
+| Memory | 4 GB minimum, 8+ GB for indexing, photo services, or containers |
+| Disk | Separate system and data disks; keep at least one second copy of important data |
+| Network | Gigabit Ethernet minimum, 2.5G or faster for multiple active users |
+| Power | Prefer stable power, cooling, and power-loss recovery settings |
+
+## Installation Path
+
+1. Install Debian stable; a desktop is optional.
+2. Complete the SSH, firewall, and automatic update baseline from [Home Server](/en/scenarios/home-server).
+3. Mount the data disk and keep shared data under `/srv/storage/`.
+4. Choose Samba, NFS, or both depending on clients.
+5. Configure backup and recovery tests before migrating important data.
+
+## Base Packages
+
+```bash
+sudo apt update
+sudo apt install samba nfs-kernel-server acl rsync smartmontools
+```
+
+For multi-disk systems, verify device names, filesystems, and mount points first:
+
+```bash
+lsblk -f
+findmnt /srv/storage
+```
+
+## Directories And Permissions
+
+Use a group to control shared access:
+
+```bash
+sudo groupadd family
+sudo usermod -aG family alice
+sudo install -d -m 2770 -o root -g family /srv/storage/share
+```
+
+Mode `2770` keeps new subdirectories in the `family` group. Users must log in again before new group membership applies.
+
+## Samba Shares
+
+Samba works well for Windows, macOS, and mobile clients. Create a Samba user first:
+
+```bash
+sudo smbpasswd -a alice
+```
+
+Edit the Samba config:
+
+```bash
+sudoedit /etc/samba/smb.conf
+```
+
+Example share:
+
+```ini
+[share]
+   path = /srv/storage/share
+   browseable = yes
+   read only = no
+   guest ok = no
+   valid users = @family
+   create mask = 0660
+   directory mask = 2770
+```
+
+Validate and restart:
+
+```bash
+testparm
+sudo systemctl restart smbd
+```
+
+## NFS Shares
+
+NFS fits Linux clients and controlled LANs. Restrict it to trusted subnets and do not expose it publicly.
+
+```bash
+sudoedit /etc/exports
+```
+
+Example:
+
+```text
+/srv/storage/share 192.168.1.0/24(rw,sync,no_subtree_check)
+```
+
+Apply the export:
+
+```bash
+sudo exportfs -ra
+sudo systemctl restart nfs-server
+```
+
+## Security Boundaries
+
+- Keep NAS services on the LAN; do not expose SMB or NFS directly to the internet.
+- Manage Samba passwords separately from Linux login passwords.
+- Avoid guest write access; create a separate temporary share when needed.
+- Open SMB / NFS firewall rules only to the LAN subnet.
+- Keep management access to SSH and prefer key-based login.
+
+Minimal firewall examples:
+
+```bash
+sudo ufw allow from 192.168.1.0/24 to any app Samba
+sudo ufw allow from 192.168.1.0/24 to any port nfs
+```
+
+## Backup And Recovery
+
+A NAS is not a backup by itself. Keep at least one copy outside the same machine:
+
+- Offline external disk backups
+- Another server or object storage target
+- Versioned backups for important directories
+- Periodic restore sampling, not only successful backup commands
+
+Preview first:
+
+```bash
+sudo rsync -avhn /srv/storage/share/ /backup/nas-share/
+```
+
+After confirming paths, remove `-n`.
+
+## Common Issues
+
+| Issue | Check first |
+|-------|-------------|
+| Windows cannot see the share | Same subnet, Samba service, client credentials, `testparm` |
+| Share is visible but not writable | Linux permissions, Samba user, `valid users`, group re-login |
+| NFS mount fails | `/etc/exports`, client IP, `exportfs -v`, firewall |
+| File ownership is inconsistent | User IDs, group inheritance, ACLs, client default permissions |
+| Restore fails | Whether backups cover the real data path and have been tested |
+
+## Next Guides
+
+- [Home Server](/en/scenarios/home-server)
+- [Disk Management](/en/administration/disk-management)
+- [Users & Permissions](/en/administration/users)
+- [Firewall Configuration](/en/administration/firewall)
+- [Backup & Restore](/en/administration/backup)

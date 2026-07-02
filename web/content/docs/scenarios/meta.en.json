@@ -4,6 +4,9 @@
     "index",
     "docker-host",
     "development-workstation",
-    "home-server"
+    "home-server",
+    "nas-file-sharing",
+    "local-ai-inference",
+    "ops-jump-box"
   ]
 }

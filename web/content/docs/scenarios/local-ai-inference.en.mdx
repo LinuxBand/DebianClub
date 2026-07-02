@@ -1,0 +1,147 @@
+---
+title: "Local AI Inference Machine"
+description: "Build a Debian local AI inference host with GPU drivers, model storage, Ollama, llama.cpp, containers, resource monitoring, and LAN access boundaries."
+---
+
+The Local AI Inference Machine scenario is for running large language models, embedding models, speech transcription, or image generation services on a Debian host. The goal is to plan drivers, model files, inference services, resource monitoring, and access boundaries together.
+
+## Who It Is For
+
+- Individuals or teams running models locally to reduce external API dependency
+- Developers who need GPU-accelerated inference, batch embeddings, or offline experiments
+- Users with a workstation or server who want a clean model and service layout
+
+## Recommended Hardware
+
+| Component | Recommendation |
+|-----------|----------------|
+| CPU | 6+ cores for concurrency and preprocessing |
+| Memory | 16 GB minimum, 32+ GB for larger models |
+| VRAM | 8 GB for lightweight models, 16+ GB for medium-sized models |
+| Disk | 1 TB SSD is more comfortable; model directories grow quickly |
+| Network | Wired LAN for local APIs; public access needs authentication and rate limits |
+
+## Installation Path
+
+1. Install Debian stable and verify the kernel, firmware, and GPU are detected.
+2. Use [Hardware & Drivers](/en/hardware) for graphics, firmware, and laptop thermal issues.
+3. Plan separate directories for model files, caches, and service data.
+4. Choose a runtime: native binary, Python virtual environment, container, or dedicated inference service.
+5. Expose APIs only on the LAN by default; add reverse proxying, authentication, and logs before public access.
+
+## Base Packages
+
+```bash
+sudo apt update
+sudo apt install git git-lfs build-essential cmake pkg-config python3 python3-venv \
+  python3-pip ffmpeg jq htop nvtop
+```
+
+Without an NVIDIA GPU, `nvtop` can still support some AMD / Intel devices depending on driver and kernel support.
+
+## GPU And Drivers
+
+Identify hardware first:
+
+```bash
+lspci -nn | grep -Ei 'vga|3d|display'
+```
+
+NVIDIA users should start with [NVIDIA Drivers](/en/hardware/nvidia). Avoid mixing drivers, CUDA packages, and kernel modules from multiple sources. Laptop users should also read [Laptop Compatibility](/en/hardware/laptop) for thermals, power mode, and external display paths.
+
+## Model Directory
+
+Keep models and service data outside user home directories:
+
+```bash
+sudo install -d -m 2775 -o root -g users /srv/ai
+sudo install -d -m 2775 -o root -g users /srv/ai/models
+sudo install -d -m 2775 -o root -g users /srv/ai/cache
+```
+
+Suggested layout:
+
+```text
+/srv/ai/
+  models/
+  cache/
+  services/
+  logs/
+```
+
+Model files are large. For backups, prioritize manifests, download sources, and custom configuration; back up model files only when they cannot be recreated.
+
+## Runtime Choices
+
+| Runtime | Good fit | Notes |
+|---------|----------|-------|
+| Ollama | Quickly running common LLMs and a local API | Confirm package or container source and update policy first |
+| llama.cpp | Lightweight, controllable GGUF model runtime | Match build options and GPU backend to your hardware |
+| Python virtual environment | Custom scripts, embeddings, experiments | Use one venv per project; do not pollute system Python |
+| Containers | Isolating services and dependencies | Verify GPU pass-through, volumes, and bind addresses |
+
+Do not pipe remote installer scripts directly into a shell. Download, verify, and review scripts before deciding whether to install them.
+
+## Service Boundaries
+
+Inference APIs should bind to local or LAN addresses by default:
+
+```text
+127.0.0.1  local machine only
+192.168.x.x  trusted LAN clients
+0.0.0.0  only after reverse proxying and authentication are ready
+```
+
+For LAN access, open firewall rules only to trusted subnets and the specific service port.
+
+## Resource Monitoring
+
+Useful checks:
+
+```bash
+free -h
+df -h /srv/ai
+systemctl --failed
+journalctl -p warning -n 100
+```
+
+For NVIDIA:
+
+```bash
+nvidia-smi
+```
+
+If `nvidia-smi` is unavailable, return to driver and kernel-module diagnostics before stacking inference services on top.
+
+## Backup Strategy
+
+Prioritize:
+
+- Inference service configuration
+- Custom prompts, workflows, and model manifests
+- Business data, vector stores, or embedding indexes
+- Model files that cannot be downloaded again
+
+Usually skip:
+
+- Public models that can be downloaded again
+- Build caches
+- Temporary conversion files
+
+## Common Issues
+
+| Issue | Check first |
+|-------|-------------|
+| GPU is not detected | `lspci`, driver source, kernel module, Secure Boot |
+| Inference is slow | CPU fallback, quantization, VRAM usage, context length |
+| Service is unreachable | Bind address, firewall, reverse proxy, service logs |
+| Disk fills quickly | Duplicate model downloads, cache directory, logs, conversion files |
+| Update breaks services | Mixed driver/CUDA sources, polluted Python env, drifting container tags |
+
+## Next Guides
+
+- [Hardware & Drivers](/en/hardware)
+- [NVIDIA Drivers](/en/hardware/nvidia)
+- [Ollama](/en/ai/ollama)
+- [llama.cpp](/en/ai/llama-cpp)
+- [Docker Host](/en/scenarios/docker-host)

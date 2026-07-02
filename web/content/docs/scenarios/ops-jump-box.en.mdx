@@ -1,0 +1,163 @@
+---
+title: "Ops Jump Box"
+description: "Build a Debian SSH jump box with keys, least privilege, audit logs, read-only diagnostics, firewall boundaries, and rollback planning."
+---
+
+The Ops Jump Box scenario uses a Debian host as the controlled entry point into internal servers. It is not an all-powerful root machine; it is a managed SSH gateway, audit point, and read-only diagnostic toolbox.
+
+## Who It Is For
+
+- Small teams centralizing SSH access to multiple servers
+- Operators standardizing keys, logs, source addresses, and troubleshooting tools
+- Teams avoiding direct access from every personal laptop to every production machine
+
+## Recommended Hardware
+
+| Component | Recommendation |
+|-----------|----------------|
+| CPU | 2 cores are enough; 4 cores for heavier logging or audit tasks |
+| Memory | 2 GB minimum, 4 GB more comfortable |
+| Disk | SSD, with log directory space monitored |
+| Network | Fixed internal address; dual NIC or management network if needed |
+| Availability | Keep console or out-of-band access to recover from SSH mistakes |
+
+## Installation Path
+
+1. Install Debian stable with SSH server and standard system utilities only.
+2. Create normal operator accounts and controlled groups; do not share root login.
+3. Harden SSH with keys first and source restrictions where possible.
+4. Configure logs, time sync, and failed-login protection.
+5. Install read-only diagnostics; do not turn the jump box into an application host.
+
+## Base Packages
+
+```bash
+sudo apt update
+sudo apt install openssh-server ufw fail2ban auditd rsyslog chrony \
+  mtr-tiny traceroute dnsutils jq tmux rsync
+```
+
+For shared diagnostic output, create a controlled directory:
+
+```bash
+sudo install -d -m 2770 -o root -g adm /srv/jumpbox/reports
+```
+
+## SSH Baseline
+
+Create a dedicated config file:
+
+```bash
+sudoedit /etc/ssh/sshd_config.d/90-jump-box.conf
+```
+
+Example:
+
+```text
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+AllowGroups ops-ssh
+X11Forwarding no
+AllowTcpForwarding yes
+ClientAliveInterval 300
+ClientAliveCountMax 2
+```
+
+Create the group and add users:
+
+```bash
+sudo groupadd ops-ssh
+sudo usermod -aG ops-ssh alice
+```
+
+Validate and restart:
+
+```bash
+sudo sshd -t
+sudo systemctl restart ssh
+```
+
+Keep an existing SSH session open until a new session has logged in successfully.
+
+## Firewall And Source Restrictions
+
+Expose only SSH and restrict source ranges where possible:
+
+```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow from 203.0.113.0/24 to any port 22 proto tcp
+sudo ufw enable
+```
+
+Replace the example subnet with your office, VPN, or management network. Do not expose `22/tcp` broadly to the internet and rely only on password policy.
+
+## Least Privilege
+
+Recommended rules:
+
+- No shared jump box accounts; create per-person users.
+- On target servers, use per-person accounts or controlled groups instead of shared root.
+- Grant sudo only where needed, and maintain rules under `/etc/sudoers.d/`.
+- Do not store production database passwords or long-lived API tokens on the jump box.
+- Use separate service accounts and keys for automation.
+
+## Read-Only Diagnostic Toolbox
+
+A jump box is useful for network, DNS, port, and log collection checks:
+
+```bash
+dig debian.org
+mtr -rw example.internal
+nc -vz host.internal 22
+```
+
+Before changing target machines, confirm the target environment and maintenance window. The jump box should not bypass change control on target hosts.
+
+## Logs And Audit
+
+At minimum, confirm:
+
+```bash
+journalctl -u ssh -n 100
+sudo faillock --user alice
+sudo ausearch -m USER_LOGIN -ts today
+```
+
+`faillock` may not be enabled on every Debian configuration. If unavailable, rely on `journalctl`, `auth.log`, or your centralized logging platform.
+
+## Backup And Rollback
+
+Prioritize:
+
+- `/etc/ssh/`
+- `/etc/ufw/`
+- `/etc/fail2ban/`
+- `/etc/sudoers.d/`
+- Users' `authorized_keys`
+
+Before SSH or firewall changes:
+
+1. Keep the current SSH session open.
+2. Validate config with `sshd -t`.
+3. Test login in a new session.
+4. Keep console or out-of-band access available.
+
+## Common Issues
+
+| Issue | Check first |
+|-------|-------------|
+| New user cannot log in | `AllowGroups`, group membership, key permissions, `journalctl -u ssh` |
+| SSH change locks everyone out | Existing session, console access, whether `sshd -t` passed |
+| Firewall blocks admins | Source IP, UFW rule order, VPN egress address |
+| Audit logs are unclear | Time sync, log retention, centralized logging |
+| Permissions are too broad | sudoers, shared accounts, stored keys and tokens |
+
+## Next Guides
+
+- [Users & Permissions](/en/administration/users)
+- [Security Management](/en/administration/security)
+- [Firewall Configuration](/en/administration/firewall)
+- [Log Management](/en/administration/logs)
+- [Network Configuration](/en/administration/network)

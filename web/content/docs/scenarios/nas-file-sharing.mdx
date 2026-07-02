@@ -1,0 +1,161 @@
+---
+title: "NAS / 文件共享"
+description: "用 Debian 搭建家庭或小团队 NAS，覆盖磁盘布局、Samba、NFS、权限、快照、备份和局域网安全边界。"
+---
+
+NAS / 文件共享场景适合把 Debian 主机变成局域网内的集中存储节点。重点不是只装 Samba，而是先规划磁盘、权限、备份和恢复边界，再开放共享协议。
+
+## 适合谁
+
+- 希望集中保存照片、文档、项目归档和家庭备份的用户
+- 需要给 Windows、macOS、Linux 设备同时提供共享目录的小团队
+- 已经有家用服务器，但想把存储职责单独整理出来的人
+
+## 推荐硬件
+
+| 部件 | 建议 |
+|------|------|
+| CPU | 低功耗 2 核以上即可，加密或校验任务多时建议 4 核 |
+| 内存 | 4 GB 起步，文件索引、照片服务或容器较多时建议 8 GB+ |
+| 磁盘 | 系统盘和数据盘分开，重要数据至少有第二份备份 |
+| 网络 | 千兆有线起步，多个用户同时访问时优先 2.5G 或更高 |
+| 电源 | 长期开机设备优先稳定电源、散热和断电恢复设置 |
+
+## 安装路径
+
+1. 安装 Debian stable，可以不安装桌面环境。
+2. 完成 [家用服务器](/scenarios/home-server) 中的 SSH、防火墙和自动更新基础配置。
+3. 挂载数据盘，把共享数据集中放在 `/srv/storage/`。
+4. 根据客户端选择 Samba、NFS 或两者并存。
+5. 配置备份和恢复演练，再把重要数据迁入 NAS。
+
+## 基础软件包
+
+```bash
+sudo apt update
+sudo apt install samba nfs-kernel-server acl rsync smartmontools
+```
+
+如果磁盘很多，先确认设备名、文件系统和挂载点：
+
+```bash
+lsblk -f
+findmnt /srv/storage
+```
+
+## 目录与权限
+
+推荐用组控制共享目录：
+
+```bash
+sudo groupadd family
+sudo usermod -aG family alice
+sudo install -d -m 2770 -o root -g family /srv/storage/share
+```
+
+`2770` 会让新建子目录继承 `family` 组。用户重新登录后才会获得新组权限。
+
+## Samba 共享
+
+适合 Windows、macOS 和移动设备访问。先创建 Samba 用户：
+
+```bash
+sudo smbpasswd -a alice
+```
+
+追加一个独立配置文件：
+
+```bash
+sudoedit /etc/samba/smb.conf
+```
+
+示例共享：
+
+```ini
+[share]
+   path = /srv/storage/share
+   browseable = yes
+   read only = no
+   guest ok = no
+   valid users = @family
+   create mask = 0660
+   directory mask = 2770
+```
+
+验证配置并重启：
+
+```bash
+testparm
+sudo systemctl restart smbd
+```
+
+## NFS 共享
+
+NFS 适合 Linux 客户端和受控局域网。只允许可信网段访问，不要暴露到公网。
+
+```bash
+sudoedit /etc/exports
+```
+
+示例：
+
+```text
+/srv/storage/share 192.168.1.0/24(rw,sync,no_subtree_check)
+```
+
+应用配置：
+
+```bash
+sudo exportfs -ra
+sudo systemctl restart nfs-server
+```
+
+## 安全边界
+
+- NAS 优先只在局域网使用，不直接暴露公网 SMB 或 NFS。
+- Samba 用户密码和 Linux 登录密码分开管理。
+- 不给访客共享写权限，临时共享单独建目录。
+- 防火墙只对局域网开放 SMB / NFS 端口。
+- 管理入口只保留 SSH，并优先使用密钥登录。
+
+最小防火墙示例：
+
+```bash
+sudo ufw allow from 192.168.1.0/24 to any app Samba
+sudo ufw allow from 192.168.1.0/24 to any port nfs
+```
+
+## 备份与恢复
+
+NAS 不是备份本身。至少保留一份不在同一台机器上的副本：
+
+- 外置硬盘定期离线备份
+- 另一台服务器或云端对象存储
+- 重要目录的版本化备份
+- 定期恢复抽样，而不是只看备份命令成功
+
+先预演：
+
+```bash
+sudo rsync -avhn /srv/storage/share/ /backup/nas-share/
+```
+
+确认路径正确后再移除 `-n`。
+
+## 常见问题
+
+| 问题 | 优先检查 |
+|------|----------|
+| Windows 看不到共享 | 同网段、Samba 服务、客户端凭据、`testparm` |
+| 能看到但不能写 | Linux 目录权限、Samba 用户、`valid users`、组是否重新登录 |
+| NFS 挂载失败 | `/etc/exports`、客户端 IP、`exportfs -v`、防火墙 |
+| 文件属主混乱 | 用户 ID、组继承、ACL、客户端创建文件的默认权限 |
+| 备份恢复失败 | 备份是否覆盖真实数据路径、是否做过恢复演练 |
+
+## 下一步教程
+
+- [家用服务器](/scenarios/home-server)
+- [磁盘管理](/administration/disk-management)
+- [用户与权限](/administration/users)
+- [防火墙配置](/administration/firewall)
+- [备份与恢复](/administration/backup)

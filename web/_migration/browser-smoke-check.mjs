@@ -844,6 +844,108 @@ async function verifyPartitionShareLink(cdp, baseUrl) {
   pass('partition deep link and share link stay in sync');
 }
 
+async function verifyTroubleshootShareLink(cdp, baseUrl) {
+  const initialHash = '#troubleshoot?symptom=display';
+  const updatedHash = '#troubleshoot?symptom=performance';
+  const troubleshootUrl = new URL(`/tools${initialHash}`, baseUrl);
+
+  await cdp.send('Page.navigate', { url: troubleshootUrl.toString() });
+  await waitFor(cdp, "document.body && document.body.innerText.includes('复制排障配置链接')", 'troubleshooting tool');
+
+  const initialState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const activeTab = buttons.find((button) => button.innerText.trim() === '排障向导');
+      const symptom = buttons.find((button) => button.innerText.includes('黑屏、花屏或外接显示器异常'));
+      const bodyText = document.body.innerText;
+      const codeText = Array.from(document.querySelectorAll('pre, code')).map((element) => element.textContent || '').join('\\n');
+      return {
+        hash: window.location.hash,
+        activeTab: activeTab?.getAttribute('aria-pressed') || null,
+        symptomPressed: symptom?.getAttribute('aria-pressed') || null,
+        codeText,
+        hasNvidiaLink: bodyText.includes('NVIDIA 与 Optimus'),
+        hasGraphicsLink: bodyText.includes('AMD / Intel 图形'),
+      };
+    })()`,
+  );
+
+  assert(initialState.hash === initialHash, 'troubleshooting initial hash mismatch', initialState);
+  assert(initialState.activeTab === 'true', 'troubleshooting tab is not active', initialState);
+  assert(initialState.symptomPressed === 'true', 'troubleshooting symptom was not loaded from hash', initialState);
+  assert(initialState.codeText.includes('lspci -nnk'), 'troubleshooting display checks did not include lspci', initialState);
+  assert(
+    initialState.codeText.includes('dmesg | grep -iE "drm|nvidia|amdgpu|i915|firmware"'),
+    'troubleshooting display checks did not include graphics dmesg command',
+    initialState,
+  );
+  assert(initialState.hasNvidiaLink, 'troubleshooting display result did not include NVIDIA link', initialState);
+  assert(initialState.hasGraphicsLink, 'troubleshooting display result did not include graphics link', initialState);
+
+  await evaluate(
+    cdp,
+    `new Promise((resolve) => {
+      window.location.hash = ${JSON.stringify(updatedHash.slice(1))};
+      window.setTimeout(resolve, 350);
+    })`,
+    true,
+  );
+
+  const updatedState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const symptom = buttons.find((button) => button.innerText.includes('系统卡顿或资源异常'));
+      const bodyText = document.body.innerText;
+      const codeText = Array.from(document.querySelectorAll('pre, code')).map((element) => element.textContent || '').join('\\n');
+      return {
+        hash: window.location.hash,
+        symptomPressed: symptom?.getAttribute('aria-pressed') || null,
+        codeText,
+        hasPerformanceLink: bodyText.includes('性能排查'),
+        hasOldNvidiaLink: bodyText.includes('NVIDIA 与 Optimus'),
+        hasOldGraphicsCommand: codeText.includes('drm|nvidia|amdgpu|i915|firmware'),
+      };
+    })()`,
+  );
+
+  assert(updatedState.hash === updatedHash, 'troubleshooting updated hash mismatch', updatedState);
+  assert(updatedState.symptomPressed === 'true', 'troubleshooting symptom did not sync after hashchange', updatedState);
+  assert(updatedState.codeText.includes('uptime'), 'troubleshooting performance checks did not include uptime', updatedState);
+  assert(updatedState.codeText.includes('free -h'), 'troubleshooting performance checks did not include memory check', updatedState);
+  assert(updatedState.codeText.includes('journalctl -b -p warning --no-pager'), 'troubleshooting performance checks did not include journal warning check', updatedState);
+  assert(updatedState.hasPerformanceLink, 'troubleshooting performance result did not include performance link', updatedState);
+  assert(!updatedState.hasOldNvidiaLink, 'troubleshooting result retained stale display link', updatedState);
+  assert(!updatedState.hasOldGraphicsCommand, 'troubleshooting checks retained stale display command', updatedState);
+
+  const copiedLink = await evaluate(
+    cdp,
+    `new Promise((resolve, reject) => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async (value) => { window.__copiedTroubleshootLink = value; } },
+      });
+      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制排障配置链接'));
+      if (!button) {
+        reject(new Error('troubleshooting share button not found'));
+        return;
+      }
+      button.click();
+      window.setTimeout(() => {
+        const copiedUrl = new URL(window.__copiedTroubleshootLink);
+        resolve({ href: window.__copiedTroubleshootLink, search: copiedUrl.search, hash: copiedUrl.hash });
+      }, 250);
+    })`,
+    true,
+  );
+
+  assert(copiedLink.search === '', 'troubleshooting copied share URL kept query string', copiedLink);
+  assert(copiedLink.hash === updatedHash, 'troubleshooting copied share URL hash mismatch', copiedLink);
+
+  pass('troubleshooting deep link and share link stay in sync');
+}
+
 async function run() {
   let baseUrl;
   try {
@@ -886,6 +988,7 @@ async function run() {
     await verifyInstallShareLink(cdp, baseUrl);
     await verifyDesktopShareLink(cdp, baseUrl);
     await verifyPartitionShareLink(cdp, baseUrl);
+    await verifyTroubleshootShareLink(cdp, baseUrl);
   } catch (error) {
     fail(error instanceof Error ? error.message : String(error));
   } finally {

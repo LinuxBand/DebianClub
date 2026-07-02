@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const defaultBaseUrl = 'http://localhost:43018';
-const browserStartupTimeoutMs = 10_000;
+const browserStartupTimeoutMs = 20_000;
 const pageTimeoutMs = 15_000;
 const cdpCommandTimeoutMs = 10_000;
 const searchQuery = 'AI Skills';

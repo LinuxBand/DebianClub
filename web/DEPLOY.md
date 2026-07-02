@@ -13,7 +13,7 @@ pick this repo and set:
 | Production branch | `main` (or `feat/fumadocs-migration` while previewing) |
 | Framework preset | None / Next.js (Static HTML Export) |
 | **Root directory** | `web` |
-| **Build command** | `corepack enable && pnpm install --frozen-lockfile && pnpm build` |
+| **Build command** | `corepack enable && corepack prepare pnpm@9.15.9 --activate && pnpm install --frozen-lockfile && pnpm build` |
 | **Build output directory** | `out` |
 | Node version | `24` or newer (set `NODE_VERSION=24` env var) |
 

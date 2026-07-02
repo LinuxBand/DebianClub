@@ -31,6 +31,7 @@ const deploymentTextChecks = [
   {
     path: 'DEPLOY.md',
     checks: [
+      ['corepack prepare pnpm@9.15.9 --activate', 'Cloudflare build pins pnpm version'],
       ['pnpm install --frozen-lockfile', 'Cloudflare install command is locked'],
       ['Build output directory** | `out`', 'Cloudflare output directory is documented'],
       ['corepack pnpm release:check', 'release gate is documented'],
@@ -81,6 +82,7 @@ const deploymentTextChecks = [
       ['name: Web Release Check', 'web release workflow exists'],
       ['permissions:', 'workflow declares permissions'],
       ['contents: read', 'workflow uses read-only contents permission'],
+      ['corepack prepare pnpm@9.15.9 --activate', 'workflow pins pnpm version'],
       ['corepack pnpm --dir web types:check', 'workflow runs type check'],
       ['corepack pnpm --dir web build', 'workflow runs static build'],
       ['corepack pnpm --dir web smoke:check', 'workflow runs smoke check'],

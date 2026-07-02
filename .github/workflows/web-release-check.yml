@@ -43,7 +43,9 @@ jobs:
 
       - name: Enable Corepack
         shell: bash
-        run: corepack enable
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.9 --activate
 
       - name: Install web dependencies
         shell: bash

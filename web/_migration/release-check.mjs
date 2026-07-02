@@ -80,6 +80,8 @@ const deploymentTextChecks = [
       ["skills: 'ai-skills'", 'AI Skills tool hash is mapped'],
       ['function normalizeToolHash', 'tool hash parsing is centralized'],
       ['function parseToolHash', 'tool hash parameters are parsed from the URL fragment'],
+      ['function useCopiedFeedback', 'copy buttons share one copied-state feedback helper'],
+      ['window.clearTimeout(timeoutRef.current)', 'copied-state feedback clears stale timers'],
       ["hashState.params.get('release')", 'mirror tool can preload release from the URL fragment'],
       ["hashState.params.get('mirror')", 'mirror tool can preload mirror from the URL fragment'],
       ["hashState.params.get('components')", 'mirror tool can preload components from the URL fragment'],

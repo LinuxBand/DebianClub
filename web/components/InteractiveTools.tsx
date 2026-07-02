@@ -20,7 +20,7 @@ import {
   Wrench,
 } from 'lucide-react';
 import type { ComponentType, ReactNode } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import registry from '../../skills/registry.json';
 
 type ToolLanguage = 'zh' | 'en';
@@ -582,13 +582,40 @@ async function copyText(value: string) {
   }
 }
 
-function CopyButton({ value, label, copiedLabel }: { value: string; label: string; copiedLabel: string }) {
+function useCopiedFeedback(timeoutMs = 1400) {
   const [copied, setCopied] = useState(false);
+  const timeoutRef = useRef<number | null>(null);
+
+  const showCopied = useCallback(() => {
+    setCopied(true);
+
+    if (timeoutRef.current !== null) {
+      window.clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = window.setTimeout(() => {
+      setCopied(false);
+      timeoutRef.current = null;
+    }, timeoutMs);
+  }, [timeoutMs]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current !== null) {
+        window.clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  return [copied, showCopied] as const;
+}
+
+function CopyButton({ value, label, copiedLabel }: { value: string; label: string; copiedLabel: string }) {
+  const [copied, showCopied] = useCopiedFeedback();
 
   async function copy() {
     await copyText(value);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1400);
+    showCopied();
   }
 
   const Icon = copied ? Check : Clipboard;
@@ -686,7 +713,7 @@ function MirrorTool({ lang }: { lang: ToolLanguage }) {
   const [release, setRelease] = useState<ReleaseId>('trixie');
   const [mirror, setMirror] = useState<MirrorId>(lang === 'zh' ? 'ustc' : 'official');
   const [components, setComponents] = useState<ComponentMode>('firmware');
-  const [shareCopied, setShareCopied] = useState(false);
+  const [shareCopied, showShareCopied] = useCopiedFeedback();
 
   const selectedMirror = mirrors[mirror];
   const selectedComponents = componentSets[components];
@@ -730,8 +757,7 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg`;
     url.hash = `${toolHashIds.mirror}?release=${release}&mirror=${mirror}&components=${components}`;
 
     await copyText(url.toString());
-    setShareCopied(true);
-    window.setTimeout(() => setShareCopied(false), 1400);
+    showShareCopied();
   }
 
   return (
@@ -864,7 +890,7 @@ function InstallTool({ lang }: { lang: ToolLanguage }) {
   const [device, setDevice] = useState<InstallDevice>('laptop');
   const [goal, setGoal] = useState<InstallGoal>('daily');
   const [risk, setRisk] = useState<RiskLevel>('balanced');
-  const [shareCopied, setShareCopied] = useState(false);
+  const [shareCopied, showShareCopied] = useCopiedFeedback();
   const result = installRecommendation(device, goal, risk, lang);
 
   useEffect(() => {
@@ -892,8 +918,7 @@ function InstallTool({ lang }: { lang: ToolLanguage }) {
     url.hash = `${toolHashIds.install}?device=${device}&goal=${goal}&risk=${risk}`;
 
     await copyText(url.toString());
-    setShareCopied(true);
-    window.setTimeout(() => setShareCopied(false), 1400);
+    showShareCopied();
   }
 
   return (
@@ -1002,7 +1027,7 @@ function DesktopTool({ lang }: { lang: ToolLanguage }) {
   const t = text[lang];
   const [hardware, setHardware] = useState<DesktopHardware>('modern');
   const [workflow, setWorkflow] = useState<DesktopWorkflow>('simple');
-  const [shareCopied, setShareCopied] = useState(false);
+  const [shareCopied, showShareCopied] = useCopiedFeedback();
   const result = desktopRecommendation(hardware, workflow, lang);
 
   useEffect(() => {
@@ -1028,8 +1053,7 @@ function DesktopTool({ lang }: { lang: ToolLanguage }) {
     url.hash = `${toolHashIds.desktop}?hardware=${hardware}&workflow=${workflow}`;
 
     await copyText(url.toString());
-    setShareCopied(true);
-    window.setTimeout(() => setShareCopied(false), 1400);
+    showShareCopied();
   }
 
   return (
@@ -1100,7 +1124,7 @@ function PartitionTool({ lang }: { lang: ToolLanguage }) {
   const [disk, setDisk] = useState<PartitionDisk>('standard');
   const [boot, setBoot] = useState<BootMode>('single');
   const [encryption, setEncryption] = useState<EncryptionMode>('none');
-  const [shareCopied, setShareCopied] = useState(false);
+  const [shareCopied, showShareCopied] = useCopiedFeedback();
   const plan = partitionPlan(disk, boot, encryption, lang);
   const planText = plan.map((row) => row.join(' | ')).join('\n');
 
@@ -1129,8 +1153,7 @@ function PartitionTool({ lang }: { lang: ToolLanguage }) {
     url.hash = `${toolHashIds.partition}?disk=${disk}&boot=${boot}&encryption=${encryption}`;
 
     await copyText(url.toString());
-    setShareCopied(true);
-    window.setTimeout(() => setShareCopied(false), 1400);
+    showShareCopied();
   }
 
   return (
@@ -1290,7 +1313,7 @@ const symptomData: Record<SymptomId, { title: Record<ToolLanguage, string>; comm
 function TroubleshootTool({ lang }: { lang: ToolLanguage }) {
   const t = text[lang];
   const [symptom, setSymptom] = useState<SymptomId>('network');
-  const [shareCopied, setShareCopied] = useState(false);
+  const [shareCopied, showShareCopied] = useCopiedFeedback();
   const data = symptomData[symptom];
 
   useEffect(() => {
@@ -1313,8 +1336,7 @@ function TroubleshootTool({ lang }: { lang: ToolLanguage }) {
     url.hash = `${toolHashIds.troubleshoot}?symptom=${symptom}`;
 
     await copyText(url.toString());
-    setShareCopied(true);
-    window.setTimeout(() => setShareCopied(false), 1400);
+    showShareCopied();
   }
 
   return (
@@ -1380,7 +1402,7 @@ const maxSharedCommandLength = 4000;
 function SafetyTool({ lang }: { lang: ToolLanguage }) {
   const t = text[lang];
   const [value, setValue] = useState('');
-  const [shareCopied, setShareCopied] = useState(false);
+  const [shareCopied, showShareCopied] = useCopiedFeedback();
   const findings = useMemo(() => analyzeCommandRisk(value), [value]);
   const topRisk = highestRisk(findings);
   const summary = !topRisk
@@ -1421,8 +1443,7 @@ function SafetyTool({ lang }: { lang: ToolLanguage }) {
     }
 
     await copyText(url.toString());
-    setShareCopied(true);
-    window.setTimeout(() => setShareCopied(false), 1400);
+    showShareCopied();
   }
 
   return (
@@ -1499,7 +1520,7 @@ function SkillsTool({ lang }: { lang: ToolLanguage }) {
   const t = text[lang];
   const [target, setTarget] = useState<SkillTarget>('codex');
   const [replace, setReplace] = useState(false);
-  const [shareCopied, setShareCopied] = useState(false);
+  const [shareCopied, showShareCopied] = useCopiedFeedback();
   const targetPath = targetPaths[target].target;
   const installCommand = `bash ${skill.install.local_script.replace(
     ' debian-linux-reliability',
@@ -1531,8 +1552,7 @@ function SkillsTool({ lang }: { lang: ToolLanguage }) {
     url.hash = `${toolHashIds.skills}?target=${target}&replace=${replace ? 'true' : 'false'}`;
 
     await copyText(url.toString());
-    setShareCopied(true);
-    window.setTimeout(() => setShareCopied(false), 1400);
+    showShareCopied();
   }
 
   return (

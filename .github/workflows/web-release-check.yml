@@ -71,6 +71,12 @@ jobs:
           SMOKE_BASE_URL: http://127.0.0.1:43018
         run: corepack pnpm --dir web smoke:check
 
+      - name: Browser check static preview
+        shell: bash
+        env:
+          SMOKE_BASE_URL: http://127.0.0.1:43018
+        run: corepack pnpm --dir web browser:check
+
       - name: Stop static preview
         if: always()
         shell: bash

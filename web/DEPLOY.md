@@ -42,6 +42,7 @@ In another shell, run the release and runtime gates:
 ```bash
 corepack pnpm release:check
 SMOKE_BASE_URL=http://localhost:43018 corepack pnpm smoke:check
+SMOKE_BASE_URL=http://localhost:43018 corepack pnpm browser:check
 ```
 
 ## CLI deploy (optional)

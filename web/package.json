@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "node _migration/sync-links.mjs && next build && node _migration/split-search-index.mjs",
+    "browser:check": "node _migration/browser-smoke-check.mjs",
     "dev": "next dev",
     "release:check": "node _migration/release-check.mjs",
     "smoke:check": "node _migration/smoke-check.mjs",

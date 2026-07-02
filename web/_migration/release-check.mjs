@@ -8,6 +8,7 @@ const localizedEntryFiles = localizedEntryPages.flatMap((page) =>
   requiredLocales.map((locale) => (locale === 'zh' ? `out/${page}.html` : `out/${locale}/${page}.html`)),
 );
 const requiredFiles = [
+  '_migration/browser-smoke-check.mjs',
   '_migration/smoke-check.mjs',
   'out/index.html',
   'out/en.html',
@@ -35,6 +36,7 @@ const deploymentTextChecks = [
       ['Build output directory** | `out`', 'Cloudflare output directory is documented'],
       ['corepack pnpm release:check', 'release gate is documented'],
       ['corepack pnpm smoke:check', 'smoke gate is documented'],
+      ['corepack pnpm browser:check', 'browser gate is documented'],
       ['--project-name debianclub', 'CLI deploy project name matches wrangler.toml'],
     ],
   },
@@ -43,6 +45,7 @@ const deploymentTextChecks = [
     checks: [
       ['"release:check": "node _migration/release-check.mjs"', 'release check script exists'],
       ['"smoke:check": "node _migration/smoke-check.mjs"', 'smoke check script exists'],
+      ['"browser:check": "node _migration/browser-smoke-check.mjs"', 'browser check script exists'],
     ],
   },
   {
@@ -185,6 +188,7 @@ const deploymentTextChecks = [
       ['corepack pnpm --dir web types:check', 'workflow runs type check'],
       ['corepack pnpm --dir web build', 'workflow runs static build'],
       ['corepack pnpm --dir web smoke:check', 'workflow runs smoke check'],
+      ['corepack pnpm --dir web browser:check', 'workflow runs browser check'],
       ['corepack pnpm --dir web release:check', 'workflow runs release gate'],
     ],
   },

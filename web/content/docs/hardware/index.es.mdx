@@ -1,0 +1,35 @@
+---
+title: "Centro de hardware y controladores"
+description: "Compatibilidad de hardware y diagnóstico de controladores en Debian para NVIDIA, gráficos AMD/Intel, Wi-Fi, Bluetooth, audio, portátiles y comprobaciones previas."
+---
+
+Este centro cubre los problemas de hardware que más bloquean a usuarios de Debian: compatibilidad antes de instalar, controladores gráficos, firmware Wi-Fi, Bluetooth, audio, cámaras, energía en portátiles y rutas de reversión.
+
+## Temas
+
+| Tema | Uso principal | Detalle |
+|------|---------------|---------|
+| Pre-install Compatibility Check | Evaluar el riesgo antes de comprar, reinstalar o cambiar hardware | [Inglés](/en/hardware/preinstall-check) |
+| NVIDIA & Optimus | GPUs dedicadas, gráficos híbridos, CUDA y pantallas negras | [Inglés](/en/hardware/nvidia) |
+| AMD / Intel Graphics | Mesa, firmware, VA-API y aceleración de escritorio | [Inglés](/en/hardware/graphics) |
+| Wi-Fi & Wireless Firmware | Adaptadores Intel, Realtek o Broadcom que no levantan | [Inglés](/en/hardware/wifi) |
+| Bluetooth & Audio | Auriculares, micrófonos, salidas ausentes y PipeWire | [Inglés](/en/hardware/bluetooth-audio) |
+| Laptop Compatibility | Touchpad, suspensión, teclas Fn, cámara y docks | [Inglés](/en/hardware/laptop) |
+
+## Principios de diagnóstico
+
+1. Identifica primero el dispositivo y el módulo del kernel.
+2. Prefiere repositorios Debian y backports frente a scripts desconocidos.
+3. No cambies firmware, kernel, controlador y sesión gráfica al mismo tiempo.
+4. Guarda salidas antes y después de cada cambio.
+5. Mantén una vía de recuperación como TTY o Ethernet.
+
+## Comandos útiles
+
+```bash
+lspci -nnk
+lsusb
+uname -a
+journalctl -b -p warning
+dmesg --level=err,warn
+```

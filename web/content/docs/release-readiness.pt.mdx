@@ -1,0 +1,32 @@
+---
+title: "Prontidão de release"
+description: "Portões de qualidade do DebianClub antes de publicar: build, busca, rotas-chave, export estático e rollback."
+---
+
+Esta página resume as verificações mínimas antes de publicar uma nova versão do DebianClub.
+
+## Portões de release
+
+| Verificação | Objetivo |
+|-------------|----------|
+| Type check | MDX, tipos de rotas e TypeScript passam |
+| Production build | O export estático do Next.js é gerado por completo |
+| Search index | Índices por idioma existem em `/api/search/{locale}` |
+| Key pages | Home, cenários, hardware, versões, ferramentas e implantação carregam |
+| Static assets | Headers, sitemap, robots.txt, imagens e `skills.json` existem |
+
+## Comandos locais
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+corepack pnpm --dir web types:check
+corepack pnpm --dir web build
+corepack pnpm --dir web release:check
+```
+
+## Antes de implantar
+
+- Confirme que os índices de busca ficam abaixo do limite do Cloudflare Pages.
+- Novos conteúdos não devem enviar scripts remotos diretamente para um shell.
+- Ferramentas podem recomendar ações, mas não devem modificar o sistema automaticamente.
+- Se algo falhar, volte primeiro para o último export estático bem-sucedido.

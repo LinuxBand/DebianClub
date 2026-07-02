@@ -1,0 +1,35 @@
+---
+title: "Centre matériel et pilotes"
+description: "Compatibilité matérielle et diagnostic de pilotes Debian pour NVIDIA, AMD/Intel, Wi-Fi, Bluetooth, audio, ordinateurs portables et vérifications avant installation."
+---
+
+Ce centre regroupe les problèmes matériels qui bloquent le plus souvent Debian: compatibilité avant installation, pilotes graphiques, firmware Wi-Fi, Bluetooth, audio, webcams, gestion d’énergie et chemins de retour sûrs.
+
+## Sujets
+
+| Sujet | Usage | Détail |
+|-------|-------|--------|
+| Pre-install Compatibility Check | Évaluer le risque avant achat, réinstallation ou changement de matériel | [Anglais](/en/hardware/preinstall-check) |
+| NVIDIA & Optimus | GPU dédiés, graphiques hybrides, CUDA et écrans noirs | [Anglais](/en/hardware/nvidia) |
+| AMD / Intel Graphics | Mesa, firmware, VA-API et accélération du bureau | [Anglais](/en/hardware/graphics) |
+| Wi-Fi & Wireless Firmware | Cartes Intel, Realtek ou Broadcom qui ne démarrent pas | [Anglais](/en/hardware/wifi) |
+| Bluetooth & Audio | Casques, microphones, sorties manquantes et PipeWire | [Anglais](/en/hardware/bluetooth-audio) |
+| Laptop Compatibility | Pavé tactile, veille, touches Fn, webcam et stations d’accueil | [Anglais](/en/hardware/laptop) |
+
+## Principes de diagnostic
+
+1. Identifier d’abord le périphérique et le module noyau.
+2. Préférer les dépôts Debian et backports aux scripts inconnus.
+3. Ne pas modifier firmware, noyau, pilote et session graphique en même temps.
+4. Conserver les sorties avant et après les changements.
+5. Garder un accès de secours comme TTY ou Ethernet.
+
+## Commandes utiles
+
+```bash
+lspci -nnk
+lsusb
+uname -a
+journalctl -b -p warning
+dmesg --level=err,warn
+```

@@ -1,0 +1,32 @@
+---
+title: "릴리스 점검"
+description: "DebianClub 공개 전 품질 점검: 빌드, 검색, 주요 경로, 정적 export, 롤백입니다."
+---
+
+이 페이지는 DebianClub 새 버전을 공개하기 전에 확인해야 할 최소 점검을 정리합니다.
+
+## 릴리스 게이트
+
+| 점검 | 목표 |
+|------|------|
+| Type check | MDX, 라우트 타입, TypeScript 통과 |
+| Production build | Next.js 정적 export 완료 |
+| Search index | 언어별 검색 인덱스가 `/api/search/{locale}`에 존재 |
+| Key pages | 홈, 시나리오, 하드웨어, 버전, 도구, 배포 페이지 로드 |
+| Static assets | headers, sitemap, robots.txt, 이미지, `skills.json` 존재 |
+
+## 로컬 명령
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+corepack pnpm --dir web types:check
+corepack pnpm --dir web build
+corepack pnpm --dir web release:check
+```
+
+## 배포 전 확인
+
+- 검색 인덱스가 Cloudflare Pages 파일 제한 아래에 있는지 확인합니다.
+- 새 문서가 원격 설치 스크립트를 shell로 바로 넘기지 않아야 합니다.
+- 도구는 추천만 제공하고 시스템을 자동으로 수정하지 않아야 합니다.
+- 장애가 나면 먼저 마지막으로 성공한 정적 결과물로 되돌립니다.

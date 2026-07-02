@@ -1,0 +1,35 @@
+---
+title: "배포"
+description: "DebianClub 정적 배포 런북: Cloudflare Pages, build 출력, 보안 헤더, smoke check, 롤백입니다."
+---
+
+DebianClub은 Next.js 정적 export로 배포합니다. 배포 대상은 Cloudflare Pages이며 공개 결과물은 `web/out`입니다.
+
+## 모델
+
+| 계층 | 계약 |
+|------|------|
+| Framework | Next.js `output: 'export'`; 런타임 SSR에 의존하지 않음 |
+| Content | `web/content/docs` |
+| Search | 언어별 shard는 `web/out/api/search/{locale}` |
+| Assets | `web/public`이 `web/out`으로 복사됨 |
+| Config | `wrangler.toml`이 `web/out`을 가리킴 |
+
+## 표준 명령
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+corepack pnpm --dir web types:check
+corepack pnpm --dir web build
+corepack pnpm --dir web release:check
+```
+
+## Smoke test
+
+```bash
+SMOKE_BASE_URL=http://localhost:43018 corepack pnpm --dir web smoke:check
+```
+
+## 롤백
+
+빈 화면, 검색 오류, 404 경로, MIME 문제가 발생하면 먼저 마지막으로 성공한 Cloudflare Pages 배포로 되돌린 다음 `web/out/_headers`, `web/out/api/search`, `sitemap.xml`을 비교합니다.

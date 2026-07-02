@@ -3,30 +3,23 @@ import { join } from 'node:path';
 
 const maxSearchFileBytes = 25 * 1024 * 1024;
 const requiredLocales = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt'];
+const localizedEntryPages = ['tools', 'scenarios', 'hardware', 'versions', 'release-readiness', 'deployment'];
+const localizedEntryFiles = localizedEntryPages.flatMap((page) =>
+  requiredLocales.map((locale) => (locale === 'zh' ? `out/${page}.html` : `out/${locale}/${page}.html`)),
+);
 const requiredFiles = [
   '_migration/smoke-check.mjs',
   'out/index.html',
   'out/en.html',
-  'out/tools.html',
-  'out/en/tools.html',
   'out/ai/skills.html',
   'out/en/ai/skills.html',
-  'out/scenarios.html',
-  'out/en/scenarios.html',
+  ...localizedEntryFiles,
   'out/scenarios/nas-file-sharing.html',
   'out/en/scenarios/nas-file-sharing.html',
   'out/scenarios/local-ai-inference.html',
   'out/en/scenarios/local-ai-inference.html',
   'out/scenarios/ops-jump-box.html',
   'out/en/scenarios/ops-jump-box.html',
-  'out/hardware.html',
-  'out/en/hardware.html',
-  'out/versions.html',
-  'out/en/versions.html',
-  'out/release-readiness.html',
-  'out/en/release-readiness.html',
-  'out/deployment.html',
-  'out/en/deployment.html',
   'out/_headers',
   'out/skills.json',
   'out/sitemap.xml',

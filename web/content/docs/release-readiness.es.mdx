@@ -1,0 +1,32 @@
+---
+title: "Preparación de lanzamiento"
+description: "Controles de calidad de DebianClub antes de publicar: build, búsqueda, rutas clave, exportación estática y rollback."
+---
+
+Esta página resume las comprobaciones mínimas antes de publicar una nueva versión de DebianClub.
+
+## Controles de lanzamiento
+
+| Comprobación | Objetivo |
+|--------------|----------|
+| Type check | MDX, tipos de rutas y TypeScript pasan |
+| Production build | La exportación estática de Next.js se genera completa |
+| Search index | Los índices por idioma existen en `/api/search/{locale}` |
+| Key pages | Inicio, escenarios, hardware, versiones, herramientas y despliegue cargan |
+| Static assets | Headers, sitemap, robots.txt, imágenes y `skills.json` existen |
+
+## Comandos locales
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+corepack pnpm --dir web types:check
+corepack pnpm --dir web build
+corepack pnpm --dir web release:check
+```
+
+## Antes de desplegar
+
+- Verifica que los índices de búsqueda no superen el límite de Cloudflare Pages.
+- El contenido nuevo no debe enviar scripts remotos directamente a una shell.
+- Las herramientas pueden recomendar acciones, pero no modificar sistemas automáticamente.
+- Si algo falla, vuelve primero al último despliegue estático correcto.

@@ -1,0 +1,35 @@
+---
+title: "Implantação"
+description: "Runbook de implantação estática do DebianClub: Cloudflare Pages, saída de build, headers de segurança, smoke checks e rollback."
+---
+
+O DebianClub é publicado como export estático do Next.js. O destino é Cloudflare Pages e a saída publicada fica em `web/out`.
+
+## Modelo
+
+| Camada | Contrato |
+|--------|----------|
+| Framework | Next.js `output: 'export'`; não depender de SSR em runtime |
+| Conteúdo | `web/content/docs` |
+| Busca | Um shard por idioma em `web/out/api/search/{locale}` |
+| Assets | `web/public` é copiado para `web/out` |
+| Configuração | `wrangler.toml` aponta para `web/out` |
+
+## Comandos padrão
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+corepack pnpm --dir web types:check
+corepack pnpm --dir web build
+corepack pnpm --dir web release:check
+```
+
+## Smoke test
+
+```bash
+SMOKE_BASE_URL=http://localhost:43018 corepack pnpm --dir web smoke:check
+```
+
+## Rollback
+
+Se houver tela em branco, busca quebrada, rotas 404 ou MIME incorreto, volte primeiro ao último deploy bem-sucedido do Cloudflare Pages e depois compare `web/out/_headers`, `web/out/api/search` e `sitemap.xml`.

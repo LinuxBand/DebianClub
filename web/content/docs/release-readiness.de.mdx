@@ -1,0 +1,32 @@
+---
+title: "Release-Prüfung"
+description: "DebianClub-Qualitätsprüfungen vor einem Release: Build, Suche, wichtige Routen, statischer Export und Rollback."
+---
+
+Diese Seite beschreibt die Mindestprüfungen, bevor eine neue DebianClub-Version veröffentlicht wird.
+
+## Release-Gates
+
+| Prüfung | Ziel |
+|---------|------|
+| Type check | MDX, Routentypen und TypeScript bestehen |
+| Production build | Der statische Next.js-Export wird vollständig erzeugt |
+| Search index | Suchindizes liegen pro Sprache unter `/api/search/{locale}` vor |
+| Key pages | Startseite, Szenarien, Hardware, Versionen, Tools und Deployment laden |
+| Static assets | Header, Sitemap, robots.txt, Bilder und `skills.json` existieren |
+
+## Lokale Befehle
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+corepack pnpm --dir web types:check
+corepack pnpm --dir web build
+corepack pnpm --dir web release:check
+```
+
+## Vor dem Deployment
+
+- Prüfen, dass Suchindizes unter dem Cloudflare-Pages-Dateilimit bleiben.
+- Neue Inhalte dürfen keine entfernten Installationsskripte direkt in eine Shell pipen.
+- Werkzeuge dürfen Empfehlungen ausgeben, aber Systeme nicht automatisch ändern.
+- Bei Fehlern zuerst auf die letzte erfolgreiche statische Ausgabe zurückrollen.

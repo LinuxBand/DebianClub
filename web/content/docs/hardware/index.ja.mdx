@@ -1,0 +1,35 @@
+---
+title: "ハードウェアとドライバーセンター"
+description: "NVIDIA、AMD/Intel グラフィック、Wi-Fi、Bluetooth、オーディオ、ノート PC、インストール前確認のための Debian ハードウェア診断入口。"
+---
+
+このページは、Debian でよく起きるハードウェア問題の入口です。インストール前の互換性確認、グラフィックドライバー、Wi-Fi ファームウェア、Bluetooth、音声、カメラ、電源管理、ロールバック手順を扱います。
+
+## トピック
+
+| トピック | 用途 | 詳細 |
+|----------|------|------|
+| Pre-install Compatibility Check | 購入前、再インストール前、機器変更前のリスク確認 | [英語](/en/hardware/preinstall-check) |
+| NVIDIA & Optimus | 独立 GPU、ハイブリッドグラフィック、CUDA、黒画面診断 | [英語](/en/hardware/nvidia) |
+| AMD / Intel Graphics | Mesa、firmware、VA-API、デスクトップアクセラレーション | [英語](/en/hardware/graphics) |
+| Wi-Fi & Wireless Firmware | Intel、Realtek、Broadcom の無線が使えない場合 | [英語](/en/hardware/wifi) |
+| Bluetooth & Audio | ヘッドセット、マイク、出力先、PipeWire の問題 | [英語](/en/hardware/bluetooth-audio) |
+| Laptop Compatibility | タッチパッド、サスペンド、Fn キー、Web カメラ、ドック | [英語](/en/hardware/laptop) |
+
+## 診断の原則
+
+1. 先にデバイス ID とカーネルモジュールを確認します。
+2. 不明なスクリプトより Debian リポジトリと backports を優先します。
+3. firmware、カーネル、ドライバー、デスクトップセッションを同時に変えません。
+4. 変更前後の出力を残します。
+5. TTY や有線 LAN などの復旧経路を残します。
+
+## よく使うコマンド
+
+```bash
+lspci -nnk
+lsusb
+uname -a
+journalctl -b -p warning
+dmesg --level=err,warn
+```

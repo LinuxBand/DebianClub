@@ -1,17 +1,20 @@
 const defaultBaseUrl = 'http://localhost:43018';
 const timeoutMs = 10_000;
 
+const requiredLocales = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt'];
+const localizedEntryPages = ['tools', 'scenarios', 'hardware', 'versions', 'release-readiness', 'deployment'];
+
+function localeRoute(locale, page = '') {
+  const path = page ? `/${page}` : '';
+  return locale === 'zh' ? path || '/' : `/${locale}${path}`;
+}
+
 const routeChecks = [
   '/',
   '/en',
-  '/release-readiness',
-  '/en/release-readiness',
-  '/deployment',
-  '/en/deployment',
-  '/tools',
-  '/en/tools',
   '/ai/skills',
   '/en/ai/skills',
+  ...localizedEntryPages.flatMap((page) => requiredLocales.map((locale) => localeRoute(locale, page))),
   '/scenarios/nas-file-sharing',
   '/en/scenarios/nas-file-sharing',
   '/scenarios/local-ai-inference',
@@ -20,10 +23,7 @@ const routeChecks = [
   '/en/scenarios/ops-jump-box',
 ];
 
-const searchChecks = [
-  { path: '/api/search/zh', locale: 'zh' },
-  { path: '/api/search/en', locale: 'en' },
-];
+const searchChecks = requiredLocales.map((locale) => ({ path: `/api/search/${locale}`, locale }));
 
 const textChecks = [
   { path: '/sitemap.xml', includes: '<urlset' },

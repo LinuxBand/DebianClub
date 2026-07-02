@@ -1,0 +1,32 @@
+---
+title: "リリース確認"
+description: "DebianClub の公開前チェック: build、検索、主要ルート、静的エクスポート、ロールバック。"
+---
+
+このページは、DebianClub を公開する前に確認する最小限の品質ゲートをまとめます。
+
+## リリースゲート
+
+| チェック | 目的 |
+|----------|------|
+| Type check | MDX、ルート型、TypeScript が通る |
+| Production build | Next.js の静的エクスポートが完了する |
+| Search index | 各言語の検索インデックスが `/api/search/{locale}` に存在する |
+| Key pages | ホーム、シナリオ、ハードウェア、バージョン、ツール、デプロイが表示できる |
+| Static assets | ヘッダー、sitemap、robots.txt、画像、`skills.json` が存在する |
+
+## ローカルコマンド
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+corepack pnpm --dir web types:check
+corepack pnpm --dir web build
+corepack pnpm --dir web release:check
+```
+
+## デプロイ前
+
+- 検索インデックスが Cloudflare Pages のファイル制限を超えないことを確認します。
+- 新しい内容でリモートスクリプトを直接 shell に渡さないようにします。
+- ツールは提案だけを返し、システムを自動変更しません。
+- 問題が出たら、まず直前の正常な静的出力へ戻します。

@@ -1,0 +1,35 @@
+---
+title: "デプロイ"
+description: "DebianClub の静的デプロイ手順: Cloudflare Pages、build 出力、セキュリティヘッダー、smoke check、ロールバック。"
+---
+
+DebianClub は Next.js の静的エクスポートとして公開します。デプロイ先は Cloudflare Pages、公開される出力は `web/out` です。
+
+## モデル
+
+| 層 | 契約 |
+|----|------|
+| Framework | Next.js `output: 'export'`; 実行時 SSR に依存しない |
+| Content | `web/content/docs` |
+| Search | 言語ごとの shard を `web/out/api/search/{locale}` に置く |
+| Assets | `web/public` が `web/out` にコピーされる |
+| Config | `wrangler.toml` が `web/out` を指す |
+
+## 標準コマンド
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+corepack pnpm --dir web types:check
+corepack pnpm --dir web build
+corepack pnpm --dir web release:check
+```
+
+## Smoke test
+
+```bash
+SMOKE_BASE_URL=http://localhost:43018 corepack pnpm --dir web smoke:check
+```
+
+## ロールバック
+
+空白画面、検索不具合、404、MIME 問題が出た場合は、まず直前の成功した Cloudflare Pages デプロイへ戻し、その後 `web/out/_headers`、`web/out/api/search`、`sitemap.xml` を比較します。

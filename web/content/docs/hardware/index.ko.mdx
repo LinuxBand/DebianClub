@@ -1,0 +1,35 @@
+---
+title: "하드웨어와 드라이버 센터"
+description: "NVIDIA, AMD/Intel 그래픽, Wi-Fi, Bluetooth, 오디오, 노트북, 설치 전 점검을 위한 Debian 하드웨어 호환성 및 드라이버 진단 입구입니다."
+---
+
+이 센터는 Debian 사용자에게 자주 문제가 되는 하드웨어 영역을 다룹니다. 설치 전 호환성, 그래픽 드라이버, Wi-Fi 펌웨어, Bluetooth, 오디오, 카메라, 전원 관리, 되돌리기 경로를 확인합니다.
+
+## 주제
+
+| 주제 | 용도 | 상세 문서 |
+|------|------|-----------|
+| Pre-install Compatibility Check | 구매, 재설치, 하드웨어 교체 전 위험 확인 | [영어](/en/hardware/preinstall-check) |
+| NVIDIA & Optimus | 외장 GPU, 하이브리드 그래픽, CUDA, 검은 화면 진단 | [영어](/en/hardware/nvidia) |
+| AMD / Intel Graphics | Mesa, firmware, VA-API, 데스크톱 가속 | [영어](/en/hardware/graphics) |
+| Wi-Fi & Wireless Firmware | Intel, Realtek, Broadcom 무선 장치 문제 | [영어](/en/hardware/wifi) |
+| Bluetooth & Audio | 헤드셋, 마이크, 출력 장치, PipeWire 문제 | [영어](/en/hardware/bluetooth-audio) |
+| Laptop Compatibility | 터치패드, 절전, Fn 키, 웹캠, 도킹 스테이션 | [영어](/en/hardware/laptop) |
+
+## 진단 원칙
+
+1. 먼저 장치 ID와 커널 모듈을 확인합니다.
+2. 알 수 없는 스크립트보다 Debian 저장소와 backports를 우선합니다.
+3. 펌웨어, 커널, 드라이버, 데스크톱 세션을 한꺼번에 바꾸지 않습니다.
+4. 변경 전후의 명령 출력을 보관합니다.
+5. TTY나 유선 네트워크 같은 복구 경로를 남깁니다.
+
+## 자주 쓰는 명령
+
+```bash
+lspci -nnk
+lsusb
+uname -a
+journalctl -b -p warning
+dmesg --level=err,warn
+```

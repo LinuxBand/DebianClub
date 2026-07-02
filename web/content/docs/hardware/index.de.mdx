@@ -1,0 +1,35 @@
+---
+title: "Hardware- und Treiberzentrum"
+description: "Debian-Hardwarekompatibilität und Treiberdiagnose für NVIDIA, AMD/Intel-Grafik, WLAN, Bluetooth, Audio, Laptops und Vorabprüfungen."
+---
+
+Dieses Zentrum hilft bei den häufigsten Debian-Hardwareproblemen: Kompatibilität vor der Installation, Grafiktreiber, WLAN-Firmware, Bluetooth, Audio, Kameras, Energieverwaltung und sichere Rückwege.
+
+## Themen
+
+| Thema | Wofür es gedacht ist | Detailseite |
+|-------|----------------------|-------------|
+| Pre-install Compatibility Check | Risiko vor Kauf, Neuinstallation oder Hardwarewechsel einschätzen | [Englisch](/en/hardware/preinstall-check) |
+| NVIDIA & Optimus | Dedizierte GPUs, Hybridgrafik, CUDA und Black-Screen-Diagnose | [Englisch](/en/hardware/nvidia) |
+| AMD / Intel Graphics | Mesa, Firmware, VA-API und Desktop-Beschleunigung | [Englisch](/en/hardware/graphics) |
+| Wi-Fi & Wireless Firmware | Intel-, Realtek- und Broadcom-WLAN, das nicht startet | [Englisch](/en/hardware/wifi) |
+| Bluetooth & Audio | Headsets, Mikrofone, fehlende Audioausgänge und PipeWire | [Englisch](/en/hardware/bluetooth-audio) |
+| Laptop Compatibility | Touchpad, Suspend, Fn-Tasten, Webcam und Dockingstationen | [Englisch](/en/hardware/laptop) |
+
+## Diagnoseprinzipien
+
+1. Geräte-ID und Kernelmodul zuerst prüfen.
+2. Debian-Repositories und Backports gegenüber unbekannten Installationsskripten bevorzugen.
+3. Firmware, Kernel, Treiber und Desktop-Sitzung nicht gleichzeitig ändern.
+4. Ausgaben vor und nach Änderungen speichern.
+5. Bei Grafik- und Netzwerkänderungen immer einen Fallback wie TTY oder Ethernet behalten.
+
+## Häufige Befehle
+
+```bash
+lspci -nnk
+lsusb
+uname -a
+journalctl -b -p warning
+dmesg --level=err,warn
+```

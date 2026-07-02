@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const defaultBaseUrl = 'http://localhost:43018';
-const browserStartupTimeoutMs = 20_000;
+const browserStartupTimeoutMs = readPositiveIntegerEnv('BROWSER_STARTUP_TIMEOUT_MS', 60_000);
 const pageTimeoutMs = 15_000;
 const cdpCommandTimeoutMs = 10_000;
 const searchQuery = 'AI Skills';
@@ -40,6 +40,18 @@ function assert(condition, message, details) {
     const suffix = details ? `; details: ${JSON.stringify(details, null, 2)}` : '';
     throw new Error(`${message}${suffix}`);
   }
+}
+
+function readPositiveIntegerEnv(name, fallback) {
+  const raw = process.env[name];
+  if (!raw) return fallback;
+
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new Error(`${name} must be a positive integer in milliseconds`);
+  }
+
+  return value;
 }
 
 function resolveBaseUrl() {
@@ -84,10 +96,14 @@ async function terminateBrowser(browser) {
   }
 }
 
-async function waitForBrowserTarget(port) {
+async function waitForBrowserTarget(port, browser) {
   const deadline = Date.now() + browserStartupTimeoutMs;
 
   while (Date.now() < deadline) {
+    if (browser.exitCode !== null || browser.signalCode !== null) {
+      throw new Error(`browser exited before opening debugging target: code=${browser.exitCode} signal=${browser.signalCode}`);
+    }
+
     try {
       const targets = await fetchJson(`http://127.0.0.1:${port}/json/list`);
       const page = targets.find((target) => target.type === 'page' && target.webSocketDebuggerUrl);
@@ -99,7 +115,7 @@ async function waitForBrowserTarget(port) {
     await sleep(100);
   }
 
-  throw new Error('timed out waiting for browser debugging target');
+  throw new Error(`timed out after ${browserStartupTimeoutMs}ms waiting for browser debugging target`);
 }
 
 async function connectToCdp(wsUrl) {
@@ -1130,7 +1146,7 @@ async function run() {
 
   let cdp;
   try {
-    const wsUrl = await waitForBrowserTarget(port);
+    const wsUrl = await waitForBrowserTarget(port, browser);
     cdp = await connectToCdp(wsUrl);
     await verifySearchUi(cdp, baseUrl);
     await verifyAiSkillsShareLink(cdp, baseUrl);

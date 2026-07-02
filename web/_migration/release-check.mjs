@@ -61,6 +61,8 @@ const deploymentTextChecks = [
       ['async function verifyTroubleshootShareLink', 'browser check verifies troubleshooting share links'],
       ['async function verifyEnglishToolShareLinkPaths', 'browser check verifies English tool share paths'],
       ['async function verifyFallbackLocaleToolShareLinkPaths', 'browser check verifies fallback locale tool share paths'],
+      ["readPositiveIntegerEnv('BROWSER_STARTUP_TIMEOUT_MS', 60_000)", 'browser check allows slower CI browser startup'],
+      ['browser exited before opening debugging target', 'browser check reports early browser startup failures'],
       ["'/tools#ai-skills?target=agents&replace=true'", 'browser check opens AI Skills config deep link'],
       ["'/en/tools#ai-skills?target=agents&replace=true'", 'browser check opens English AI Skills config deep link'],
       ["'/fr/tools#desktop?hardware=modern&workflow=creative'", 'browser check opens fallback locale tool config deep link'],

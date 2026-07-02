@@ -1257,7 +1257,19 @@ const toolHashIds: Record<ToolId, string> = {
   skills: 'ai-skills',
 };
 
-const toolIdByHash = Object.fromEntries(Object.entries(toolHashIds).map(([id, hash]) => [hash, id])) as Record<string, ToolId>;
+const toolIdByHash = Object.fromEntries(
+  Object.entries(toolHashIds).map(([id, hash]) => [hash, id]),
+) as Partial<Record<string, ToolId>>;
+
+function normalizeToolHash(hash: string) {
+  const value = hash.replace(/^#/, '');
+
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
 
 function ToolBody({ active, lang }: { active: ToolId; lang: ToolLanguage }) {
   switch (active) {
@@ -1299,7 +1311,7 @@ export function InteractiveTools({ lang = 'zh' }: { lang?: ToolLanguage }) {
 
   useEffect(() => {
     function syncFromHash() {
-      const hash = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+      const hash = normalizeToolHash(window.location.hash);
       const next = toolIdByHash[hash];
       if (next) setActive(next);
     }

@@ -20,7 +20,7 @@ import {
   Wrench,
 } from 'lucide-react';
 import type { ComponentType, ReactNode } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import registry from '../../skills/registry.json';
 
 type ToolLanguage = 'zh' | 'en';
@@ -1247,6 +1247,18 @@ const toolIcons: Record<ToolId, ComponentType<{ className?: string }>> = {
   skills: Bot,
 };
 
+const toolHashIds: Record<ToolId, string> = {
+  mirror: 'mirrors',
+  install: 'install',
+  desktop: 'desktop',
+  partition: 'partitions',
+  troubleshoot: 'troubleshoot',
+  safety: 'command-safety',
+  skills: 'ai-skills',
+};
+
+const toolIdByHash = Object.fromEntries(Object.entries(toolHashIds).map(([id, hash]) => [hash, id])) as Record<string, ToolId>;
+
 function ToolBody({ active, lang }: { active: ToolId; lang: ToolLanguage }) {
   switch (active) {
     case 'mirror':
@@ -1285,6 +1297,24 @@ export function InteractiveTools({ lang = 'zh' }: { lang?: ToolLanguage }) {
                 ? ShieldCheck
                 : Settings2;
 
+  useEffect(() => {
+    function syncFromHash() {
+      const hash = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+      const next = toolIdByHash[hash];
+      if (next) setActive(next);
+    }
+
+    syncFromHash();
+    window.addEventListener('hashchange', syncFromHash);
+    return () => window.removeEventListener('hashchange', syncFromHash);
+  }, []);
+
+  function selectTool(id: ToolId) {
+    setActive(id);
+    const nextUrl = `${window.location.pathname}${window.location.search}#${toolHashIds[id]}`;
+    window.history.replaceState(null, '', nextUrl);
+  }
+
   return (
     <section className="not-prose my-8 overflow-hidden rounded-lg border border-fd-border bg-fd-card text-fd-card-foreground">
       <div className="border-b border-fd-border bg-fd-muted/30 p-5">
@@ -1308,7 +1338,7 @@ export function InteractiveTools({ lang = 'zh' }: { lang?: ToolLanguage }) {
               <button
                 key={id}
                 type="button"
-                onClick={() => setActive(id)}
+                onClick={() => selectTool(id)}
                 aria-pressed={active === id}
                 className={classNames(
                   'flex min-h-11 items-center justify-center gap-2 rounded-md border px-2 text-sm font-medium transition-colors',

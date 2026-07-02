@@ -24,7 +24,7 @@ import { useMemo, useState } from 'react';
 import registry from '../../skills/registry.json';
 
 type ToolLanguage = 'zh' | 'en';
-type ToolId = 'mirror' | 'install' | 'desktop' | 'partition' | 'troubleshoot' | 'skills';
+type ToolId = 'mirror' | 'install' | 'desktop' | 'partition' | 'troubleshoot' | 'safety' | 'skills';
 type ReleaseId = 'trixie' | 'bookworm';
 type ComponentMode = 'main' | 'firmware' | 'full';
 type MirrorId = 'official' | 'ustc' | 'tuna' | 'aliyun' | 'jaist' | 'debian-de';
@@ -38,6 +38,7 @@ type EncryptionMode = 'none' | 'home' | 'full';
 type BootMode = 'single' | 'dual';
 type SymptomId = 'network' | 'display' | 'boot' | 'packages' | 'audio' | 'performance';
 type SkillTarget = 'codex' | 'agents' | 'local';
+type CommandRiskLevel = 'critical' | 'warning' | 'review';
 
 const skill = registry.skills[0];
 
@@ -45,6 +46,7 @@ const text = {
   zh: {
     title: 'Debian 交互工具',
     subtitle: '本地运行的选择器和向导。不会上传数据，也不会自动修改系统。',
+    badge: '本地运行',
     copy: '复制',
     copied: '已复制',
     recommended: '推荐',
@@ -60,6 +62,7 @@ const text = {
       desktop: '桌面环境',
       partition: '分区方案',
       troubleshoot: '排障向导',
+      safety: '命令安全',
       skills: 'AI Skills',
     },
     mirror: {
@@ -96,6 +99,22 @@ const text = {
       symptom: '问题现象',
       docs: '查看排障文档',
     },
+    safety: {
+      title: '命令安全检查器',
+      input: '粘贴要检查的命令',
+      placeholder: '每行一个命令。示例：sudo apt update',
+      summarySafe: '未命中已知高风险模式',
+      summaryReview: '需要人工复核',
+      summaryWarning: '发现高风险命令',
+      summaryCritical: '发现应阻止的危险命令',
+      noFindings:
+        '没有发现远程脚本管道执行、递归强删、危险磁盘写入或 SSH 安全降级等模式。仍需确认命令来源、路径和当前机器状态。',
+      docs: '查看 AI Skills 安全边界',
+      critical: '阻止',
+      warning: '高风险',
+      review: '复核',
+      safer: '更安全做法',
+    },
     skills: {
       title: 'AI Skills 安装命令生成器',
       target: '安装位置',
@@ -109,6 +128,7 @@ const text = {
   en: {
     title: 'Debian Interactive Tools',
     subtitle: 'Local selectors and wizards. No data upload and no automatic system changes.',
+    badge: 'Local tools',
     copy: 'Copy',
     copied: 'Copied',
     recommended: 'Recommended',
@@ -124,6 +144,7 @@ const text = {
       desktop: 'Desktop',
       partition: 'Partitions',
       troubleshoot: 'Troubleshoot',
+      safety: 'Command Safety',
       skills: 'AI Skills',
     },
     mirror: {
@@ -159,6 +180,22 @@ const text = {
       title: 'Troubleshooting Wizard',
       symptom: 'Symptom',
       docs: 'Read troubleshooting docs',
+    },
+    safety: {
+      title: 'Command Safety Checker',
+      input: 'Paste commands to check',
+      placeholder: 'One command per line. Example: sudo apt update',
+      summarySafe: 'No known high-risk pattern found',
+      summaryReview: 'Manual review needed',
+      summaryWarning: 'High-risk command found',
+      summaryCritical: 'Dangerous command should be blocked',
+      noFindings:
+        'No remote script piping, recursive force deletion, destructive disk writes, or SSH security downgrades were detected. Still verify command source, paths, and the current machine state.',
+      docs: 'Read AI Skills safety boundaries',
+      critical: 'Block',
+      warning: 'High risk',
+      review: 'Review',
+      safer: 'Safer approach',
     },
     skills: {
       title: 'AI Skills Installer',
@@ -247,6 +284,7 @@ const docsHref = {
     desktop: '/basics/desktop-environments',
     disk: '/administration/disk-management',
     troubleshoot: '/troubleshooting/faq',
+    safety: '/ai/skills/safety',
     skills: '/ai/skills/install',
   },
   en: {
@@ -255,9 +293,183 @@ const docsHref = {
     desktop: '/en/basics/desktop-environments',
     disk: '/en/administration/disk-management',
     troubleshoot: '/en/troubleshooting/faq',
+    safety: '/en/ai/skills/safety',
     skills: '/en/ai/skills/install',
   },
 };
+
+interface CommandRiskRule {
+  id: string;
+  level: CommandRiskLevel;
+  pattern: RegExp;
+  title: Record<ToolLanguage, string>;
+  detail: Record<ToolLanguage, string>;
+  safer: Record<ToolLanguage, string>;
+}
+
+interface CommandFinding extends CommandRiskRule {
+  line: number;
+  command: string;
+}
+
+const commandRiskRules: CommandRiskRule[] = [
+  {
+    id: 'remote-script-pipe',
+    level: 'critical',
+    pattern: /\b(?:(?:curl|wget)\b[^\n|;]*(?:\|\s*(?:sudo(?:\s+-[A-Za-z]+)*\s+)?(?:bash|sh|zsh)\b)|(?:bash|sh|zsh)\s+<\s*\([^)]*(?:curl|wget)\b)/i,
+    title: { zh: '远程脚本直接交给 shell 执行', en: 'Remote script piped directly into a shell' },
+    detail: {
+      zh: '这会在未审查脚本内容、签名和回滚方式前执行远程代码。',
+      en: 'This executes remote code before reviewing script contents, signatures, or rollback path.',
+    },
+    safer: {
+      zh: '先下载到临时文件，确认来源和内容，再按项目文档选择包管理器、签名仓库或本地脚本。',
+      en: 'Download to a temporary file first, review source and contents, then prefer signed repositories, package managers, or local scripts.',
+    },
+  },
+  {
+    id: 'delete-root-or-home',
+    level: 'critical',
+    pattern: /\brm\s+-(?=[\w-]*r)(?=[\w-]*f)[\w-]*\s+(?:--no-preserve-root\s+)?(?:\/(?:\s|$)|\/\*|\$HOME(?:\s|$)|~(?:\s|$))/i,
+    title: { zh: '递归强制删除根目录或家目录', en: 'Recursive force deletion of root or home' },
+    detail: {
+      zh: '该命令可能删除整个系统、用户目录或不可恢复的大量数据。',
+      en: 'This can remove the whole system, a home directory, or a large amount of unrecoverable data.',
+    },
+    safer: {
+      zh: '先用 `ls` 和 `find ... -maxdepth` 确认目标，再使用更具体路径；需要删除前先做备份。',
+      en: 'Confirm the target with `ls` and `find ... -maxdepth`, use a more specific path, and back up before deleting.',
+    },
+  },
+  {
+    id: 'destructive-disk-write',
+    level: 'critical',
+    pattern: /\b(?:dd\s+.*\bof=\/dev\/(?:sd|vd|xvd|nvme|mmcblk)|mkfs\.[a-z0-9]+\s+\/dev\/|wipefs\s+.*\/dev\/|sgdisk\s+.*\/dev\/|parted\s+.*\/dev\/|fdisk\s+\/dev\/)/i,
+    title: { zh: '可能破坏磁盘或分区表', en: 'Potentially destructive disk or partition operation' },
+    detail: {
+      zh: '磁盘写入、格式化和分区表操作可能立即破坏数据。',
+      en: 'Disk writes, formatting, and partition table operations can destroy data immediately.',
+    },
+    safer: {
+      zh: '先运行 `lsblk -f`、`findmnt`，确认设备名和备份；能预演的工具先使用 dry-run 或只读模式。',
+      en: 'Run `lsblk -f` and `findmnt` first, confirm device names and backups, and use dry-run or read-only modes where available.',
+    },
+  },
+  {
+    id: 'recursive-force-delete',
+    level: 'warning',
+    pattern: /\brm\s+-(?=[\w-]*r)(?=[\w-]*f)[\w-]*\s+/i,
+    title: { zh: '递归强制删除', en: 'Recursive force deletion' },
+    detail: {
+      zh: '`rm -rf` 会跳过确认并递归删除。路径变量、通配符或 sudo 会显著放大风险。',
+      en: '`rm -rf` skips confirmation and deletes recursively. Variables, wildcards, or sudo make the risk much larger.',
+    },
+    safer: {
+      zh: '先用 `rm -ri`、`find` 预览或移动到隔离目录；确认路径后再删除。',
+      en: 'Preview with `rm -ri`, `find`, or move files into a quarantine directory before deleting.',
+    },
+  },
+  {
+    id: 'ssh-security-downgrade',
+    level: 'warning',
+    pattern: /\b(?:PasswordAuthentication\s+yes|PermitRootLogin\s+yes|PermitRootLogin\s+without-password|PubkeyAuthentication\s+no)\b/i,
+    title: { zh: 'SSH 安全基线降级', en: 'SSH security baseline downgrade' },
+    detail: {
+      zh: '启用密码登录、root 登录或禁用公钥登录会扩大暴力破解和误配置风险。',
+      en: 'Enabling password login, root login, or disabling public key auth increases brute-force and misconfiguration risk.',
+    },
+    safer: {
+      zh: '保留已有 SSH 会话，先运行 `sshd -t`，优先使用密钥登录、限制来源地址和用户组。',
+      en: 'Keep an existing SSH session, run `sshd -t`, and prefer key auth, source restrictions, and allowed groups.',
+    },
+  },
+  {
+    id: 'firewall-flush',
+    level: 'warning',
+    pattern: /\b(?:ufw\s+disable|iptables\s+-F|nft\s+flush\s+ruleset)\b/i,
+    title: { zh: '关闭或清空防火墙规则', en: 'Firewall disabled or flushed' },
+    detail: {
+      zh: '直接关闭防火墙可能让管理端口和内部服务暴露到不可信网络。',
+      en: 'Disabling the firewall can expose management ports and internal services to untrusted networks.',
+    },
+    safer: {
+      zh: '先列出规则并只调整必要端口；远程机器上保留回滚会话和控制台路径。',
+      en: 'List rules first and change only the needed ports; keep rollback access and console access on remote machines.',
+    },
+  },
+  {
+    id: 'insecure-apt',
+    level: 'warning',
+    pattern: /\b(?:apt-key\s+add|trusted=yes|--allow-unauthenticated|Acquire::AllowInsecureRepositories=true)\b/i,
+    title: { zh: 'APT 信任边界变弱', en: 'APT trust boundary weakened' },
+    detail: {
+      zh: '全局信任 key、跳过签名或允许不安全仓库会削弱包来源验证。',
+      en: 'Global keys, skipped signatures, or insecure repositories weaken package source verification.',
+    },
+    safer: {
+      zh: '使用 deb822、`Signed-By` 和仓库专用 keyring，并确认仓库来源。',
+      en: 'Use deb822, `Signed-By`, and repository-specific keyrings after verifying the repository source.',
+    },
+  },
+  {
+    id: 'wide-open-permissions',
+    level: 'warning',
+    pattern: /\bchmod\s+(?:-[^\s]+\s+)*777\b|\bchmod\s+-R\s+.*777\b/i,
+    title: { zh: '过宽权限', en: 'Overly broad permissions' },
+    detail: {
+      zh: '`777` 或递归放宽权限可能让其他用户修改脚本、服务数据或敏感文件。',
+      en: '`777` or recursive permission loosening can let other users modify scripts, service data, or sensitive files.',
+    },
+    safer: {
+      zh: '按用户和组授权，优先使用 `chmod 750`、`chmod 640`、ACL 或专用服务账号。',
+      en: 'Grant access by user and group, preferring `chmod 750`, `chmod 640`, ACLs, or dedicated service accounts.',
+    },
+  },
+  {
+    id: 'sudo-or-third-party-source',
+    level: 'review',
+    pattern: /\b(?:sudo|add-apt-repository|\/etc\/apt\/sources\.list\.d\/|curl\b.*gpg|wget\b.*gpg)\b/i,
+    title: { zh: '需要人工复核的系统级变更', en: 'System-level change needs manual review' },
+    detail: {
+      zh: '该命令可能修改系统状态、软件源或信任材料，执行前应确认来源和回滚方式。',
+      en: 'This may change system state, repositories, or trust material; verify source and rollback before running it.',
+    },
+    safer: {
+      zh: '先阅读项目文档，确认发行版代号、仓库 key、影响范围和备份。',
+      en: 'Read the project documentation first, then confirm release codename, repository key, impact scope, and backups.',
+    },
+  },
+];
+
+const riskRank: Record<CommandRiskLevel, number> = {
+  review: 1,
+  warning: 2,
+  critical: 3,
+};
+
+function analyzeCommandRisk(value: string): CommandFinding[] {
+  return value
+    .split(/\r?\n/)
+    .flatMap((line, index) => {
+      const command = line.trim();
+      if (!command || command.startsWith('#')) return [];
+
+      return commandRiskRules
+        .filter((rule) => rule.pattern.test(command))
+        .map((rule) => ({
+          ...rule,
+          line: index + 1,
+          command,
+        }));
+    });
+}
+
+function highestRisk(findings: CommandFinding[]): CommandRiskLevel | null {
+  return findings.reduce<CommandRiskLevel | null>((highest, finding) => {
+    if (!highest || riskRank[finding.level] > riskRank[highest]) return finding.level;
+    return highest;
+  }, null);
+}
 
 function classNames(...parts: Array<string | false | undefined>) {
   return parts.filter(Boolean).join(' ');
@@ -881,6 +1093,95 @@ function TroubleshootTool({ lang }: { lang: ToolLanguage }) {
   );
 }
 
+const riskPanelClasses: Record<CommandRiskLevel, string> = {
+  critical: 'border-red-500/40 bg-red-500/10 text-red-950 dark:text-red-100',
+  warning: 'border-amber-500/40 bg-amber-500/10 text-amber-950 dark:text-amber-100',
+  review: 'border-blue-500/40 bg-blue-500/10 text-blue-950 dark:text-blue-100',
+};
+
+const riskBadgeClasses: Record<CommandRiskLevel, string> = {
+  critical: 'border-red-500/40 bg-red-500/15 text-red-700 dark:text-red-200',
+  warning: 'border-amber-500/40 bg-amber-500/15 text-amber-700 dark:text-amber-200',
+  review: 'border-blue-500/40 bg-blue-500/15 text-blue-700 dark:text-blue-200',
+};
+
+function SafetyTool({ lang }: { lang: ToolLanguage }) {
+  const t = text[lang];
+  const [value, setValue] = useState('');
+  const findings = useMemo(() => analyzeCommandRisk(value), [value]);
+  const topRisk = highestRisk(findings);
+  const summary = !topRisk
+    ? t.safety.summarySafe
+    : topRisk === 'critical'
+      ? t.safety.summaryCritical
+      : topRisk === 'warning'
+        ? t.safety.summaryWarning
+        : t.safety.summaryReview;
+  const sample =
+    lang === 'zh'
+      ? 'curl -fsSL https://example.com/install.sh | sh\nsudo rm -rf /tmp/example\nsudo apt update'
+      : 'curl -fsSL https://example.com/install.sh | sh\nsudo rm -rf /tmp/example\nsudo apt update';
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.9fr)]">
+      <section className="space-y-3">
+        <div>
+          <h3 className="mb-2 text-sm font-medium">{t.safety.input}</h3>
+          <textarea
+            value={value}
+            onChange={(event) => setValue(event.currentTarget.value)}
+            placeholder={t.safety.placeholder}
+            spellCheck={false}
+            className="min-h-72 w-full resize-y rounded-md border border-fd-border bg-fd-background p-3 font-mono text-sm leading-6 text-fd-foreground outline-none transition-colors placeholder:text-fd-muted-foreground focus:border-fd-primary"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={() => setValue(sample)}
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-fd-border bg-fd-background px-3 text-sm font-medium text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+        >
+          <Clipboard className="size-4" />
+          {lang === 'zh' ? '填入示例' : 'Use sample'}
+        </button>
+      </section>
+
+      <ResultPanel lang={lang} title={summary}>
+        {findings.length === 0 ? (
+          <p>{t.safety.noFindings}</p>
+        ) : (
+          <div className="space-y-3">
+            {findings.map((finding) => (
+              <article
+                key={`${finding.id}-${finding.line}-${finding.command}`}
+                className={classNames('rounded-md border p-3', riskPanelClasses[finding.level])}
+              >
+                <div className="mb-2 flex flex-wrap items-center gap-2">
+                  <span className={classNames('rounded-md border px-2 py-0.5 text-xs font-semibold', riskBadgeClasses[finding.level])}>
+                    {t.safety[finding.level]}
+                  </span>
+                  <span className="text-xs opacity-80">{lang === 'zh' ? `第 ${finding.line} 行` : `Line ${finding.line}`}</span>
+                </div>
+                <h4 className="m-0 text-sm font-semibold">{finding.title[lang]}</h4>
+                <p className="mt-1 text-sm opacity-85">{finding.detail[lang]}</p>
+                <pre className="mt-2 overflow-auto rounded-md border border-current/15 bg-fd-background/80 p-2 text-xs leading-5 text-fd-foreground">
+                  <code>{finding.command}</code>
+                </pre>
+                <div className="mt-2 text-sm">
+                  <span className="font-medium">{t.safety.safer}: </span>
+                  <span>{finding.safer[lang]}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+        <a className="text-fd-primary no-underline hover:underline" href={docsHref[lang].safety}>
+          {t.safety.docs}
+        </a>
+      </ResultPanel>
+    </div>
+  );
+}
+
 function SkillsTool({ lang }: { lang: ToolLanguage }) {
   const t = text[lang];
   const [target, setTarget] = useState<SkillTarget>('codex');
@@ -942,6 +1243,7 @@ const toolIcons: Record<ToolId, ComponentType<{ className?: string }>> = {
   desktop: Monitor,
   partition: HardDrive,
   troubleshoot: HelpCircle,
+  safety: ShieldCheck,
   skills: Bot,
 };
 
@@ -957,6 +1259,8 @@ function ToolBody({ active, lang }: { active: ToolId; lang: ToolLanguage }) {
       return <PartitionTool lang={lang} />;
     case 'troubleshoot':
       return <TroubleshootTool lang={lang} />;
+    case 'safety':
+      return <SafetyTool lang={lang} />;
     case 'skills':
       return <SkillsTool lang={lang} />;
   }
@@ -966,7 +1270,20 @@ export function InteractiveTools({ lang = 'zh' }: { lang?: ToolLanguage }) {
   const t = text[lang];
   const [active, setActive] = useState<ToolId>('mirror');
   const tools = Object.keys(t.tabs) as ToolId[];
-  const AccentIcon = active === 'skills' ? Sparkles : active === 'partition' ? Database : active === 'desktop' ? Cpu : active === 'install' ? Laptop : active === 'troubleshoot' ? Wrench : Settings2;
+  const AccentIcon =
+    active === 'skills'
+      ? Sparkles
+      : active === 'partition'
+        ? Database
+        : active === 'desktop'
+          ? Cpu
+          : active === 'install'
+            ? Laptop
+            : active === 'troubleshoot'
+              ? Wrench
+              : active === 'safety'
+                ? ShieldCheck
+                : Settings2;
 
   return (
     <section className="not-prose my-8 overflow-hidden rounded-lg border border-fd-border bg-fd-card text-fd-card-foreground">
@@ -975,7 +1292,7 @@ export function InteractiveTools({ lang = 'zh' }: { lang?: ToolLanguage }) {
           <div>
             <div className="mb-2 inline-flex items-center gap-2 rounded-md border border-fd-border bg-fd-background px-2.5 py-1 text-xs font-medium text-fd-muted-foreground">
               <AccentIcon className="size-3.5" />
-              Phase 5
+              {t.badge}
             </div>
             <h2 className="m-0 text-2xl font-semibold tracking-normal">{t.title}</h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-fd-muted-foreground">{t.subtitle}</p>
@@ -984,7 +1301,7 @@ export function InteractiveTools({ lang = 'zh' }: { lang?: ToolLanguage }) {
       </div>
 
       <div className="border-b border-fd-border p-3">
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-7">
           {tools.map((id) => {
             const Icon = toolIcons[id];
             return (

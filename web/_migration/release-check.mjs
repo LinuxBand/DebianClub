@@ -66,6 +66,8 @@ const deploymentTextChecks = [
       ["'/en/tools#partitions?disk=standard&boot=single&encryption=home'", 'smoke covers English partition config deep link'],
       ["'/tools#troubleshoot?symptom=display'", 'smoke covers Chinese troubleshooting config deep link'],
       ["'/en/tools#troubleshoot?symptom=performance'", 'smoke covers English troubleshooting config deep link'],
+      ["requiredIds: ['/tools', '/ai/skills']", 'smoke verifies Chinese search shard contains key pages'],
+      ["requiredTerms: ['Debian Interactive Tools', 'DebianClub AI Skills']", 'smoke verifies English search shard contains key terms'],
     ],
   },
   {

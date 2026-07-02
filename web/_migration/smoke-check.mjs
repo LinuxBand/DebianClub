@@ -44,7 +44,24 @@ const toolHashRouteChecks = [
   '/en/tools#troubleshoot?symptom=performance',
 ];
 
-const searchChecks = requiredLocales.map((locale) => ({ path: `/api/search/${locale}`, locale }));
+const searchChecks = requiredLocales.map((locale) => {
+  const zhContentCheck =
+    locale === 'zh'
+      ? {
+          requiredIds: ['/tools', '/ai/skills'],
+          requiredTerms: ['Debian 交互工具箱', 'DebianClub AI Skills'],
+        }
+      : {};
+  const enContentCheck =
+    locale === 'en'
+      ? {
+          requiredIds: ['/en/tools', '/en/ai/skills'],
+          requiredTerms: ['Debian Interactive Tools', 'DebianClub AI Skills'],
+        }
+      : {};
+
+  return { path: `/api/search/${locale}`, locale, ...zhContentCheck, ...enContentCheck };
+});
 
 const textChecks = [
   { path: '/sitemap.xml', includes: '<urlset' },
@@ -137,7 +154,7 @@ async function checkHtmlRoute(path) {
   }
 }
 
-async function checkSearchShard({ path, locale }) {
+async function checkSearchShard({ path, locale, requiredIds = [], requiredTerms = [] }) {
   try {
     const { response, body } = await fetchWithRetry(path);
     if (response.status !== 200) {
@@ -153,9 +170,26 @@ async function checkSearchShard({ path, locale }) {
       return;
     }
 
-    if (payload?.type !== 'i18n' || !payload?.data?.[locale]) {
+    const shard = payload?.data?.[locale];
+    if (payload?.type !== 'i18n' || !shard) {
       fail(`${path} does not contain locale shard ${locale}`);
       return;
+    }
+
+    const ids = shard?.internalDocumentIDStore?.internalIdToId;
+    for (const id of requiredIds) {
+      if (!Array.isArray(ids) || !ids.includes(id)) {
+        fail(`${path} search shard is missing ${id}`);
+        return;
+      }
+    }
+
+    const serializedShard = requiredTerms.length ? JSON.stringify(shard) : '';
+    for (const term of requiredTerms) {
+      if (!serializedShard.includes(term)) {
+        fail(`${path} search shard is missing ${term}`);
+        return;
+      }
     }
 
     pass(`${path} returned locale shard ${locale} (${body.length} bytes)`);

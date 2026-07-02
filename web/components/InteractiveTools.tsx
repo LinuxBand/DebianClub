@@ -135,6 +135,8 @@ const text = {
       validate: '验证命令',
       docs: '查看 AI Skills 文档',
       targetNote: '命令需要在 DebianClub 仓库根目录执行。',
+      share: '复制 Skills 配置链接',
+      shareCopied: '配置链接已复制',
     },
   },
   en: {
@@ -229,6 +231,8 @@ const text = {
       validate: 'Validation command',
       docs: 'Read AI Skills docs',
       targetNote: 'Run the command from the DebianClub repository root.',
+      share: 'Copy Skills config link',
+      shareCopied: 'Config link copied',
     },
   },
 } as const;
@@ -1495,12 +1499,41 @@ function SkillsTool({ lang }: { lang: ToolLanguage }) {
   const t = text[lang];
   const [target, setTarget] = useState<SkillTarget>('codex');
   const [replace, setReplace] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
   const targetPath = targetPaths[target].target;
   const installCommand = `bash ${skill.install.local_script.replace(
     ' debian-linux-reliability',
     `${replace ? ' --replace' : ''} --target ${targetPath} debian-linux-reliability`,
   )}`;
   const validateCommand = `bash ${skill.validation.script}`;
+
+  useEffect(() => {
+    function syncSkillsStateFromHash() {
+      const hashState = parseToolHash(window.location.hash);
+      if (hashState.id !== toolHashIds.skills) return;
+
+      const nextTarget = hashState.params.get('target');
+      const nextReplace = hashState.params.get('replace');
+
+      if (hasRecordKey(targetPaths, nextTarget)) setTarget(nextTarget);
+      if (nextReplace === 'true') setReplace(true);
+      if (nextReplace === 'false') setReplace(false);
+    }
+
+    syncSkillsStateFromHash();
+    window.addEventListener('hashchange', syncSkillsStateFromHash);
+    return () => window.removeEventListener('hashchange', syncSkillsStateFromHash);
+  }, []);
+
+  async function copyShareLink() {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = `${toolHashIds.skills}?target=${target}&replace=${replace ? 'true' : 'false'}`;
+
+    await copyText(url.toString());
+    setShareCopied(true);
+    window.setTimeout(() => setShareCopied(false), 1400);
+  }
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.85fr)]">
@@ -1538,6 +1571,14 @@ function SkillsTool({ lang }: { lang: ToolLanguage }) {
           <div className="mb-2 font-medium text-fd-foreground">{t.skills.validate}</div>
           <CodeBlock lang={lang} value={validateCommand} />
         </div>
+        <button
+          type="button"
+          onClick={copyShareLink}
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-fd-border bg-fd-background px-3 text-sm font-medium text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+        >
+          {shareCopied ? <Check className="size-4" /> : <Clipboard className="size-4" />}
+          {shareCopied ? t.skills.shareCopied : t.skills.share}
+        </button>
         <a className="text-fd-primary no-underline hover:underline" href={docsHref[lang].skills}>
           {t.skills.docs}
         </a>

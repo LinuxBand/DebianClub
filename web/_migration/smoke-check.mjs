@@ -30,6 +30,8 @@ const toolHashRouteChecks = [
   '/en/tools#command-safety?command=sudo%20apt%20update',
   '/tools#ai-skills',
   '/en/tools#ai-skills',
+  '/tools#ai-skills?target=agents&replace=true',
+  '/en/tools#ai-skills?target=local&replace=false',
   '/tools#mirrors?release=bookworm&mirror=official&components=full',
   '/en/tools#mirrors?release=bookworm&mirror=debian-de&components=firmware',
   '/tools#install?device=server&goal=server&risk=low',

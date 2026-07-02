@@ -542,6 +542,106 @@ async function verifyMirrorShareLink(cdp, baseUrl) {
   pass('mirror deep link and share link stay in sync');
 }
 
+async function verifyInstallShareLink(cdp, baseUrl) {
+  const initialHash = '#install?device=server&goal=server&risk=low';
+  const updatedHash = '#install?device=laptop&goal=ai&risk=balanced';
+  const installUrl = new URL(`/tools${initialHash}`, baseUrl);
+
+  await cdp.send('Page.navigate', { url: installUrl.toString() });
+  await waitFor(cdp, "document.body && document.body.innerText.includes('复制安装配置链接')", 'install tool');
+
+  const initialState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const activeTab = buttons.find((button) => button.innerText.trim() === '安装方式');
+      const serverButtons = buttons.filter((button) => button.innerText.trim() === '服务器');
+      const risk = buttons.find((button) => button.innerText.includes('最低风险'));
+      const bodyText = document.body.innerText;
+      return {
+        hash: window.location.hash,
+        activeTab: activeTab?.getAttribute('aria-pressed') || null,
+        selectedServerButtonCount: serverButtons.filter(
+          (button) => button.getAttribute('aria-pressed') === 'true',
+        ).length,
+        riskPressed: risk?.getAttribute('aria-pressed') || null,
+        hasLowRiskTitle: bodyText.includes('先用虚拟机或 Live USB 验证'),
+        hasLowRiskStep: bodyText.includes('下载 live 或 netinst 镜像'),
+      };
+    })()`,
+  );
+
+  assert(initialState.hash === initialHash, 'install initial hash mismatch', initialState);
+  assert(initialState.activeTab === 'true', 'install tab is not active', initialState);
+  assert(initialState.selectedServerButtonCount >= 2, 'install server device/goal values were not loaded from hash', initialState);
+  assert(initialState.riskPressed === 'true', 'install risk was not loaded from hash', initialState);
+  assert(initialState.hasLowRiskTitle, 'install result did not use low-risk recommendation title', initialState);
+  assert(initialState.hasLowRiskStep, 'install result did not use low-risk next step', initialState);
+
+  await evaluate(
+    cdp,
+    `new Promise((resolve) => {
+      window.location.hash = ${JSON.stringify(updatedHash.slice(1))};
+      window.setTimeout(resolve, 350);
+    })`,
+    true,
+  );
+
+  const updatedState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const device = buttons.find((button) => button.innerText.includes('笔记本'));
+      const goal = buttons.find((button) => button.innerText.includes('本地 AI'));
+      const risk = buttons.find((button) => button.innerText.trim() === '平衡');
+      const bodyText = document.body.innerText;
+      return {
+        hash: window.location.hash,
+        devicePressed: device?.getAttribute('aria-pressed') || null,
+        goalPressed: goal?.getAttribute('aria-pressed') || null,
+        riskPressed: risk?.getAttribute('aria-pressed') || null,
+        hasAiTitle: bodyText.includes('先完整安装，再处理 GPU 驱动'),
+        hasAiStep: bodyText.includes('按硬件与驱动中心处理 GPU'),
+        hasOldLowRiskTitle: bodyText.includes('先用虚拟机或 Live USB 验证'),
+      };
+    })()`,
+  );
+
+  assert(updatedState.hash === updatedHash, 'install updated hash mismatch', updatedState);
+  assert(updatedState.devicePressed === 'true', 'install device did not sync after hashchange', updatedState);
+  assert(updatedState.goalPressed === 'true', 'install goal did not sync after hashchange', updatedState);
+  assert(updatedState.riskPressed === 'true', 'install risk did not sync after hashchange', updatedState);
+  assert(updatedState.hasAiTitle, 'install result did not use AI recommendation title', updatedState);
+  assert(updatedState.hasAiStep, 'install result did not use AI next step', updatedState);
+  assert(!updatedState.hasOldLowRiskTitle, 'install result retained stale low-risk title', updatedState);
+
+  const copiedLink = await evaluate(
+    cdp,
+    `new Promise((resolve, reject) => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async (value) => { window.__copiedInstallLink = value; } },
+      });
+      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制安装配置链接'));
+      if (!button) {
+        reject(new Error('install share button not found'));
+        return;
+      }
+      button.click();
+      window.setTimeout(() => {
+        const copiedUrl = new URL(window.__copiedInstallLink);
+        resolve({ href: window.__copiedInstallLink, search: copiedUrl.search, hash: copiedUrl.hash });
+      }, 250);
+    })`,
+    true,
+  );
+
+  assert(copiedLink.search === '', 'install copied share URL kept query string', copiedLink);
+  assert(copiedLink.hash === updatedHash, 'install copied share URL hash mismatch', copiedLink);
+
+  pass('install deep link and share link stay in sync');
+}
+
 async function run() {
   let baseUrl;
   try {
@@ -581,6 +681,7 @@ async function run() {
     await verifyAiSkillsShareLink(cdp, baseUrl);
     await verifyCommandSafetyShareLink(cdp, baseUrl);
     await verifyMirrorShareLink(cdp, baseUrl);
+    await verifyInstallShareLink(cdp, baseUrl);
   } catch (error) {
     fail(error instanceof Error ? error.message : String(error));
   } finally {

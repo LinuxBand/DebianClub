@@ -55,6 +55,7 @@ const deploymentTextChecks = [
       ['async function verifyAiSkillsShareLink', 'browser check verifies AI Skills share links'],
       ['async function verifyCommandSafetyShareLink', 'browser check verifies command safety share links'],
       ['async function verifyMirrorShareLink', 'browser check verifies mirror share links'],
+      ['async function verifyInstallShareLink', 'browser check verifies install share links'],
       ["'/tools#ai-skills?target=agents&replace=true'", 'browser check opens AI Skills config deep link'],
       ["window.location.hash = 'ai-skills?target=local&replace=false'", 'browser check verifies AI Skills hashchange sync'],
       ["copiedLink.hash === '#ai-skills?target=local&replace=false'", 'browser check verifies copied AI Skills share hash'],
@@ -64,6 +65,9 @@ const deploymentTextChecks = [
       ["'#mirrors?release=bookworm&mirror=official&components=full'", 'browser check opens mirror config deep link'],
       ["window.__copiedMirrorLink", 'browser check stubs mirror clipboard writes'],
       ['mirror deep link and share link stay in sync', 'browser check validates mirror share sync'],
+      ["'#install?device=server&goal=server&risk=low'", 'browser check opens install config deep link'],
+      ["window.__copiedInstallLink", 'browser check stubs install clipboard writes'],
+      ['install deep link and share link stay in sync', 'browser check validates install share sync'],
     ],
   },
   {

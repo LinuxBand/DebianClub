@@ -99,6 +99,8 @@ const text = {
       boot: '启动模式',
       encryption: '加密',
       docs: '查看磁盘管理',
+      share: '复制分区配置链接',
+      shareCopied: '配置链接已复制',
     },
     troubleshoot: {
       title: '排障问诊向导',
@@ -189,6 +191,8 @@ const text = {
       boot: 'Boot mode',
       encryption: 'Encryption',
       docs: 'Read disk management',
+      share: 'Copy partition config link',
+      shareCopied: 'Config link copied',
     },
     troubleshoot: {
       title: 'Troubleshooting Wizard',
@@ -320,6 +324,24 @@ const desktopWorkflows = {
   light: true,
   creative: true,
 } satisfies Record<DesktopWorkflow, true>;
+
+const partitionDisks = {
+  small: true,
+  standard: true,
+  large: true,
+  multi: true,
+} satisfies Record<PartitionDisk, true>;
+
+const bootModes = {
+  single: true,
+  dual: true,
+} satisfies Record<BootMode, true>;
+
+const encryptionModes = {
+  none: true,
+  home: true,
+  full: true,
+} satisfies Record<EncryptionMode, true>;
 
 const targetPaths: Record<SkillTarget, { label: Record<ToolLanguage, string>; target: string }> = {
   codex: { label: { zh: 'Codex 默认目录', en: 'Codex default' }, target: '"${CODEX_HOME:-$HOME/.codex}/skills"' },
@@ -1070,8 +1092,38 @@ function PartitionTool({ lang }: { lang: ToolLanguage }) {
   const [disk, setDisk] = useState<PartitionDisk>('standard');
   const [boot, setBoot] = useState<BootMode>('single');
   const [encryption, setEncryption] = useState<EncryptionMode>('none');
+  const [shareCopied, setShareCopied] = useState(false);
   const plan = partitionPlan(disk, boot, encryption, lang);
   const planText = plan.map((row) => row.join(' | ')).join('\n');
+
+  useEffect(() => {
+    function syncPartitionStateFromHash() {
+      const hashState = parseToolHash(window.location.hash);
+      if (hashState.id !== toolHashIds.partition) return;
+
+      const nextDisk = hashState.params.get('disk');
+      const nextBoot = hashState.params.get('boot');
+      const nextEncryption = hashState.params.get('encryption');
+
+      if (hasRecordKey(partitionDisks, nextDisk)) setDisk(nextDisk);
+      if (hasRecordKey(bootModes, nextBoot)) setBoot(nextBoot);
+      if (hasRecordKey(encryptionModes, nextEncryption)) setEncryption(nextEncryption);
+    }
+
+    syncPartitionStateFromHash();
+    window.addEventListener('hashchange', syncPartitionStateFromHash);
+    return () => window.removeEventListener('hashchange', syncPartitionStateFromHash);
+  }, []);
+
+  async function copyShareLink() {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = `${toolHashIds.partition}?disk=${disk}&boot=${boot}&encryption=${encryption}`;
+
+    await copyText(url.toString());
+    setShareCopied(true);
+    window.setTimeout(() => setShareCopied(false), 1400);
+  }
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.9fr)]">
@@ -1136,6 +1188,14 @@ function PartitionTool({ lang }: { lang: ToolLanguage }) {
           </table>
         </div>
         <CopyButton value={planText} label={t.copy} copiedLabel={t.copied} />
+        <button
+          type="button"
+          onClick={copyShareLink}
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-fd-border bg-fd-background px-3 text-sm font-medium text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+        >
+          {shareCopied ? <Check className="size-4" /> : <Clipboard className="size-4" />}
+          {shareCopied ? t.partition.shareCopied : t.partition.share}
+        </button>
         <a className="block text-fd-primary no-underline hover:underline" href={docsHref[lang].disk}>
           {t.partition.docs}
         </a>

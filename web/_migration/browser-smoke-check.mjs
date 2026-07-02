@@ -59,6 +59,22 @@ async function fetchJson(url) {
   return response.json();
 }
 
+async function terminateBrowser(browser) {
+  if (browser.exitCode !== null || browser.signalCode !== null) return;
+
+  const exited = new Promise((resolve) => {
+    browser.once('exit', resolve);
+  });
+
+  browser.kill('SIGTERM');
+  const didExit = await Promise.race([exited.then(() => true), sleep(3_000).then(() => false)]);
+
+  if (!didExit && browser.exitCode === null && browser.signalCode === null) {
+    browser.kill('SIGKILL');
+    await exited;
+  }
+}
+
 async function waitForBrowserTarget(port) {
   const deadline = Date.now() + browserStartupTimeoutMs;
 
@@ -265,8 +281,8 @@ async function run() {
     fail(error instanceof Error ? error.message : String(error));
   } finally {
     cdp?.close();
-    browser.kill('SIGTERM');
-    rmSync(userDataDir, { recursive: true, force: true });
+    await terminateBrowser(browser);
+    rmSync(userDataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   }
 }
 

@@ -743,6 +743,107 @@ async function verifyDesktopShareLink(cdp, baseUrl) {
   pass('desktop deep link and share link stay in sync');
 }
 
+async function verifyPartitionShareLink(cdp, baseUrl) {
+  const initialHash = '#partitions?disk=multi&boot=dual&encryption=full';
+  const updatedHash = '#partitions?disk=standard&boot=single&encryption=home';
+  const partitionUrl = new URL(`/tools${initialHash}`, baseUrl);
+
+  await cdp.send('Page.navigate', { url: partitionUrl.toString() });
+  await waitFor(cdp, "document.body && document.body.innerText.includes('复制分区配置链接')", 'partition tool');
+
+  const initialState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const activeTab = buttons.find((button) => button.innerText.trim() === '分区方案');
+      const disk = buttons.find((button) => button.innerText.includes('多磁盘'));
+      const boot = buttons.find((button) => button.innerText.includes('与 Windows 双系统'));
+      const encryption = buttons.find((button) => button.innerText.includes('全盘加密'));
+      const tableText = Array.from(document.querySelectorAll('table')).map((table) => table.textContent || '').join('\\n');
+      return {
+        hash: window.location.hash,
+        activeTab: activeTab?.getAttribute('aria-pressed') || null,
+        diskPressed: disk?.getAttribute('aria-pressed') || null,
+        bootPressed: boot?.getAttribute('aria-pressed') || null,
+        encryptionPressed: encryption?.getAttribute('aria-pressed') || null,
+        tableText,
+      };
+    })()`,
+  );
+
+  assert(initialState.hash === initialHash, 'partition initial hash mismatch', initialState);
+  assert(initialState.activeTab === 'true', 'partition tab is not active', initialState);
+  assert(initialState.diskPressed === 'true', 'partition disk was not loaded from hash', initialState);
+  assert(initialState.bootPressed === 'true', 'partition boot mode was not loaded from hash', initialState);
+  assert(initialState.encryptionPressed === 'true', 'partition encryption mode was not loaded from hash', initialState);
+  assert(initialState.tableText.includes('512 MB - 1 GB existing EFI'), 'partition table did not use dual-boot EFI sizing', initialState);
+  assert(initialState.tableText.includes('全盘加密时建议单独保留'), 'partition table did not use full encryption /boot note', initialState);
+  assert(initialState.tableText.includes('数据盘'), 'partition table did not include multi-disk data row', initialState);
+
+  await evaluate(
+    cdp,
+    `new Promise((resolve) => {
+      window.location.hash = ${JSON.stringify(updatedHash.slice(1))};
+      window.setTimeout(resolve, 350);
+    })`,
+    true,
+  );
+
+  const updatedState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const disk = buttons.find((button) => button.innerText.includes('常规 512GB - 1TB'));
+      const boot = buttons.find((button) => button.innerText.includes('只装 Debian'));
+      const encryption = buttons.find((button) => button.innerText.includes('只保护用户数据'));
+      const tableText = Array.from(document.querySelectorAll('table')).map((table) => table.textContent || '').join('\\n');
+      return {
+        hash: window.location.hash,
+        diskPressed: disk?.getAttribute('aria-pressed') || null,
+        bootPressed: boot?.getAttribute('aria-pressed') || null,
+        encryptionPressed: encryption?.getAttribute('aria-pressed') || null,
+        tableText,
+      };
+    })()`,
+  );
+
+  assert(updatedState.hash === updatedHash, 'partition updated hash mismatch', updatedState);
+  assert(updatedState.diskPressed === 'true', 'partition disk did not sync after hashchange', updatedState);
+  assert(updatedState.bootPressed === 'true', 'partition boot mode did not sync after hashchange', updatedState);
+  assert(updatedState.encryptionPressed === 'true', 'partition encryption mode did not sync after hashchange', updatedState);
+  assert(updatedState.tableText.includes('512 MB - 1 GB EFI'), 'partition table did not use single-boot EFI sizing', updatedState);
+  assert(updatedState.tableText.includes('可合并到 /'), 'partition table did not use non-full-encryption /boot size', updatedState);
+  assert(updatedState.tableText.includes('50-80 GB'), 'partition table did not use standard disk root sizing', updatedState);
+  assert(!updatedState.tableText.includes('数据盘'), 'partition table retained stale multi-disk data row', updatedState);
+  assert(!updatedState.tableText.includes('existing EFI'), 'partition table retained stale dual-boot EFI text', updatedState);
+
+  const copiedLink = await evaluate(
+    cdp,
+    `new Promise((resolve, reject) => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async (value) => { window.__copiedPartitionLink = value; } },
+      });
+      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制分区配置链接'));
+      if (!button) {
+        reject(new Error('partition share button not found'));
+        return;
+      }
+      button.click();
+      window.setTimeout(() => {
+        const copiedUrl = new URL(window.__copiedPartitionLink);
+        resolve({ href: window.__copiedPartitionLink, search: copiedUrl.search, hash: copiedUrl.hash });
+      }, 250);
+    })`,
+    true,
+  );
+
+  assert(copiedLink.search === '', 'partition copied share URL kept query string', copiedLink);
+  assert(copiedLink.hash === updatedHash, 'partition copied share URL hash mismatch', copiedLink);
+
+  pass('partition deep link and share link stay in sync');
+}
+
 async function run() {
   let baseUrl;
   try {
@@ -784,6 +885,7 @@ async function run() {
     await verifyMirrorShareLink(cdp, baseUrl);
     await verifyInstallShareLink(cdp, baseUrl);
     await verifyDesktopShareLink(cdp, baseUrl);
+    await verifyPartitionShareLink(cdp, baseUrl);
   } catch (error) {
     fail(error instanceof Error ? error.message : String(error));
   } finally {

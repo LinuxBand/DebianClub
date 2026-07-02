@@ -438,6 +438,110 @@ async function verifyCommandSafetyShareLink(cdp, baseUrl) {
   pass('command safety deep link and share link stay in sync');
 }
 
+async function verifyMirrorShareLink(cdp, baseUrl) {
+  const initialHash = '#mirrors?release=bookworm&mirror=official&components=full';
+  const updatedHash = '#mirrors?release=trixie&mirror=ustc&components=firmware';
+  const mirrorUrl = new URL(`/tools${initialHash}`, baseUrl);
+
+  await cdp.send('Page.navigate', { url: mirrorUrl.toString() });
+  await waitFor(cdp, "document.body && document.body.innerText.includes('复制镜像配置链接')", 'mirror tool');
+
+  const initialState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const activeTab = buttons.find((button) => button.innerText.trim() === '镜像源');
+      const release = buttons.find((button) => button.innerText.includes('Debian 12 Bookworm'));
+      const mirror = buttons.find((button) => button.innerText.includes('deb.debian.org'));
+      const components = buttons.find((button) => button.innerText.includes('完整组件'));
+      const codeText = Array.from(document.querySelectorAll('pre, code')).map((element) => element.textContent || '').join('\\n');
+      return {
+        hash: window.location.hash,
+        activeTab: activeTab?.getAttribute('aria-pressed') || null,
+        releasePressed: release?.getAttribute('aria-pressed') || null,
+        mirrorPressed: mirror?.getAttribute('aria-pressed') || null,
+        componentsPressed: components?.getAttribute('aria-pressed') || null,
+        codeText,
+      };
+    })()`,
+  );
+
+  assert(initialState.hash === initialHash, 'mirror initial hash mismatch', initialState);
+  assert(initialState.activeTab === 'true', 'mirror tab is not active', initialState);
+  assert(initialState.releasePressed === 'true', 'mirror release was not loaded from hash', initialState);
+  assert(initialState.mirrorPressed === 'true', 'mirror provider was not loaded from hash', initialState);
+  assert(initialState.componentsPressed === 'true', 'mirror component mode was not loaded from hash', initialState);
+  assert(initialState.codeText.includes('Suites: bookworm bookworm-updates'), 'mirror snippet did not use bookworm suites', initialState);
+  assert(initialState.codeText.includes('URIs: https://deb.debian.org/debian'), 'mirror snippet did not use official archive URI', initialState);
+  assert(
+    initialState.codeText.includes('Components: main contrib non-free non-free-firmware'),
+    'mirror snippet did not use full components',
+    initialState,
+  );
+
+  await evaluate(
+    cdp,
+    `new Promise((resolve) => {
+      window.location.hash = ${JSON.stringify(updatedHash.slice(1))};
+      window.setTimeout(resolve, 350);
+    })`,
+    true,
+  );
+
+  const updatedState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const release = buttons.find((button) => button.innerText.includes('Debian 13 Trixie'));
+      const mirror = buttons.find((button) => button.innerText.includes('USTC'));
+      const components = buttons.find((button) => button.innerText.includes('main + firmware'));
+      const codeText = Array.from(document.querySelectorAll('pre, code')).map((element) => element.textContent || '').join('\\n');
+      return {
+        hash: window.location.hash,
+        releasePressed: release?.getAttribute('aria-pressed') || null,
+        mirrorPressed: mirror?.getAttribute('aria-pressed') || null,
+        componentsPressed: components?.getAttribute('aria-pressed') || null,
+        codeText,
+      };
+    })()`,
+  );
+
+  assert(updatedState.hash === updatedHash, 'mirror updated hash mismatch', updatedState);
+  assert(updatedState.releasePressed === 'true', 'mirror release did not sync after hashchange', updatedState);
+  assert(updatedState.mirrorPressed === 'true', 'mirror provider did not sync after hashchange', updatedState);
+  assert(updatedState.componentsPressed === 'true', 'mirror component mode did not sync after hashchange', updatedState);
+  assert(updatedState.codeText.includes('Suites: trixie trixie-updates'), 'mirror snippet did not use trixie suites', updatedState);
+  assert(updatedState.codeText.includes('URIs: https://mirrors.ustc.edu.cn/debian'), 'mirror snippet did not use USTC archive URI', updatedState);
+  assert(updatedState.codeText.includes('Components: main non-free-firmware'), 'mirror snippet did not use firmware components', updatedState);
+  assert(!updatedState.codeText.includes('bookworm-updates'), 'mirror snippet retained stale bookworm suite', updatedState);
+
+  const copiedLink = await evaluate(
+    cdp,
+    `new Promise((resolve, reject) => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: async (value) => { window.__copiedMirrorLink = value; } },
+      });
+      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes('复制镜像配置链接'));
+      if (!button) {
+        reject(new Error('mirror share button not found'));
+        return;
+      }
+      button.click();
+      window.setTimeout(() => {
+        const copiedUrl = new URL(window.__copiedMirrorLink);
+        resolve({ href: window.__copiedMirrorLink, search: copiedUrl.search, hash: copiedUrl.hash });
+      }, 250);
+    })`,
+    true,
+  );
+
+  assert(copiedLink.search === '', 'mirror copied share URL kept query string', copiedLink);
+  assert(copiedLink.hash === updatedHash, 'mirror copied share URL hash mismatch', copiedLink);
+
+  pass('mirror deep link and share link stay in sync');
+}
+
 async function run() {
   let baseUrl;
   try {
@@ -476,6 +580,7 @@ async function run() {
     await verifySearchUi(cdp, baseUrl);
     await verifyAiSkillsShareLink(cdp, baseUrl);
     await verifyCommandSafetyShareLink(cdp, baseUrl);
+    await verifyMirrorShareLink(cdp, baseUrl);
   } catch (error) {
     fail(error instanceof Error ? error.message : String(error));
   } finally {

@@ -1,0 +1,60 @@
+---
+title: "分发矩阵与版本策略"
+description: "DebianClub AI Skills 的 registry、tgz 包、GitHub Release、校验摘要、版本号和回滚策略。"
+---
+
+分发矩阵用于说明 `debian-linux-reliability` 从仓库源码到 AI agent 本地安装之间有哪些可验证路径。目标是让安装、升级、回滚和审计都有固定入口。
+
+## Phase 46 已上线
+
+| 分发形式 | 入口 | 适合场景 | 必须校验 |
+|----------|------|----------|----------|
+| 仓库源码 | `skills/debian-linux-reliability/` | 本地开发、审查、直接安装 | `SKILL.md`、references、scripts、tests 存在 |
+| Registry | `/skills.json` | 平台发现、自动索引、AI-readable 入口 | `schema_version`、`entrypoint`、模块列表、脚本路径 |
+| 本地 tgz | `skills/dist/*.tgz` | 离线安装、版本归档 | manifest、大小、SHA-256 |
+| GitHub Release | `skills/debian-linux-reliability/vX.Y.Z` | 对外发布和回滚 | tag、tgz、manifest、release note |
+| 文档入口 | `/ai/skills`、`/llms.txt`、`/llms-full.txt` | AI 和人类阅读 | 中英文链接、安装命令、安全边界 |
+
+## 版本号规则
+
+| 变更类型 | 版本动作 | 示例 |
+|----------|----------|------|
+| 修复描述、补充参考链接 | patch | `0.2.1` |
+| 新增模块、脚本或评估样本 | minor | `0.3.0` |
+| 改变默认安全边界、入口文件或安装契约 | major | `1.0.0` |
+
+版本 tag 使用：
+
+```text
+skills/debian-linux-reliability/v${version}
+```
+
+## 发布前矩阵
+
+```bash
+bash skills/scripts/validate-all.sh
+bash skills/scripts/package-skill.sh debian-linux-reliability
+bash skills/scripts/publish-skill-release.sh --dry-run debian-linux-reliability
+corepack pnpm --dir web release:check
+```
+
+## 回滚策略
+
+1. 保留旧安装目录的时间戳备份。
+2. 使用 registry 中的版本号确认当前安装来源。
+3. 对 tgz 安装先校验 manifest 和 SHA-256。
+4. 回滚后重新运行 `bash skills/scripts/validate-all.sh`。
+5. 如果是文档或 registry 出错，优先回滚站点部署，再修复发布脚本。
+
+## Registry 合约
+
+`/skills.json` 必须能回答：
+
+- skill 名称和显示名称是什么。
+- 入口文件是不是 `SKILL.md`。
+- 默认安全边界是不是只读诊断。
+- 模块列表是否包含 APT、命令安全、systemd、GPU 和安全审计。
+- 安装、验证、打包和发布脚本在哪里。
+- 中文本地化安全说明是否存在。
+
+下一步：[评估与维护](/ai/skills/evaluation)。

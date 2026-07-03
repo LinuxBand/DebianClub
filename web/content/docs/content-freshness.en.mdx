@@ -1,0 +1,59 @@
+---
+title: "Content Freshness"
+description: "Freshness baselines and automated checks for Debian versions, lifecycle dates, LTS windows, AI tools, and release operations."
+---
+
+Content freshness marks pages whose facts change over time, preventing release dates, lifecycle windows, package support, and deployment instructions from drifting.
+
+## Phase 44 Live
+
+The release gate now includes:
+
+```bash
+corepack pnpm --dir web freshness:check
+```
+
+The check reads freshness baselines from the repository and verifies that key pages still contain the current review date, official source links, and lifecycle dates that must stay synchronized.
+
+## Current Review Baseline
+
+| Item | Current value | Source |
+|------|---------------|--------|
+| Current stable | Debian 13 (Trixie) | [Debian Releases](https://www.debian.org/releases/) |
+| Debian 13 release date | 2025-08-09 | [Debian 13 release notes](https://www.debian.org/releases/trixie/) |
+| Debian 13 regular security support ends | 2028-08-09 | [Debian Releases](https://www.debian.org/releases/) |
+| Debian 13 LTS ends | 2030-06-30 | [Debian Releases](https://www.debian.org/releases/) |
+| Debian 12 regular security support ends | 2026-07-11 | [Debian Releases](https://www.debian.org/releases/) |
+| Debian 12 LTS ends | 2028-06-30 | [Debian Releases](https://www.debian.org/releases/) |
+| Debian 11 LTS ends | 2026-08-31 | [Debian LTS](https://wiki.debian.org/LTS) |
+
+Review date: **2026-07-03**. Next mandatory review date: **2026-10-01**.
+
+## Content That Must Be Checked
+
+| Content type | Example pages | Risk |
+|--------------|---------------|------|
+| Release lifecycle | [Versions & Lifecycle](/en/versions), [EOL](/en/eol) | Stale dates mislead upgrade planning |
+| Latest news | [Debian Latest News](/en/news) | Point releases, LTS transitions, and release plans change |
+| AI tool installation | [AI Tools](/en/ai) | Third-party installers, package names, and supported systems change |
+| Deployment flow | [Deployment](/en/deployment) | Cloudflare, Next.js, pnpm, and wrangler versions change |
+| AI Skills distribution | [Install & Distribution](/en/ai/skills/install) | Registry, tags, package format, and validation scripts change |
+
+## Update Flow
+
+1. Check official sources first; do not copy lifecycle dates from summaries.
+2. Update review dates and concrete lifecycle values in pages.
+3. Synchronize `web/_migration/content-freshness-check.mjs`.
+4. Run `corepack pnpm --dir web freshness:check`.
+5. Run the full `corepack pnpm --dir web release:check`.
+
+## When The Check Fails
+
+Do not loosen the check immediately. First determine:
+
+- Whether the mandatory review date has arrived.
+- Whether Debian official sources changed lifecycle or release-note information.
+- Whether a page is missing official source links.
+- Whether only one of the Chinese or English pages was updated.
+
+Next: [I18n Quality](/en/i18n-quality).

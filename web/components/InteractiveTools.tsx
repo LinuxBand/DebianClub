@@ -8,6 +8,7 @@ import {
   Cpu,
   Database,
   Download,
+  GitBranch,
   HardDrive,
   HelpCircle,
   Laptop,
@@ -24,7 +25,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import registry from '../../skills/registry.json';
 
 type ToolLanguage = 'zh' | 'en';
-type ToolId = 'mirror' | 'install' | 'desktop' | 'partition' | 'troubleshoot' | 'safety' | 'skills';
+type ToolId = 'mirror' | 'install' | 'desktop' | 'partition' | 'troubleshoot' | 'safety' | 'skills' | 'upgrade';
 type ReleaseId = 'trixie' | 'bookworm';
 type ComponentMode = 'main' | 'firmware' | 'full';
 type MirrorId = 'official' | 'ustc' | 'tuna' | 'aliyun' | 'jaist' | 'debian-de';
@@ -39,6 +40,9 @@ type BootMode = 'single' | 'dual';
 type SymptomId = 'network' | 'display' | 'boot' | 'packages' | 'audio' | 'performance';
 type SkillTarget = 'codex' | 'agents' | 'local';
 type CommandRiskLevel = 'critical' | 'warning' | 'review';
+type UpgradeCurrent = 'trixie' | 'bookworm' | 'bullseye' | 'buster';
+type UpgradeTarget = 'keep' | 'trixie' | 'bookworm';
+type UpgradeExposure = 'offline' | 'internal' | 'public';
 
 const skill = registry.skills[0];
 
@@ -64,6 +68,7 @@ const text = {
       troubleshoot: '排障向导',
       safety: '命令安全',
       skills: 'AI Skills',
+      upgrade: '升级规划',
     },
     mirror: {
       title: '镜像源选择器',
@@ -138,6 +143,17 @@ const text = {
       share: '复制 Skills 配置链接',
       shareCopied: '配置链接已复制',
     },
+    upgrade: {
+      title: '升级规划器',
+      current: '当前版本',
+      target: '目标',
+      exposure: '暴露面',
+      share: '复制升级规划链接',
+      shareCopied: '规划链接已复制',
+      docs: '查看升级指南',
+      checks: '升级前检查',
+      schedule: '建议窗口',
+    },
   },
   en: {
     title: 'Debian Interactive Tools',
@@ -160,6 +176,7 @@ const text = {
       troubleshoot: 'Troubleshoot',
       safety: 'Command Safety',
       skills: 'AI Skills',
+      upgrade: 'Upgrade',
     },
     mirror: {
       title: 'Mirror Selector',
@@ -233,6 +250,17 @@ const text = {
       targetNote: 'Run the command from the DebianClub repository root.',
       share: 'Copy Skills config link',
       shareCopied: 'Config link copied',
+    },
+    upgrade: {
+      title: 'Upgrade Planner',
+      current: 'Current release',
+      target: 'Target',
+      exposure: 'Exposure',
+      share: 'Copy upgrade plan link',
+      shareCopied: 'Plan link copied',
+      docs: 'Read upgrade guide',
+      checks: 'Pre-upgrade checks',
+      schedule: 'Suggested window',
     },
   },
 } as const;
@@ -357,6 +385,25 @@ const targetPaths: Record<SkillTarget, { label: Record<ToolLanguage, string>; ta
   local: { label: { zh: '仓库内本地目录', en: 'Local repository directory' }, target: './skills-local' },
 };
 
+const upgradeCurrentReleases = {
+  trixie: true,
+  bookworm: true,
+  bullseye: true,
+  buster: true,
+} satisfies Record<UpgradeCurrent, true>;
+
+const upgradeTargets = {
+  keep: true,
+  trixie: true,
+  bookworm: true,
+} satisfies Record<UpgradeTarget, true>;
+
+const upgradeExposures = {
+  offline: true,
+  internal: true,
+  public: true,
+} satisfies Record<UpgradeExposure, true>;
+
 const docsHref = {
   zh: {
     deb822: '/administration/deb822',
@@ -366,6 +413,7 @@ const docsHref = {
     troubleshoot: '/troubleshooting/faq',
     safety: '/ai/skills/safety',
     skills: '/ai/skills/install',
+    upgrade: '/basics/upgrade',
   },
   en: {
     deb822: '/en/administration/deb822',
@@ -375,6 +423,7 @@ const docsHref = {
     troubleshoot: '/en/troubleshooting/faq',
     safety: '/en/ai/skills/safety',
     skills: '/en/ai/skills/install',
+    upgrade: '/en/basics/upgrade',
   },
 };
 
@@ -1607,6 +1656,201 @@ function SkillsTool({ lang }: { lang: ToolLanguage }) {
   );
 }
 
+function upgradeRecommendation(current: UpgradeCurrent, target: UpgradeTarget, exposure: UpgradeExposure, lang: ToolLanguage) {
+  const publicFacing = exposure === 'public';
+  const checks = [
+    'cat /etc/debian_version',
+    'apt update',
+    'apt list --upgradable',
+    'dpkg --audit',
+    'apt-mark showhold',
+    'systemctl --failed',
+    'df -h',
+    'find /etc/apt -type f -maxdepth 3 -print',
+  ];
+
+  if (current === 'trixie') {
+    return {
+      title: lang === 'zh' ? '保持 Debian 13 并持续更新' : 'Stay on Debian 13 and keep it updated',
+      why:
+        lang === 'zh'
+          ? 'Debian 13 当前是 stable。除非你在做 Debian 14 适配测试，否则不需要迁移发行版。'
+          : 'Debian 13 is the current stable release. Unless you are testing Debian 14 compatibility, no release migration is needed.',
+      schedule:
+        lang === 'zh'
+          ? publicFacing
+            ? '公网服务建议每周安装安全更新，并在点更新后安排重启窗口。'
+            : '每周或每月安装安全更新，点更新后评估是否重启。'
+          : publicFacing
+            ? 'Install security updates weekly for public services and schedule reboot windows after point releases.'
+            : 'Install security updates weekly or monthly and decide on reboots after point releases.',
+      checks,
+    };
+  }
+
+  if (current === 'bookworm') {
+    return {
+      title: target === 'keep' ? (lang === 'zh' ? '短期留在 Debian 12，但建立升级窗口' : 'Stay on Debian 12 briefly, but schedule migration') : (lang === 'zh' ? '规划升级到 Debian 13' : 'Plan the Debian 13 upgrade'),
+      why:
+        lang === 'zh'
+          ? 'Debian 12 已接近常规安全支持结束，进入 LTS 后不适合继续新增长期负载。'
+          : 'Debian 12 is near the end of regular security support. After LTS starts, it should not be used for new long-lived workloads.',
+      schedule:
+        lang === 'zh'
+          ? publicFacing
+            ? '公网服务建议在常规安全支持结束前完成升级，至少准备快照、控制台和回滚路径。'
+            : '内网或桌面系统可以分批升级，但应先完成备份恢复验证。'
+          : publicFacing
+            ? 'For public services, finish migration before regular security support ends and prepare snapshots, console access, and rollback.'
+            : 'Internal or desktop systems can move in batches, but validate backup restore first.',
+      checks,
+    };
+  }
+
+  if (current === 'bullseye') {
+    return {
+      title: lang === 'zh' ? '先升 Debian 12，再升 Debian 13' : 'Upgrade to Debian 12 first, then Debian 13',
+      why:
+        lang === 'zh'
+          ? 'Debian 11 处于 LTS 尾声。不要直接跨多个 stable 版本升级，先稳定到 12，再规划 13。'
+          : 'Debian 11 is late in its LTS window. Avoid skipping multiple stable releases; stabilize on 12 first, then plan 13.',
+      schedule:
+        lang === 'zh'
+          ? publicFacing
+            ? '公网机器应优先迁移或替换，不能升级时先限制暴露面。'
+            : '先清理第三方源和 hold 包，再在测试机演练两段升级。'
+          : publicFacing
+            ? 'Public machines should be migrated or replaced first; restrict exposure if they cannot be upgraded immediately.'
+            : 'Clean third-party sources and held packages, then rehearse the two-step upgrade on a test machine.',
+      checks,
+    };
+  }
+
+  return {
+    title: lang === 'zh' ? '优先重装或替换旧系统' : 'Prefer reinstalling or replacing the old system',
+    why:
+      lang === 'zh'
+        ? 'Debian 10 或更早版本已经结束公开安全支持，直接多级升级风险高。'
+        : 'Debian 10 or older has ended public security support, and direct multi-release upgrades are high risk.',
+    schedule:
+      lang === 'zh'
+        ? publicFacing
+          ? '公网服务应尽快迁移到新主机或隔离网络，不建议继续原地维护。'
+          : '优先导出数据和配置，使用 Debian 13 新装后恢复服务。'
+        : publicFacing
+          ? 'Move public services to a new host or isolate the network quickly; do not keep maintaining in place.'
+          : 'Export data and configuration, reinstall Debian 13, then restore services.',
+    checks,
+  };
+}
+
+function UpgradeTool({ lang }: { lang: ToolLanguage }) {
+  const t = text[lang];
+  const [current, setCurrent] = useState<UpgradeCurrent>('bookworm');
+  const [target, setTarget] = useState<UpgradeTarget>('trixie');
+  const [exposure, setExposure] = useState<UpgradeExposure>('internal');
+  const [shareCopied, showShareCopied] = useCopiedFeedback();
+  const result = upgradeRecommendation(current, target, exposure, lang);
+
+  useEffect(() => {
+    function syncUpgradeStateFromHash() {
+      const hashState = parseToolHash(window.location.hash);
+      if (hashState.id !== toolHashIds.upgrade) return;
+
+      const nextCurrent = hashState.params.get('current');
+      const nextTarget = hashState.params.get('target');
+      const nextExposure = hashState.params.get('exposure');
+
+      if (hasRecordKey(upgradeCurrentReleases, nextCurrent)) setCurrent(nextCurrent);
+      if (hasRecordKey(upgradeTargets, nextTarget)) setTarget(nextTarget);
+      if (hasRecordKey(upgradeExposures, nextExposure)) setExposure(nextExposure);
+    }
+
+    syncUpgradeStateFromHash();
+    window.addEventListener('hashchange', syncUpgradeStateFromHash);
+    return () => window.removeEventListener('hashchange', syncUpgradeStateFromHash);
+  }, []);
+
+  async function copyShareLink() {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = `${toolHashIds.upgrade}?current=${current}&target=${target}&exposure=${exposure}`;
+
+    await copyText(url.toString());
+    showShareCopied();
+  }
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.9fr)]">
+      <section className="space-y-5">
+        <div>
+          <h3 className="mb-2 text-sm font-medium">{t.upgrade.current}</h3>
+          <ButtonGroup
+            value={current}
+            onChange={setCurrent}
+            options={[
+              { value: 'trixie', label: 'Debian 13 Trixie' },
+              { value: 'bookworm', label: 'Debian 12 Bookworm' },
+              { value: 'bullseye', label: 'Debian 11 Bullseye' },
+              { value: 'buster', label: lang === 'zh' ? 'Debian 10 或更早' : 'Debian 10 or older' },
+            ]}
+          />
+        </div>
+        <div>
+          <h3 className="mb-2 text-sm font-medium">{t.upgrade.target}</h3>
+          <ButtonGroup
+            value={target}
+            onChange={setTarget}
+            options={[
+              { value: 'trixie', label: 'Debian 13 Trixie' },
+              { value: 'bookworm', label: 'Debian 12 Bookworm' },
+              { value: 'keep', label: lang === 'zh' ? '暂时保持当前版本' : 'Stay for now' },
+            ]}
+          />
+        </div>
+        <div>
+          <h3 className="mb-2 text-sm font-medium">{t.upgrade.exposure}</h3>
+          <ButtonGroup
+            value={exposure}
+            onChange={setExposure}
+            options={[
+              { value: 'offline', label: lang === 'zh' ? '离线 / 实验机' : 'Offline / lab' },
+              { value: 'internal', label: lang === 'zh' ? '内网服务 / 桌面' : 'Internal / desktop' },
+              { value: 'public', label: lang === 'zh' ? '公网服务' : 'Public service' },
+            ]}
+          />
+        </div>
+      </section>
+
+      <ResultPanel lang={lang} title={result.title}>
+        <div>
+          <div className="mb-1 font-medium text-fd-foreground">{t.why}</div>
+          <p>{result.why}</p>
+        </div>
+        <div>
+          <div className="mb-1 font-medium text-fd-foreground">{t.upgrade.schedule}</div>
+          <p>{result.schedule}</p>
+        </div>
+        <div>
+          <div className="mb-2 font-medium text-fd-foreground">{t.upgrade.checks}</div>
+          <CodeBlock lang={lang} value={result.checks.join('\n')} />
+        </div>
+        <button
+          type="button"
+          onClick={copyShareLink}
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-fd-border bg-fd-background px-3 text-sm font-medium text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+        >
+          {shareCopied ? <Check className="size-4" /> : <Clipboard className="size-4" />}
+          {shareCopied ? t.upgrade.shareCopied : t.upgrade.share}
+        </button>
+        <a className="text-fd-primary no-underline hover:underline" href={docsHref[lang].upgrade}>
+          {t.upgrade.docs}
+        </a>
+      </ResultPanel>
+    </div>
+  );
+}
+
 const toolIcons: Record<ToolId, ComponentType<{ className?: string }>> = {
   mirror: Network,
   install: Download,
@@ -1615,6 +1859,7 @@ const toolIcons: Record<ToolId, ComponentType<{ className?: string }>> = {
   troubleshoot: HelpCircle,
   safety: ShieldCheck,
   skills: Bot,
+  upgrade: GitBranch,
 };
 
 const toolHashIds: Record<ToolId, string> = {
@@ -1625,6 +1870,7 @@ const toolHashIds: Record<ToolId, string> = {
   troubleshoot: 'troubleshoot',
   safety: 'command-safety',
   skills: 'ai-skills',
+  upgrade: 'upgrade',
 };
 
 const toolIdByHash = Object.fromEntries(
@@ -1667,6 +1913,8 @@ function ToolBody({ active, lang }: { active: ToolId; lang: ToolLanguage }) {
       return <SafetyTool lang={lang} />;
     case 'skills':
       return <SkillsTool lang={lang} />;
+    case 'upgrade':
+      return <UpgradeTool lang={lang} />;
   }
 }
 
@@ -1675,7 +1923,9 @@ export function InteractiveTools({ lang = 'zh' }: { lang?: ToolLanguage }) {
   const [active, setActive] = useState<ToolId>('mirror');
   const tools = Object.keys(t.tabs) as ToolId[];
   const AccentIcon =
-    active === 'skills'
+    active === 'upgrade'
+      ? GitBranch
+      : active === 'skills'
       ? Sparkles
       : active === 'partition'
         ? Database
@@ -1723,7 +1973,7 @@ export function InteractiveTools({ lang = 'zh' }: { lang?: ToolLanguage }) {
       </div>
 
       <div className="border-b border-fd-border p-3">
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-7">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-4 lg:grid-cols-8">
           {tools.map((id) => {
             const Icon = toolIcons[id];
             return (

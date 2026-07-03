@@ -55,6 +55,14 @@ jobs:
         shell: bash
         run: corepack pnpm --dir web types:check
 
+      - name: Content freshness check
+        shell: bash
+        run: corepack pnpm --dir web freshness:check
+
+      - name: I18n consistency check
+        shell: bash
+        run: corepack pnpm --dir web i18n:check
+
       - name: Build static export
         shell: bash
         run: corepack pnpm --dir web build

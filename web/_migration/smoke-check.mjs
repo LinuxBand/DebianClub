@@ -4,6 +4,7 @@ const searchShardTimeoutMs = 45_000;
 
 const requiredLocales = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt'];
 const localizedEntryPages = ['tools', 'scenarios', 'hardware', 'versions', 'release-readiness', 'deployment'];
+const bilingualOperationalPages = ['production-observability', 'content-freshness', 'i18n-quality'];
 
 function localeRoute(locale, page = '') {
   const path = page ? `/${page}` : '';
@@ -16,6 +17,7 @@ const routeChecks = [
   '/ai/skills',
   '/en/ai/skills',
   ...localizedEntryPages.flatMap((page) => requiredLocales.map((locale) => localeRoute(locale, page))),
+  ...bilingualOperationalPages.flatMap((page) => ['zh', 'en'].map((locale) => localeRoute(locale, page))),
   '/scenarios/nas-file-sharing',
   '/en/scenarios/nas-file-sharing',
   '/scenarios/local-ai-inference',
@@ -43,6 +45,8 @@ const toolHashRouteChecks = [
   '/en/tools#partitions?disk=standard&boot=single&encryption=home',
   '/tools#troubleshoot?symptom=display',
   '/en/tools#troubleshoot?symptom=performance',
+  '/tools#upgrade?current=bookworm&target=trixie&exposure=public',
+  '/en/tools#upgrade?current=bullseye&target=bookworm&exposure=internal',
 ];
 
 const searchChecks = requiredLocales.map((locale) => {

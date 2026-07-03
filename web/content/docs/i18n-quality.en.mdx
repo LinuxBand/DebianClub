@@ -1,0 +1,50 @@
+---
+title: "I18n Quality"
+description: "Quality gates for DebianClub localized entries, fallback policy, search shards, and Chinese/English parity on critical pages."
+---
+
+I18n quality keeps new content visible from the right language entry points without pretending that fallback pages are fully localized.
+
+## Phase 45 Live
+
+The release gate now includes:
+
+```bash
+corepack pnpm --dir web i18n:check
+```
+
+Check goals:
+
+| Check | Requirement |
+|-------|-------------|
+| Critical entries | Tools, scenarios, hardware, versions, release-readiness, and deployment are reachable from 8 language entries |
+| New operational pages | Production observability, content freshness, and i18n quality have Chinese and English pages |
+| AI Skills section | The distribution page is present in both Chinese and English meta ordering |
+| Tool fallback | German, Spanish, French, Japanese, Korean, and Portuguese tool pages clearly use the English interactive UI |
+| Search shards | 8 locale shards exist instead of falling back to one large JSON file |
+
+## Localization Policy
+
+| Type | Policy |
+|------|--------|
+| Core explanation pages | Maintain full Chinese and English versions |
+| High-traffic entries | Keep 8 language entries; when not fully translated, state the fallback clearly |
+| Interactive tools | Full Chinese and English UI; other languages use the English UI with local-language boundaries |
+| Search | Each language uses `/api/search/{locale}` |
+| AI-readable outputs | Cover at least Chinese and English core entries |
+
+## New Page Checklist
+
+Before adding a page:
+
+1. Is it a key navigation, home, or search entry?
+2. Does it require Chinese and English parity?
+3. Should other languages be fully translated or clearly fallback to English?
+4. Should it be added to `smoke:check` routes?
+5. Should it be added to `release:check` static artifacts?
+
+## When The Check Fails
+
+If `i18n:check` fails, fill the missing page or meta entry first. Do not bypass the check by deleting coverage. If a fallback is intentional, the localized page must say that the interactive UI is currently in English and links must point to a real English page.
+
+Next: [Production Observability](/en/production-observability).

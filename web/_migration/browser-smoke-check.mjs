@@ -943,6 +943,98 @@ async function verifyTroubleshootShareLink(cdp, baseUrl) {
   pass('troubleshooting deep link and share link stay in sync');
 }
 
+async function verifyUpgradeShareLink(cdp, baseUrl) {
+  const initialHash = '#upgrade?current=bookworm&target=trixie&exposure=public';
+  const updatedHash = '#upgrade?current=bullseye&target=bookworm&exposure=internal';
+  const upgradeUrl = new URL(`/tools${initialHash}`, baseUrl);
+
+  await navigateTo(cdp, upgradeUrl);
+  await waitFor(cdp, "document.body && document.body.innerText.includes('复制升级规划链接')", 'upgrade planner');
+
+  const initialState = await evaluate(
+    cdp,
+    `(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const pressedInGroup = (title, optionText) => {
+        const heading = Array.from(document.querySelectorAll('h3')).find((item) => item.innerText.trim() === title);
+        const button = heading?.parentElement?.querySelectorAll('button')
+          ? Array.from(heading.parentElement.querySelectorAll('button')).find((item) => item.innerText.includes(optionText))
+          : null;
+        return button?.getAttribute('aria-pressed') || null;
+      };
+      const activeTab = buttons.find((button) => button.innerText.trim() === '升级规划');
+      const bodyText = document.body.innerText;
+      const codeText = Array.from(document.querySelectorAll('pre, code')).map((element) => element.textContent || '').join('\\n');
+      return {
+        hash: window.location.hash,
+        activeTab: activeTab?.getAttribute('aria-pressed') || null,
+        currentPressed: pressedInGroup('当前版本', 'Debian 12 Bookworm'),
+        targetPressed: pressedInGroup('目标', 'Debian 13 Trixie'),
+        exposurePressed: pressedInGroup('暴露面', '公网服务'),
+        hasBookwormAdvice: bodyText.includes('规划升级到 Debian 13'),
+        codeText,
+      };
+    })()`,
+  );
+
+  assert(initialState.hash === initialHash, 'upgrade initial hash mismatch', initialState);
+  assert(initialState.activeTab === 'true', 'upgrade tab is not active', initialState);
+  assert(initialState.currentPressed === 'true', 'upgrade current release was not loaded from hash', initialState);
+  assert(initialState.targetPressed === 'true', 'upgrade target was not loaded from hash', initialState);
+  assert(initialState.exposurePressed === 'true', 'upgrade exposure was not loaded from hash', initialState);
+  assert(initialState.hasBookwormAdvice, 'upgrade did not show Bookworm migration advice', initialState);
+  assert(initialState.codeText.includes('dpkg --audit'), 'upgrade checks did not include dpkg audit', initialState);
+
+  await evaluate(
+    cdp,
+    `new Promise((resolve) => {
+      window.location.hash = ${JSON.stringify(updatedHash.slice(1))};
+      window.setTimeout(resolve, 350);
+    })`,
+    true,
+  );
+
+  const updatedState = await evaluate(
+    cdp,
+    `(() => {
+      const pressedInGroup = (title, optionText) => {
+        const heading = Array.from(document.querySelectorAll('h3')).find((item) => item.innerText.trim() === title);
+        const button = heading?.parentElement?.querySelectorAll('button')
+          ? Array.from(heading.parentElement.querySelectorAll('button')).find((item) => item.innerText.includes(optionText))
+          : null;
+        return button?.getAttribute('aria-pressed') || null;
+      };
+      const bodyText = document.body.innerText;
+      return {
+        hash: window.location.hash,
+        currentPressed: pressedInGroup('当前版本', 'Debian 11 Bullseye'),
+        targetPressed: pressedInGroup('目标', 'Debian 12 Bookworm'),
+        exposurePressed: pressedInGroup('暴露面', '内网服务 / 桌面'),
+        hasBullseyeAdvice: bodyText.includes('先升 Debian 12，再升 Debian 13'),
+        hasOldBookwormAdvice: bodyText.includes('规划升级到 Debian 13'),
+      };
+    })()`,
+  );
+
+  assert(updatedState.hash === updatedHash, 'upgrade updated hash mismatch', updatedState);
+  assert(updatedState.currentPressed === 'true', 'upgrade current release did not sync after hashchange', updatedState);
+  assert(updatedState.targetPressed === 'true', 'upgrade target did not sync after hashchange', updatedState);
+  assert(updatedState.exposurePressed === 'true', 'upgrade exposure did not sync after hashchange', updatedState);
+  assert(updatedState.hasBullseyeAdvice, 'upgrade did not show Bullseye staged migration advice', updatedState);
+  assert(!updatedState.hasOldBookwormAdvice, 'upgrade retained stale Bookworm advice after hashchange', updatedState);
+
+  const copiedLink = await copyShareLink(cdp, {
+    buttonText: '复制升级规划链接',
+    storageKey: '__copiedUpgradeLink',
+    label: 'upgrade',
+  });
+
+  assert(copiedLink.search === '', 'upgrade copied share URL kept query string', copiedLink);
+  assert(copiedLink.hash === updatedHash, 'upgrade copied share URL hash mismatch', copiedLink);
+
+  pass('upgrade deep link and share link stay in sync');
+}
+
 async function copyEnglishToolShareLink(cdp, buttonText) {
   return copyShareLink(cdp, {
     buttonText,
@@ -1015,6 +1107,11 @@ async function verifyEnglishToolShareLinkPaths(cdp, baseUrl) {
       path: '/en/tools#troubleshoot?symptom=performance',
       buttonText: 'Copy troubleshooting link',
     },
+    {
+      name: 'English upgrade',
+      path: '/en/tools#upgrade?current=bookworm&target=trixie&exposure=public',
+      buttonText: 'Copy upgrade plan link',
+    },
   ];
 
   for (const test of tests) {
@@ -1068,6 +1165,11 @@ async function verifyFallbackLocaleToolShareLinkPaths(cdp, baseUrl) {
       locale: 'pt',
       path: '/pt/tools#ai-skills?target=agents&replace=true',
       buttonText: 'Copy Skills config link',
+    },
+    {
+      locale: 'de',
+      path: '/de/tools#upgrade?current=bookworm&target=trixie&exposure=public',
+      buttonText: 'Copy upgrade plan link',
     },
   ];
 
@@ -1138,6 +1240,7 @@ async function run() {
     await runCheck('desktop share link', cdp, () => verifyDesktopShareLink(cdp, baseUrl));
     await runCheck('partition share link', cdp, () => verifyPartitionShareLink(cdp, baseUrl));
     await runCheck('troubleshooting share link', cdp, () => verifyTroubleshootShareLink(cdp, baseUrl));
+    await runCheck('upgrade share link', cdp, () => verifyUpgradeShareLink(cdp, baseUrl));
     await runCheck('English tool share links', cdp, () => verifyEnglishToolShareLinkPaths(cdp, baseUrl));
     await runCheck('fallback locale tool share links', cdp, () => verifyFallbackLocaleToolShareLinkPaths(cdp, baseUrl));
   } catch (error) {

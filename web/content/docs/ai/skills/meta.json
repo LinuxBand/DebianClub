@@ -3,6 +3,7 @@
   "pages": [
     "index",
     "install",
+    "distribution",
     "usage",
     "modules",
     "safety",

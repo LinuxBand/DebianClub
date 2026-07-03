@@ -4,6 +4,7 @@ import { join } from 'node:path';
 const maxSearchFileBytes = 25 * 1024 * 1024;
 const requiredLocales = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt'];
 const localizedEntryPages = ['tools', 'scenarios', 'hardware', 'versions', 'release-readiness', 'deployment'];
+const bilingualOperationalPages = ['production-observability', 'content-freshness', 'i18n-quality'];
 const requiredAiSkillModules = ['apt-safe', 'command-safety', 'systemd-troubleshoot', 'gpu-drivers', 'security-audit'];
 const requiredRobotsLines = [
   'User-Agent: *',
@@ -27,20 +28,32 @@ const requiredSitemapUrls = [
   'https://www.debian.club/en/versions',
   'https://www.debian.club/release-readiness',
   'https://www.debian.club/en/release-readiness',
+  'https://www.debian.club/production-observability',
+  'https://www.debian.club/en/production-observability',
+  'https://www.debian.club/content-freshness',
+  'https://www.debian.club/en/content-freshness',
+  'https://www.debian.club/i18n-quality',
+  'https://www.debian.club/en/i18n-quality',
   'https://www.debian.club/deployment',
   'https://www.debian.club/en/deployment',
 ];
 const localizedEntryFiles = localizedEntryPages.flatMap((page) =>
   requiredLocales.map((locale) => (locale === 'zh' ? `out/${page}.html` : `out/${locale}/${page}.html`)),
 );
+const bilingualOperationalFiles = bilingualOperationalPages.flatMap((page) => [`out/${page}.html`, `out/en/${page}.html`]);
 const requiredFiles = [
   '_migration/browser-smoke-check.mjs',
   '_migration/smoke-check.mjs',
+  '_migration/content-freshness-check.mjs',
+  '_migration/i18n-consistency-check.mjs',
   'out/index.html',
   'out/en.html',
   'out/ai/skills.html',
   'out/en/ai/skills.html',
+  'out/ai/skills/distribution.html',
+  'out/en/ai/skills/distribution.html',
   ...localizedEntryFiles,
+  ...bilingualOperationalFiles,
   'out/scenarios/nas-file-sharing.html',
   'out/en/scenarios/nas-file-sharing.html',
   'out/scenarios/local-ai-inference.html',
@@ -71,7 +84,9 @@ const deploymentTextChecks = [
   {
     path: 'package.json',
     checks: [
-      ['"release:check": "node _migration/release-check.mjs"', 'release check script exists'],
+      ['"release:check": "pnpm freshness:check && pnpm i18n:check && node _migration/release-check.mjs"', 'release check script exists'],
+      ['"freshness:check": "node _migration/content-freshness-check.mjs"', 'freshness check script exists'],
+      ['"i18n:check": "node _migration/i18n-consistency-check.mjs"', 'i18n check script exists'],
       ['"smoke:check": "node _migration/smoke-check.mjs"', 'smoke check script exists'],
       ['"browser:check": "node _migration/browser-smoke-check.mjs"', 'browser check script exists'],
     ],
@@ -87,6 +102,7 @@ const deploymentTextChecks = [
       ['async function verifyDesktopShareLink', 'browser check verifies desktop share links'],
       ['async function verifyPartitionShareLink', 'browser check verifies partition share links'],
       ['async function verifyTroubleshootShareLink', 'browser check verifies troubleshooting share links'],
+      ['async function verifyUpgradeShareLink', 'browser check verifies upgrade planner share links'],
       ['async function verifyEnglishToolShareLinkPaths', 'browser check verifies English tool share paths'],
       ['async function verifyFallbackLocaleToolShareLinkPaths', 'browser check verifies fallback locale tool share paths'],
       ['async function waitForToolShareButton', 'browser check centralizes share button readiness'],
@@ -128,6 +144,9 @@ const deploymentTextChecks = [
       ["'#troubleshoot?symptom=display'", 'browser check opens troubleshooting config deep link'],
       ["storageKey: '__copiedTroubleshootLink'", 'browser check stubs troubleshooting clipboard writes'],
       ['troubleshooting deep link and share link stay in sync', 'browser check validates troubleshooting share sync'],
+      ["'#upgrade?current=bookworm&target=trixie&exposure=public'", 'browser check opens upgrade planner config deep link'],
+      ["storageKey: '__copiedUpgradeLink'", 'browser check stubs upgrade planner clipboard writes'],
+      ['upgrade deep link and share link stay in sync', 'browser check validates upgrade planner share sync'],
       ['English tool share links keep localized paths', 'browser check validates English share link paths'],
       ['Fallback locale tool share links keep localized paths', 'browser check validates fallback locale share link paths'],
     ],
@@ -153,6 +172,8 @@ const deploymentTextChecks = [
       ["'/en/tools#partitions?disk=standard&boot=single&encryption=home'", 'smoke covers English partition config deep link'],
       ["'/tools#troubleshoot?symptom=display'", 'smoke covers Chinese troubleshooting config deep link'],
       ["'/en/tools#troubleshoot?symptom=performance'", 'smoke covers English troubleshooting config deep link'],
+      ["'/tools#upgrade?current=bookworm&target=trixie&exposure=public'", 'smoke covers Chinese upgrade planner config deep link'],
+      ["'/en/tools#upgrade?current=bullseye&target=bookworm&exposure=internal'", 'smoke covers English upgrade planner config deep link'],
       ['const searchShardTimeoutMs = 45_000', 'smoke gives large search shards a longer network timeout'],
       ['fetchWithRetry(path, { attempts: 3, requestTimeoutMs: searchShardTimeoutMs })', 'smoke uses the longer timeout for search shards'],
       ['const responseHeaderChecks = [', 'smoke defines response header checks'],
@@ -189,6 +210,26 @@ const deploymentTextChecks = [
     ],
   },
   {
+    path: '_migration/content-freshness-check.mjs',
+    checks: [
+      ["const reviewDate = '2026-07-03'", 'freshness check pins review date'],
+      ["const reviewDueDate = '2026-10-01'", 'freshness check pins next review date'],
+      ["'2028-08-09'", 'freshness check verifies Debian 13 regular support date'],
+      ["'2030-06-30'", 'freshness check verifies Debian 13 LTS date'],
+      ['CONTENT_FRESHNESS_ALLOW_EXPIRED', 'freshness check supports explicit expiry override'],
+    ],
+  },
+  {
+    path: '_migration/i18n-consistency-check.mjs',
+    checks: [
+      ["const requiredLocales = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt']", 'i18n check covers all locales'],
+      ["const bilingualPages = ['production-observability', 'content-freshness', 'i18n-quality']", 'i18n check covers operational bilingual pages'],
+      ["'distribution'", 'i18n check requires AI Skills distribution page'],
+      ["<InteractiveTools lang=\"en\" />", 'i18n check verifies tool fallback UI'],
+      ['Upgrade Planner', 'i18n check verifies upgrade planner fallback text'],
+    ],
+  },
+  {
     path: 'components/InteractiveTools.tsx',
     checks: [
       ["mirror: 'mirrors'", 'mirror tool hash is mapped'],
@@ -198,6 +239,7 @@ const deploymentTextChecks = [
       ["troubleshoot: 'troubleshoot'", 'troubleshooting tool hash is mapped'],
       ["safety: 'command-safety'", 'command safety tool hash is mapped'],
       ["skills: 'ai-skills'", 'AI Skills tool hash is mapped'],
+      ["upgrade: 'upgrade'", 'upgrade planner tool hash is mapped'],
       ['function normalizeToolHash', 'tool hash parsing is centralized'],
       ['function parseToolHash', 'tool hash parameters are parsed from the URL fragment'],
       ['function useCopiedFeedback', 'copy buttons share one copied-state feedback helper'],
@@ -228,6 +270,11 @@ const deploymentTextChecks = [
       ["hashState.params.get('replace')", 'AI Skills tool can preload replace flag from the URL fragment'],
       ["window.addEventListener('hashchange', syncSkillsStateFromHash)", 'AI Skills tool syncs config on hash changes'],
       ['url.hash = `${toolHashIds.skills}?target=${target}&replace=${replace ? \'true\' : \'false\'}`', 'AI Skills tool share links keep config in the URL fragment'],
+      ["hashState.params.get('current')", 'upgrade planner can preload current release from the URL fragment'],
+      ["hashState.params.get('target')", 'upgrade planner can preload target release from the URL fragment'],
+      ["hashState.params.get('exposure')", 'upgrade planner can preload exposure from the URL fragment'],
+      ["window.addEventListener('hashchange', syncUpgradeStateFromHash)", 'upgrade planner syncs config on hash changes'],
+      ['url.hash = `${toolHashIds.upgrade}?current=${current}&target=${target}&exposure=${exposure}`', 'upgrade planner share links keep config in the URL fragment'],
       ['const maxSharedCommandLength = 4000', 'shared command links have a length cap'],
       ["hashState.params.get('command')", 'command safety can preload a shared command from the URL fragment'],
       ["window.addEventListener('hashchange', syncSharedCommandFromHash)", 'command safety prefill syncs on hash changes'],
@@ -248,6 +295,7 @@ const deploymentTextChecks = [
       ['#partitions?disk=', 'Chinese tools page documents partition config links'],
       ['#troubleshoot?symptom=', 'Chinese tools page documents troubleshooting config links'],
       ['#ai-skills?target=', 'Chinese tools page documents AI Skills config links'],
+      ['#upgrade?current=', 'Chinese tools page documents upgrade planner config links'],
     ],
   },
   {
@@ -261,6 +309,63 @@ const deploymentTextChecks = [
       ['#partitions?disk=', 'English tools page documents partition config links'],
       ['#troubleshoot?symptom=', 'English tools page documents troubleshooting config links'],
       ['#ai-skills?target=', 'English tools page documents AI Skills config links'],
+      ['#upgrade?current=', 'English tools page documents upgrade planner config links'],
+    ],
+  },
+  {
+    path: 'content/docs/production-observability.mdx',
+    checks: [
+      ['Phase 43 已上线', 'Chinese production observability page marks phase 43'],
+      ['SMOKE_BASE_URL=https://www.debian.club', 'Chinese production observability page documents production checks'],
+    ],
+  },
+  {
+    path: 'content/docs/production-observability.en.mdx',
+    checks: [
+      ['Phase 43 Live', 'English production observability page marks phase 43'],
+      ['SMOKE_BASE_URL=https://www.debian.club', 'English production observability page documents production checks'],
+    ],
+  },
+  {
+    path: 'content/docs/content-freshness.mdx',
+    checks: [
+      ['Phase 44 已上线', 'Chinese content freshness page marks phase 44'],
+      ['2026-10-01', 'Chinese content freshness page documents review due date'],
+    ],
+  },
+  {
+    path: 'content/docs/content-freshness.en.mdx',
+    checks: [
+      ['Phase 44 Live', 'English content freshness page marks phase 44'],
+      ['2026-10-01', 'English content freshness page documents review due date'],
+    ],
+  },
+  {
+    path: 'content/docs/i18n-quality.mdx',
+    checks: [
+      ['Phase 45 已上线', 'Chinese i18n quality page marks phase 45'],
+      ['corepack pnpm --dir web i18n:check', 'Chinese i18n quality page documents i18n check'],
+    ],
+  },
+  {
+    path: 'content/docs/i18n-quality.en.mdx',
+    checks: [
+      ['Phase 45 Live', 'English i18n quality page marks phase 45'],
+      ['corepack pnpm --dir web i18n:check', 'English i18n quality page documents i18n check'],
+    ],
+  },
+  {
+    path: 'content/docs/ai/skills/distribution.mdx',
+    checks: [
+      ['Phase 46 已上线', 'Chinese AI Skills distribution page marks phase 46'],
+      ['skills/debian-linux-reliability/v${version}', 'Chinese AI Skills distribution page documents version tag format'],
+    ],
+  },
+  {
+    path: 'content/docs/ai/skills/distribution.en.mdx',
+    checks: [
+      ['Phase 46 Live', 'English AI Skills distribution page marks phase 46'],
+      ['skills/debian-linux-reliability/v${version}', 'English AI Skills distribution page documents version tag format'],
     ],
   },
   {
@@ -308,6 +413,8 @@ const deploymentTextChecks = [
       ['contents: read', 'workflow uses read-only contents permission'],
       ['corepack prepare pnpm@9.15.9 --activate', 'workflow pins pnpm version'],
       ['corepack pnpm --dir web types:check', 'workflow runs type check'],
+      ['corepack pnpm --dir web freshness:check', 'workflow runs freshness check'],
+      ['corepack pnpm --dir web i18n:check', 'workflow runs i18n check'],
       ['corepack pnpm --dir web build', 'workflow runs static build'],
       ['corepack pnpm --dir web smoke:check', 'workflow runs smoke check'],
       ['corepack pnpm --dir web browser:check', 'workflow runs browser check'],

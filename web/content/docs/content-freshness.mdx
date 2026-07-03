@@ -1,0 +1,59 @@
+---
+title: "内容时效校验"
+description: "DebianClub 对 Debian 版本、生命周期、LTS、AI 工具和发布流程等易变内容的复核基线与自动检查。"
+---
+
+内容时效校验用于标记会随时间变化的页面，避免版本、生命周期、包支持窗口和发布流程长期停留在旧口径。
+
+## Phase 44 已上线
+
+发布门禁现在包含：
+
+```bash
+corepack pnpm --dir web freshness:check
+```
+
+该检查读取仓库中的时效基线，确认关键页面仍包含当前复核日期、官方来源链接和必须同步的生命周期日期。
+
+## 当前复核基线
+
+| 项目 | 当前口径 | 来源 |
+|------|----------|------|
+| 当前 stable | Debian 13 (Trixie) | [Debian Releases](https://www.debian.org/releases/) |
+| Debian 13 发布日期 | 2025-08-09 | [Debian 13 release notes](https://www.debian.org/releases/trixie/) |
+| Debian 13 常规安全支持结束 | 2028-08-09 | [Debian Releases](https://www.debian.org/releases/) |
+| Debian 13 LTS 结束 | 2030-06-30 | [Debian Releases](https://www.debian.org/releases/) |
+| Debian 12 常规安全支持结束 | 2026-07-11 | [Debian Releases](https://www.debian.org/releases/) |
+| Debian 12 LTS 结束 | 2028-06-30 | [Debian Releases](https://www.debian.org/releases/) |
+| Debian 11 LTS 结束 | 2026-08-31 | [Debian LTS](https://wiki.debian.org/LTS) |
+
+复核日期：**2026-07-03**。下一次强制复核日期：**2026-10-01**。
+
+## 必须纳入时效检查的内容
+
+| 内容类型 | 示例页面 | 风险 |
+|----------|----------|------|
+| 版本生命周期 | [版本与生命周期](/versions)、[EOL](/eol) | 日期过期会误导升级窗口 |
+| 最新动态 | [Debian 最新动态](/news) | 点更新、LTS 切换、发布计划会变化 |
+| AI 工具安装方式 | [AI 工具](/ai) | 第三方安装脚本、包名、支持系统会变化 |
+| 部署流程 | [部署与运行](/deployment) | Cloudflare、Next.js、pnpm、wrangler 版本会变化 |
+| AI Skills 分发 | [安装与分发](/ai/skills/install) | registry、tag、包格式和验证脚本会变化 |
+
+## 更新流程
+
+1. 先查官方来源，不从摘要站点复制生命周期日期。
+2. 更新页面里的复核日期和具体日期。
+3. 同步 `web/_migration/content-freshness-check.mjs` 的基线。
+4. 运行 `corepack pnpm --dir web freshness:check`。
+5. 再运行完整 `corepack pnpm --dir web release:check`。
+
+## 失效处理
+
+如果 `freshness:check` 失败，不要直接放宽检查。先判断：
+
+- 是否到了下一次强制复核日期。
+- Debian 官方是否更新了生命周期或 release note。
+- 页面是否缺少官方来源链接。
+- 中英文页面是否只更新了一边。
+
+下一步：[多语言质量](/i18n-quality)。

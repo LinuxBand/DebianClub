@@ -1,0 +1,60 @@
+---
+title: "Distribution Matrix & Versioning"
+description: "Registry, tgz packages, GitHub Releases, manifests, versioning, and rollback strategy for DebianClub AI Skills."
+---
+
+The distribution matrix describes the verifiable paths from `debian-linux-reliability` source files to local AI agent installation. The goal is to make install, upgrade, rollback, and audit flows predictable.
+
+## Phase 46 Live
+
+| Distribution form | Entry | Best for | Must verify |
+|-------------------|-------|----------|-------------|
+| Repository source | `skills/debian-linux-reliability/` | Local development, review, direct install | `SKILL.md`, references, scripts, and tests exist |
+| Registry | `/skills.json` | Platform discovery, automated indexing, AI-readable entry | `schema_version`, `entrypoint`, module list, script paths |
+| Local tgz | `skills/dist/*.tgz` | Offline install and version archive | manifest, size, SHA-256 |
+| GitHub Release | `skills/debian-linux-reliability/vX.Y.Z` | Public release and rollback | tag, tgz, manifest, release note |
+| Documentation entry | `/ai/skills`, `/llms.txt`, `/llms-full.txt` | AI and human readers | Chinese/English links, install command, safety boundary |
+
+## Versioning Rules
+
+| Change type | Version action | Example |
+|-------------|----------------|---------|
+| Description fixes or reference links | patch | `0.2.1` |
+| New module, script, or evaluation sample | minor | `0.3.0` |
+| Changed default safety boundary, entrypoint, or install contract | major | `1.0.0` |
+
+Version tags use:
+
+```text
+skills/debian-linux-reliability/v${version}
+```
+
+## Pre-release Matrix
+
+```bash
+bash skills/scripts/validate-all.sh
+bash skills/scripts/package-skill.sh debian-linux-reliability
+bash skills/scripts/publish-skill-release.sh --dry-run debian-linux-reliability
+corepack pnpm --dir web release:check
+```
+
+## Rollback Strategy
+
+1. Keep timestamped backups of previous local installs.
+2. Confirm the installed source through the registry version.
+3. For tgz installs, verify manifest and SHA-256 first.
+4. After rollback, run `bash skills/scripts/validate-all.sh`.
+5. If documentation or registry output is wrong, roll back the site deployment first, then fix release scripts.
+
+## Registry Contract
+
+`/skills.json` must answer:
+
+- The skill name and display name.
+- Whether the entrypoint is `SKILL.md`.
+- Whether the default safety boundary is read-only diagnosis.
+- Whether modules cover APT, command safety, systemd, GPU, and security audit.
+- Where install, validation, package, and release scripts live.
+- Whether Chinese localized safety text exists.
+
+Next: [Evaluation & Maintenance](/en/ai/skills/evaluation).

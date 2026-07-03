@@ -1,0 +1,57 @@
+---
+title: "生产观测与回归面板"
+description: "DebianClub 生产发布后的观测清单：Cloudflare Pages 部署、关键路由、响应头、搜索分片、AI-readable 输出和回滚判断。"
+---
+
+生产观测阶段用于把“构建通过”延伸到“上线后仍可用”。它不收集用户隐私数据，而是围绕公开路由、静态产物、响应头和浏览器交互做可重复检查。
+
+## Phase 43 已上线
+
+| 观测面 | 检查方式 | 失败信号 |
+|--------|----------|----------|
+| Cloudflare Pages 部署 | 查看最新部署 URL 与 commit hash 是否一致 | 生产域名未更新、预览 URL 与提交不一致 |
+| 关键路由 | `smoke:check` 访问首页、AI Skills、工具箱、场景、硬件、版本和部署页 | 404、非 HTML、页面不含 Debian.Club 标识 |
+| 搜索分片 | 访问 `/api/search/{locale}` | JSON 解析失败、语言分片缺失、文件过大 |
+| 浏览器交互 | `browser:check` 验证搜索和工具分享链接 | hydration 后按钮不可用、复制出的 hash 不一致 |
+| 响应头 | 生产 smoke 对 `nosniff`、缓存、文本类型做 HEAD 检查 | Cloudflare `_headers` 未生效 |
+| AI-readable 输出 | 校验 `/skills.json`、`/llms.txt`、`/llms-full.txt` | registry 缺字段、AI 文本过小或缺核心入口 |
+
+## 生产检查命令
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+SMOKE_BASE_URL=https://www.debian.club corepack pnpm --dir web smoke:check
+SMOKE_BASE_URL=https://www.debian.club corepack pnpm --dir web browser:check
+```
+
+如果只是验证某个 Pages 预览部署，把 `SMOKE_BASE_URL` 换成 Cloudflare 返回的 `https://<hash>.debianclub.pages.dev`。
+
+## 回归判断
+
+| 现象 | 优先排查 |
+|------|----------|
+| 首页正常但搜索失败 | `web/out/api/search` 是否为 8 个语言分片，响应头是否是 JSON |
+| 工具分享链接失效 | URL fragment 是否保留，`browser-smoke-check.mjs` 是否覆盖该工具 |
+| AI Skills registry 访问失败 | `web/app/skills.json/route.ts` 和 `_headers` 是否仍导出 |
+| 生产和本地不一致 | Cloudflare 部署 commit hash、缓存规则、是否部署了最新 `web/out` |
+| 多语言入口缺失 | `i18n:check` 和对应 `content/docs/*.{locale}.mdx` |
+
+## 不采集什么
+
+- 不采集用户输入的命令、硬件信息或工具选择。
+- 不把交互工具结果上传到服务端。
+- 不记录个人路径、主机名、SSID、MAC、公网 IP 或日志片段。
+
+生产观测只判断公开站点是否正常服务，详细问题仍通过本地可复现命令排查。
+
+## 发布后记录
+
+每次发布完成后记录：
+
+1. commit hash
+2. Cloudflare Pages 预览 URL
+3. GitHub Actions run ID
+4. 本地 `release:check` 结果
+5. 生产 `smoke:check` 和 `browser:check` 结果
+
+下一步：[内容时效校验](/content-freshness)。

@@ -1,0 +1,57 @@
+---
+title: "Production Observability"
+description: "Post-deploy observability for DebianClub: Cloudflare Pages deployment, critical routes, response headers, search shards, AI-readable outputs, and rollback signals."
+---
+
+Production observability extends "the build passed" into "the deployed site still works." It does not collect private user data. It focuses on public routes, static artifacts, response headers, and browser interactions that can be checked repeatedly.
+
+## Phase 43 Live
+
+| Surface | Check | Failure signal |
+|---------|-------|----------------|
+| Cloudflare Pages deployment | Confirm the latest deployment URL and commit hash | Production domain is stale or preview URL does not match the commit |
+| Critical routes | `smoke:check` visits home, AI Skills, tools, scenarios, hardware, versions, and deployment pages | 404, non-HTML, or missing Debian.Club marker |
+| Search shards | Fetch `/api/search/{locale}` | Invalid JSON, missing locale shard, or oversized file |
+| Browser interactions | `browser:check` verifies search and tool share links | Hydrated buttons unavailable or copied hash mismatch |
+| Response headers | Production smoke checks `nosniff`, cache, and content types with HEAD requests | Cloudflare `_headers` did not apply |
+| AI-readable outputs | Validate `/skills.json`, `/llms.txt`, and `/llms-full.txt` | Registry fields missing or AI-readable text is too small |
+
+## Production Check Commands
+
+```bash
+. "$HOME/.nvm/nvm.sh"
+SMOKE_BASE_URL=https://www.debian.club corepack pnpm --dir web smoke:check
+SMOKE_BASE_URL=https://www.debian.club corepack pnpm --dir web browser:check
+```
+
+To verify a specific Pages preview deployment, replace `SMOKE_BASE_URL` with `https://<hash>.debianclub.pages.dev`.
+
+## Regression Triage
+
+| Symptom | Check first |
+|---------|-------------|
+| Home works but search fails | Whether `web/out/api/search` contains 8 locale shards and JSON headers |
+| Tool share links fail | Whether the URL fragment is preserved and `browser-smoke-check.mjs` covers the tool |
+| AI Skills registry fails | `web/app/skills.json/route.ts` and exported `_headers` |
+| Production differs from local | Cloudflare deployment commit hash, cache rules, and latest `web/out` upload |
+| Localized entry is missing | `i18n:check` and the matching `content/docs/*.{locale}.mdx` file |
+
+## What Is Not Collected
+
+- User commands, hardware information, or tool selections.
+- Interactive tool results.
+- Personal paths, hostnames, SSIDs, MAC addresses, public IPs, or log snippets.
+
+Production observability only checks whether the public site serves correctly. Detailed diagnosis still happens through reproducible local commands.
+
+## Post-deploy Record
+
+For each release, record:
+
+1. commit hash
+2. Cloudflare Pages preview URL
+3. GitHub Actions run ID
+4. local `release:check` result
+5. production `smoke:check` and `browser:check` results
+
+Next: [Content Freshness](/en/content-freshness).

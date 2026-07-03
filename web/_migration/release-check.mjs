@@ -4,6 +4,7 @@ import { join } from 'node:path';
 const maxSearchFileBytes = 25 * 1024 * 1024;
 const requiredLocales = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt'];
 const localizedEntryPages = ['tools', 'scenarios', 'hardware', 'versions', 'release-readiness', 'deployment'];
+const requiredAiSkillModules = ['apt-safe', 'command-safety', 'systemd-troubleshoot', 'gpu-drivers', 'security-audit'];
 const localizedEntryFiles = localizedEntryPages.flatMap((page) =>
   requiredLocales.map((locale) => (locale === 'zh' ? `out/${page}.html` : `out/${locale}/${page}.html`)),
 );
@@ -138,6 +139,17 @@ const deploymentTextChecks = [
       ["'apt-safe', 'command-safety', 'systemd-troubleshoot', 'gpu-drivers', 'security-audit'", 'smoke verifies core skill modules'],
       ["requiredIds: ['/tools', '/ai/skills']", 'smoke verifies Chinese search shard contains key pages'],
       ["requiredTerms: ['Debian Interactive Tools', 'DebianClub AI Skills']", 'smoke verifies English search shard contains key terms'],
+    ],
+  },
+  {
+    path: '_migration/release-check.mjs',
+    checks: [
+      ['const aiReadableArtifactChecks = [', 'release gate defines AI-readable artifact checks'],
+      ['function checkAiSkillsRegistryArtifact', 'release gate verifies the exported AI Skills registry'],
+      ['function checkAiReadableTextArtifact', 'release gate verifies exported AI-readable text files'],
+      ["path: 'out/llms.txt'", 'release gate verifies exported llms index text'],
+      ["path: 'out/llms-full.txt'", 'release gate verifies exported full llms text'],
+      ["registry?.schema_version !== 1", 'release gate verifies AI Skills registry schema version'],
     ],
   },
   {
@@ -305,6 +317,19 @@ const headerRouteChecks = [
   },
 ];
 
+const aiReadableArtifactChecks = [
+  {
+    path: 'out/llms.txt',
+    minBytes: 50_000,
+    includes: ['# Docs', '[DebianClub AI Skills](/ai/skills)', '[DebianClub AI Skills](/en/ai/skills)'],
+  },
+  {
+    path: 'out/llms-full.txt',
+    minBytes: 500_000,
+    includes: ['# DebianClub AI Skills (/ai/skills)', '# 安装与分发 (/ai/skills/install)', '/tools#ai-skills?target=agents&replace=true'],
+  },
+];
+
 const failures = [];
 
 function hasTextCheck(content, needle, mode) {
@@ -343,6 +368,69 @@ function getHeaderBlock(content, route) {
   return headers;
 }
 
+function checkAiSkillsRegistryArtifact(path) {
+  if (!existsSync(path) || !statSync(path).isFile()) {
+    fail(`missing ${path}`);
+    return;
+  }
+
+  let registry;
+  try {
+    registry = JSON.parse(readFileSync(path, 'utf8'));
+  } catch (error) {
+    fail(`${path} is not valid JSON: ${error instanceof Error ? error.message : String(error)}`);
+    return;
+  }
+
+  const skill = registry?.skills?.find((item) => item?.name === 'debian-linux-reliability');
+  if (registry?.schema_version !== 1 || registry?.source !== 'DebianClub' || !skill) {
+    fail(`${path} does not contain the DebianClub skill registry contract`);
+    return;
+  }
+
+  if (
+    skill.entrypoint !== 'SKILL.md' ||
+    skill.distribution?.registry_route !== '/skills.json' ||
+    !skill.default_safety?.includes('Read-only') ||
+    !skill.localized?.zh?.default_safety?.includes('默认只读')
+  ) {
+    fail(`${path} Debian reliability skill metadata is incomplete`);
+    return;
+  }
+
+  for (const moduleName of requiredAiSkillModules) {
+    if (!Array.isArray(skill.modules) || !skill.modules.includes(moduleName)) {
+      fail(`${path} Debian reliability skill is missing module ${moduleName}`);
+      return;
+    }
+  }
+
+  pass(`${path} contains DebianClub skills registry contract`);
+}
+
+function checkAiReadableTextArtifact({ path, includes, minBytes }) {
+  if (!existsSync(path) || !statSync(path).isFile()) {
+    fail(`missing ${path}`);
+    return;
+  }
+
+  const size = statSync(path).size;
+  const content = readFileSync(path, 'utf8');
+  if (size < minBytes) {
+    fail(`${path} is too small (${size} bytes, expected at least ${minBytes})`);
+    return;
+  }
+
+  for (const needle of includes) {
+    if (!content.includes(needle)) {
+      fail(`${path} does not include ${needle}`);
+      return;
+    }
+  }
+
+  pass(`${path} contains AI-readable text contract (${size} bytes)`);
+}
+
 for (const file of requiredFiles) {
   if (existsSync(file)) {
     pass(`found ${file}`);
@@ -365,6 +453,12 @@ for (const fileCheck of deploymentTextChecks) {
       fail(`${fileCheck.path}: missing ${label}`);
     }
   }
+}
+
+checkAiSkillsRegistryArtifact('out/skills.json');
+
+for (const check of aiReadableArtifactChecks) {
+  checkAiReadableTextArtifact(check);
 }
 
 for (const fileCheck of headerRouteChecks) {

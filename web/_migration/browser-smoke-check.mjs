@@ -8,6 +8,7 @@ const browserStartupTimeoutMs = readPositiveIntegerEnv('BROWSER_STARTUP_TIMEOUT_
 const pageTimeoutMs = 15_000;
 const cdpCommandTimeoutMs = 10_000;
 const navigationTimeoutMs = readPositiveIntegerEnv('BROWSER_NAVIGATION_TIMEOUT_MS', 30_000);
+const clipboardTimeoutMs = readPositiveIntegerEnv('BROWSER_CLIPBOARD_TIMEOUT_MS', 4_000);
 const searchQuery = 'AI Skills';
 const expectedResultPattern = /AI Skills|DebianClub AI Skills/;
 const emptyResultPattern = /No results|没有结果|未找到|无结果/;
@@ -262,9 +263,7 @@ async function copyShareLink(cdp, { buttonText, storageKey, label }) {
         reject(new Error(copyLabel + ' share button not found: ' + shareLabel));
         return;
       }
-      button.click();
-
-      const deadline = Date.now() + 2_000;
+      const deadline = Date.now() + ${JSON.stringify(clipboardTimeoutMs)};
       const checkCopiedLink = () => {
         const copiedHref = window[copiedStorageKey];
         if (copiedHref) {
@@ -281,8 +280,10 @@ async function copyShareLink(cdp, { buttonText, storageKey, label }) {
           reject(new Error(copyLabel + ' share button did not write clipboard: ' + shareLabel));
           return;
         }
-        window.setTimeout(checkCopiedLink, 50);
+        button.click();
+        window.setTimeout(checkCopiedLink, 100);
       };
+      button.click();
       checkCopiedLink();
     })`,
     true,

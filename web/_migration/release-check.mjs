@@ -5,6 +5,31 @@ const maxSearchFileBytes = 25 * 1024 * 1024;
 const requiredLocales = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt'];
 const localizedEntryPages = ['tools', 'scenarios', 'hardware', 'versions', 'release-readiness', 'deployment'];
 const requiredAiSkillModules = ['apt-safe', 'command-safety', 'systemd-troubleshoot', 'gpu-drivers', 'security-audit'];
+const requiredRobotsLines = [
+  'User-Agent: *',
+  'Allow: /',
+  'Disallow: /api/',
+  'Host: https://www.debian.club',
+  'Sitemap: https://www.debian.club/sitemap.xml',
+];
+const requiredSitemapUrls = [
+  'https://www.debian.club',
+  'https://www.debian.club/en',
+  'https://www.debian.club/ai/skills',
+  'https://www.debian.club/en/ai/skills',
+  'https://www.debian.club/tools',
+  'https://www.debian.club/en/tools',
+  'https://www.debian.club/scenarios',
+  'https://www.debian.club/en/scenarios',
+  'https://www.debian.club/hardware',
+  'https://www.debian.club/en/hardware',
+  'https://www.debian.club/versions',
+  'https://www.debian.club/en/versions',
+  'https://www.debian.club/release-readiness',
+  'https://www.debian.club/en/release-readiness',
+  'https://www.debian.club/deployment',
+  'https://www.debian.club/en/deployment',
+];
 const localizedEntryFiles = localizedEntryPages.flatMap((page) =>
   requiredLocales.map((locale) => (locale === 'zh' ? `out/${page}.html` : `out/${locale}/${page}.html`)),
 );
@@ -152,9 +177,13 @@ const deploymentTextChecks = [
       ['const aiReadableArtifactChecks = [', 'release gate defines AI-readable artifact checks'],
       ['function checkAiSkillsRegistryArtifact', 'release gate verifies the exported AI Skills registry'],
       ['function checkAiReadableTextArtifact', 'release gate verifies exported AI-readable text files'],
+      ['function checkRobotsArtifact', 'release gate verifies exported robots policy'],
+      ['function checkSitemapArtifact', 'release gate verifies exported sitemap entries'],
       ["path: 'out/llms.txt'", 'release gate verifies exported llms index text'],
       ["path: 'out/llms-full.txt'", 'release gate verifies exported full llms text'],
       ["registry?.schema_version !== 1", 'release gate verifies AI Skills registry schema version'],
+      ["'https://www.debian.club/ai/skills'", 'release gate verifies AI Skills sitemap entry'],
+      ["'Sitemap: https://www.debian.club/sitemap.xml'", 'release gate verifies robots sitemap entry'],
     ],
   },
   {
@@ -436,6 +465,61 @@ function checkAiReadableTextArtifact({ path, includes, minBytes }) {
   pass(`${path} contains AI-readable text contract (${size} bytes)`);
 }
 
+function checkRobotsArtifact(path) {
+  if (!existsSync(path) || !statSync(path).isFile()) {
+    fail(`missing ${path}`);
+    return;
+  }
+
+  const lines = readFileSync(path, 'utf8')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  for (const expectedLine of requiredRobotsLines) {
+    if (!lines.includes(expectedLine)) {
+      fail(`${path} is missing ${expectedLine}`);
+      return;
+    }
+  }
+
+  if (lines.some((line) => /^Disallow:\s*\/(?:ai|tools|scenarios|hardware|versions|release-readiness|deployment)\b/.test(line))) {
+    fail(`${path} blocks a public documentation entry point`);
+    return;
+  }
+
+  pass(`${path} exposes sitemap and keeps public entry points crawlable`);
+}
+
+function checkSitemapArtifact(path) {
+  if (!existsSync(path) || !statSync(path).isFile()) {
+    fail(`missing ${path}`);
+    return;
+  }
+
+  const content = readFileSync(path, 'utf8');
+  const urls = new Set([...content.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]));
+
+  if (urls.size < requiredSitemapUrls.length) {
+    fail(`${path} contains too few URL entries (${urls.size})`);
+    return;
+  }
+
+  for (const expectedUrl of requiredSitemapUrls) {
+    if (!urls.has(expectedUrl)) {
+      fail(`${path} is missing ${expectedUrl}`);
+      return;
+    }
+  }
+
+  if (!content.includes('hreflang="x-default"') || !content.includes('hreflang="en-US"') || !content.includes('hreflang="zh-CN"')) {
+    fail(`${path} is missing expected hreflang alternates`);
+    return;
+  }
+
+  pass(`${path} contains public entry point URLs and hreflang alternates`);
+}
+
 for (const file of requiredFiles) {
   if (existsSync(file)) {
     pass(`found ${file}`);
@@ -465,6 +549,9 @@ checkAiSkillsRegistryArtifact('out/skills.json');
 for (const check of aiReadableArtifactChecks) {
   checkAiReadableTextArtifact(check);
 }
+
+checkRobotsArtifact('out/robots.txt');
+checkSitemapArtifact('out/sitemap.xml');
 
 for (const fileCheck of headerRouteChecks) {
   if (!existsSync(fileCheck.path) || !statSync(fileCheck.path).isFile()) {

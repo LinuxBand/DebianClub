@@ -69,6 +69,19 @@ const textChecks = [
   { path: '/robots.txt', includes: 'Sitemap:' },
 ];
 
+const aiReadableTextChecks = [
+  {
+    path: '/llms.txt',
+    minBytes: 50_000,
+    includes: ['# Docs', '[DebianClub AI Skills](/ai/skills)', '[DebianClub AI Skills](/en/ai/skills)'],
+  },
+  {
+    path: '/llms-full.txt',
+    minBytes: 500_000,
+    includes: ['# DebianClub AI Skills (/ai/skills)', '# 安装与分发 (/ai/skills/install)', '/tools#ai-skills?target=agents&replace=true'],
+  },
+];
+
 const responseHeaderChecks = [
   {
     path: '/',
@@ -83,6 +96,30 @@ const responseHeaderChecks = [
     path: '/api/search/zh',
     headers: [
       ['content-type', 'application/json; charset=utf-8'],
+      ['cache-control', 'public, max-age=3600'],
+      ['x-content-type-options', 'nosniff'],
+    ],
+  },
+  {
+    path: '/skills.json',
+    headers: [
+      ['content-type', 'application/json; charset=utf-8'],
+      ['cache-control', 'public, max-age=3600'],
+      ['x-content-type-options', 'nosniff'],
+    ],
+  },
+  {
+    path: '/llms.txt',
+    headers: [
+      ['content-type', 'text/plain; charset=utf-8'],
+      ['cache-control', 'public, max-age=3600'],
+      ['x-content-type-options', 'nosniff'],
+    ],
+  },
+  {
+    path: '/llms-full.txt',
+    headers: [
+      ['content-type', 'text/plain; charset=utf-8'],
       ['cache-control', 'public, max-age=3600'],
       ['x-content-type-options', 'nosniff'],
     ],
@@ -238,6 +275,78 @@ async function checkTextRoute({ path, includes }) {
   }
 }
 
+async function checkAiSkillsRegistry() {
+  try {
+    const { response, body } = await fetchWithRetry('/skills.json');
+    if (response.status !== 200) {
+      fail(`/skills.json returned ${response.status}`);
+      return;
+    }
+
+    let registry;
+    try {
+      registry = JSON.parse(body);
+    } catch (error) {
+      fail(`/skills.json is not valid JSON: ${error instanceof Error ? error.message : String(error)}`);
+      return;
+    }
+
+    const skill = registry?.skills?.find((item) => item?.name === 'debian-linux-reliability');
+    if (registry?.schema_version !== 1 || registry?.source !== 'DebianClub' || !skill) {
+      fail('/skills.json does not contain the DebianClub skill registry contract');
+      return;
+    }
+
+    if (
+      skill.entrypoint !== 'SKILL.md' ||
+      skill.distribution?.registry_route !== '/skills.json' ||
+      !skill.default_safety?.includes('Read-only') ||
+      !skill.localized?.zh?.default_safety?.includes('默认只读')
+    ) {
+      fail('/skills.json Debian reliability skill metadata is incomplete');
+      return;
+    }
+
+    const requiredModules = ['apt-safe', 'command-safety', 'systemd-troubleshoot', 'gpu-drivers', 'security-audit'];
+    for (const moduleName of requiredModules) {
+      if (!Array.isArray(skill.modules) || !skill.modules.includes(moduleName)) {
+        fail(`/skills.json Debian reliability skill is missing module ${moduleName}`);
+        return;
+      }
+    }
+
+    pass(`/skills.json returned DebianClub skills registry (${body.length} bytes)`);
+  } catch (error) {
+    fail(`/skills.json request failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+async function checkAiReadableText({ path, includes, minBytes }) {
+  try {
+    const { response, body } = await fetchWithRetry(path);
+    if (response.status !== 200) {
+      fail(`${path} returned ${response.status}`);
+      return;
+    }
+
+    if (body.length < minBytes) {
+      fail(`${path} is too small (${body.length} bytes, expected at least ${minBytes})`);
+      return;
+    }
+
+    for (const needle of includes) {
+      if (!body.includes(needle)) {
+        fail(`${path} does not include ${needle}`);
+        return;
+      }
+    }
+
+    pass(`${path} returned AI-readable text (${body.length} bytes)`);
+  } catch (error) {
+    fail(`${path} request failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
 function shouldCheckResponseHeaders() {
   if (process.env.SMOKE_CHECK_HEADERS === '1') return true;
   if (process.env.SMOKE_CHECK_HEADERS === '0') return false;
@@ -309,6 +418,12 @@ for (const check of searchChecks) {
 
 for (const check of textChecks) {
   await checkTextRoute(check);
+}
+
+await checkAiSkillsRegistry();
+
+for (const check of aiReadableTextChecks) {
+  await checkAiReadableText(check);
 }
 
 if (shouldCheckResponseHeaders()) {

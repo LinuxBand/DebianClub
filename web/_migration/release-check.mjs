@@ -23,6 +23,8 @@ const requiredFiles = [
   'out/en/scenarios/ops-jump-box.html',
   'out/_headers',
   'out/skills.json',
+  'out/llms.txt',
+  'out/llms-full.txt',
   'out/sitemap.xml',
   'out/robots.txt',
 ];
@@ -128,6 +130,12 @@ const deploymentTextChecks = [
       ["['cache-control', 'public, max-age=3600']", 'smoke verifies search response cache headers'],
       ["['cache-control', 'public, max-age=31536000, immutable']", 'smoke verifies Next static chunk cache headers'],
       ['function firstStaticChunkPath', 'smoke discovers current Next static chunk paths'],
+      ['async function checkAiSkillsRegistry', 'smoke verifies the AI Skills registry JSON'],
+      ['const aiReadableTextChecks = [', 'smoke defines AI-readable text checks'],
+      ["path: '/llms.txt'", 'smoke verifies llms index text'],
+      ["path: '/llms-full.txt'", 'smoke verifies full llms text'],
+      ["skill.distribution?.registry_route !== '/skills.json'", 'smoke verifies AI Skills registry route metadata'],
+      ["'apt-safe', 'command-safety', 'systemd-troubleshoot', 'gpu-drivers', 'security-audit'", 'smoke verifies core skill modules'],
       ["requiredIds: ['/tools', '/ai/skills']", 'smoke verifies Chinese search shard contains key pages'],
       ["requiredTerms: ['Debian Interactive Tools', 'DebianClub AI Skills']", 'smoke verifies English search shard contains key terms'],
     ],
@@ -225,6 +233,10 @@ const deploymentTextChecks = [
       ['/_next/static/*', 'Next static cache rule exists'],
       ['/api/search/*', 'search index headers rule exists'],
       ['Content-Type: application/json; charset=utf-8', 'search index JSON content type exists'],
+      ['/skills.json', 'AI Skills registry headers rule exists', 'line'],
+      ['/llms.txt', 'llms index headers rule exists', 'line'],
+      ['/llms-full.txt', 'full llms headers rule exists', 'line'],
+      ['Content-Type: text/plain; charset=utf-8', 'AI-readable text content type exists'],
     ],
   },
   {
@@ -235,6 +247,9 @@ const deploymentTextChecks = [
       ['Referrer-Policy: strict-origin-when-cross-origin', 'exported referrer policy exists'],
       ['/_next/static/*', 'exported Next static cache rule exists'],
       ['/api/search/*', 'exported search index headers rule exists'],
+      ['/skills.json', 'exported AI Skills registry headers rule exists', 'line'],
+      ['/llms.txt', 'exported llms index headers rule exists', 'line'],
+      ['/llms-full.txt', 'exported full llms headers rule exists', 'line'],
     ],
   },
   {
@@ -249,6 +264,43 @@ const deploymentTextChecks = [
       ['corepack pnpm --dir web smoke:check', 'workflow runs smoke check'],
       ['corepack pnpm --dir web browser:check', 'workflow runs browser check'],
       ['corepack pnpm --dir web release:check', 'workflow runs release gate'],
+    ],
+  },
+];
+
+const headerRouteChecks = [
+  {
+    path: 'public/_headers',
+    rules: [
+      {
+        route: '/skills.json',
+        headers: ['Content-Type: application/json; charset=utf-8', 'Cache-Control: public, max-age=3600'],
+      },
+      {
+        route: '/llms.txt',
+        headers: ['Content-Type: text/plain; charset=utf-8', 'Cache-Control: public, max-age=3600'],
+      },
+      {
+        route: '/llms-full.txt',
+        headers: ['Content-Type: text/plain; charset=utf-8', 'Cache-Control: public, max-age=3600'],
+      },
+    ],
+  },
+  {
+    path: 'out/_headers',
+    rules: [
+      {
+        route: '/skills.json',
+        headers: ['Content-Type: application/json; charset=utf-8', 'Cache-Control: public, max-age=3600'],
+      },
+      {
+        route: '/llms.txt',
+        headers: ['Content-Type: text/plain; charset=utf-8', 'Cache-Control: public, max-age=3600'],
+      },
+      {
+        route: '/llms-full.txt',
+        headers: ['Content-Type: text/plain; charset=utf-8', 'Cache-Control: public, max-age=3600'],
+      },
     ],
   },
 ];
@@ -272,6 +324,25 @@ function pass(message) {
   console.log(`[release-check] OK   ${message}`);
 }
 
+function getHeaderBlock(content, route) {
+  const lines = content.split(/\r?\n/);
+  const routeIndex = lines.findIndex((line) => line.trim() === route);
+  if (routeIndex === -1) return null;
+
+  const headers = [];
+  for (let index = routeIndex + 1; index < lines.length; index += 1) {
+    const line = lines[index];
+    const trimmed = line.trim();
+
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    if (!/^\s/.test(line)) break;
+
+    headers.push(trimmed);
+  }
+
+  return headers;
+}
+
 for (const file of requiredFiles) {
   if (existsSync(file)) {
     pass(`found ${file}`);
@@ -292,6 +363,30 @@ for (const fileCheck of deploymentTextChecks) {
       pass(`${fileCheck.path}: ${label}`);
     } else {
       fail(`${fileCheck.path}: missing ${label}`);
+    }
+  }
+}
+
+for (const fileCheck of headerRouteChecks) {
+  if (!existsSync(fileCheck.path) || !statSync(fileCheck.path).isFile()) {
+    fail(`missing ${fileCheck.path}`);
+    continue;
+  }
+
+  const content = readFileSync(fileCheck.path, 'utf8');
+  for (const rule of fileCheck.rules) {
+    const headers = getHeaderBlock(content, rule.route);
+    if (!headers) {
+      fail(`${fileCheck.path}: missing header route ${rule.route}`);
+      continue;
+    }
+
+    for (const expectedHeader of rule.headers) {
+      if (headers.includes(expectedHeader)) {
+        pass(`${fileCheck.path}: ${rule.route} includes ${expectedHeader}`);
+      } else {
+        fail(`${fileCheck.path}: ${rule.route} missing ${expectedHeader}`);
+      }
     }
   }
 }

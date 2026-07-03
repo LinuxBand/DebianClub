@@ -16,6 +16,17 @@
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=3600
 
+# AI-readable registry and docs indexes
+/skills.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=3600
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
+/llms-full.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
+
 # Generated OG images
 /og/docs/*
   Cache-Control: public, max-age=86400

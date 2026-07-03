@@ -204,6 +204,42 @@ async function waitFor(cdp, expression, label, timeoutMs = pageTimeoutMs) {
   throw new Error(`${label} did not become ready; last value: ${JSON.stringify(lastValue)}`);
 }
 
+async function getPageContext(cdp) {
+  try {
+    return await evaluate(
+      cdp,
+      `(() => ({
+        url: window.location.href,
+        title: document.title,
+        readyState: document.readyState,
+        bodyText: (document.body?.innerText || '').slice(0, 1200),
+        activeElement: document.activeElement
+          ? {
+              tagName: document.activeElement.tagName,
+              text: (document.activeElement.innerText || document.activeElement.value || '').slice(0, 200),
+              ariaLabel: document.activeElement.getAttribute('aria-label'),
+            }
+          : null,
+      }))()`,
+    );
+  } catch (error) {
+    return {
+      contextError: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+async function runCheck(label, cdp, callback) {
+  try {
+    await callback();
+  } catch (error) {
+    const pageContext = cdp ? await getPageContext(cdp) : null;
+    const message = error instanceof Error ? error.message : String(error);
+    const details = pageContext ? `; page: ${JSON.stringify(pageContext, null, 2)}` : '';
+    throw new Error(`${label} failed: ${message}${details}`);
+  }
+}
+
 async function navigateTo(cdp, url, { waitForLoad = false } = {}) {
   await cdp.send('Page.navigate', { url: url.toString() }, navigationTimeoutMs);
   if (waitForLoad) await cdp.waitForEvent('Page.loadEventFired', navigationTimeoutMs);
@@ -1066,16 +1102,16 @@ async function run() {
   try {
     const wsUrl = await waitForBrowserTarget(port, browser);
     cdp = await connectToCdp(wsUrl);
-    await verifySearchUi(cdp, baseUrl);
-    await verifyAiSkillsShareLink(cdp, baseUrl);
-    await verifyCommandSafetyShareLink(cdp, baseUrl);
-    await verifyMirrorShareLink(cdp, baseUrl);
-    await verifyInstallShareLink(cdp, baseUrl);
-    await verifyDesktopShareLink(cdp, baseUrl);
-    await verifyPartitionShareLink(cdp, baseUrl);
-    await verifyTroubleshootShareLink(cdp, baseUrl);
-    await verifyEnglishToolShareLinkPaths(cdp, baseUrl);
-    await verifyFallbackLocaleToolShareLinkPaths(cdp, baseUrl);
+    await runCheck('search UI', cdp, () => verifySearchUi(cdp, baseUrl));
+    await runCheck('AI Skills share link', cdp, () => verifyAiSkillsShareLink(cdp, baseUrl));
+    await runCheck('command safety share link', cdp, () => verifyCommandSafetyShareLink(cdp, baseUrl));
+    await runCheck('mirror share link', cdp, () => verifyMirrorShareLink(cdp, baseUrl));
+    await runCheck('install share link', cdp, () => verifyInstallShareLink(cdp, baseUrl));
+    await runCheck('desktop share link', cdp, () => verifyDesktopShareLink(cdp, baseUrl));
+    await runCheck('partition share link', cdp, () => verifyPartitionShareLink(cdp, baseUrl));
+    await runCheck('troubleshooting share link', cdp, () => verifyTroubleshootShareLink(cdp, baseUrl));
+    await runCheck('English tool share links', cdp, () => verifyEnglishToolShareLinkPaths(cdp, baseUrl));
+    await runCheck('fallback locale tool share links', cdp, () => verifyFallbackLocaleToolShareLinkPaths(cdp, baseUrl));
   } catch (error) {
     fail(error instanceof Error ? error.message : String(error));
   } finally {

@@ -951,6 +951,33 @@ async function copyEnglishToolShareLink(cdp, buttonText) {
   });
 }
 
+async function waitForToolShareButton(cdp, { hash, buttonText, label }) {
+  await waitFor(
+    cdp,
+    `(() => {
+      const expectedHash = ${JSON.stringify(hash)};
+      const shareLabel = ${JSON.stringify(buttonText)};
+      if (window.location.hash !== expectedHash) {
+        window.location.hash = expectedHash;
+        return false;
+      }
+      const button = Array.from(document.querySelectorAll('button')).find((item) => item.innerText.includes(shareLabel));
+      if (button) return true;
+      window.dispatchEvent(new Event('hashchange'));
+      return false;
+    })()`,
+    label,
+  );
+
+  await evaluate(
+    cdp,
+    `new Promise((resolve) => {
+      window.setTimeout(resolve, 350);
+    })`,
+    true,
+  );
+}
+
 async function verifyEnglishToolShareLinkPaths(cdp, baseUrl) {
   const tests = [
     {
@@ -994,11 +1021,11 @@ async function verifyEnglishToolShareLinkPaths(cdp, baseUrl) {
     const toolUrl = new URL(test.path, baseUrl);
 
     await navigateTo(cdp, toolUrl);
-    await waitFor(
-      cdp,
-      `document.body && document.body.innerText.includes(${JSON.stringify(test.buttonText)})`,
-      `${test.name} share button`,
-    );
+    await waitForToolShareButton(cdp, {
+      hash: toolUrl.hash,
+      buttonText: test.buttonText,
+      label: `${test.name} share button`,
+    });
 
     const copiedLink = await copyEnglishToolShareLink(cdp, test.buttonText);
 
@@ -1048,11 +1075,11 @@ async function verifyFallbackLocaleToolShareLinkPaths(cdp, baseUrl) {
     const toolUrl = new URL(test.path, baseUrl);
 
     await navigateTo(cdp, toolUrl);
-    await waitFor(
-      cdp,
-      `document.body && document.body.innerText.includes(${JSON.stringify(test.buttonText)})`,
-      `${test.locale} fallback tool share button`,
-    );
+    await waitForToolShareButton(cdp, {
+      hash: toolUrl.hash,
+      buttonText: test.buttonText,
+      label: `${test.locale} fallback tool share button`,
+    });
 
     const copiedLink = await copyEnglishToolShareLink(cdp, test.buttonText);
 

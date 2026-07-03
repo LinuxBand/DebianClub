@@ -89,6 +89,8 @@ const deploymentTextChecks = [
       ['async function verifyTroubleshootShareLink', 'browser check verifies troubleshooting share links'],
       ['async function verifyEnglishToolShareLinkPaths', 'browser check verifies English tool share paths'],
       ['async function verifyFallbackLocaleToolShareLinkPaths', 'browser check verifies fallback locale tool share paths'],
+      ['async function waitForToolShareButton', 'browser check centralizes share button readiness'],
+      ["window.dispatchEvent(new Event('hashchange'))", 'browser check retries tool hash synchronization'],
       ["readPositiveIntegerEnv('BROWSER_STARTUP_TIMEOUT_MS', 60_000)", 'browser check allows slower CI browser startup'],
       ["readPositiveIntegerEnv('BROWSER_NAVIGATION_TIMEOUT_MS', 30_000)", 'browser check allows slower production navigation'],
       ['clearTimeout(timeout)', 'browser check clears CDP command timers after responses'],

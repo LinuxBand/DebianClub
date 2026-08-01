@@ -27,12 +27,22 @@ description: "Debian 11, 12, 13의 상세 비교 및 선택 가이드"
 | 소프트웨어/도구 | Trixie (Debian 13) | Bookworm (Debian 12) | Bullseye (Debian 11) |
 |---|---|---|---|
 | **GCC** | 14.2 | 12.2 | 10.2 |
-| **LLVM/Clang** | 16+ | 14.0 | 11.0 |
+| **LLVM/Clang** | 19 | 14.0 | 11.0 |
 | **Python** | 3.13 | 3.11 | 3.9 |
 | **Node.js** | 20.x | 18.13 | 12.22 |
-| **Go** | 1.21+ | 1.19 | 1.15 |
-| **Rust** | 1.70+ | 1.63 | 1.48 |
-| **PHP** | 8.3 | 8.2 | 7.4 |
+| **Go** | 1.24 | 1.19 | 1.15 |
+| **Rust** | 1.85 | 1.63 | 1.48 |
+| **PHP** | 8.4 | 8.2 | 7.4 |
+
+## 실시간 버전 매트릭스
+
+위 표는 릴리스 시점의 기준 버전입니다. Debian 및 다른 주요 배포판에서 패키지의 **현재 실제 버전**, 의존성, CVE 상태를 확인하려면 [pkgseek](https://pkgseek.com/)의 크로스 배포판 검색을 사용하세요(아래 매트릭스는 pkgseek에서 실시간으로 로드됩니다):
+
+<iframe src="https://pkgseek.com/embed/packages/nodejs?compact=true&locale=en" title="nodejs version matrix · PkgSeek" loading="lazy" width="100%" height="320" style={{border: 0}} referrerPolicy="no-referrer-when-downgrade"></iframe>
+
+<iframe src="https://pkgseek.com/embed/packages/python3.13?compact=true&locale=en" title="python3.13 version matrix · PkgSeek" loading="lazy" width="100%" height="320" style={{border: 0}} referrerPolicy="no-referrer-when-downgrade"></iframe>
+
+임의의 패키지 검색: [pkgseek.com](https://pkgseek.com/); 패키지 페이지 주소 형식은 `https://pkgseek.com/packages/<패키지명>`입니다.
 
 ## 🎯 버전 선택 가이드
 

@@ -41,8 +41,8 @@ Avant d'utiliser APT, mettez d'abord à jour la liste des paquets :
 sudo apt update
 
 # Exemple de sortie :
-# Atteint:1 http://deb.debian.org/debian bookworm InRelease
-# Récupéré:2 http://security.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+# Atteint:1 http://deb.debian.org/debian trixie InRelease
+# Récupéré:2 http://security.debian.org/debian-security trixie-security InRelease [48.0 kB]
 # Lecture des listes de paquets... Fait
 ```
 
@@ -487,6 +487,15 @@ sudo apt install gnome-software
 # Démarrer le centre logiciel
 gnome-software
 ```
+
+## 🌐 Consulter les informations sur les paquets en ligne
+
+En plus des commandes locales comme `apt show` et `apt-cache policy`, vous pouvez consulter les paquets en ligne avec [pkgseek](https://pkgseek.com/) :
+
+- **Pages de paquets** : format `https://pkgseek.com/packages/<nom>`, par exemple [ffmpeg](https://pkgseek.com/packages/ffmpeg), [vlc](https://pkgseek.com/packages/vlc), [nginx](https://pkgseek.com/packages/nginx). Vous y verrez la version réelle dans Debian 13, les dépendances et les CVE associés.
+- **Comparaison inter-distributions** : les versions d'un même paquet dans Debian, Ubuntu, Fedora, Arch, etc., côte à côte.
+- **Erreur → commande** : collez des erreurs comme « command not found » ou des bibliothèques/en-têtes manquants dans [Command Doctor](https://pkgseek.com/doctor) pour obtenir la commande d'installation.
+- **Recherche inversée de fichiers** : saisissez un chemin dans la [recherche de fichiers](https://pkgseek.com/files) pour trouver le paquet correspondant.
 
 ## Prochaines étapes
 

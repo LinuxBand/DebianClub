@@ -41,9 +41,9 @@ APT 사용 전, 먼저 패키지 목록을 업데이트하세요:
 sudo apt update
 
 # 출력 예시:
-# 命中:1 http://deb.debian.org/debian bookworm InRelease
-# 获取:2 http://security.debian.org/debian-security bookworm-security InRelease [48.0 kB]
-# 读取软件包列表... 完成
+# 명중:1 http://deb.debian.org/debian trixie InRelease
+# 받기:2 http://security.debian.org/debian-security trixie-security InRelease [48.0 kB]
+# 패키지 목록을 읽는 중입니다... 완료
 ```
 
 <Callout type="info" title="💡 초보자 팁">
@@ -487,6 +487,15 @@ sudo apt install gnome-software
 # 소프트웨어 센터 시작
 gnome-software
 ```
+
+## 🌐 온라인으로 패키지 정보 조회하기
+
+`apt show`, `apt-cache policy` 같은 로컬 명령 외에도 [pkgseek](https://pkgseek.com/)에서 온라인으로 패키지를 조회할 수 있습니다:
+
+- **패키지 페이지**: 주소 형식은 `https://pkgseek.com/packages/<패키지명>`입니다. 예: [ffmpeg](https://pkgseek.com/packages/ffmpeg), [vlc](https://pkgseek.com/packages/vlc), [nginx](https://pkgseek.com/packages/nginx). Debian 13의 실제 버전, 의존성, 관련 CVE를 확인할 수 있습니다.
+- **크로스 배포판 비교**: 같은 패키지의 Debian, Ubuntu, Fedora, Arch 등에서의 버전을 나란히 비교.
+- **오류 → 명령**: "command not found", 라이브러리/헤더 누락 등의 오류를 [Command Doctor](https://pkgseek.com/doctor)에 붙여넣으면 설치 명령을 얻을 수 있습니다.
+- **파일 역조회**: [파일 검색](https://pkgseek.com/files)에 경로를 입력하면 소속 패키지를 찾을 수 있습니다.
 
 ## 다음 단계
 

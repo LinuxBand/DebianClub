@@ -338,6 +338,23 @@ deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main contrib non-fre
 sudo apt update
 ```
 
+### P: ¿"command not found" o faltan bibliotecas compartidas / archivos de cabecera?
+
+**A:** Búsquelo primero en local, o pegue el error en una herramienta en línea:
+
+```bash
+# Buscar qué paquete contiene un archivo con apt-file
+sudo apt install apt-file
+sudo apt-file update
+apt-file search /usr/bin/ffmpeg
+apt-file search libssl.so.3
+```
+
+**Herramientas en línea (sin instalar nada):**
+
+- **Error → comando de instalación**: pegue el error completo (p. ej. `ffmpeg: command not found`, `fatal error: openssl/ssl.h: No such file or directory`, `error while loading shared libraries: libssl.so.3`) en [pkgseek Command Doctor](https://pkgseek.com/doctor) para obtener el comando apt correspondiente.
+- **Búsqueda inversa de archivos**: introduzca una ruta en la [búsqueda de archivos de pkgseek](https://pkgseek.com/files) para ver a qué paquete pertenece.
+
 ### P: ¿Aplicaciones Snap o Flatpak no se inician?
 
 **R: Problemas con formatos de paquetes de terceros:**

@@ -338,6 +338,23 @@ deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main contrib non-fre
 sudo apt update
 ```
 
+### Q: 提示 "command not found"，或缺少共享库、头文件？
+
+**A:** 先在本地反查，也可以把报错粘贴到在线工具：
+
+```bash
+# 用 apt-file 按文件路径反查所属的包
+sudo apt install apt-file
+sudo apt-file update
+apt-file search /usr/bin/ffmpeg
+apt-file search libssl.so.3
+```
+
+**在线工具（无需安装任何东西）：**
+
+- **报错 → 安装命令**：把完整报错（如 `ffmpeg: command not found`、`fatal error: openssl/ssl.h: No such file or directory`、`error while loading shared libraries: libssl.so.3`）粘贴到 [pkgseek Command Doctor](https://pkgseek.com/doctor)，它会给出对应的 apt 安装命令。
+- **文件反查**：在 [pkgseek 文件反查](https://pkgseek.com/files) 输入文件路径，查看它属于哪个软件包。
+
 ### Q: Snap 或 Flatpak 应用无法启动？
 
 **A: 第三方包格式问题：**

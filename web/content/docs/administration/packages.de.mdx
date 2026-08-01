@@ -41,8 +41,8 @@ Vor der Verwendung von APT sollten Sie zunächst die Paketlisten aktualisieren:
 sudo apt update
 
 # Beispielausgabe:
-# Treffer:1 http://deb.debian.org/debian bookworm InRelease
-# Holen:2 http://security.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+# Treffer:1 http://deb.debian.org/debian trixie InRelease
+# Holen:2 http://security.debian.org/debian-security trixie-security InRelease [48.0 kB]
 # Paketlisten werden gelesen... Fertig
 ```
 
@@ -487,6 +487,15 @@ sudo apt install gnome-software
 # Software Center starten
 gnome-software
 ```
+
+## 🌐 Paketinformationen online abfragen
+
+Neben lokalen Befehlen wie `apt show` und `apt-cache policy` können Sie Pakete auch online über [pkgseek](https://pkgseek.com/) abfragen:
+
+- **Paketseiten**: URL-Format `https://pkgseek.com/packages/<paketname>`, z. B. [ffmpeg](https://pkgseek.com/packages/ffmpeg), [vlc](https://pkgseek.com/packages/vlc), [nginx](https://pkgseek.com/packages/nginx). Sie sehen die tatsächliche Version in Debian 13, Abhängigkeiten und zugehörige CVEs.
+- **Distributionsübergreifender Vergleich**: Versionen desselben Pakets in Debian, Ubuntu, Fedora, Arch u. a. nebeneinander.
+- **Fehler → Befehl**: Fügen Sie Fehler wie "command not found" oder fehlende Bibliotheken/Header in den [Command Doctor](https://pkgseek.com/doctor) ein und erhalten Sie den Installationsbefehl.
+- **Datei-Rückwärtssuche**: In der [Dateisuche](https://pkgseek.com/files) einen Pfad eingeben und das zugehörige Paket finden.
 
 ## Nächste Schritte
 

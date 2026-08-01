@@ -41,8 +41,8 @@ updates     # 稳定版更新
 sudo apt update
 
 # 输出示例：
-# 命中:1 http://deb.debian.org/debian bookworm InRelease
-# 获取:2 http://security.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+# 命中:1 http://deb.debian.org/debian trixie InRelease
+# 获取:2 http://security.debian.org/debian-security trixie-security InRelease [48.0 kB]
 # 读取软件包列表... 完成
 ```
 
@@ -487,6 +487,15 @@ sudo apt install gnome-software
 # 启动软件中心
 gnome-software
 ```
+
+## 🌐 在线查询软件包信息
+
+除了 `apt show`、`apt-cache policy` 等本地命令，还可以用 [pkgseek](https://pkgseek.com/) 在线查询软件包：
+
+- **包页面**：地址格式为 `https://pkgseek.com/packages/<包名>`，例如 [ffmpeg](https://pkgseek.com/packages/ffmpeg)、[vlc](https://pkgseek.com/packages/vlc)、[nginx](https://pkgseek.com/packages/nginx)。可以看到 Debian 13 中的实际版本、依赖关系和相关 CVE。
+- **跨发行版对比**：同一个包在 Debian、Ubuntu、Fedora、Arch 等发行版中的版本并排对比。
+- **报错查命令**：粘贴 "command not found"、缺库、缺头文件等报错到 [Command Doctor](https://pkgseek.com/doctor)，直接得到安装命令。
+- **文件反查**：在 [文件反查](https://pkgseek.com/files) 输入路径，找出它属于哪个包。
 
 ## 下一步
 

@@ -41,8 +41,8 @@ APT を使用する前に、まずパッケージリストを更新します：
 sudo apt update
 
 # 出力例：
-# 命中:1 http://deb.debian.org/debian bookworm InRelease
-# 取得:2 http://security.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+# 命中:1 http://deb.debian.org/debian trixie InRelease
+# 取得:2 http://security.debian.org/debian-security trixie-security InRelease [48.0 kB]
 # パッケージリストを読み込んでいます... 完了
 ```
 
@@ -487,6 +487,15 @@ sudo apt install gnome-software
 # ソフトウェアセンターを起動
 gnome-software
 ```
+
+## 🌐 パッケージ情報をオンラインで調べる
+
+`apt show` や `apt-cache policy` などのローカルコマンドに加えて、[pkgseek](https://pkgseek.com/) でオンライン検索もできます：
+
+- **パッケージページ**：URL 形式は `https://pkgseek.com/packages/<パッケージ名>`。例：[ffmpeg](https://pkgseek.com/packages/ffmpeg)、[vlc](https://pkgseek.com/packages/vlc)、[nginx](https://pkgseek.com/packages/nginx)。Debian 13 での実際のバージョン、依存関係、関連 CVE を確認できます。
+- **クロスディストリビューション比較**：同じパッケージの Debian、Ubuntu、Fedora、Arch などでのバージョンを並べて比較。
+- **エラー → コマンド**："command not found" やライブラリ・ヘッダー不足のエラーを [Command Doctor](https://pkgseek.com/doctor) に貼ると、インストールコマンドが得られます。
+- **ファイル逆引き**：[ファイル検索](https://pkgseek.com/files) にパスを入力して、所属パッケージを特定。
 
 ## 次のステップ
 

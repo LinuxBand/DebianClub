@@ -63,6 +63,23 @@ sudo apt search keyword           # Search for software
 - **Testing**: Newer packages, good balance of stability and features
 - **Unstable**: Latest packages, may have bugs, for experienced users
 
+### Q: "command not found", or missing shared libraries / header files?
+
+**A:** Look it up locally first, or paste the error into an online tool:
+
+```bash
+# Reverse-lookup which package ships a file
+sudo apt install apt-file
+sudo apt-file update
+apt-file search /usr/bin/ffmpeg
+apt-file search libssl.so.3
+```
+
+**Online tools (nothing to install):**
+
+- **Error → install command**: paste the full error (e.g. `ffmpeg: command not found`, `fatal error: openssl/ssl.h: No such file or directory`, `error while loading shared libraries: libssl.so.3`) into [pkgseek Command Doctor](https://pkgseek.com/doctor) to get the matching apt install command.
+- **File reverse-lookup**: enter a file path at [pkgseek file lookup](https://pkgseek.com/files) to see which package ships it.
+
 ## 🔧 System Configuration
 
 ### Q: How do I change my desktop environment?

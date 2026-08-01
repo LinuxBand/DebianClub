@@ -58,6 +58,16 @@ Debian 13 的常规安全支持结束与 LTS 结束日期按 Debian Releases 页
 
 具体包版本请以 [packages.debian.org](https://packages.debian.org/) 为准。生产系统不要只为了某个单包版本切换发行版，优先评估 backports、容器、语言运行时管理器或应用自身发布渠道。
 
+## 实时版本矩阵
+
+上表是各版本发布时的基线版本。想查看某个包在 Debian 及其他主流发行版中的**当前实际版本**、依赖关系和 CVE 状态，可以使用 [pkgseek](https://pkgseek.com/) 的跨发行版查询（下方矩阵实时加载自 pkgseek）：
+
+<iframe src="https://pkgseek.com/embed/packages/nodejs?compact=true&locale=zh-CN" title="nodejs 版本矩阵 · PkgSeek" loading="lazy" width="100%" height="320" style={{border: 0}} referrerPolicy="no-referrer-when-downgrade"></iframe>
+
+<iframe src="https://pkgseek.com/embed/packages/python3.13?compact=true&locale=zh-CN" title="python3.13 版本矩阵 · PkgSeek" loading="lazy" width="100%" height="320" style={{border: 0}} referrerPolicy="no-referrer-when-downgrade"></iframe>
+
+查询任意软件包：[pkgseek.com](https://pkgseek.com/)；包页面地址格式为 `https://pkgseek.com/packages/<包名>`。
+
 ## 选择 stable、oldstable、testing 还是 Sid
 
 ### stable

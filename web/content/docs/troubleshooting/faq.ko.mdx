@@ -338,6 +338,23 @@ deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main contrib non-fre
 sudo apt update
 ```
 
+### Q: "command not found" 또는 공유 라이브러리 / 헤더 파일 누락?
+
+**A:** 먼저 로컬에서 찾아보거나, 오류를 온라인 도구에 붙여넣으세요:
+
+```bash
+# apt-file로 파일 경로에서 소속 패키지 역조회
+sudo apt install apt-file
+sudo apt-file update
+apt-file search /usr/bin/ffmpeg
+apt-file search libssl.so.3
+```
+
+**온라인 도구(설치 불필요):**
+
+- **오류 → 설치 명령**: 전체 오류(예: `ffmpeg: command not found`, `fatal error: openssl/ssl.h: No such file or directory`, `error while loading shared libraries: libssl.so.3`)를 [pkgseek Command Doctor](https://pkgseek.com/doctor)에 붙여넣으면 해당하는 apt 설치 명령을 얻을 수 있습니다.
+- **파일 역조회**: [pkgseek 파일 검색](https://pkgseek.com/files)에 파일 경로를 입력하면 어느 패키지에 속하는지 확인할 수 있습니다.
+
 ### Q: Snap 또는 Flatpak 애플리케이션이 시작되지 않나요?
 
 **A: 타사 패키지 형식 문제:**

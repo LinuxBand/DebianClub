@@ -131,7 +131,7 @@ Install with speech synthesis
 
 ```bash
 # Root 用户是系统管理员账户
-# 密码要求：至少 8 位，包含字母和数字
+# 建议密码至少 8 位、包含字母和数字（安装器仅对弱密码给出警告，非强制要求）
 ```
 
 **密码安全建议：**
@@ -374,9 +374,7 @@ sudo apt upgrade -y
 # 安装基础工具
 sudo apt install curl wget git vim
 
-# 安装多媒体编解码器
-sudo apt install debian-multimedia-keyring
-sudo apt update
+# 安装多媒体编解码器（ffmpeg 就在官方仓库中）
 sudo apt install ffmpeg
 
 # 安装中文字体（中文用户）

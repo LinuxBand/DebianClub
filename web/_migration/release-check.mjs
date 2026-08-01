@@ -212,8 +212,8 @@ const deploymentTextChecks = [
   {
     path: '_migration/content-freshness-check.mjs',
     checks: [
-      ["const reviewDate = '2026-07-03'", 'freshness check pins review date'],
-      ["const reviewDueDate = '2026-10-01'", 'freshness check pins next review date'],
+      ["const reviewDate = '2026-08-01'", 'freshness check pins review date'],
+      ["const reviewDueDate = '2026-11-01'", 'freshness check pins next review date'],
       ["'2028-08-09'", 'freshness check verifies Debian 13 regular support date'],
       ["'2030-06-30'", 'freshness check verifies Debian 13 LTS date'],
       ['CONTENT_FRESHNESS_ALLOW_EXPIRED', 'freshness check supports explicit expiry override'],
@@ -330,14 +330,14 @@ const deploymentTextChecks = [
     path: 'content/docs/content-freshness.mdx',
     checks: [
       ['Phase 44 已上线', 'Chinese content freshness page marks phase 44'],
-      ['2026-10-01', 'Chinese content freshness page documents review due date'],
+      ['2026-11-01', 'Chinese content freshness page documents review due date'],
     ],
   },
   {
     path: 'content/docs/content-freshness.en.mdx',
     checks: [
       ['Phase 44 Live', 'English content freshness page marks phase 44'],
-      ['2026-10-01', 'English content freshness page documents review due date'],
+      ['2026-11-01', 'English content freshness page documents review due date'],
     ],
   },
   {

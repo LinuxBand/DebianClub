@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 
-const reviewDate = '2026-07-03';
-const reviewDueDate = '2026-10-01';
+const reviewDate = '2026-08-01';
+const reviewDueDate = '2026-11-01';
 const requiredLifecycleValues = [
   'Debian 13 (Trixie)',
   '2025-08-09',

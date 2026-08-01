@@ -131,7 +131,8 @@ Choose a Debian software repository mirror:
 
 ```bash
 # Root user is the system administrator account
-# Password requirements: At least 8 characters, include letters and numbers
+# Recommended: at least 8 characters with letters and numbers
+# (the installer only warns about weak passwords; it does not enforce this)
 ```
 
 **Password Security Recommendations:**
@@ -374,9 +375,7 @@ sudo apt upgrade -y
 # Install basic tools
 sudo apt install curl wget git vim
 
-# Install multimedia codecs
-sudo apt install debian-multimedia-keyring
-sudo apt update
+# Install multimedia codecs (ffmpeg is in the official repositories)
 sudo apt install ffmpeg
 
 # Install fonts (for international users)

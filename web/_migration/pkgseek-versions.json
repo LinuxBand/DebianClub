@@ -1,0 +1,12 @@
+{
+  "linux-image-amd64": "6.12.94-1",
+  "gnome-shell": "48.7-0+deb13u2",
+  "gcc-14": "14.2.0-19",
+  "python3.13": "3.13.5-2+deb13u3",
+  "php8.4": "8.4.23-1~deb13u1",
+  "nodejs": "20.19.2+dfsg-1+deb13u2",
+  "openssl": "3.5.6-1~deb13u2",
+  "clang": "1:19.0-63",
+  "golang-go": "2:1.24~2",
+  "rustc": "1.85.0+dfsg3-1"
+}

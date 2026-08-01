@@ -61,6 +61,10 @@ jobs:
         shell: bash
         run: corepack pnpm --dir web i18n:check
 
+      - name: PkgSeek version verify
+        shell: bash
+        run: corepack pnpm --dir web pkgseek:check
+
       - name: Build static export
         shell: bash
         run: corepack pnpm --dir web build

@@ -84,7 +84,8 @@ const deploymentTextChecks = [
   {
     path: 'package.json',
     checks: [
-      ['"release:check": "pnpm freshness:check && pnpm i18n:check && node _migration/release-check.mjs"', 'release check script exists'],
+      ['"release:check": "pnpm freshness:check && pnpm i18n:check && pnpm pkgseek:check && node _migration/release-check.mjs"', 'release check script exists'],
+      ['"pkgseek:check": "node _migration/pkgseek-verify.mjs"', 'pkgseek check script exists'],
       ['"freshness:check": "node _migration/content-freshness-check.mjs"', 'freshness check script exists'],
       ['"i18n:check": "node _migration/i18n-consistency-check.mjs"', 'i18n check script exists'],
       ['"smoke:check": "node _migration/smoke-check.mjs"', 'smoke check script exists'],

@@ -4,7 +4,6 @@ on:
   pull_request:
     paths:
       - 'web/**'
-      - 'docs/**'
       - 'skills/**'
       - 'wrangler.toml'
       - '.github/workflows/web-release-check.yml'
@@ -13,7 +12,6 @@ on:
       - main
     paths:
       - 'web/**'
-      - 'docs/**'
       - 'skills/**'
       - 'wrangler.toml'
       - '.github/workflows/web-release-check.yml'

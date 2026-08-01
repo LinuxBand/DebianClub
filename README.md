@@ -28,7 +28,7 @@ Debian.Club 是一个专为 Debian 初学者设计的多语言教程网站，使
 
 ### 环境要求
 
-- Node.js 20+
+- Node.js 20+（Cloudflare Pages 构建使用 Node 24，见 [web/DEPLOY.md](./web/DEPLOY.md)）
 - pnpm
 
 ### 安装依赖
@@ -63,18 +63,20 @@ pnpm start
 ```
 web/
 ├── app/                  # Next.js App Router 页面
-├── content/              # Fumadocs MDX 内容
+├── content/              # Fumadocs MDX 内容（8 种语言，内容唯一来源）
 ├── lib/                  # 站点配置与内容加载
 ├── public/               # 静态资源
 └── out/                  # 静态导出产物
 
-docs/
-└── ...                   # 旧 VitePress 内容，仅作迁移参考
+docs/                     # 旧 VitePress 站内容，已冻结为只读归档，不再更新
+skills/                   # Debian Linux 可靠性技能包
+wrangler.toml             # Cloudflare Pages 部署配置
+.github/workflows/        # CI：发布门禁与技能包发布
 ```
 
 ## 贡献指南
 
-我们欢迎所有形式的贡献！请阅读 [贡献指南](./docs/community.md) 了解详情。
+我们欢迎所有形式的贡献！请通过 [GitHub Issues](https://github.com/yeagoo/DebianClub/issues) 提交问题或建议。
 
 ### 内容贡献
 
@@ -92,10 +94,8 @@ docs/
 
 ## 开发规范
 
-请遵循 [.cursorrules](./.cursorrules) 中定义的项目规范：
-
 - 使用 Next.js / Fumadocs 结构
-- 遵循多语言文件组织
+- 遵循多语言文件组织（中文为无后缀主版本，其余语言使用 `.<locale>` 后缀）
 - 保持内容对初学者友好
 - 包含实际可用的代码示例
 - 优化 SEO 和性能
@@ -106,9 +106,8 @@ docs/
 
 ## 社区
 
-- 💬 [Discord](https://discord.gg/debian-club)
-- 📧 [邮件列表](mailto:help@debian.club)
-- 🐛 [问题反馈](https://github.com/debian-club/debian.club/issues)
+- 🐛 [问题反馈](https://github.com/yeagoo/DebianClub/issues)
+- 💻 [源代码](https://github.com/yeagoo/DebianClub)
 
 ## 致谢
 

@@ -1,462 +1,510 @@
 ---
-title: "Package Management"
-description: "Master APT package management in Debian 13 - install, update, and maintain software"
+title: "APT Package Management"
+description: "Master the APT package management system in Debian 13 and learn how to install, update, and manage software packages"
 ---
 
-![APT package management](/images/apt.png)
+![APT Package Management](/images/apt.png)
 
-Learn how to effectively manage software packages in Debian 13 using APT and other package management tools.
+APT (Advanced Package Tool) is the core package management tool of Debian systems. This tutorial will teach you how to use APT to install, update, and remove software packages.
 
-## 📦 APT Package Manager
+## 🎯 APT Basic Concepts
 
-APT (Advanced Package Tool) is the primary package management system for Debian.
+### What is APT?
 
-### Basic APT Commands
+APT is the package management tool of Debian systems, responsible for:
+- 📦 **Package installation**: Downloading and installing software from repositories
+- 🔄 **Dependency handling**: Automatically resolving package dependencies
+- ⬆️ **System updates**: Upgrading installed packages
+- 🗑️ **Software removal**: Safely uninstalling unwanted software
+
+### Repositories
+
+A repository is a storage location for software packages:
 
 ```bash
-# Update package database
+# Main repository component types
+main        # Free software officially maintained by Debian
+contrib     # Free software that depends on non-free software
+non-free    # Non-free software
+security    # Security updates
+updates     # Stable release updates
+```
+
+## 🔧 Basic APT Commands
+
+### Updating the Package List
+
+Before using APT, first update the package list:
+
+```bash
+# Update the package list (recommended before every use)
 sudo apt update
 
-# Upgrade all packages
-sudo apt upgrade
+# Example output:
+# Hit:1 http://deb.debian.org/debian trixie InRelease
+# Get:2 http://security.debian.org/debian-security trixie-security InRelease [48.0 kB]
+# Reading package lists... Done
+```
 
-# Full system upgrade
-sudo apt full-upgrade
+<Callout type="info" title="💡 Beginner Tip">
 
-# Install a package
+`apt update` only updates the package list; it does not actually install or upgrade any software. This command is like "refreshing the store's product catalog."
+
+</Callout>
+
+### Installing Packages
+
+#### Installing a Single Package
+
+```bash
+# Basic install command
 sudo apt install package-name
 
-# Remove a package
-sudo apt remove package-name
+# Example: install a text editor
+sudo apt install vim
 
-# Remove package and configuration
-sudo apt purge package-name
+# Show detailed information during installation
+sudo apt install -v firefox-esr
+```
 
-# Search for packages
+#### Installing Multiple Packages
+
+```bash
+# Install multiple packages at once
+sudo apt install git curl wget
+
+# Install a specific version
+sudo apt install python3=3.11.2-1
+
+# Reinstall (to fix a broken installation)
+sudo apt install --reinstall firefox-esr
+```
+
+#### Installing Suggested Packages
+
+```bash
+# Include suggested packages during installation
+sudo apt install --install-suggests libreoffice
+
+# Do not install suggested packages (default behavior)
+sudo apt install --no-install-suggests gimp
+```
+
+### Searching for Packages
+
+#### Basic Search
+
+```bash
+# Search package names and descriptions
 apt search keyword
 
-# Show package information
+# Example: search for editors
+apt search editor
+
+# Search for a specific feature
+apt search "media player"
+```
+
+#### Precise Search
+
+```bash
+# Search package names only
+apt search --names-only firefox
+
+# Search using a regular expression
+apt search '^python3-'
+```
+
+### Showing Package Information
+
+```bash
+# Show detailed package information
 apt show package-name
 
-# List installed packages
-apt list --installed
+# Example
+apt show firefox-esr
+
+# Show installed version information
+apt list --installed firefox-esr
+
+# Show available versions
+apt list firefox-esr
 ```
 
-### Package Information
+### Upgrading the System
+
+#### Upgrading Installed Packages
 
 ```bash
-# Show package details
-apt show firefox
+# Upgrade all upgradable packages
+sudo apt upgrade
 
-# Check if package is installed
-dpkg -l | grep firefox
+# Upgrade a specific package
+sudo apt upgrade firefox-esr
 
-# Find package containing file
-dpkg -S /usr/bin/firefox
-
-# List package contents
-dpkg -L package-name
+# Full upgrade (including removing conflicting packages)
+sudo apt full-upgrade
 ```
 
-## 🔍 Finding Software
-
-### Searching Packages
+#### Security Upgrades
 
 ```bash
-# Search by name
-apt search web-browser
-
-# Search by description
-apt search "text editor"
-
-# Advanced search with aptitude
-sudo apt install aptitude
-aptitude search '~dweb~nbrowser'
+# Install only security updates
+sudo apt upgrade -s | grep security
+sudo apt install $(apt list --upgradable 2>/dev/null | grep security | cut -d/ -f1)
 ```
 
-### Package Categories
+### Removing Packages
+
+#### Removing Packages
 
 ```bash
-# List available tasks
-sudo apt install tasksel
-sudo tasksel
+# Remove a package (keep configuration files)
+sudo apt remove package-name
 
-# Common tasks:
-# - Desktop environment
-# - Web server
-# - Mail server
-# - Development
+# Example
+sudo apt remove firefox-esr
+
+# Remove completely (including configuration files)
+sudo apt purge package-name
+
+# Automatically remove unneeded dependencies
+sudo apt autoremove
 ```
 
-## 🛠️ Software Installation
-
-### Installing from Repositories
+#### Cleaning Up the System
 
 ```bash
-# Install single package
-sudo apt install firefox
+# Clean the downloaded package file cache
+sudo apt clean
 
-# Install multiple packages
-sudo apt install git vim curl
+# Clean only outdated package files
+sudo apt autoclean
 
-# Install specific version
-sudo apt install firefox=version
-
-# Install with dependencies
-sudo apt install --install-suggests package-name
+# Remove orphaned packages
+sudo apt autoremove --purge
 ```
 
-### Installing .deb Files
+## 📋 Recommended Common Packages
+
+### Development Tools
 
 ```bash
-# Install downloaded .deb file
-sudo dpkg -i package.deb
-
-# Fix broken dependencies
-sudo apt install -f
-
-# Alternative method
-sudo apt install ./package.deb
-```
-
-### Installing from Source
-
-```bash
-# Install build tools
+# Essential development tools
 sudo apt install build-essential
 
-# Download source
-apt source package-name
+# Git version control
+sudo apt install git
 
-# Build dependencies
-sudo apt build-dep package-name
+# Code editors
+sudo apt install vim nano code
 
-# Compile and install
-./configure
-make
-sudo make install
+# Programming languages
+sudo apt install python3 python3-pip nodejs npm
 ```
 
-## 🔧 Repository Management
-
-### Sources List
+### Multimedia Tools
 
 ```bash
-# Edit sources list
+# Audio players
+sudo apt install audacity rhythmbox
+
+# Video players
+sudo apt install vlc mpv
+
+# Image editing
+sudo apt install gimp inkscape
+
+# Audio and video codecs
+sudo apt install ffmpeg gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly
+```
+
+### Network Tools
+
+```bash
+# Network diagnostics
+sudo apt install net-tools curl wget
+
+# Download tools
+sudo apt install aria2 youtube-dl
+
+# Browsers
+sudo apt install firefox-esr chromium
+```
+
+### Office Software
+
+```bash
+# LibreOffice office suite
+sudo apt install libreoffice
+
+# PDF readers
+sudo apt install evince okular
+
+# Mind mapping
+sudo apt install freemind
+```
+
+## ⚙️ Repository Management
+
+### Viewing Current Repositories
+
+```bash
+# View repository configuration
+cat /etc/apt/sources.list
+
+# View additional repositories
+ls /etc/apt/sources.list.d/
+```
+
+### Editing Repositories
+
+```bash
+# Edit the main sources file
 sudo nano /etc/apt/sources.list
 
-# Example entries:
+# Complete repository configuration for Debian 13 (Trixie) (including non-free software and firmware):
 deb http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
 deb-src http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+
+deb http://security.debian.org/debian-security trixie-security main contrib non-free non-free-firmware
+deb-src http://security.debian.org/debian-security trixie-security main contrib non-free non-free-firmware
+
+deb http://deb.debian.org/debian trixie-updates main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian trixie-updates main contrib non-free non-free-firmware
+```
+
+<Callout type="info" title="The difference between non-free and non-free-firmware">
+
+- `non-free-firmware`: Hardware firmware (WiFi, graphics card, Bluetooth firmware, etc.), a dedicated component newly added in Debian 13
+- `non-free`: Other non-free software (such as NVIDIA driver packaging, proprietary fonts, etc.)
+
+If you need to install non-free software such as the NVIDIA driver (`nvidia-driver`), you must also keep the `non-free` component.
+
+</Callout>
+
+### Using Chinese Mirror Sources
+
+To improve download speeds in China, you can use Chinese mirrors:
+
+```bash
+# Back up the original file
+sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
+
+# Edit the sources
+sudo nano /etc/apt/sources.list
+```
+
+**Tsinghua University mirror:**
+```bash
+# Tsinghua University mirror source
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main contrib non-free-firmware
+deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie main contrib non-free-firmware
+
+deb https://mirrors.tuna.tsinghua.edu.cn/debian-security trixie-security main contrib non-free-firmware
+deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security trixie-security main contrib non-free-firmware
+
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie-updates main contrib non-free-firmware
+deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ trixie-updates main contrib non-free-firmware
+```
+
+**USTC mirror:**
+```bash
+# USTC mirror source
+deb https://mirrors.ustc.edu.cn/debian/ trixie main contrib non-free-firmware
+deb-src https://mirrors.ustc.edu.cn/debian/ trixie main contrib non-free-firmware
+
+deb https://mirrors.ustc.edu.cn/debian-security/ trixie-security main contrib non-free-firmware
+deb-src https://mirrors.ustc.edu.cn/debian-security/ trixie-security main contrib non-free-firmware
+
+deb https://mirrors.ustc.edu.cn/debian/ trixie-updates main contrib non-free-firmware
+deb-src https://mirrors.ustc.edu.cn/debian/ trixie-updates main contrib non-free-firmware
 ```
 
 ### Adding Third-Party Repositories
 
+#### Adding a GPG Key
+
 ```bash
-# Add repository key
+# Download and add a GPG key
 
-# Add repository
-echo "deb https://example.com/repo stable main" | sudo tee /etc/apt/sources.list.d/example.list
+# Modern method (recommended)
+wget -qO - https://example.com/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/example-keyring.gpg
+```
 
-# Update package list
+#### Adding a Repository
+
+```bash
+# Create a new repository file
+echo "deb [signed-by=/usr/share/keyrings/example-keyring.gpg] https://example.com/debian stable main" | sudo tee /etc/apt/sources.list.d/example.list
+
+# Update the package list
 sudo apt update
 ```
 
-### Repository Components
+## 🔍 Advanced APT Operations
 
-| Component | Description | License |
-|-----------|-------------|---------|
-| **main** | Free software officially supported | DFSG-compliant |
-| **contrib** | Free software depending on non-free | DFSG-compliant |
-| **non-free** | Proprietary software | Non-free |
-| **non-free-firmware** | Hardware firmware | Non-free |
-
-## 📊 Package Status and Maintenance
-
-### System Maintenance
+### Package Dependencies
 
 ```bash
-# Clean package cache
-sudo apt clean
+# View a package's dependencies
+apt depends package-name
 
-# Remove unnecessary packages
-sudo apt autoremove
+# View which packages depend on this package
+apt rdepends package-name
 
-# Remove orphaned packages
-sudo apt autoremove --purge
-
-# Fix broken packages
-sudo apt install -f
-
-# Reconfigure packages
-sudo dpkg-reconfigure package-name
+# Simulate an installation (without actually installing)
+sudo apt install -s package-name
 ```
 
-### Package Holds
+### Package File Operations
 
 ```bash
-# Hold package (prevent updates)
+# Download a package file without installing
+apt download package-name
+
+# List the files contained in a package
+dpkg -L package-name
+
+# Find which package a file belongs to
+dpkg -S /path/to/file
+
+# View a package's installation scripts
+apt-get source package-name
+```
+
+### Version Control
+
+```bash
+# Hold a package version (prevent upgrades)
 sudo apt-mark hold package-name
 
-# Unhold package
+# Release a version hold
 sudo apt-mark unhold package-name
 
-# Show held packages
+# View held packages
 apt-mark showhold
+
+# Downgrade a package (requires an available older version)
+sudo apt install package-name=version
 ```
 
-### Package Pinning
-
-```bash
-# Create preferences file
-sudo nano /etc/apt/preferences.d/pin-package
-
-# Example pinning configuration:
-Package: firefox
-Pin: version 91.*
-Pin-Priority: 1001
-```
-
-## 🌐 Alternative Package Managers
-
-### Flatpak
-
-```bash
-# Install Flatpak
-sudo apt install flatpak
-
-# Add Flathub repository
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
-# Install application
-flatpak install flathub org.mozilla.firefox
-
-# Run application
-flatpak run org.mozilla.firefox
-
-# Update Flatpaks
-flatpak update
-```
-
-### Snap
-
-```bash
-# Install Snap
-sudo apt install snapd
-
-# Install snap package
-sudo snap install package-name
-
-# List installed snaps
-snap list
-
-# Update snaps
-sudo snap refresh
-```
-
-### AppImage
-
-```bash
-# Download AppImage
-wget https://example.com/application.AppImage
-
-# Make executable
-chmod +x application.AppImage
-
-# Run application
-./application.AppImage
-
-# Optional: Install AppImageLauncher
-sudo apt install appimagelauncher
-```
-
-## 🔐 Package Security
-
-### Package Verification
-
-```bash
-# Verify package integrity
-apt-cache policy package-name
-
-# List the trusted repository keyrings (apt-key is deprecated on Debian 13)
-ls -l /etc/apt/keyrings/ /usr/share/keyrings/ /etc/apt/trusted.gpg.d/
-
-# Verify installed packages
-debsums -c
-```
+## 🛡️ Security and Best Practices
 
 ### Security Updates
 
 ```bash
-# Install security updates only
+# Set up automatic security updates
 sudo apt install unattended-upgrades
 
 # Configure automatic updates
 sudo dpkg-reconfigure unattended-upgrades
 
-# Manual security update
-sudo apt upgrade -s | grep -i security
+# Manually check for security updates
+sudo unattended-upgrade --dry-run
 ```
 
-## 🛡️ Backups and Recovery
-
-### Package Selection Backup
+### System Maintenance
 
 ```bash
-# Save package list
-dpkg --get-selections > packages.txt
+# Regular maintenance commands (recommended weekly)
+sudo apt update && sudo apt upgrade
+sudo apt autoremove
+sudo apt autoclean
 
-# Restore packages
-sudo dpkg --set-selections < packages.txt
+# Check system integrity
+sudo apt check
+
+# Fix broken packages
+sudo apt install -f
+```
+
+### Backup and Recovery
+
+```bash
+# Export the list of installed packages
+dpkg --get-selections > installed-packages.txt
+
+# Restore the package list
+sudo dpkg --set-selections < installed-packages.txt
 sudo apt-get dselect-upgrade
 ```
 
-### APT Configuration Backup
-
-```bash
-# Backup APT configuration
-sudo tar -czf apt-backup.tar.gz /etc/apt/
-
-# Restore configuration
-sudo tar -xzf apt-backup.tar.gz -C /
-```
-
-## 📈 Advanced Package Management
-
-### Package Building
-
-```bash
-# Install build tools
-sudo apt install devscripts build-essential
-
-# Create package directory
-mkdir my-package
-cd my-package
-
-# Initialize package
-dh_make --createorig
-
-# Build package
-debuild -us -uc
-```
-
-### Virtual Packages
-
-```bash
-# List virtual packages
-apt-cache showpkg virtual-package
-
-# Find providers
-apt-cache show mail-transport-agent
-
-# Install virtual package
-sudo apt install text-editor
-```
-
-### Package Dependencies
-
-```bash
-# Show dependencies
-apt depends package-name
-
-# Show reverse dependencies
-apt rdepends package-name
-
-# Check for conflicts
-apt install --dry-run package-name
-```
-
-## 🔍 Troubleshooting
+## 🆘 Troubleshooting
 
 ### Common Issues
 
+#### GPG Key Errors
 ```bash
-# Fix broken packages
-sudo apt --fix-broken install
+# Problem: NO_PUBKEY error
 
-# Clear package cache
-sudo apt clean && sudo apt autoclean
-
-# Reset package database
-sudo rm /var/lib/apt/lists/*
-sudo apt update
-
-# Force package reinstallation
-sudo apt install --reinstall package-name
+# Or use the modern method
+wget -qO - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xKEYID | sudo gpg --dearmor -o /usr/share/keyrings/package-keyring.gpg
 ```
 
-### Package Conflicts
-
+#### Package Dependency Problems
 ```bash
-# Identify conflicting packages
-apt list --upgradable
+# Fix broken dependencies
+sudo apt install -f
 
-# Resolve conflicts
-sudo apt full-upgrade
+# Clean up and reconfigure
+sudo dpkg --configure -a
 
-# Force package removal
+# Force-remove a problematic package
 sudo dpkg --remove --force-remove-reinstreq package-name
 ```
 
-## 📚 Package Management Tools
+#### Insufficient Disk Space
+```bash
+# Clean the package cache
+sudo apt clean
 
-### Graphical Tools
+# Remove unneeded packages
+sudo apt autoremove --purge
+
+# Find large files
+sudo du -h /var/cache/apt/archives/
+```
+
+## 📱 Graphical Package Management
+
+### Synaptic Package Manager
 
 ```bash
-# GNOME Software Center
-sudo apt install gnome-software
-
-# Synaptic Package Manager
+# Install the graphical package manager
 sudo apt install synaptic
 
-# KDE Discover
-sudo apt install plasma-discover
+# Run Synaptic
+sudo synaptic
 ```
 
-### Command Line Tools
+### GNOME Software Center
 
 ```bash
-# Aptitude (alternative to apt)
-sudo apt install aptitude
+# Install GNOME Software
+sudo apt install gnome-software
 
-# Package information tools
-sudo apt install apt-file
-
-# Update apt-file database
-sudo apt-file update
-
-# Find files in packages
-apt-file search filename
+# Launch the software center
+gnome-software
 ```
 
-## 📊 Performance Optimization
+## 🌐 Looking Up Package Information Online
 
-### Faster Downloads
+In addition to local commands like `apt show` and `apt-cache policy`, you can also look up packages online with [pkgseek](https://pkgseek.com/):
 
-```bash
-# Use apt-fast for parallel downloads
-sudo apt install apt-fast
+- **Package pages**: URLs follow the format `https://pkgseek.com/packages/<package-name>`, for example [ffmpeg](https://pkgseek.com/packages/ffmpeg), [vlc](https://pkgseek.com/packages/vlc), [nginx](https://pkgseek.com/packages/nginx). You can see the actual version in Debian 13, its dependencies, and related CVEs.
+- **Cross-distribution comparison**: Compare the versions of the same package in Debian, Ubuntu, Fedora, Arch, and other distributions side by side.
+- **Error to command**: Paste errors like "command not found", missing libraries, or missing headers into the [Command Doctor](https://pkgseek.com/doctor) and get the installation command directly.
+- **Reverse file lookup**: Enter a path in the [file lookup](https://pkgseek.com/files) to find out which package it belongs to.
 
-# Configure mirror selection
-sudo apt install netselect-apt
-sudo netselect-apt
-```
+## Next Steps
 
-### Local Package Cache
+After mastering APT package management, you can continue learning:
 
-```bash
-# Set up apt-cacher-ng
-sudo apt install apt-cacher-ng
+1. [System Service Management](/en/administration/services) - Manage system services
+2. [User and Permission Management](/en/administration/users) - User and permission configuration
+3. [Network Configuration](/en/administration/network) - Network settings and management
 
-# Configure clients to use cache
-echo 'Acquire::http::Proxy "http://cache-server:3142";' | sudo tee /etc/apt/apt.conf.d/01proxy
-```
+---
 
-## 📚 Related Resources
-
-- [System Configuration](/en/basics/configuration) - Configure your system
-- [Software Installation](/en/applications/index) - Application guides
-- [Security Settings](/en/administration/security) - System security
-- [Troubleshooting](/en/troubleshooting/faq) - Common problems
-
-**Package management mastered?** [Explore user management →](/en/administration/users) 
+**Want to learn more system administration skills?** [Continue with system services →](/en/administration/services) 

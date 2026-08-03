@@ -1,1 +1,7 @@
-{"title": "인터랙티브 도구"}
+{
+  "title": "인터랙티브 도구",
+  "pages": [
+    "index",
+    "pkgseek"
+  ]
+}

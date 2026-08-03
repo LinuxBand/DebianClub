@@ -9,6 +9,7 @@ import { Permissions } from './infographics/Permissions';
 import { DownloadPage } from './DownloadPage';
 import { SkillsCatalog } from './SkillsCatalog';
 import { InteractiveTools } from './InteractiveTools';
+import { PackageSearch } from './PackageSearch';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -24,6 +25,7 @@ export function getMDXComponents(components?: MDXComponents) {
     DownloadPage,
     SkillsCatalog,
     InteractiveTools,
+    PackageSearch,
     ...components,
   } satisfies MDXComponents;
 }

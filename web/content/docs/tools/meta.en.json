@@ -1,1 +1,7 @@
-{"title": "Tools"}
+{
+  "title": "Tools",
+  "pages": [
+    "index",
+    "pkgseek"
+  ]
+}

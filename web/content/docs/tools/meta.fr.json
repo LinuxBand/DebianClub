@@ -1,1 +1,7 @@
-{"title": "Outils interactifs"}
+{
+  "title": "Outils interactifs",
+  "pages": [
+    "index",
+    "pkgseek"
+  ]
+}

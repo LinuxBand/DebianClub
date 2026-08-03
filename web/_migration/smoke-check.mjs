@@ -27,6 +27,8 @@ const routeChecks = [
 ];
 
 const toolHashRouteChecks = [
+  '/tools/pkgseek',
+  '/en/tools/pkgseek',
   '/tools#command-safety',
   '/en/tools#command-safety',
   '/tools#command-safety?command=sudo%20apt%20update',

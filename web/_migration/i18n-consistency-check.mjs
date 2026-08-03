@@ -70,6 +70,23 @@ for (const locale of fallbackToolLocales) {
   pass(`${path} declares English interactive tools fallback`);
 }
 
+for (const locale of requiredLocales) {
+  const path = locale === 'zh' ? 'content/docs/tools/pkgseek.mdx' : `content/docs/tools/pkgseek.${locale}.mdx`;
+  if (!existsSync(path)) {
+    fail(`missing pkgseek tool page ${path}`);
+    continue;
+  }
+
+  const content = readFileSync(path, 'utf8');
+  const expectedLang = locale === 'zh' ? '<PackageSearch lang="zh" />' : '<PackageSearch lang="en" />';
+  if (!content.includes(expectedLang)) {
+    fail(`${path} does not use ${expectedLang}`);
+    continue;
+  }
+
+  pass(`${path} declares PackageSearch UI (${locale})`);
+}
+
 for (const locale of ['zh', 'en']) {
   const metaPath = locale === 'zh' ? 'content/docs/ai/skills/meta.json' : 'content/docs/ai/skills/meta.en.json';
   if (!existsSync(metaPath)) {

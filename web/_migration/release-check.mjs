@@ -314,6 +314,32 @@ const deploymentTextChecks = [
     ],
   },
   {
+    path: 'content/docs/tools/pkgseek.mdx',
+    checks: [
+      ['<PackageSearch lang="zh" />', 'Chinese pkgseek tool page uses Chinese search UI'],
+      ['?q=', 'Chinese pkgseek tool page documents shareable query links'],
+      ['https://pkgseek.com/doctor', 'Chinese pkgseek tool page links Command Doctor'],
+      ['https://pkgseek.com/files', 'Chinese pkgseek tool page links file reverse-lookup'],
+    ],
+  },
+  {
+    path: 'content/docs/tools/pkgseek.en.mdx',
+    checks: [
+      ['<PackageSearch lang="en" />', 'English pkgseek tool page uses English search UI'],
+      ['?q=', 'English pkgseek tool page documents shareable query links'],
+      ['https://pkgseek.com/doctor', 'English pkgseek tool page links Command Doctor'],
+      ['https://pkgseek.com/files', 'English pkgseek tool page links file reverse-lookup'],
+    ],
+  },
+  {
+    path: 'components/PackageSearch.tsx',
+    checks: [
+      ["'use client'", 'package search is a client component'],
+      ['https://pkgseek.com/v1/search', 'package search queries the pkgseek API'],
+      ['PackageSearch', 'package search component is named for MDX registration'],
+    ],
+  },
+  {
     path: 'content/docs/production-observability.mdx',
     checks: [
       ['Phase 43 已上线', 'Chinese production observability page marks phase 43'],

@@ -1,0 +1,164 @@
+{
+  "comment": "Single source of truth for Debian release facts. Updated by web/_migration/sync-debian-facts.mjs; verified by web/_migration/debian-facts-check.mjs and web/_migration/content-freshness-check.mjs.",
+  "generatedAt": "2026-09-08",
+  "reviewDate": "2026-09-08",
+  "reviewDueDate": "2026-12-08",
+  "sources": {
+    "releases": "https://www.debian.org/releases/",
+    "archive": "https://deb.debian.org/debian/dists/{suite}/Release",
+    "lts": "https://wiki.debian.org/LTS",
+    "elts": "https://wiki.debian.org/LTS/Extended",
+    "releaseManagement": "https://release.debian.org/"
+  },
+  "releases": {
+    "stable": {
+      "suite": "stable",
+      "version": "13.6",
+      "imageVersion": "13.6.0",
+      "codename": "trixie",
+      "codenameTitle": "Trixie",
+      "number": "13",
+      "releaseDate": "2025-08-09",
+      "regularSupportEnd": "2028-08-09",
+      "ltsEnd": "2030-06-30",
+      "eltsStart": "2030-07-01",
+      "eltsEnd": "2035-06-30",
+      "pointReleaseDate": "2026-07-11"
+    },
+    "oldstable": {
+      "suite": "oldstable",
+      "version": "12.15",
+      "imageVersion": "12.15.0",
+      "codename": "bookworm",
+      "codenameTitle": "Bookworm",
+      "number": "12",
+      "releaseDate": "2023-06-10",
+      "regularSupportEnd": "2026-07-11",
+      "ltsEnd": "2028-06-30",
+      "eltsStart": "2028-07-01",
+      "eltsEnd": "2033-06-30",
+      "pointReleaseDate": "2026-07-11"
+    },
+    "oldoldstable": {
+      "suite": "oldoldstable",
+      "version": "11.11",
+      "imageVersion": "11.11.0",
+      "codename": "bullseye",
+      "codenameTitle": "Bullseye",
+      "number": "11",
+      "releaseDate": "2021-08-14",
+      "regularSupportEnd": "2024-08-14",
+      "ltsEnd": "2026-08-31",
+      "eltsStart": "2026-09-01",
+      "eltsEnd": "2031-06-30",
+      "pointReleaseDate": "2024-08-31"
+    }
+  },
+  "pointReleases": [
+    {
+      "version": "13.6",
+      "date": "2026-07-11",
+      "channel": "stable"
+    },
+    {
+      "version": "13.5",
+      "date": "2026-05-16",
+      "channel": "stable"
+    },
+    {
+      "version": "13.4",
+      "date": "2026-03-14",
+      "channel": "stable"
+    },
+    {
+      "version": "13.3",
+      "date": "2026-01-10",
+      "channel": "stable"
+    },
+    {
+      "version": "13.2",
+      "date": "2025-11-15",
+      "channel": "stable"
+    },
+    {
+      "version": "13.1",
+      "date": "2025-09-06",
+      "channel": "stable"
+    },
+    {
+      "version": "13.0",
+      "date": "2025-08-09",
+      "channel": "stable"
+    },
+    {
+      "version": "12.15",
+      "date": "2026-07-11",
+      "channel": "oldstable"
+    },
+    {
+      "version": "12.14",
+      "date": "2026-05-16",
+      "channel": "oldstable"
+    },
+    {
+      "version": "12.13",
+      "date": "2026-01-10",
+      "channel": "oldstable"
+    }
+  ],
+  "plannedPointReleases": [
+    {
+      "version": "13.7",
+      "date": "2026-09-12"
+    },
+    {
+      "version": "13.8",
+      "date": "2026-11-14"
+    },
+    {
+      "version": "13.9",
+      "date": "2027-01-09"
+    },
+    {
+      "version": "13.10",
+      "date": "2027-03-13"
+    },
+    {
+      "version": "13.11",
+      "date": "2027-05-08"
+    }
+  ],
+  "cloud": {
+    "generatedAt": "2026-09-08",
+    "stable": {
+      "suite": "trixie",
+      "build": "20260831-2587",
+      "buildDate": "2026-08-31",
+      "metadataUrl": "https://cloud.debian.org/images/cloud/trixie/latest/debian-13-generic-amd64.json"
+    },
+    "oldstable": {
+      "suite": "bookworm",
+      "build": "20260907-2594",
+      "buildDate": "2026-09-07",
+      "metadataUrl": "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.json"
+    },
+    "oldoldstable": {
+      "suite": "bullseye",
+      "build": "20260821-2577",
+      "buildDate": "2026-08-21",
+      "eol": true,
+      "metadataUrl": "https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-generic-amd64.json"
+    },
+    "testing": {
+      "suite": "forky",
+      "build": "20260908-2595",
+      "buildDate": "2026-09-08",
+      "metadataUrl": "https://cloud.debian.org/images/cloud/forky/daily/latest/debian-14-generic-amd64-daily.json"
+    },
+    "docker": {
+      "stableTag": "13",
+      "pointTag": "13.6",
+      "lastUpdated": "2026-08-25"
+    }
+  }
+}

@@ -17,7 +17,7 @@ description: "下载 Debian 13 官方安装镜像和选择合适版本的完整�
 
 <Callout type="info" title="🚀 推荐下载">
 
-**Debian 13.4 (Trixie) — 当前稳定版**
+**Debian 13.6 (Trixie) — 当前稳定版**
 - 文件大小：约 400 MB（netinst）
 - 适用于：现代 64 位计算机
 - 需要网络连接进行安装
@@ -28,13 +28,15 @@ description: "下载 Debian 13 官方安装镜像和选择合适版本的完整�
 - [官方下载页面](https://www.debian.org/download)
 - [交互式下载页面](/download)（推荐，自动选择最佳镜像）
 
+> 提示：Debian 点更新会更新文件名中的版本号（当前为 `13.6.0`）；下载时请以镜像站 `current/` 目录中的实际文件名为准。
+
 ## 📦 版本选择指南
 
 ### 1. 按安装方式选择
 
 #### 网络安装版（推荐）
 ```
-debian-13.0.0-amd64-netinst.iso
+debian-13.6.0-amd64-netinst.iso
 大小：~400 MB
 ```
 **优势：**
@@ -48,7 +50,7 @@ debian-13.0.0-amd64-netinst.iso
 
 #### DVD 完整版
 ```
-debian-13.0.0-amd64-DVD-1.iso
+debian-13.6.0-amd64-DVD-1.iso
 大小：~4.7 GB
 ```
 **优势：**
@@ -62,7 +64,7 @@ debian-13.0.0-amd64-DVD-1.iso
 
 #### Live DVD 版
 ```
-debian-live-13.0.0-amd64-gnome.iso
+debian-live-13.6.0-amd64-gnome.iso
 大小：~3.5 GB
 ```
 **优势：**
@@ -116,7 +118,7 @@ debian-live-13.0.0-amd64-gnome.iso
 
 1. **选择镜像站**：推荐使用清华大学镜像
 2. **进入目录**：`current/amd64/iso-cd/`
-3. **选择文件**：`debian-13.0.0-amd64-netinst.iso`
+3. **选择文件**：`debian-13.6.0-amd64-netinst.iso`
 4. **开始下载**：点击文件名开始下载
 
 ### 方法二：命令行下载
@@ -124,19 +126,19 @@ debian-live-13.0.0-amd64-gnome.iso
 #### 使用 wget
 ```bash
 # 下载网络安装版
-wget https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.0.0-amd64-netinst.iso
+wget https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.6.0-amd64-netinst.iso
 
 # 后台下载并显示进度
-wget -c --progress=bar:force https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.0.0-amd64-netinst.iso
+wget -c --progress=bar:force https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.6.0-amd64-netinst.iso
 ```
 
 #### 使用 curl
 ```bash
 # 下载并显示进度
-curl -L -O https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.0.0-amd64-netinst.iso
+curl -L -O https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.6.0-amd64-netinst.iso
 
 # 断点续传
-curl -L -C - -O https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.0.0-amd64-netinst.iso
+curl -L -C - -O https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.6.0-amd64-netinst.iso
 ```
 
 ### 方法三：BT 下载（推荐）
@@ -145,10 +147,10 @@ BT 下载通常更快且对服务器友好：
 
 ```bash
 # 下载种子文件
-wget https://cdimage.debian.org/debian-cd/current/amd64/bt-cd/debian-13.0.0-amd64-netinst.iso.torrent
+wget https://cdimage.debian.org/debian-cd/current/amd64/bt-cd/debian-13.6.0-amd64-netinst.iso.torrent
 
 # 使用命令行 BT 客户端
-transmission-cli debian-13.0.0-amd64-netinst.iso.torrent
+transmission-cli debian-13.6.0-amd64-netinst.iso.torrent
 ```
 
 **推荐 BT 客户端：**
@@ -177,13 +179,13 @@ wget https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/SHA256S
 # 验证 SHA256 校验和
 sha256sum -c SHA256SUMS 2>/dev/null | grep netinst
 
-# 应该显示：debian-13.0.0-amd64-netinst.iso: OK
+# 应该显示：debian-13.6.0-amd64-netinst.iso: OK
 ```
 
 #### 在 Windows 中：
 ```powershell
 # 使用 PowerShell
-Get-FileHash debian-13.0.0-amd64-netinst.iso -Algorithm SHA256
+Get-FileHash debian-13.6.0-amd64-netinst.iso -Algorithm SHA256
 
 # 对比 SHA256SUMS 文件中的值
 ```
@@ -225,7 +227,7 @@ gpg --verify SHA256SUMS.sign SHA256SUMS
 2. **使用多线程下载**：
    ```bash
    # 使用 aria2 多线程下载
-   aria2c -x 8 -s 8 https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.0.0-amd64-netinst.iso
+   aria2c -x 8 -s 8 https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.6.0-amd64-netinst.iso
    ```
 3. **避开高峰期**：在网络使用较少的时间段下载
 4. **使用 BT 下载**：通常比 HTTP 更快更稳定
@@ -236,10 +238,10 @@ gpg --verify SHA256SUMS.sign SHA256SUMS
 
 ```bash
 # wget 断点续传
-wget -c https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.0.0-amd64-netinst.iso
+wget -c https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.6.0-amd64-netinst.iso
 
 # curl 断点续传
-curl -L -C - -O https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.0.0-amd64-netinst.iso
+curl -L -C - -O https://mirrors.tuna.tsinghua.edu.cn/debian-cd/current/amd64/iso-cd/debian-13.6.0-amd64-netinst.iso
 ```
 
 ## 🆘 下载问题解决

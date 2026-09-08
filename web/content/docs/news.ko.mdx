@@ -9,6 +9,28 @@ description: "Debian 프로젝트의 최근 업데이트, 커뮤니티 이벤트
 
 ### 버전 릴리스
 
+#### Debian 13.7, 2026-09-12 출시 예정
+
+Debian 릴리스 팀 계획에 따르면 Debian 13.7은 **2026-09-12**에 출시될 예정입니다(정확한 날짜는 공식 발표를 확인하세요). Debian 13(Trixie)의 일곱 번째 포인트 릴리스이며 일반적으로 보안 수정과 주요 버그 수정이 포함됩니다.
+
+- [Debian 릴리스 관리](https://release.debian.org/)
+- [Debian 릴리스 정보](https://www.debian.org/releases/)
+
+#### Debian 11(Bullseye) LTS 종료 (2026-08-31)
+
+Debian 11(Bullseye)의 장기 지원(LTS)이 **2026년 8월 31일**에 종료되었습니다. Debian은 더 이상 보안 업데이트를 제공하지 않으며, 일부 패키지는 **ELTS**를 통해 **2031-06-30**까지 지원됩니다. Debian 11을 실행 중인 시스템은 가능한 한 빨리 Debian 12/13으로 마이그레이션하거나 격리·폐기를 검토하세요.
+
+- [공식 공지](https://www.debian.org/News/2026/20260831)
+- [Debian LTS](https://wiki.debian.org/LTS)
+- [Extended LTS](https://wiki.debian.org/LTS/Extended)
+- [지원 종료 (EOL)](/ko/eol)
+
+#### DebConf26, Santa Fe에서 폐막 및 DebConf27 발표 (2026-08-07)
+
+DebConf26은 2026년 7월 25일 아르헨티나 Santa Fe에서 폐막했습니다. 35개국에서 270명 이상이 참가해 90개의 행사가 진행되었으며, 다음 DebConf27이 발표되었습니다.
+
+- [공식 공지](https://www.debian.org/News/2026/20260807)
+
 #### Debian 13.6 및 12.15 릴리스 (2026-07-11)
 
 2026년 7월 11일, Debian은 두 개의 포인트 릴리스를 동시에 발표했습니다:
@@ -53,7 +75,38 @@ Debian 13 (Trixie)의 네 번째 포인트 업데이트 **13.4**가 출시되었
 
 ---
 
+### 클라우드 및 컨테이너
+
+#### Debian 13 클라우드 및 컨테이너 이미지 업데이트 (2026-09-08)
+
+Debian 13 공식 클라우드 이미지의 최신 빌드는 **20260831-2587**(2026-08-31)입니다. AWS EC2, Microsoft Azure, OpenStack, 로컬 QEMU/Plain VM을 지원하며 이미지 유형은 `generic`, `genericcloud`, `nocloud`, `ec2`, `azure`입니다. 현재 AWS AMI는 `debian-13-amd64-20260831-2587` / `debian-13-arm64-20260831-2587`이고, Azure 이미지 URN은 `Debian:debian-13:13:latest`입니다.
+
+- Debian 12 LTS 클라우드 이미지는 **2026-09-07**에 업데이트되었습니다. Debian 11은 2026-08-31에 EOL을 맞이했으며 클라우드 이미지에 더 이상 Debian 보안 업데이트가 제공되지 않습니다.
+- Debian 14(Forky) testing 데일리 클라우드 이미지는 테스트용으로 사용할 수 있으며 프로덕션에는 권장되지 않습니다.
+- 공식 Docker 이미지 `debian:13` / `debian:13-slim`이 13.6으로 업데이트되었습니다(2026-08-25). 프로덕션 컨테이너에서는 포인트 릴리스 태그나 digest를 고정하세요.
+- Debian 13.7은 2026-09-12에 예정되어 있으며, 이후 클라우드 및 Docker 이미지가 다시 빌드됩니다.
+
+- [Debian 공식 클라우드 이미지](https://cloud.debian.org/images/cloud/)
+- [Debian Cloud Wiki](https://wiki.debian.org/Cloud)
+- [AWS Debian 13 이미지](https://wiki.debian.org/Cloud/AmazonEC2Image/Trixie)
+- [Azure Debian 이미지](https://wiki.debian.org/Cloud/MicrosoftAzure)
+- [Docker 공식 Debian 이미지](https://hub.docker.com/_/debian)
+
 ### 커뮤니티 이벤트
+
+#### Debian 33주년 (2026-08-16)
+
+2026년 8월 16일은 Debian 프로젝트 발표 33주년입니다. Debian은 1993년 8월 16일 Ian Murdock에 의해 세상에 발표되었으며, 올해도 커뮤니티는 Debian Day 행사로 이를 기념했습니다.
+
+- [Bits from Debian: Debian turns 33!](https://bits.debian.org/2026/08/debian-turns-33.html)
+- [Debian Day](https://wiki.debian.org/DebianDay)
+
+#### MiniDebConf Winterthur 2026 (2026-08-25 – 08-30)
+
+MiniDebConf Winterthur 2026은 2026년 8월 29–30일 스위스 Winterthur에서 열렸으며, MiniDebCamp는 8월 25–28일에 진행되었습니다. 발표 영상이 공개되었으며, 한 발표에서는 CERN이 2026년 말까지 2,200대 이상의 산업용·임베디드 시스템에서 Debian 13을 운영할 계획을 소개했습니다.
+
+- [행사 페이지](https://ch2026.mini.debconf.org/)
+- [발표 영상](https://meetings-archive.debian.net/pub/debian-meetings/2026/MiniDebConf-Winterthur/)
 
 #### DebConf26 — 아르헨티나 산타페
 
@@ -63,6 +116,13 @@ Debian 13 (Trixie)의 네 번째 포인트 업데이트 **13.4**가 출시되었
 - **상태**: 2026년 7월 20일–25일에 개최됨
 - [자세한 내용](https://bits.debian.org/2025/12/debconf26_dates.html)
 
+#### DebConf27, 2027년 일본 아사히카와에서 개최 (2026-09-07)
+
+DebConf27은 **2027년 9월 5–11일** 일본 홋카이도 아사히카와에서 개최됩니다. DebCamp는 **2027년 8월 29일–9월 4일**이며, 9월 12일은 출발일입니다.
+
+- [DebConf27 웹사이트](https://debconf27.debconf.org/)
+- [DebConf27 위키](https://wiki.debian.org/DebConf27)
+
 #### Outreachy 인턴 (2025년 12월 – 2026년 3월)
 
 Debian은 **Debian Images Testing with OpenQA** 분야에서 새로운 Outreachy 인턴을 맞이하며, 테스트 인프라와 커뮤니티 인재 양성에 지속적으로 투자하고 있습니다.
@@ -70,6 +130,13 @@ Debian은 **Debian Images Testing with OpenQA** 분야에서 새로운 Outreachy
 ---
 
 ### 프로젝트 거버넌스
+
+#### 총회 결의: Debian의 LLM 사용 (2026-08-30)
+
+Debian의 LLM 사용에 관한 총회 결의(General Resolution) 투표가 종료되었습니다. 투표 기간은 2026-08-15부터 2026-08-28까지였으며, 선택지 5 **"Responsible Use of Generative AI"**가 승리했습니다.
+
+- [투표 결과](https://www.debian.org/vote/2026/vote_002)
+- [투표 정보](https://www.debian.org/vote/2026/)
 
 #### 2026년 DPL 선거: Sruthi Chandran 당선
 
@@ -90,16 +157,18 @@ Debian은 **Debian Images Testing with OpenQA** 분야에서 새로운 Outreachy
 Debian은 계속해서 새로운 멤버를 환영합니다:
 - 2025년 11–12월 신규 Debian 개발자/메인테이너 ([공지](https://bits.debian.org/2026/01/new-developers-2026-01.html))
 - 2026년 1–2월 신규 멤버 명단 ([공지](https://bits.debian.org/2026/03/new-developers-2026-03.html))
+- 2026년 7–8월 (2026-09-07 공지): 새로운 Debian 개발자 **Nicolas Peugnet (nicolasp)**, 새로운 Debian 메인테이너: Antoine Lassagne, Ivan Hu, Jesse Rhodes, Haolin Xue, Léo Haf, Rony João de Sousa, Luke Yasuda, Darshaka Pathirana ([공지](https://bits.debian.org/2026/09/new-developers-2026-09.html))
 
 ---
 
 ### 보안 유지관리
 
-Debian 보안팀은 DSA(Debian Security Advisory) 및 DLA(Debian LTS Advisory) 공지를 계속 발행하고 있습니다. 최근 업데이트된 패키지로는 incus, lxd, libpng1.6, awstats 등이 있습니다.
+Debian 보안팀은 DSA(Debian Security Advisory) 및 DLA(Debian LTS Advisory) 공지를 계속 발행하고 있습니다. 2026-09-08 기준 최근 공지에는 firefox-esr, thunderbird, chromium, linux, roundcube, strongswan, jbig2dec, libssh2, pcre2 등이 포함됩니다. 최신 번호는 DSA-6488-1(jbig2dec), DSA-6487-1(strongswan), DSA-6486-1(libde265), DSA-6484-1(chromium), DSA-6481-1(firefox-esr)이며, DLA-4776-1(chromium), DLA-4775-1(thunderbird), DLA-4774-1(aom), DLA-4773-1(libssh2), DLA-4770-1(firefox-esr)도 포함됩니다.
 
 - 안정 버전(Debian 13)은 보안팀이 유지관리합니다
-- Debian 12(Bookworm)는 2026-07-11에 LTS 팀 유지관리로 전환되었습니다. Debian 11(Bullseye)의 LTS 지원은 2026-08-31에 종료됩니다. 아직 실행 중인 시스템은 즉시 마이그레이션을 계획하세요
+- Debian 12(Bookworm)는 2026-07-11에 LTS 팀 유지관리로 전환되었습니다. Debian 11(Bullseye)의 LTS 지원은 2026-08-31에 종료되었습니다. Debian은 더 이상 보안 업데이트를 제공하지 않으며, 일부 패키지는 ELTS를 통해 2031-06-30까지 지원됩니다. 아직 실행 중인 시스템은 즉시 마이그레이션 또는 폐기를 계획하세요
 - [보안 공지](https://www.debian.org/security/)
+- [LTS 보안 공지](https://www.debian.org/lts/security/)
 
 ---
 

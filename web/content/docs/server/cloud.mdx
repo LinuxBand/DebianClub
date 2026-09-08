@@ -1,0 +1,154 @@
+---
+title: "Debian 云镜像与云平台"
+description: "Debian 官方云镜像、AWS/Azure/OpenStack 使用、cloud-init、镜像校验和生命周期管理。"
+---
+
+<Callout type="info" title="当前云镜像基线">
+
+- Debian 13（Trixie）官方云镜像最新构建：**20260831-2587**（2026-08-31）
+- Debian 12（Bookworm，LTS）云镜像最新构建：**20260907-2594**（2026-09-07）
+- Debian 11（Bullseye）已于 2026-08-31 EOL，云镜像不再获得 Debian 安全更新
+- Debian 14（Forky）testing 每日云镜像：**20260908-2595**（2026-09-08）
+
+</Callout>
+
+## 支持的云环境
+
+Debian Cloud Team 为以下环境提供官方镜像：
+
+| 平台 | 支持情况 | 说明 |
+|------|----------|------|
+| Amazon EC2 | 官方 | amd64/arm64；AMI 由 Debian 官方账号发布 |
+| Microsoft Azure | 官方 | amd64；通过 Azure Marketplace 提供 |
+| OpenStack | 官方 | 使用 `generic` 镜像上传到 Glance |
+| Plain VM / QEMU | 官方 | `nocloud` 或 `generic` 镜像 |
+| Google Compute Engine | 第三方 | Google 构建和维护，不是 Debian 官方云镜像 |
+| Oracle Cloud / IBM 等 | 暂无官方支持 | 可自行导入或使用第三方镜像 |
+
+## 镜像类型
+
+| 类型 | 用途 | cloud-init |
+|------|------|------------|
+| `generic` | 通用，支持大多数云环境和本地虚拟化 | 是 |
+| `genericcloud` | 与 generic 类似，精简硬件驱动，适合云环境 | 是 |
+| `nocloud` | 不运行 cloud-init，直接启动到 root | 否 |
+| `ec2` | 针对 Amazon EC2 优化 | 是 |
+| `azure` | 针对 Microsoft Azure 优化 | 是 |
+
+默认登录用户：大多数镜像为 `debian`；AWS EC2 官方镜像使用 `admin`。建议通过 cloud-init 注入 SSH key，不要启用密码登录。
+
+## 快速开始
+
+### 下载与校验
+
+```bash
+# 以 Debian 13 为例
+wget https://cloud.debian.org/images/cloud/trixie/latest/debian-13-generic-amd64.qcow2
+wget https://cloud.debian.org/images/cloud/trixie/latest/SHA512SUMS
+sha512sum -c SHA512SUMS --ignore-missing
+```
+
+镜像目录：[cloud.debian.org/images/cloud](https://cloud.debian.org/images/cloud/)
+
+### Amazon EC2
+
+```bash
+# 查询当前官方 AMI（需要 AWS CLI）
+aws --region us-east-2 ssm get-parameters-by-path \
+  --recursive \
+  --path /aws/service/debian/release/13/latest
+```
+
+当前 AMI 名称：`debian-13-amd64-20260831-2587` / `debian-13-arm64-20260831-2587`。
+
+### Microsoft Azure
+
+使用 Azure Marketplace 中的 Debian 镜像，URN 格式：
+
+```text
+Debian:debian-13:13:latest
+```
+
+也可以使用 `13-gen2` 或 `13-arm64` 变体。
+
+### OpenStack
+
+```bash
+openstack image create \
+  --container-format bare \
+  --disk-format qcow2 \
+  --property hw_disk_bus=scsi \
+  --property hw_scsi_model=virtio-scsi \
+  --property os_type=linux \
+  --property os_distro=debian \
+  --property os_admin_user=debian \
+  --public \
+  --file debian-13-generic-amd64.qcow2 \
+  debian-13-generic-amd64
+```
+
+### 本地 QEMU
+
+```bash
+qemu-system-x86_64 \
+  -m 2G -smp 2 \
+  -drive file=debian-13-nocloud-amd64.qcow2,format=qcow2 \
+  -netdev user,id=net0 -device virtio-net-pci,netdev=net0
+```
+
+## cloud-init 与初始化
+
+- `generic` / `genericcloud` / `ec2` / `azure` 镜像会在首次启动时运行 cloud-init。
+- 通过 user-data 注入 SSH key、用户、软件包和启动脚本。
+- `nocloud` 不运行 cloud-init，适合本地 QEMU 或需要手动配置的场景。
+- 不要在镜像里预置长期密钥；使用实例元数据或密钥管理服务注入。
+
+示例 user-data：
+
+```yaml
+#cloud-config
+users:
+  - name: debian
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAA...
+package_update: true
+packages:
+  - qemu-guest-agent
+```
+
+## 生命周期与更新策略
+
+| 版本 | 云镜像状态 | 建议 |
+|------|------------|------|
+| Debian 13 (Trixie) | 当前 stable，随点更新重建 | 新部署默认选择 |
+| Debian 12 (Bookworm) | LTS，仍接收安全更新 | 规划升级到 Debian 13 |
+| Debian 11 (Bullseye) | 2026-08-31 EOL | 不再用于新云主机 |
+| Debian 14 (Forky) | testing，每日构建 | 仅测试 |
+
+- 点更新（如 13.7）发布后，官方云镜像和 Docker 镜像会重新构建；不要长期使用旧镜像 ID。
+- 生产环境固定镜像版本或 digest，并定期重建实例；不要把云主机当“宠物”长期原地升级。
+- 使用 `unattended-upgrades` 或镜像构建流水线保持安全更新。
+- 及时关注 [Debian 版本支持周期](/eol)。
+
+## 容器镜像
+
+- 官方 Docker 镜像：`debian:13`、`debian:13-slim`、`debian:trixie`、`debian:trixie-slim`。
+- 当前 13.6 标签更新于 2026-08-25；生产环境固定点版本标签（如 `debian:13.6-slim`）或 digest。
+- 多阶段构建中，构建阶段可用 `debian:13`，运行阶段用 `debian:13-slim` 减小体积。
+
+```dockerfile
+FROM debian:13-slim
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+```
+
+## 相关链接
+
+- [Debian 官方云镜像](https://cloud.debian.org/images/cloud/)
+- [Debian Cloud Wiki](https://wiki.debian.org/Cloud)
+- [AWS Debian 13 镜像](https://wiki.debian.org/Cloud/AmazonEC2Image/Trixie)
+- [Azure Debian 镜像](https://wiki.debian.org/Cloud/MicrosoftAzure)
+- [Docker 官方 Debian 镜像](https://hub.docker.com/_/debian)
+- [Debian 版本支持周期 (EOL)](/eol)
+- [Docker 安装与使用](/server/docker)
+- [虚拟化平台](/server/virtualization)

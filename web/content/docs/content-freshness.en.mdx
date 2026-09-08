@@ -3,7 +3,7 @@ title: "Content Freshness"
 description: "Freshness baselines and automated checks for Debian versions, lifecycle dates, LTS windows, AI tools, and release operations."
 ---
 
-Content freshness marks pages whose facts change over time, preventing release dates, lifecycle windows, package support, and deployment instructions from drifting.
+Content freshness marks pages whose facts change over time, preventing release dates, lifecycle windows, cloud image build IDs, Docker tags, package support, and deployment instructions from drifting.
 
 ## Phase 44 Live
 
@@ -11,9 +11,10 @@ The release gate now includes:
 
 ```bash
 corepack pnpm --dir web freshness:check
+corepack pnpm --dir web facts:check
 ```
 
-The check reads freshness baselines from the repository and verifies that key pages still contain the current review date, official source links, and lifecycle dates that must stay synchronized.
+`freshness:check` reads the review baseline from `web/lib/debian-facts.json` and verifies that key pages still contain the current review date, official source links, and lifecycle dates that must stay synchronized. `facts:check` cross-checks the fact source against Debian's official Release files and all 8 localized pages.
 
 ## Current Review Baseline
 
@@ -25,9 +26,12 @@ The check reads freshness baselines from the repository and verifies that key pa
 | Debian 13 LTS ends | 2030-06-30 | [Debian Releases](https://www.debian.org/releases/) |
 | Debian 12 regular security support ends | 2026-07-11 | [Debian Releases](https://www.debian.org/releases/) |
 | Debian 12 LTS ends | 2028-06-30 | [Debian Releases](https://www.debian.org/releases/) |
-| Debian 11 LTS ends | 2026-08-31 | [Debian LTS](https://wiki.debian.org/LTS) |
+| Debian 11 LTS ended | 2026-08-31 (ended) | [Debian LTS](https://wiki.debian.org/LTS) |
+| Debian 11 ELTS ends | 2031-06-30 | [Extended LTS](https://wiki.debian.org/LTS/Extended) |
+| Debian 12 ELTS ends | 2033-06-30 | [Extended LTS](https://wiki.debian.org/LTS/Extended) |
+| Debian 13 ELTS ends | 2035-06-30 | [Extended LTS](https://wiki.debian.org/LTS/Extended) |
 
-Review date: **2026-08-01**. Next mandatory review date: **2026-11-01**.
+Review date: **2026-09-08**. Next mandatory review date: **2026-12-08**.
 
 ## Content That Must Be Checked
 
@@ -38,14 +42,16 @@ Review date: **2026-08-01**. Next mandatory review date: **2026-11-01**.
 | AI tool installation | [AI Tools](/en/ai) | Third-party installers, package names, and supported systems change |
 | Deployment flow | [Deployment](/en/deployment) | Cloudflare, Next.js, pnpm, and wrangler versions change |
 | AI Skills distribution | [Install & Distribution](/en/ai/skills/install) | Registry, tags, package format, and validation scripts change |
+| Cloud & container images | [Cloud Images & Platforms](/en/server/cloud) | Cloud image build IDs and Docker tags change after point releases |
 
 ## Update Flow
 
 1. Check official sources first; do not copy lifecycle dates from summaries.
-2. Update review dates and concrete lifecycle values in pages.
-3. Synchronize `web/_migration/content-freshness-check.mjs`.
+2. Run `corepack pnpm --dir web facts:sync` to refresh `web/lib/debian-facts.json` from Debian's official Release files, cloud image metadata, and Docker Hub tags (the committed cache is kept when the network is unavailable).
+3. Update the version-sensitive pages (`versions`, `eol`, `news`, `whats-new`, `download`, `bootable-media`, `server/cloud`) with the new versions, dates, and image build IDs.
 4. Run `corepack pnpm --dir web freshness:check`.
-5. Run the full `corepack pnpm --dir web release:check`.
+5. Run `corepack pnpm --dir web facts:check` to confirm the fact source and pages agree.
+6. Run the full `corepack pnpm --dir web release:check`.
 
 ## When The Check Fails
 

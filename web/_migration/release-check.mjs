@@ -46,6 +46,25 @@ const requiredFiles = [
   '_migration/smoke-check.mjs',
   '_migration/content-freshness-check.mjs',
   '_migration/i18n-consistency-check.mjs',
+  '_migration/debian-facts-check.mjs',
+  '_migration/sync-debian-facts.mjs',
+  'lib/debian-facts.json',
+  'content/docs/server/cloud.mdx',
+  'content/docs/server/cloud.en.mdx',
+  'content/docs/server/cloud.de.mdx',
+  'content/docs/server/cloud.es.mdx',
+  'content/docs/server/cloud.fr.mdx',
+  'content/docs/server/cloud.ja.mdx',
+  'content/docs/server/cloud.ko.mdx',
+  'content/docs/server/cloud.pt.mdx',
+  'out/server/cloud.html',
+  'out/en/server/cloud.html',
+  'out/de/server/cloud.html',
+  'out/es/server/cloud.html',
+  'out/fr/server/cloud.html',
+  'out/ja/server/cloud.html',
+  'out/ko/server/cloud.html',
+  'out/pt/server/cloud.html',
   'out/index.html',
   'out/en.html',
   'out/ai/skills.html',
@@ -82,11 +101,21 @@ const deploymentTextChecks = [
     ],
   },
   {
+    path: 'README.md',
+    checks: [
+      ['pnpm facts:sync', 'web README documents the facts sync command'],
+      ['pnpm facts:check', 'web README documents the facts check command'],
+      ['lib/debian-facts.json', 'web README documents the facts source'],
+    ],
+  },
+  {
     path: 'package.json',
     checks: [
-      ['"release:check": "pnpm freshness:check && pnpm i18n:check && pnpm pkgseek:check && node _migration/release-check.mjs"', 'release check script exists'],
+      ['"release:check": "pnpm freshness:check && pnpm i18n:check && pnpm facts:check && pnpm pkgseek:check && node _migration/release-check.mjs"', 'release check script exists'],
       ['"pkgseek:check": "node _migration/pkgseek-verify.mjs"', 'pkgseek check script exists'],
       ['"freshness:check": "node _migration/content-freshness-check.mjs"', 'freshness check script exists'],
+      ['"facts:sync": "node _migration/sync-debian-facts.mjs"', 'facts sync script exists'],
+      ['"facts:check": "node _migration/debian-facts-check.mjs"', 'facts check script exists'],
       ['"i18n:check": "node _migration/i18n-consistency-check.mjs"', 'i18n check script exists'],
       ['"smoke:check": "node _migration/smoke-check.mjs"', 'smoke check script exists'],
       ['"browser:check": "node _migration/browser-smoke-check.mjs"', 'browser check script exists'],
@@ -213,11 +242,52 @@ const deploymentTextChecks = [
   {
     path: '_migration/content-freshness-check.mjs',
     checks: [
-      ["const reviewDate = '2026-08-01'", 'freshness check pins review date'],
-      ["const reviewDueDate = '2026-11-01'", 'freshness check pins next review date'],
-      ["'2028-08-09'", 'freshness check verifies Debian 13 regular support date'],
-      ["'2030-06-30'", 'freshness check verifies Debian 13 LTS date'],
+      ["lib/debian-facts.json", 'freshness check reads the Debian facts cache'],
+      ['facts.reviewDate', 'freshness check uses the facts review date'],
+      ['facts.reviewDueDate', 'freshness check uses the facts review due date'],
+      ['requiredEltsValues', 'freshness check verifies ELTS dates'],
       ['CONTENT_FRESHNESS_ALLOW_EXPIRED', 'freshness check supports explicit expiry override'],
+    ],
+  },
+  {
+    path: '_migration/debian-facts-check.mjs',
+    checks: [
+      ['https://deb.debian.org/debian/dists', 'facts check verifies the live Debian archive'],
+      ['lib/download.ts', 'facts check verifies generated download data'],
+      ['content/docs/basics/whats-new', 'facts check verifies the point-release timeline'],
+      ['content/docs/eol', 'facts check verifies lifecycle dates'],
+    ],
+  },
+  {
+    path: 'content/docs/server/cloud.mdx',
+    checks: [
+      ['cloud.debian.org', 'Chinese cloud guide documents official images'],
+      ['genericcloud', 'Chinese cloud guide documents image types'],
+      ['Debian 13', 'Chinese cloud guide documents the stable release'],
+    ],
+  },
+  {
+    path: 'content/docs/server/cloud.en.mdx',
+    checks: [
+      ['cloud.debian.org', 'English cloud guide documents official images'],
+      ['genericcloud', 'English cloud guide documents image types'],
+      ['Debian 13', 'English cloud guide documents the stable release'],
+    ],
+  },
+  {
+    path: '_migration/debian-facts-check.mjs',
+    checks: [
+      ['CLOUD_META', 'facts check verifies cloud image metadata'],
+      ['cloud.debian.org', 'facts check verifies cloud image builds'],
+      ['hub.docker.com', 'facts check verifies Docker image tags'],
+    ],
+  },
+  {
+    path: '_migration/sync-debian-facts.mjs',
+    checks: [
+      ['CLOUD_META', 'facts sync refreshes cloud image metadata'],
+      ['cloud.debian.org', 'facts sync refreshes cloud image builds'],
+      ['hub.docker.com', 'facts sync refreshes Docker image tags'],
     ],
   },
   {
@@ -357,14 +427,14 @@ const deploymentTextChecks = [
     path: 'content/docs/content-freshness.mdx',
     checks: [
       ['Phase 44 已上线', 'Chinese content freshness page marks phase 44'],
-      ['2026-11-01', 'Chinese content freshness page documents review due date'],
+      ['2026-12-08', 'Chinese content freshness page documents review due date'],
     ],
   },
   {
     path: 'content/docs/content-freshness.en.mdx',
     checks: [
       ['Phase 44 Live', 'English content freshness page marks phase 44'],
-      ['2026-11-01', 'English content freshness page documents review due date'],
+      ['2026-12-08', 'English content freshness page documents review due date'],
     ],
   },
   {
@@ -442,6 +512,7 @@ const deploymentTextChecks = [
       ['corepack pnpm --dir web types:check', 'workflow runs type check'],
       ['corepack pnpm --dir web freshness:check', 'workflow runs freshness check'],
       ['corepack pnpm --dir web i18n:check', 'workflow runs i18n check'],
+      ['corepack pnpm --dir web facts:check', 'workflow runs facts check'],
       ['corepack pnpm --dir web build', 'workflow runs static build'],
       ['corepack pnpm --dir web smoke:check', 'workflow runs smoke check'],
       ['corepack pnpm --dir web browser:check', 'workflow runs browser check'],

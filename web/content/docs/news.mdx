@@ -9,6 +9,28 @@ description: "Debian 项目近期更新、社区活动和版本发布动态"
 
 ### 版本更新
 
+#### Debian 13.7 计划于 2026-09-12 发布
+
+根据 Debian 发布管理团队的计划，Debian 13.7 预计于 **2026-09-12** 发布（具体日期以官方公告为准）。这是 Debian 13（Trixie）的第七个点更新，通常包含安全修复和严重问题修正。
+
+- [Debian 发布管理](https://release.debian.org/)
+- [Debian 发布信息](https://www.debian.org/releases/)
+
+#### Debian 11（Bullseye）LTS 已结束（2026-08-31）
+
+Debian 11（Bullseye）的长期支持（LTS）已于 **2026 年 8 月 31 日** 结束。Debian 不再提供安全更新；部分包由第三方 **ELTS** 支持至 **2031-06-30**。仍在运行 Debian 11 的系统应尽快迁移到 Debian 12/13，或评估隔离、ELTS 与下线方案。
+
+- [官方公告](https://www.debian.org/News/2026/20260831)
+- [Debian LTS 说明](https://wiki.debian.org/LTS)
+- [Extended LTS](https://wiki.debian.org/LTS/Extended)
+- [版本支持周期 (EOL)](/eol)
+
+#### DebConf26 在 Santa Fe 闭幕，DebConf27 公布（2026-08-07）
+
+DebConf26 已于 2026 年 7 月 25 日在阿根廷 Santa Fe 闭幕。来自 35 个国家的 270 多名参会者参与了 90 场活动；官方同时公布了下一届 DebConf27 的消息。
+
+- [官方公告](https://www.debian.org/News/2026/20260807)
+
 #### Debian 13.6 与 12.15 发布（2026-07-11）
 
 2026 年 7 月 11 日，Debian 同时发布了：
@@ -53,15 +75,53 @@ Debian 13（Trixie）发布了第四个点更新 **13.4**。此次更新重点�
 
 ---
 
+### 云计算与容器
+
+#### Debian 13 云镜像与容器镜像更新（2026-09-08）
+
+Debian 13 官方云镜像最新构建为 **20260831-2587**（2026-08-31），支持 AWS EC2、Microsoft Azure、OpenStack 和本地 QEMU/Plain VM；镜像类型包括 `generic`、`genericcloud`、`nocloud`、`ec2`、`azure`。当前 AWS AMI 为 `debian-13-amd64-20260831-2587` / `debian-13-arm64-20260831-2587`，Azure 镜像 URN 为 `Debian:debian-13:13:latest`。
+
+- Debian 12 LTS 云镜像更新于 **2026-09-07**；Debian 11 已于 2026-08-31 EOL，云镜像不再获得 Debian 安全更新。
+- Debian 14（Forky）testing 每日云镜像可用于测试，不建议用于生产。
+- 官方 Docker 镜像 `debian:13` / `debian:13-slim` 已更新到 13.6（2026-08-25）；生产容器建议固定点版本或 digest。
+- Debian 13.7 计划 2026-09-12 发布，之后云镜像和 Docker 镜像会再次更新。
+
+- [Debian 官方云镜像](https://cloud.debian.org/images/cloud/)
+- [Debian Cloud Wiki](https://wiki.debian.org/Cloud)
+- [AWS Debian 13 镜像](https://wiki.debian.org/Cloud/AmazonEC2Image/Trixie)
+- [Azure Debian 镜像](https://wiki.debian.org/Cloud/MicrosoftAzure)
+- [Docker 官方 Debian 镜像](https://hub.docker.com/_/debian)
+
 ### 社区活动
+
+#### Debian 33 周年（2026-08-16）
+
+2026 年 8 月 16 日是 Debian 项目宣布 33 周年。Debian 由 Ian Murdock 于 1993 年 8 月 16 日向世界宣布；今年社区继续通过 Debian Day 活动庆祝。
+
+- [Bits from Debian: Debian turns 33!](https://bits.debian.org/2026/08/debian-turns-33.html)
+- [Debian Day](https://wiki.debian.org/DebianDay)
+
+#### MiniDebConf Winterthur 2026（2026-08-25 – 08-30）
+
+MiniDebConf Winterthur 2026 于 2026 年 8 月 29–30 日在瑞士 Winterthur 举行，MiniDebCamp 于 8 月 25–28 日举行。会议演讲录像已发布；其中一场演讲介绍了 CERN 计划到 2026 年底让 2200+ 台工业与嵌入式系统运行 Debian 13。
+
+- [活动主页](https://ch2026.mini.debconf.org/)
+- [演讲录像](https://meetings-archive.debian.net/pub/debian-meetings/2026/MiniDebConf-Winterthur/)
 
 #### DebConf26 — 阿根廷 Santa Fe
 
 - **DebCamp**：2026 年 7 月 13 日 – 19 日
 - **DebConf26**：2026 年 7 月 20 日 – 25 日
 - **地点**：Santa Fe, Argentina
-- **状态**：已于 2026 年 7 月 20 日 – 25 日举办
+- **状态**：已于 2026 年 7 月 20 日 – 25 日举办；DebConf27 已公布
 - [详细信息](https://bits.debian.org/2025/12/debconf26_dates.html)
+
+#### DebConf27 将于 2027 年在日本旭川举行（2026-09-07）
+
+DebConf27 已确定于 **2027 年 9 月 5–11 日** 在日本北海道旭川市举行；DebCamp 为 **2027 年 8 月 29 日 – 9 月 4 日**，9 月 12 日为离会日。
+
+- [DebConf27 官网](https://debconf27.debconf.org/)
+- [DebConf27 Wiki](https://wiki.debian.org/DebConf27)
 
 #### Outreachy 实习生（2025.12 – 2026.03）
 
@@ -70,6 +130,13 @@ Debian 迎来新一轮 Outreachy 实习生，参与 **Debian Images Testing with
 ---
 
 ### 项目治理
+
+#### 通用决议：LLM 在 Debian 中的使用（2026-08-30）
+
+Debian 关于 LLM 使用的通用决议（General Resolution）已结束投票。投票期为 2026-08-15 至 2026-08-28，最终选项 5 **“Responsible Use of Generative AI”** 胜出。
+
+- [投票结果](https://www.debian.org/vote/2026/vote_002)
+- [投票信息](https://www.debian.org/vote/2026/)
 
 #### 2026 年 DPL 选举：Sruthi Chandran 当选
 
@@ -90,16 +157,18 @@ Debian 迎来新一轮 Outreachy 实习生，参与 **Debian Images Testing with
 Debian 持续吸纳新成员：
 - 2025 年 11–12 月新增 Debian Developers / Maintainers（[公告](https://bits.debian.org/2026/01/new-developers-2026-01.html)）
 - 2026 年 1–2 月新增名单（[公告](https://bits.debian.org/2026/03/new-developers-2026-03.html)）
+- 2026 年 7–8 月新增名单（2026-09-07 公告）：新 Debian Developer **Nicolas Peugnet (nicolasp)**；新增 Debian Maintainers：Antoine Lassagne、Ivan Hu、Jesse Rhodes、Haolin Xue、Léo Haf、Rony João de Sousa、Luke Yasuda、Darshaka Pathirana（[公告](https://bits.debian.org/2026/09/new-developers-2026-09.html)）
 
 ---
 
 ### 安全维护
 
-Debian 安全团队持续发布 DSA（Debian Security Advisory）和 DLA（Debian LTS Advisory）公告。近期涉及的包括 incus、lxd、libpng1.6、awstats 等。
+Debian 安全团队持续发布 DSA（Debian Security Advisory）和 DLA（Debian LTS Advisory）公告。截至 2026-09-08，近期公告涉及 firefox-esr、thunderbird、chromium、linux、roundcube、strongswan、jbig2dec、libssh2、pcre2 等；最新编号包括 DSA-6488-1（jbig2dec）、DSA-6487-1（strongswan）、DSA-6486-1（libde265）、DSA-6484-1（chromium）、DSA-6481-1（firefox-esr）以及 DLA-4776-1（chromium）、DLA-4775-1（thunderbird）、DLA-4774-1（aom）、DLA-4773-1（libssh2）、DLA-4770-1（firefox-esr）。
 
 - stable（Debian 13）由安全团队正常维护
-- Debian 12（Bookworm）已于 2026-07-11 起转由 LTS 团队维护；Debian 11（Bullseye）的 LTS 支持将于 2026-08-31 结束，仍在运行的系统应立即安排迁移
+- Debian 12（Bookworm）已于 2026-07-11 起转由 LTS 团队维护；Debian 11（Bullseye）的 LTS 支持已于 2026-08-31 结束，Debian 不再提供安全更新；部分包由第三方 ELTS 支持至 2031-06-30，仍在运行的系统应尽快迁移或下线
 - [安全公告页面](https://www.debian.org/security/)
+- [LTS 安全公告](https://www.debian.org/lts/security/)
 
 ---
 

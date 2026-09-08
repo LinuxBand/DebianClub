@@ -250,13 +250,13 @@ deb http://deb.debian.org/debian/ trixie main contrib non-free non-free-firmware
         sha256sum -c SHA256SUMS
         ```
     *   终端会开始计算您下载的 ISO 文件的哈希值，并与 `SHA256SUMS` 文件中的记录进行比对。
-    *   如果输出中包含类似 `debian-13.5.0-amd64-netinst.iso: OK` 的信息，表示文件完好无损。如果有任何 `FAILED` 信息，说明文件已损坏，需要重新下载。
+    *   如果输出中包含类似 `debian-13.6.0-amd64-netinst.iso: OK` 的信息，表示文件完好无损。如果有任何 `FAILED` 信息，说明文件已损坏，需要重新下载。
 
 3.  **在 Windows 上校验**：
     *   Windows 默认没有内置的校验工具。您可以使用一些第三方工具，如 [7-Zip](https://www.7-zip.org/) 或在 PowerShell 中使用 `Get-FileHash` 命令。
     *   **使用 PowerShell**：
         ```powershell
-        Get-FileHash -Algorithm SHA256 .\debian-13.5.0-amd64-netinst.iso
+        Get-FileHash -Algorithm SHA256 .\debian-13.6.0-amd64-netinst.iso
         ```
         然后将输出的哈希值与 `SHA256SUMS` 文件中对应 ISO 的哈希值进行人工比对。
 

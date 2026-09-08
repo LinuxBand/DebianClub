@@ -93,7 +93,7 @@ Get-Disk
 Format-Volume -DriveLetter E -FileSystem FAT32 -NewFileSystemLabel "DEBIAN13"
 
 # 3. 挂载 ISO 文件
-Mount-DiskImage -ImagePath "C:\path\to\debian-13.0.0-amd64-netinst.iso"
+Mount-DiskImage -ImagePath "C:\path\to\debian-13.6.0-amd64-netinst.iso"
 
 # 4. 复制文件到 USB 盘
 # 将挂载的 ISO 内容复制到 USB 盘
@@ -130,10 +130,10 @@ diskutil unmountDisk /dev/disk2
 #### 4. 写入镜像
 ```bash
 # 使用 dd 命令写入（注意：diskN 而不是 diskNs1）
-sudo dd if=/path/to/debian-13.0.0-amd64-netinst.iso of=/dev/rdisk2 bs=1m
+sudo dd if=/path/to/debian-13.6.0-amd64-netinst.iso of=/dev/rdisk2 bs=1m
 
 # 显示进度版本（macOS Big Sur+）
-sudo dd if=/path/to/debian-13.0.0-amd64-netinst.iso of=/dev/rdisk2 bs=1m status=progress
+sudo dd if=/path/to/debian-13.6.0-amd64-netinst.iso of=/dev/rdisk2 bs=1m status=progress
 ```
 
 <Callout type="error" title="⚠️ 重要警告">
@@ -171,10 +171,10 @@ sudo umount /dev/sdb*
 #### 3. 写入镜像
 ```bash
 # 基本写入
-sudo dd if=/path/to/debian-13.0.0-amd64-netinst.iso of=/dev/sdb bs=4M
+sudo dd if=/path/to/debian-13.6.0-amd64-netinst.iso of=/dev/sdb bs=4M
 
 # 显示进度
-sudo dd if=/path/to/debian-13.0.0-amd64-netinst.iso of=/dev/sdb bs=4M status=progress
+sudo dd if=/path/to/debian-13.6.0-amd64-netinst.iso of=/dev/sdb bs=4M status=progress
 
 # 确保写入完成
 sync
@@ -234,10 +234,10 @@ chmod +x balena-etcher-electron-1.18.11-linux-x64.AppImage
 
 ```bash
 # 使用 isohybrid 工具
-isohybrid --uefi debian-13.0.0-amd64-netinst.iso
+isohybrid --uefi debian-13.6.0-amd64-netinst.iso
 
 # 然后用 dd 写入
-sudo dd if=debian-13.0.0-amd64-netinst.iso of=/dev/sdb bs=4M status=progress
+sudo dd if=debian-13.6.0-amd64-netinst.iso of=/dev/sdb bs=4M status=progress
 ```
 
 ## ✅ 验证启动盘

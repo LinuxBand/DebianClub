@@ -1,0 +1,73 @@
+---
+title: "Debian 클라우드 이미지와 클라우드 플랫폼"
+description: "Debian 공식 클라우드 이미지, AWS/Azure/OpenStack 사용법, cloud-init, 이미지 검증 및 수명 주기 관리."
+---
+
+<Callout type="info" title="현재 클라우드 이미지 기준">
+
+- Debian 13(Trixie): **20260831-2587**(2026-08-31)
+- Debian 12(Bookworm, LTS): **20260907-2594**(2026-09-07)
+- Debian 11(Bullseye): 2026-08-31 EOL
+- Debian 14(Forky, testing): **20260908-2595**(2026-09-08)
+
+</Callout>
+
+## 지원 클라우드 환경
+
+| 플랫폼 | 지원 | 비고 |
+|--------|------|------|
+| Amazon EC2 | 공식 | amd64/arm64, Debian 공식 AMI |
+| Microsoft Azure | 공식 | amd64, Azure Marketplace |
+| OpenStack | 공식 | `generic` 이미지를 Glance에 업로드 |
+| 일반 VM / QEMU | 공식 | `nocloud` 또는 `generic` |
+| Google Compute Engine | 서드파티 | Google이 구축, Debian 공식 이미지 아님 |
+
+## 이미지 유형
+
+| 유형 | 용도 | cloud-init |
+|------|------|------------|
+| `generic` | 범용, 대부분의 클라우드와 로컬 가상화 지원 | 예 |
+| `genericcloud` | generic과 유사하나 하드웨어 드라이버 축소 | 예 |
+| `nocloud` | cloud-init을 실행하지 않고 root로 직접 부팅 | 아니요 |
+| `ec2` | Amazon EC2에 최적화 | 예 |
+| `azure` | Microsoft Azure에 최적화 | 예 |
+
+기본 사용자는 대부분 `debian`, AWS EC2는 `admin`입니다. SSH 키는 cloud-init으로 주입하고 비밀번호 로그인은 비활성화하세요.
+
+## 빠른 시작
+
+```bash
+wget https://cloud.debian.org/images/cloud/trixie/latest/debian-13-generic-amd64.qcow2
+wget https://cloud.debian.org/images/cloud/trixie/latest/SHA512SUMS
+sha512sum -c SHA512SUMS --ignore-missing
+```
+
+- AWS: AMI `debian-13-amd64-20260831-2587` / `debian-13-arm64-20260831-2587`
+- Azure: URN `Debian:debian-13:13:latest`
+- OpenStack: `generic` 이미지 업로드
+- 로컬: `nocloud` 이미지를 QEMU로 부팅
+
+## 수명 주기
+
+| 버전 | 상태 | 권장 |
+|------|------|------|
+| Debian 13 | 현재 안정 버전 | 새 배포의 기본 선택 |
+| Debian 12 | LTS | Debian 13으로 업그레이드 계획 |
+| Debian 11 | 2026-08-31 EOL | 새 클라우드 호스트에 사용하지 않음 |
+| Debian 14 | testing | 테스트 용도로만 |
+
+13.7 같은 포인트 릴리스 후 클라우드 및 Docker 이미지가 다시 빌드됩니다. 프로덕션에서는 버전이나 digest를 고정하세요.
+
+## 컨테이너 이미지
+
+- `debian:13` / `debian:13-slim` (13.6, 2026-08-25 업데이트)
+- 프로덕션에서는 포인트 릴리스 태그나 digest를 고정하세요.
+
+## 링크
+
+- [Debian 공식 클라우드 이미지](https://cloud.debian.org/images/cloud/)
+- [Debian Cloud Wiki](https://wiki.debian.org/Cloud)
+- [Docker 공식 Debian 이미지](https://hub.docker.com/_/debian)
+- [지원 종료 (EOL)](/ko/eol)
+- [Docker 가이드](/en/server/docker)
+- [전체 가이드(영어)](/en/server/cloud)

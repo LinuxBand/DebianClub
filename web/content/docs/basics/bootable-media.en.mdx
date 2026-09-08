@@ -65,7 +65,7 @@ diskutil list
 diskutil unmountDisk /dev/diskX
 
 # Write ISO to USB
-sudo dd if=debian-13.0.0-amd64-DVD-1.iso of=/dev/rdiskX bs=1M
+sudo dd if=debian-13.6.0-amd64-DVD-1.iso of=/dev/rdiskX bs=1M
 
 # Eject safely
 diskutil eject /dev/diskX
@@ -97,7 +97,7 @@ sudo fdisk -l
 sudo umount /dev/sdX*
 
 # Write ISO to USB
-sudo dd if=debian-13.0.0-amd64-DVD-1.iso of=/dev/sdX bs=1M status=progress
+sudo dd if=debian-13.6.0-amd64-DVD-1.iso of=/dev/sdX bs=1M status=progress
 
 # Sync filesystem
 sync
@@ -162,7 +162,7 @@ sync
 5. Click "Burn"
 
 # Using Terminal
-hdiutil burn debian-13.0.0-amd64-DVD-1.iso
+hdiutil burn debian-13.6.0-amd64-DVD-1.iso
 ```
 
 #### Linux
@@ -173,7 +173,7 @@ sudo apt install brasero
 
 # Using command line
 sudo apt install wodim
-sudo wodim -v -dao debian-13.0.0-amd64-DVD-1.iso
+sudo wodim -v -dao debian-13.6.0-amd64-DVD-1.iso
 ```
 
 ## 🔍 Verification and Testing
@@ -257,14 +257,14 @@ sudo wodim -v -dao debian-13.0.0-amd64-DVD-1.iso
 
 ```bash
 # Using cp command (simple)
-sudo cp debian-13.0.0-amd64-DVD-1.iso /dev/sdX
+sudo cp debian-13.6.0-amd64-DVD-1.iso /dev/sdX
 
 # Using cat command
-cat debian-13.0.0-amd64-DVD-1.iso | sudo dd of=/dev/sdX bs=1M
+cat debian-13.6.0-amd64-DVD-1.iso | sudo dd of=/dev/sdX bs=1M
 
 # Using pv (with progress bar)
 sudo apt install pv
-pv debian-13.0.0-amd64-DVD-1.iso | sudo dd of=/dev/sdX bs=1M
+pv debian-13.6.0-amd64-DVD-1.iso | sudo dd of=/dev/sdX bs=1M
 ```
 
 ### Hybrid ISO Creation
@@ -272,7 +272,7 @@ pv debian-13.0.0-amd64-DVD-1.iso | sudo dd of=/dev/sdX bs=1M
 ```bash
 # Make ISO hybrid (works with both CD and USB)
 sudo apt install syslinux-utils
-isohybrid debian-13.0.0-amd64-DVD-1.iso
+isohybrid debian-13.6.0-amd64-DVD-1.iso
 ```
 
 ## 📱 Mobile Device Methods

@@ -7,7 +7,7 @@ description: "Debian stable、oldstable、LTS、testing、unstable 的生命周�
 
 <Callout type="info" title="维护状态">
 
-本页按 **2026-08-01** 的 Debian 官方发布信息整理。Debian 版本状态会随点更新、安全支持切换和 LTS 公告变化；执行升级前，请再次查看 [Debian 发布信息](https://www.debian.org/releases/) 与 [Debian LTS](https://wiki.debian.org/LTS)。
+本页按 **2026-09-08** 的 Debian 官方发布信息整理。Debian 版本状态会随点更新、安全支持切换和 LTS 公告变化；执行升级前，请再次查看 [Debian 发布信息](https://www.debian.org/releases/) 与 [Debian LTS](https://wiki.debian.org/LTS)。
 
 </Callout>
 
@@ -19,7 +19,7 @@ Debian 的版本选择不只是“新不新”，还要看安全支持来源、�
 |----------|----------|------|
 | 新装桌面、开发机、服务器 | **Debian 13 (Trixie)** | 当前 stable，安全支持周期最长，硬件和工具链更新 |
 | 已在 Debian 12，短期不能升级 | **Debian 12 (Bookworm)** | 仍可维护，但应规划迁移到 Debian 13 |
-| 仍在 Debian 11 | **尽快升级到 Debian 12，再升级 Debian 13** | Bullseye LTS 即将结束，不适合继续新增部署 |
+| 仍在 Debian 11 | **尽快升级到 Debian 12，再升级 Debian 13** | Bullseye LTS 已于 2026-08-31 结束，仅部分包由第三方 ELTS 支持；不适合继续新增部署 |
 | 想提前体验下一代 Debian | **Debian 14 (Forky/testing)** | 仅建议测试机、虚拟机或非关键环境 |
 | 参与 Debian 开发或打包 | **unstable (Sid)** | 面向开发者，不建议生产和日常主力环境 |
 
@@ -29,7 +29,7 @@ Debian 的版本选择不只是“新不新”，还要看安全支持来源、�
 |-------------|----------|--------|--------------|----------|
 | Debian 13 (Trixie) | stable | 新装、生产、桌面、服务器 | Debian Security Team | 默认选择 |
 | Debian 12 (Bookworm) | oldstable | 暂时不能升级的旧系统 | 常规安全支持已结束，已转入 LTS | 制定升级窗口 |
-| Debian 11 (Bullseye) | LTS | 仅限遗留系统 | Debian LTS Team | 尽快迁移 |
+| Debian 11 (Bullseye) | LTS 已结束（ELTS） | 仅限遗留系统 | 第三方 ELTS（部分包） | 迁移、隔离或下线 |
 | Debian 14 (Forky) | testing | 测试、适配、贡献 | 不等同 stable 安全支持 | 不用于生产 |
 | Sid | unstable | Debian 开发和打包 | 包维护者和开发流 | 需要能自行修复问题 |
 
@@ -39,8 +39,12 @@ Debian 的版本选择不只是“新不新”，还要看安全支持来源、�
 |------|----------|--------------|----------|----------|
 | Debian 13 (Trixie) | 2025-08-09 | 2028-08-09 | 2030-06-30 | 新部署首选 |
 | Debian 12 (Bookworm) | 2023-06-10 | 至 2026-07-11 | 2028-06-30 | 规划升级 |
-| Debian 11 (Bullseye) | 2021-08-14 | 已结束 | 2026-08-31 | 加速迁移 |
+| Debian 11 (Bullseye) | 2021-08-14 | 已结束 | 2026-08-31（已结束） | 迁移、ELTS 或下线 |
 | Debian 10 (Buster) | 2019-07-06 | 已结束 | 2024-06-30 | 不应继续暴露在公网 |
+
+Debian 11 的 LTS 已于 **2026-08-31** 结束；Debian 不再提供安全更新，部分包由第三方 ELTS 支持至 **2031-06-30**。
+
+截至 **2026-09-08**，Debian 13 的最新点更新为 **13.6**（2026-07-11），Debian 12 为 **12.15**（2026-07-11）；Debian 13.7 计划于 2026-09-12 发布。
 
 Debian 13 的常规安全支持结束与 LTS 结束日期按 Debian Releases 页面当前公开信息整理；后续如官方调整，应同步更新本页和内容时效校验。
 
@@ -94,8 +98,8 @@ Debian 13 的常规安全支持结束与 LTS 结束日期按 Debian Releases 页
 | 当前系统 | 推荐动作 | 原因 |
 |----------|----------|------|
 | Debian 13 | 保持更新 | 当前 stable，优先安装安全更新和点更新 |
-| Debian 12 | 规划升级 Debian 13 | 常规安全支持窗口接近结束，LTS 不适合长期拖延 |
-| Debian 11 | 先升级 Debian 12，再升级 Debian 13 | 避免跨多个 stable 版本直接升级 |
+| Debian 12 | 规划升级 Debian 13 | 常规安全支持已于 2026-07-11 结束，当前处于 LTS，应规划升级 |
+| Debian 11 | 先升级 Debian 12，再升级 Debian 13；无法升级则评估 ELTS 或下线 | LTS 已于 2026-08-31 结束，避免跨多个 stable 版本直接升级 |
 | Debian 10 或更早 | 重新评估重装或分阶段迁移 | EOL 后暴露风险高，直接跨越升级复杂 |
 | testing / Sid | 明确用途后继续 | 不应把开发分支当成生产 stable |
 

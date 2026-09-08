@@ -9,6 +9,28 @@ Cette page résume les mises à jour importantes récentes du projet Debian, pou
 
 ### Sorties de versions
 
+#### Debian 13.7 prévue le 2026-09-12
+
+Selon le plan de l'équipe de publication de Debian, Debian 13.7 est prévue le **2026-09-12** (date soumise à confirmation officielle). Il s'agit de la septième version ponctuelle de Debian 13 (Trixie), qui contiendra généralement des correctifs de sécurité et des corrections de bogues critiques.
+
+- [Gestion des versions Debian](https://release.debian.org/)
+- [Versions de Debian](https://www.debian.org/releases/)
+
+#### Le LTS de Debian 11 (Bullseye) est terminé (2026-08-31)
+
+Le support à long terme (LTS) de Debian 11 (Bullseye) s'est terminé le **31 août 2026**. Debian ne fournit plus de mises à jour de sécurité ; une partie des paquets est couverte par **ELTS** jusqu'au **2031-06-30**. Les systèmes encore sous Debian 11 doivent migrer vers Debian 12/13 dès que possible, ou être isolés ou mis hors service.
+
+- [Annonce officielle](https://www.debian.org/News/2026/20260831)
+- [Debian LTS](https://wiki.debian.org/LTS)
+- [Extended LTS](https://wiki.debian.org/LTS/Extended)
+- [Fin de support (EOL)](/fr/eol)
+
+#### DebConf26 s'achève à Santa Fe, DebConf27 annoncée (2026-08-07)
+
+DebConf26 s'est achevée le 25 juillet 2026 à Santa Fe, en Argentine. Plus de 270 participants de 35 pays ont pris part à 90 événements ; la prochaine DebConf27 a également été annoncée.
+
+- [Annonce officielle](https://www.debian.org/News/2026/20260807)
+
 #### Debian 13.6 et 12.15 publiées (2026-07-11)
 
 Le 11/07/2026, Debian a publié deux versions intermédiaires simultanément :
@@ -53,7 +75,38 @@ Le 10 janvier 2026, Debian a simultanément publié :
 
 ---
 
+### Cloud et conteneurs
+
+#### Images cloud et conteneurs Debian 13 mises à jour (2026-09-08)
+
+La dernière image cloud officielle Debian 13 est la compilation **20260831-2587** (2026-08-31). Elle prend en charge AWS EC2, Microsoft Azure, OpenStack et QEMU/VM local, avec les types d'images `generic`, `genericcloud`, `nocloud`, `ec2` et `azure`. Les AMI AWS actuelles sont `debian-13-amd64-20260831-2587` / `debian-13-arm64-20260831-2587` ; l'URN de l'image Azure est `Debian:debian-13:13:latest`.
+
+- Les images cloud Debian 12 LTS ont été actualisées le **2026-09-07** ; Debian 11 a atteint sa fin de vie le 2026-08-31 et ses images cloud ne reçoivent plus de mises à jour de sécurité Debian.
+- Les images cloud quotidiennes de Debian 14 (Forky) testing sont disponibles pour les tests, pas pour la production.
+- Les images Docker officielles `debian:13` / `debian:13-slim` ont été mises à jour vers 13.6 (2026-08-25) ; pour la production, épinglez un tag de version ponctuelle ou un digest.
+- Debian 13.7 est prévue le 2026-09-12 ; les images cloud et Docker seront reconstruites ensuite.
+
+- [Images cloud officielles Debian](https://cloud.debian.org/images/cloud/)
+- [Wiki Debian Cloud](https://wiki.debian.org/Cloud)
+- [Images AWS Debian 13](https://wiki.debian.org/Cloud/AmazonEC2Image/Trixie)
+- [Images Azure Debian](https://wiki.debian.org/Cloud/MicrosoftAzure)
+- [Image Docker officielle Debian](https://hub.docker.com/_/debian)
+
 ### Événements communautaires
+
+#### Debian fête ses 33 ans (2026-08-16)
+
+Le 16 août 2026 marque le 33e anniversaire de l'annonce du projet Debian. Debian a été annoncé au monde par Ian Murdock le 16 août 1993 ; cette année encore, la communauté a célébré l'événement avec des activités Debian Day.
+
+- [Bits from Debian : Debian turns 33!](https://bits.debian.org/2026/08/debian-turns-33.html)
+- [Debian Day](https://wiki.debian.org/DebianDay)
+
+#### MiniDebConf Winterthur 2026 (2026-08-25 – 08-30)
+
+La MiniDebConf Winterthur 2026 s'est tenue les 29 et 30 août 2026 à Winterthur, en Suisse, avec le MiniDebCamp du 25 au 28 août. Les enregistrements des conférences sont disponibles ; l'une d'elles portait sur le plan du CERN d'exécuter Debian 13 sur plus de 2 200 systèmes industriels et embarqués d'ici fin 2026.
+
+- [Page de l'événement](https://ch2026.mini.debconf.org/)
+- [Enregistrements des conférences](https://meetings-archive.debian.net/pub/debian-meetings/2026/MiniDebConf-Winterthur/)
 
 #### DebConf26 — Santa Fe, Argentine
 
@@ -63,6 +116,13 @@ Le 10 janvier 2026, Debian a simultanément publié :
 - **Statut** : S'est tenue du 20 au 25 juillet 2026
 - [Détails](https://bits.debian.org/2025/12/debconf26_dates.html)
 
+#### DebConf27 se tiendra à Asahikawa, au Japon (2026-09-07)
+
+DebConf27 est confirmée du **5 au 11 septembre 2027** à Asahikawa, Hokkaido, Japon ; le DebCamp se déroulera du **29 août au 4 septembre 2027**, avec le 12 septembre comme jour de départ.
+
+- [Site web de DebConf27](https://debconf27.debconf.org/)
+- [Wiki DebConf27](https://wiki.debian.org/DebConf27)
+
 #### Stagiaires Outreachy (déc. 2025 – mars 2026)
 
 Debian a accueilli de nouveaux stagiaires Outreachy travaillant sur **Debian Images Testing with OpenQA**, poursuivant l'investissement dans l'infrastructure de test et le développement des talents communautaires.
@@ -70,6 +130,13 @@ Debian a accueilli de nouveaux stagiaires Outreachy travaillant sur **Debian Ima
 ---
 
 ### Gouvernance du projet
+
+#### Résolution générale : usage des LLM dans Debian (2026-08-30)
+
+La résolution générale de Debian sur l'usage des LLM est terminée. La période de vote s'est déroulée du 2026-08-15 au 2026-08-28 et l'option 5, **« Responsible Use of Generative AI »**, l'a emporté.
+
+- [Résultat du vote](https://www.debian.org/vote/2026/vote_002)
+- [Informations sur le vote](https://www.debian.org/vote/2026/)
 
 #### Élection DPL 2026 : Sruthi Chandran élue
 
@@ -90,16 +157,18 @@ L'élection du DPL 2026 est terminée : **Sruthi Chandran** a été élue nouvel
 Debian continue d'accueillir de nouveaux membres :
 - Nouveaux développeurs/mainteneurs Debian de nov.–déc. 2025 ([annonce](https://bits.debian.org/2026/01/new-developers-2026-01.html))
 - Nouveaux membres de janv.–fév. 2026 ([annonce](https://bits.debian.org/2026/03/new-developers-2026-03.html))
+- Juillet–août 2026 (annonce du 2026-09-07) : nouveau développeur Debian **Nicolas Peugnet (nicolasp)** ; nouveaux mainteneurs Debian : Antoine Lassagne, Ivan Hu, Jesse Rhodes, Haolin Xue, Léo Haf, Rony João de Sousa, Luke Yasuda et Darshaka Pathirana ([annonce](https://bits.debian.org/2026/09/new-developers-2026-09.html))
 
 ---
 
 ### Maintenance de la sécurité
 
-L'équipe de sécurité Debian continue de publier des avis DSA (Debian Security Advisory) et DLA (Debian LTS Advisory). Les paquets récemment mis à jour incluent incus, lxd, libpng1.6 et awstats.
+L'équipe de sécurité Debian continue de publier des avis DSA (Debian Security Advisory) et DLA (Debian LTS Advisory). Au 2026-09-08, les avis récents concernent notamment firefox-esr, thunderbird, chromium, linux, roundcube, strongswan, jbig2dec, libssh2 et pcre2 ; les derniers numéros sont DSA-6488-1 (jbig2dec), DSA-6487-1 (strongswan), DSA-6486-1 (libde265), DSA-6484-1 (chromium), DSA-6481-1 (firefox-esr), ainsi que DLA-4776-1 (chromium), DLA-4775-1 (thunderbird), DLA-4774-1 (aom), DLA-4773-1 (libssh2) et DLA-4770-1 (firefox-esr).
 
 - La version stable (Debian 13) est maintenue par l'équipe de sécurité
-- Debian 12 (Bookworm) est maintenu par l'équipe LTS depuis le 2026-07-11 ; le support LTS de Debian 11 (Bullseye) se termine le 2026-08-31 — les systèmes encore en service doivent être migrés immédiatement
+- Debian 12 (Bookworm) est maintenu par l'équipe LTS depuis le 2026-07-11 ; le support LTS de Debian 11 (Bullseye) s'est terminé le 2026-08-31 — Debian ne fournit plus de mises à jour de sécurité et une partie des paquets est couverte par ELTS jusqu'au 2031-06-30 ; les systèmes encore en service doivent être migrés ou mis hors service immédiatement
 - [Avis de sécurité](https://www.debian.org/security/)
+- [Avis de sécurité LTS](https://www.debian.org/lts/security/)
 
 ---
 

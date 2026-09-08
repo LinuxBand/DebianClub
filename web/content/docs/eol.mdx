@@ -9,7 +9,7 @@ description: "Debian stable、oldstable、LTS 和 EOL 的支持边界、日期�
 
 <Callout type="info" title="日期基准">
 
-本页按 **2026-08-01** 的 Debian 官方发布信息整理。Debian 12（Bookworm）的常规安全支持已于 **2026-07-11** 结束并转入 LTS，LTS 计划持续到 **2028-06-30**。请以 [Debian Releases](https://www.debian.org/releases/) 与 [Debian LTS](https://wiki.debian.org/LTS) 为最终来源。
+本页按 **2026-09-08** 的 Debian 官方发布信息整理。Debian 12（Bookworm）的常规安全支持已于 **2026-07-11** 结束并转入 LTS，LTS 计划持续到 **2028-06-30**。Debian 11（Bullseye）的 LTS 已于 **2026-08-31** 结束，Debian 不再提供安全更新；部分包由第三方 ELTS 支持至 **2031-06-30**。请以 [Debian Releases](https://www.debian.org/releases/) 与 [Debian LTS](https://wiki.debian.org/LTS) 为最终来源。
 
 </Callout>
 
@@ -27,16 +27,16 @@ EOL 不是“系统立刻不能用”，而是安全维护和问题修复的责�
 
 ## 日期速查
 
-| 版本代号 | 正式发布日期 | 常规安全支持结束 | LTS 结束 | 当前建议 |
-|----------|--------------|------------------|----------|----------|
-| Debian 13 (Trixie) | 2025-08-09 | 2028-08-09 | 2030-06-30 | 新部署首选 |
-| Debian 12 (Bookworm) | 2023-06-10 | 2026-07-11 | 2028-06-30 | 规划升级到 Debian 13 |
-| Debian 11 (Bullseye) | 2021-08-14 | 已结束 | 2026-08-31 | 尽快迁移 |
-| Debian 10 (Buster) | 2019-07-06 | 已结束 | 2024-06-30 | 不应继续暴露在公网 |
-| Debian 9 (Stretch) | 2017-06-17 | 已结束 | 2022-06-30 | 下线或隔离 |
-| Debian 8 (Jessie) | 2015-04-25 | 已结束 | 2020-06-30 | 下线或隔离 |
+| 版本代号 | 正式发布日期 | 常规安全支持结束 | LTS 结束 | ELTS 结束 | 当前建议 |
+|----------|--------------|------------------|----------|-----------|----------|
+| Debian 13 (Trixie) | 2025-08-09 | 2028-08-09 | 2030-06-30 | 2035-06-30 | 新部署首选 |
+| Debian 12 (Bookworm) | 2023-06-10 | 2026-07-11 | 2028-06-30 | 2033-06-30 | 规划升级到 Debian 13 |
+| Debian 11 (Bullseye) | 2021-08-14 | 已结束 | 2026-08-31（已结束） | 2031-06-30 | 迁移、ELTS 或下线 |
+| Debian 10 (Buster) | 2019-07-06 | 已结束 | 2024-06-30 | 2029-06-30 | 不应继续暴露在公网 |
+| Debian 9 (Stretch) | 2017-06-17 | 已结束 | 2022-06-30 | 2027-06-30 | 下线或隔离 |
+| Debian 8 (Jessie) | 2015-04-25 | 已结束 | 2020-06-30 | 2025-06-30 | 下线或隔离 |
 
-Debian 13 的 regular support 和 LTS 日期按 Debian Releases 页面当前公开信息整理，后续会随 Debian 官方公告更新。
+Debian 13 的 regular support、LTS 和 ELTS 日期按 Debian Releases 与 Debian LTS/Extended LTS 页面当前公开信息整理，后续会随 Debian 官方公告更新。
 
 ## LTS 阶段要注意什么
 

@@ -3,7 +3,7 @@ title: "内容时效校验"
 description: "DebianClub 对 Debian 版本、生命周期、LTS、AI 工具和发布流程等易变内容的复核基线与自动检查。"
 ---
 
-内容时效校验用于标记会随时间变化的页面，避免版本、生命周期、包支持窗口和发布流程长期停留在旧口径。
+内容时效校验用于标记会随时间变化的页面，避免版本、生命周期、云镜像构建 ID、Docker tag、包支持窗口和发布流程长期停留在旧口径。
 
 ## Phase 44 已上线
 
@@ -11,9 +11,10 @@ description: "DebianClub 对 Debian 版本、生命周期、LTS、AI 工具和�
 
 ```bash
 corepack pnpm --dir web freshness:check
+corepack pnpm --dir web facts:check
 ```
 
-该检查读取仓库中的时效基线，确认关键页面仍包含当前复核日期、官方来源链接和必须同步的生命周期日期。
+`freshness:check` 读取 `web/lib/debian-facts.json` 中的复核基线，确认关键页面仍包含当前复核日期、官方来源链接和必须同步的生命周期日期；`facts:check` 会把事实源与 Debian 官方 Release 文件及 8 个语言页面做交叉校验。
 
 ## 当前复核基线
 
@@ -25,9 +26,12 @@ corepack pnpm --dir web freshness:check
 | Debian 13 LTS 结束 | 2030-06-30 | [Debian Releases](https://www.debian.org/releases/) |
 | Debian 12 常规安全支持结束 | 2026-07-11 | [Debian Releases](https://www.debian.org/releases/) |
 | Debian 12 LTS 结束 | 2028-06-30 | [Debian Releases](https://www.debian.org/releases/) |
-| Debian 11 LTS 结束 | 2026-08-31 | [Debian LTS](https://wiki.debian.org/LTS) |
+| Debian 11 LTS 已结束 | 2026-08-31（已结束） | [Debian LTS](https://wiki.debian.org/LTS) |
+| Debian 11 ELTS 结束 | 2031-06-30 | [Extended LTS](https://wiki.debian.org/LTS/Extended) |
+| Debian 12 ELTS 结束 | 2033-06-30 | [Extended LTS](https://wiki.debian.org/LTS/Extended) |
+| Debian 13 ELTS 结束 | 2035-06-30 | [Extended LTS](https://wiki.debian.org/LTS/Extended) |
 
-复核日期：**2026-08-01**。下一次强制复核日期：**2026-11-01**。
+复核日期：**2026-09-08**。下一次强制复核日期：**2026-12-08**。
 
 ## 必须纳入时效检查的内容
 
@@ -38,14 +42,16 @@ corepack pnpm --dir web freshness:check
 | AI 工具安装方式 | [AI 工具](/ai) | 第三方安装脚本、包名、支持系统会变化 |
 | 部署流程 | [部署与运行](/deployment) | Cloudflare、Next.js、pnpm、wrangler 版本会变化 |
 | AI Skills 分发 | [安装与分发](/ai/skills/install) | registry、tag、包格式和验证脚本会变化 |
+| 云镜像与容器镜像 | [云镜像与云平台](/server/cloud) | 点更新后云镜像构建 ID、Docker tag 会变化 |
 
 ## 更新流程
 
 1. 先查官方来源，不从摘要站点复制生命周期日期。
-2. 更新页面里的复核日期和具体日期。
-3. 同步 `web/_migration/content-freshness-check.mjs` 的基线。
+2. 运行 `corepack pnpm --dir web facts:sync`，用 Debian 官方 Release 文件、云镜像元数据和 Docker Hub tag 更新 `web/lib/debian-facts.json`（网络不可用时保留 committed cache）。
+3. 更新版本敏感页面（`versions`、`eol`、`news`、`whats-new`、`download`、`bootable-media`、`server/cloud`）中的版本号、日期和镜像构建 ID。
 4. 运行 `corepack pnpm --dir web freshness:check`。
-5. 再运行完整 `corepack pnpm --dir web release:check`。
+5. 运行 `corepack pnpm --dir web facts:check`，确认事实源与页面一致。
+6. 再运行完整 `corepack pnpm --dir web release:check`。
 
 ## 失效处理
 

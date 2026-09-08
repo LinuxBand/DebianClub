@@ -1,0 +1,73 @@
+---
+title: "Debian Cloud-Images & Cloud-Plattformen"
+description: "Offizielle Debian-Cloud-Images, AWS/Azure/OpenStack-Nutzung, cloud-init, Image-Verifikation und Lebenszyklus."
+---
+
+<Callout type="info" title="Aktuelle Cloud-Image-Baseline">
+
+- Debian 13 (Trixie): **20260831-2587** (2026-08-31)
+- Debian 12 (Bookworm, LTS): **20260907-2594** (2026-09-07)
+- Debian 11 (Bullseye): EOL seit 2026-08-31
+- Debian 14 (Forky, testing): **20260908-2595** (2026-09-08)
+
+</Callout>
+
+## Unterstützte Cloud-Umgebungen
+
+| Plattform | Support | Hinweis |
+|-----------|---------|---------|
+| Amazon EC2 | Offiziell | amd64/arm64; offizielle Debian-AMIs |
+| Microsoft Azure | Offiziell | amd64; Azure Marketplace |
+| OpenStack | Offiziell | `generic`-Image nach Glance hochladen |
+| Plain VM / QEMU | Offiziell | `nocloud` oder `generic` |
+| Google Compute Engine | Drittanbieter | Von Google gebaut, kein offizielles Debian-Image |
+
+## Image-Typen
+
+| Typ | Zweck | cloud-init |
+|-----|-------|------------|
+| `generic` | Allgemein, viele Clouds und lokale Virtualisierung | Ja |
+| `genericcloud` | Wie generic, reduzierte Hardware-Treiber | Ja |
+| `nocloud` | Kein cloud-init, startet direkt als root | Nein |
+| `ec2` | Für Amazon EC2 optimiert | Ja |
+| `azure` | Für Microsoft Azure optimiert | Ja |
+
+Standard-Benutzer: `debian`; bei AWS EC2 `admin`. SSH-Keys über cloud-init injizieren, keine Passwort-Anmeldung.
+
+## Schnellstart
+
+```bash
+wget https://cloud.debian.org/images/cloud/trixie/latest/debian-13-generic-amd64.qcow2
+wget https://cloud.debian.org/images/cloud/trixie/latest/SHA512SUMS
+sha512sum -c SHA512SUMS --ignore-missing
+```
+
+- AWS: AMI `debian-13-amd64-20260831-2587` / `debian-13-arm64-20260831-2587`
+- Azure: URN `Debian:debian-13:13:latest`
+- OpenStack: `generic`-Image hochladen
+- Lokal: `nocloud`-Image mit QEMU starten
+
+## Lebenszyklus
+
+| Version | Status | Empfehlung |
+|---------|--------|------------|
+| Debian 13 | Aktuelles Stable | Standard für neue Deployments |
+| Debian 12 | LTS | Upgrade auf Debian 13 planen |
+| Debian 11 | EOL 2026-08-31 | Nicht mehr für neue Cloud-Hosts |
+| Debian 14 | testing | Nur für Tests |
+
+Nach einem Point-Release wie 13.7 werden Cloud- und Docker-Images neu gebaut. Produktions-Images mit Version oder Digest pinnen.
+
+## Container-Images
+
+- `debian:13` / `debian:13-slim` (13.6, aktualisiert 2026-08-25)
+- Für Produktion Point-Release-Tag oder Digest pinnen.
+
+## Links
+
+- [Offizielle Debian-Cloud-Images](https://cloud.debian.org/images/cloud/)
+- [Debian Cloud Wiki](https://wiki.debian.org/Cloud)
+- [Docker offizielles Debian-Image](https://hub.docker.com/_/debian)
+- [Versionssupport-Ende (EOL)](/de/eol)
+- [Docker-Anleitung](/en/server/docker)
+- [Vollständige Anleitung (Englisch)](/en/server/cloud)

@@ -1,0 +1,73 @@
+---
+title: "Debian クラウドイメージとクラウドプラットフォーム"
+description: "Debian 公式クラウドイメージ、AWS/Azure/OpenStack の利用、cloud-init、イメージ検証、ライフサイクル管理。"
+---
+
+<Callout type="info" title="現在のクラウドイメージ基準">
+
+- Debian 13（Trixie）: **20260831-2587**（2026-08-31）
+- Debian 12（Bookworm、LTS）: **20260907-2594**（2026-09-07）
+- Debian 11（Bullseye）: 2026-08-31 に EOL
+- Debian 14（Forky、testing）: **20260908-2595**（2026-09-08）
+
+</Callout>
+
+## 対応クラウド環境
+
+| プラットフォーム | サポート | 備考 |
+|------------------|----------|------|
+| Amazon EC2 | 公式 | amd64/arm64、Debian 公式 AMI |
+| Microsoft Azure | 公式 | amd64、Azure Marketplace |
+| OpenStack | 公式 | `generic` イメージを Glance に登録 |
+| 通常 VM / QEMU | 公式 | `nocloud` または `generic` |
+| Google Compute Engine | サードパーティ | Google が構築、Debian 公式イメージではない |
+
+## イメージ種別
+
+| 種別 | 用途 | cloud-init |
+|------|------|------------|
+| `generic` | 汎用、多くのクラウドとローカル仮想化に対応 | あり |
+| `genericcloud` | generic に近いがハードウェアドライバーを削減 | あり |
+| `nocloud` | cloud-init を実行せず root で直接起動 | なし |
+| `ec2` | Amazon EC2 向けに最適化 | あり |
+| `azure` | Microsoft Azure 向けに最適化 | あり |
+
+デフォルトユーザーは多くのイメージで `debian`、AWS EC2 では `admin`。SSH キーは cloud-init で注入し、パスワード認証は無効にしてください。
+
+## クイックスタート
+
+```bash
+wget https://cloud.debian.org/images/cloud/trixie/latest/debian-13-generic-amd64.qcow2
+wget https://cloud.debian.org/images/cloud/trixie/latest/SHA512SUMS
+sha512sum -c SHA512SUMS --ignore-missing
+```
+
+- AWS: AMI `debian-13-amd64-20260831-2587` / `debian-13-arm64-20260831-2587`
+- Azure: URN `Debian:debian-13:13:latest`
+- OpenStack: `generic` イメージをアップロード
+- ローカル: `nocloud` イメージを QEMU で起動
+
+## ライフサイクル
+
+| バージョン | 状態 | 推奨 |
+|------------|------|------|
+| Debian 13 | 現在の安定版 | 新規デプロイの標準 |
+| Debian 12 | LTS | Debian 13 へのアップグレードを計画 |
+| Debian 11 | 2026-08-31 に EOL | 新しいクラウドホストには使用しない |
+| Debian 14 | testing | テスト用途のみ |
+
+13.7 などのポイントリリース後、クラウドイメージと Docker イメージは再ビルドされます。本番環境ではバージョンまたは digest を固定してください。
+
+## コンテナイメージ
+
+- `debian:13` / `debian:13-slim`（13.6、2026-08-25 更新）
+- 本番環境ではポイントリリースタグまたは digest を固定してください。
+
+## リンク
+
+- [Debian 公式クラウドイメージ](https://cloud.debian.org/images/cloud/)
+- [Debian Cloud Wiki](https://wiki.debian.org/Cloud)
+- [Docker 公式 Debian イメージ](https://hub.docker.com/_/debian)
+- [サポート終了 (EOL)](/ja/eol)
+- [Docker ガイド](/en/server/docker)
+- [完全なガイド（英語）](/en/server/cloud)

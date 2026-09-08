@@ -1,3 +1,5 @@
+import debianFacts from './debian-facts.json';
+
 export type LocaleKey = 'zh' | 'en';
 
 export type VersionChannel = 'stable' | 'oldstable' | 'testing';
@@ -388,7 +390,7 @@ export const debianVersions: DebianVersion[] = [
     id: 'trixie',
     codename: 'Trixie',
     number: '13',
-    imageVersion: '13.5.0',
+    imageVersion: debianFacts.releases.stable.imageVersion,
     channel: 'stable',
     label: { zh: 'Debian 13 Trixie', en: 'Debian 13 Trixie' },
     description: { zh: '当前稳定版，推荐大多数新安装', en: 'Current stable release, recommended for most installs' },
@@ -400,7 +402,7 @@ export const debianVersions: DebianVersion[] = [
     id: 'bookworm',
     codename: 'Bookworm',
     number: '12',
-    imageVersion: '12.14.0',
+    imageVersion: debianFacts.releases.oldstable.imageVersion,
     channel: 'oldstable',
     label: { zh: 'Debian 12 Bookworm', en: 'Debian 12 Bookworm' },
     description: { zh: '旧稳定版，适合维护现有 Debian 12 系统', en: 'Oldstable, useful for existing Debian 12 fleets' },

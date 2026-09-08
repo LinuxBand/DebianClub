@@ -27,14 +27,14 @@ Após esse período, uma equipe independente de voluntários e empresas assume p
 
 A tabela abaixo lista as datas de lançamento e as datas de fim de vida (EOL) das versões recentes do Debian.
 
-| Codinome                     | Data de lançamento | Fim do suporte regular | Fim do suporte de longo prazo (LTS) |
-| :--------------------------- | :----------------- | :--------------------- | :---------------------------------- |
-| **Debian 13 (Trixie)**       | 2025-08-09         | ~ agosto 2028          | ~ agosto 2030                       |
-| **Debian 12 (Bookworm)**     | 2023-06-10         | 2026-07-11             | 2028-06-30                          |
-| **Debian 11 (Bullseye)**     | 2021-08-14         | julho 2024             | 2026-08-31                          |
-| **Debian 10 (Buster)**       | 2019-07-06         | 2022-09-10             | 2024-06-30                          |
-| **Debian 9 (Stretch)**       | 2017-06-17         | 2020-07-06             | 2022-06-30                          |
-| **Debian 8 (Jessie)**        | 2015-04-25         | 2018-06-17             | 2020-06-30                          |
+| Codinome                     | Data de lançamento | Fim do suporte regular | Fim do suporte de longo prazo (LTS) | Fim do ELTS |
+| :--------------------------- | :----------------- | :--------------------- | :---------------------------------- |-----------|
+| **Debian 13 (Trixie)**       | 2025-08-09         | 2028-08-09          | 2030-06-30                       | 2035-06-30 |
+| **Debian 12 (Bookworm)**     | 2023-06-10         | 2026-07-11             | 2028-06-30                          | 2033-06-30 |
+| **Debian 11 (Bullseye)**     | 2021-08-14         | julho 2024             | 2026-08-31                          | 2031-06-30 |
+| **Debian 10 (Buster)**       | 2019-07-06         | 2022-09-10             | 2024-06-30                          | 2029-06-30 |
+| **Debian 9 (Stretch)**       | 2017-06-17         | 2020-07-06             | 2022-06-30                          | 2027-06-30 |
+| **Debian 8 (Jessie)**        | 2015-04-25         | 2018-06-17             | 2020-06-30                          | 2025-06-30 |
 
 <Callout type="info">
 
@@ -47,5 +47,12 @@ Datas marcadas com `~` são estimativas e podem estar sujeitas a pequenas altera
 O suporte de segurança regular do Debian 12 (Bookworm) terminou em **2026-07-11**. Desde então, a equipe LTS mantém a versão até **2028-06-30**. Recomenda-se planejar a atualização para o Debian 13 (Trixie).
 
 </Callout>
+
+<Callout type="warn" title="O LTS do Debian 11 terminou">
+
+O suporte LTS do Debian 11 (Bullseye) terminou em **2026-08-31**. O Debian não fornece mais atualizações de segurança; parte dos pacotes é coberta pelo **ELTS** até **2031-06-30**. Planeje a migração, o isolamento ou o descomissionamento.
+
+</Callout>
+
 
 É altamente recomendável planejar e atualizar para uma versão estável mais recente antes que o período LTS da sua versão atual termine, para garantir que seu sistema permaneça seguro.

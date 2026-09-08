@@ -44,6 +44,10 @@ for (const page of localizedEntryPages) {
   }
 }
 
+for (const locale of requiredLocales) {
+  requiredFile(locale === 'zh' ? 'content/docs/server/cloud.mdx' : `content/docs/server/cloud.${locale}.mdx`);
+}
+
 for (const page of bilingualPages) {
   requiredFile(localizedTopLevelPath(page, 'zh'));
   requiredFile(localizedTopLevelPath(page, 'en'));

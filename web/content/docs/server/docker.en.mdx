@@ -5,6 +5,12 @@ description: "Learn how to install the Docker Engine on Debian and start buildin
 
 This guide details how to install the Docker Engine on a Debian system. We will use the method recommended by Docker, installing it from Docker's official `apt` repository to ensure we get the latest and most stable version.
 
+<Callout type="info" title="Debian 13 Base Image">
+
+If you only need Debian as a container base image, you can use the official Docker images `debian:13` or the smaller `debian:13-slim` (updated to 13.6 on 2026-08-25). For production, pin a point-release tag such as `debian:13.6-slim` or a digest.
+
+</Callout>
+
 ## Why Use Docker?
 
 Docker is an open-source containerization platform that allows developers to package applications and all their dependencies (libraries, system tools, code, etc.) into a lightweight, portable container.

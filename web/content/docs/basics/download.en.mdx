@@ -11,16 +11,18 @@ Looking for a quick download? Visit the [Interactive Download Page](/en/download
 
 This guide helps you download the appropriate Debian 13 installation images for your system.
 
+> Tip: the point release number in Debian ISO filenames changes with each point update (currently `13.6.0`). Always use the file name shown in the mirror's `current/` directory.
+
 ## 🎯 Choose Your Download
 
 ### Quick Selection
 
 | Use Case | Recommended Download | Size |
 |----------|---------------------|------|
-| **Most Users** | DVD-1 (Full Desktop) | ~3.7GB |
-| **Minimal Install** | netinst (Network Install) | ~400MB |
-| **Offline Install** | Complete DVD Set | ~20GB |
-| **USB/CD Install** | ISO Images | Various |
+| **Most Users** | netinst (network install) or DVD-1 | ~400MB / ~3.7GB |
+| **Minimal Install** | netinst (network install) | ~400MB |
+| **Offline Install** | DVD-1 (desktop packages included) | ~3.7GB |
+| **Try Before Installing** | Live image | ~2.5–3.5GB |
 
 ## 💿 Official Download Links
 
@@ -50,46 +52,36 @@ This guide helps you download the appropriate Debian 13 installation images for 
 
 ## 📦 Installation Image Types
 
-### DVD Images (Recommended)
+### DVD Images
 
 ```bash
-# DVD-1 (Primary desktop environments)
-debian-13.0.0-amd64-DVD-1.iso      # ~3.7GB
-# Contains: GNOME, KDE, Xfce, LXDE
-
-# DVD-2 (Additional software)
-debian-13.0.0-amd64-DVD-2.iso      # ~4.4GB
-
-# DVD-3 (More software packages)
-debian-13.0.0-amd64-DVD-3.iso      # ~4.4GB
+# Debian 13 currently provides only DVD-1
+debian-13.6.0-amd64-DVD-1.iso      # ~3.7GB
+# Contains the installer and a useful set of desktop packages
 ```
+
+> Debian 13 no longer publishes DVD-2/DVD-3 sets. Use netinst with a mirror if you need packages beyond DVD-1.
 
 ### Network Install (netinst)
 
 ```bash
 # Minimal installer (downloads packages online)
-debian-13.0.0-amd64-netinst.iso    # ~400MB
+debian-13.6.0-amd64-netinst.iso    # ~400MB
 # Best for: Fast internet, custom installations
 ```
 
 ### CD Images
 
-```bash
-# CD-1 (Basic system only)
-debian-13.0.0-amd64-CD-1.iso       # ~650MB
-# Contains: Base system + one desktop environment
-```
+Debian 13 no longer publishes a separate CD-1 image. Use `netinst` for a small download, or DVD-1 for offline installation.
 
 ### Live Images
 
 ```bash
-# Live Desktop environments
-debian-live-13.0.0-amd64-gnome.iso      # ~2.9GB
-debian-live-13.0.0-amd64-kde.iso        # ~3.1GB
-debian-live-13.0.0-amd64-xfce.iso       # ~2.7GB
-debian-live-13.0.0-amd64-lxde.iso       # ~2.5GB
-
-# Try before installing
+# Live desktop environments (try before installing)
+debian-live-13.6.0-amd64-gnome.iso      # ~2.9GB
+debian-live-13.6.0-amd64-kde.iso        # ~3.1GB
+debian-live-13.6.0-amd64-xfce.iso       # ~2.7GB
+debian-live-13.6.0-amd64-lxde.iso       # ~2.5GB
 ```
 
 ## 🏗️ Architecture Selection
@@ -100,8 +92,8 @@ debian-live-13.0.0-amd64-lxde.iso       # ~2.5GB
 # 64-bit (Recommended)
 amd64     # Intel Core, AMD Ryzen, most modern PCs
 
-# 32-bit (Legacy)
-i386      # Older computers (pre-2007)
+# 32-bit (legacy; no Debian 13 installation images)
+i386      # Older computers — use an older Debian release or another distro
 ```
 
 ### ARM Systems
@@ -137,7 +129,7 @@ wget https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/SHA256SUMS
 wget https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/SHA256SUMS.sign
 
 # Verify checksum
-sha256sum debian-13.0.0-amd64-DVD-1.iso
+sha256sum debian-13.6.0-amd64-DVD-1.iso
 # Compare with SHA256SUMS file
 
 # Verify GPG signature (Advanced)
@@ -148,7 +140,7 @@ gpg --verify SHA256SUMS.sign SHA256SUMS
 
 ```bash
 # Command line download
-wget https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-13.0.0-amd64-DVD-1.iso
+wget https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-13.6.0-amd64-DVD-1.iso
 
 # Resume interrupted download
 wget -c URL
@@ -159,17 +151,9 @@ wget -c URL
 
 ## 🚀 Specialized Images
 
-### Firmware Images (Non-free)
+### Firmware
 
-```bash
-# For systems requiring proprietary drivers
-debian-13.0.0-amd64-DVD-1-firmware.iso
-
-# Includes:
-- WiFi drivers (Broadcom, Intel, Realtek)
-- Graphics drivers (NVIDIA, AMD)
-- Network drivers
-```
+Debian 13 official installation and live images already include the non-free firmware needed by most hardware. You normally do **not** need a separate `-firmware` image. If you need to install firmware manually, see the [Debian Firmware wiki](https://wiki.debian.org/Firmware).
 
 ### Cloud Images
 
@@ -180,12 +164,12 @@ debian-13-generic-amd64.vmdk        # VMware
 debian-13-generic-amd64.vhd         # Hyper-V
 ```
 
-### Minimal Images
+### Minimal / Netboot Images
 
 ```bash
-# Very small installations
-debian-13.0.0-amd64-mini.iso        # ~50MB
-# Network boot only, download everything
+# Very small network-boot image (not in the ISO directory)
+# https://deb.debian.org/debian/dists/trixie/main/installer-amd64/current/images/netboot/mini.iso
+# Downloads packages from a mirror during installation
 ```
 
 ## 💾 Download Size Planning
@@ -194,11 +178,9 @@ debian-13.0.0-amd64-mini.iso        # ~50MB
 
 | Image Type | Download Size | Installed Size |
 |------------|---------------|----------------|
-| **netinst** | 400MB | 2-10GB+ |
-| **CD-1** | 650MB | 3-8GB |
-| **DVD-1** | 3.7GB | 5-15GB |
-| **Live** | 2.5-3.1GB | N/A |
-| **Complete** | 20GB+ | 20GB+ |
+| **netinst** | ~400MB | 2-10GB+ |
+| **DVD-1** | ~3.7GB | 5-15GB |
+| **Live** | ~2.5-3.5GB | N/A |
 
 ### Internet Requirements
 
@@ -214,8 +196,8 @@ debian-13.0.0-amd64-mini.iso        # ~50MB
 
 ### For Beginners
 
-1. **DVD-1 Image** - Complete offline installation
-2. **Firmware version** if you have modern hardware
+1. **netinst** - Small download, latest packages
+2. **DVD-1** - Offline installation with desktop packages
 3. **amd64 architecture** for most computers
 
 ### For Advanced Users
@@ -228,16 +210,16 @@ debian-13.0.0-amd64-mini.iso        # ~50MB
 
 <Callout type="info" title="🏠 Home Users">
 
-- **DVD-1**: Complete desktop environment
+- **netinst**: Small download, latest packages
+- **DVD-1**: Offline installation with desktop packages
 - **Live image**: Try before installing
-- **Firmware version**: For WiFi/graphics support
 
 </Callout>
 
 <Callout type="info" title="🏢 Enterprise/Servers">
 
 - **netinst**: Minimal system, add what you need
-- **Business Card**: Very minimal (50MB)
+- **netboot mini.iso**: Very small image that downloads packages during installation
 - **Network install**: Always latest packages
 
 </Callout>
@@ -245,7 +227,7 @@ debian-13.0.0-amd64-mini.iso        # ~50MB
 <Callout type="info" title="🎓 Students/Learning">
 
 - **Live images**: Experiment without installing
-- **Multiple DVDs**: Explore different desktops
+- **Multiple live variants**: Explore different desktops
 - **Virtual machine images**: Easy setup
 
 </Callout>

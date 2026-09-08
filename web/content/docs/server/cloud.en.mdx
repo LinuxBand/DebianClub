@@ -1,0 +1,154 @@
+---
+title: "Debian Cloud Images & Platforms"
+description: "Official Debian cloud images, AWS/Azure/OpenStack usage, cloud-init, image verification, and lifecycle management."
+---
+
+<Callout type="info" title="Current Cloud Image Baseline">
+
+- Latest official Debian 13 (Trixie) cloud image build: **20260831-2587** (2026-08-31)
+- Latest Debian 12 (Bookworm, LTS) cloud image build: **20260907-2594** (2026-09-07)
+- Debian 11 (Bullseye) reached EOL on 2026-08-31; its cloud images no longer receive Debian security updates
+- Debian 14 (Forky) testing daily cloud image: **20260908-2595** (2026-09-08)
+
+</Callout>
+
+## Supported Cloud Environments
+
+The Debian Cloud Team publishes official images for:
+
+| Platform | Support | Notes |
+|----------|---------|-------|
+| Amazon EC2 | Official | amd64/arm64; AMIs published by the official Debian account |
+| Microsoft Azure | Official | amd64; available through Azure Marketplace |
+| OpenStack | Official | Upload the `generic` image to Glance |
+| Plain VM / QEMU | Official | Use `nocloud` or `generic` images |
+| Google Compute Engine | Third-party | Built and maintained by Google, not an official Debian cloud image |
+| Oracle Cloud / IBM, etc. | No official support | Import an image yourself or use a third-party image |
+
+## Image Types
+
+| Type | Purpose | cloud-init |
+|------|---------|------------|
+| `generic` | General purpose; works with most clouds and local virtualization | Yes |
+| `genericcloud` | Similar to generic with a reduced hardware driver set | Yes |
+| `nocloud` | Does not run cloud-init; boots directly to root | No |
+| `ec2` | Optimized for Amazon EC2 | Yes |
+| `azure` | Optimized for Microsoft Azure | Yes |
+
+Default login user: `debian` for most images; official AWS EC2 images use `admin`. Inject SSH keys through cloud-init and do not enable password authentication.
+
+## Quick Start
+
+### Download and Verify
+
+```bash
+# Example: Debian 13
+wget https://cloud.debian.org/images/cloud/trixie/latest/debian-13-generic-amd64.qcow2
+wget https://cloud.debian.org/images/cloud/trixie/latest/SHA512SUMS
+sha512sum -c SHA512SUMS --ignore-missing
+```
+
+Image directory: [cloud.debian.org/images/cloud](https://cloud.debian.org/images/cloud/)
+
+### Amazon EC2
+
+```bash
+# Query the current official AMIs (AWS CLI required)
+aws --region us-east-2 ssm get-parameters-by-path \
+  --recursive \
+  --path /aws/service/debian/release/13/latest
+```
+
+Current AMI names: `debian-13-amd64-20260831-2587` / `debian-13-arm64-20260831-2587`.
+
+### Microsoft Azure
+
+Use the Debian image in Azure Marketplace with this URN format:
+
+```text
+Debian:debian-13:13:latest
+```
+
+The `13-gen2` and `13-arm64` variants are also available.
+
+### OpenStack
+
+```bash
+openstack image create \
+  --container-format bare \
+  --disk-format qcow2 \
+  --property hw_disk_bus=scsi \
+  --property hw_scsi_model=virtio-scsi \
+  --property os_type=linux \
+  --property os_distro=debian \
+  --property os_admin_user=debian \
+  --public \
+  --file debian-13-generic-amd64.qcow2 \
+  debian-13-generic-amd64
+```
+
+### Local QEMU
+
+```bash
+qemu-system-x86_64 \
+  -m 2G -smp 2 \
+  -drive file=debian-13-nocloud-amd64.qcow2,format=qcow2 \
+  -netdev user,id=net0 -device virtio-net-pci,netdev=net0
+```
+
+## cloud-init and Initialization
+
+- `generic` / `genericcloud` / `ec2` / `azure` images run cloud-init on first boot.
+- Use user-data to inject SSH keys, users, packages, and startup scripts.
+- `nocloud` does not run cloud-init; it is useful for local QEMU or manual configuration.
+- Do not bake long-lived keys into images; inject them through instance metadata or a secret manager.
+
+Example user-data:
+
+```yaml
+#cloud-config
+users:
+  - name: debian
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAA...
+package_update: true
+packages:
+  - qemu-guest-agent
+```
+
+## Lifecycle and Update Strategy
+
+| Version | Cloud image status | Recommendation |
+|---------|--------------------|----------------|
+| Debian 13 (Trixie) | Current stable; rebuilt with point releases | Default choice for new deployments |
+| Debian 12 (Bookworm) | LTS; still receives security updates | Plan an upgrade to Debian 13 |
+| Debian 11 (Bullseye) | EOL on 2026-08-31 | Do not use for new cloud hosts |
+| Debian 14 (Forky) | testing; daily builds | Testing only |
+
+- After a point release such as 13.7, official cloud and Docker images are rebuilt; do not keep using old image IDs.
+- Pin image versions or digests in production and rebuild instances regularly; do not treat cloud hosts as long-lived pets.
+- Use `unattended-upgrades` or an image build pipeline to keep security updates current.
+- Follow the [Debian release lifecycle](/en/eol).
+
+## Container Images
+
+- Official Docker images: `debian:13`, `debian:13-slim`, `debian:trixie`, `debian:trixie-slim`.
+- The current 13.6 tag was updated on 2026-08-25; pin a point-release tag such as `debian:13.6-slim` or a digest in production.
+- In multi-stage builds, use `debian:13` for the build stage and `debian:13-slim` for the runtime stage.
+
+```dockerfile
+FROM debian:13-slim
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+```
+
+## Related Links
+
+- [Debian official cloud images](https://cloud.debian.org/images/cloud/)
+- [Debian Cloud wiki](https://wiki.debian.org/Cloud)
+- [AWS Debian 13 images](https://wiki.debian.org/Cloud/AmazonEC2Image/Trixie)
+- [Azure Debian images](https://wiki.debian.org/Cloud/MicrosoftAzure)
+- [Official Debian Docker image](https://hub.docker.com/_/debian)
+- [Release End-of-Life (EOL)](/en/eol)
+- [Docker Setup & Usage](/en/server/docker)
+- [Virtualization Platform](/en/server/virtualization)

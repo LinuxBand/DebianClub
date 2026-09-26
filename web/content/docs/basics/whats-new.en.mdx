@@ -51,7 +51,7 @@ Debian 13 codenamed "Trixie" was officially released in August 2025 and is the c
 
 ### Software Repository Changes
 
-#### New non-free-firmware Component
+#### The non-free-firmware Component
 Debian 13 added a dedicated component for hardware firmware:
 
 ```bash
@@ -61,7 +61,7 @@ main contrib non-free non-free-firmware
 
 <Callout type="warn" title="Note">
 
-`non-free-firmware` is a **new addition**, not a replacement for `non-free`. The `non-free` component continues to exist. If you need packages like `nvidia-driver`, you still need to include `non-free`.
+`non-free-firmware` is a component **introduced in Debian 12**, not a replacement for `non-free`. The `non-free` component continues to exist. If you need packages like `nvidia-driver`, you still need to include `non-free`.
 
 </Callout>
 
@@ -155,7 +155,7 @@ systemd-analyze plot > bootup.svg
 sudo apt install rustc
 
 # Go language
-sudo apt install golang-1.21
+sudo apt install golang-1.24
 
 # Node.js LTS
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
@@ -238,8 +238,8 @@ sudo dpkg-reconfigure package-name
 | **13.3** | 2026-01-10 | Security fixes and critical bug fixes |
 | **13.4** | 2026-03-14 | Security fixes and critical bug fixes |
 | **13.5** | 2026-05-16 | Security fixes and critical bug fixes |
-| **13.7** | 2026-07-11 | Current latest point release |
-| **13.7** | 2026-09-12 (planned) | Next point release |
+| **13.6** | 2026-07-11 | Point release |
+| **13.7** | 2026-09-12 | Current latest point release |
 
 ### Support Lifecycle
 

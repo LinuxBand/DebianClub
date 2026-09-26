@@ -51,8 +51,8 @@ Debian 13 代号"Trixie"，已于 2025 年 8 月正式发布，是当前的 stab
 
 ### 软件源变化
 
-#### 新增 non-free-firmware 组件
-Debian 13 新增了专用于硬件固件的 `non-free-firmware` 组件：
+#### non-free-firmware 组件
+自 **Debian 12** 起引入、并在 Debian 13 中延续使用的 `non-free-firmware` 组件：
 
 ```bash
 # Debian 13 完整推荐源配置（含非自由软件）
@@ -61,7 +61,7 @@ main contrib non-free non-free-firmware
 
 <Callout type="warn" title="注意">
 
-`non-free-firmware` 是**新增**组件，不是替代 `non-free`。`non-free` 组件继续存在，如需安装 NVIDIA 驱动等非自由软件，仍需保留 `non-free`。
+`non-free-firmware` 是 Debian 12 起新增的组件，不是替代 `non-free`。`non-free` 组件继续存在，如需安装 NVIDIA 驱动等非自由软件，仍需保留 `non-free`。
 
 </Callout>
 
@@ -155,7 +155,7 @@ systemd-analyze plot > bootup.svg
 sudo apt install rustc
 
 # Go 语言
-sudo apt install golang-1.21
+sudo apt install golang-1.24
 
 # Node.js LTS
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
@@ -238,7 +238,7 @@ sudo dpkg-reconfigure package-name
 | **13.3** | 2026-01-10 | 安全修复与严重问题修正 |
 | **13.4** | 2026-03-14 | 安全修复与严重问题修正 |
 | **13.5** | 2026-05-16 | 安全修复与严重问题修正 |
-| **13.7** | 2026-07-11 | 当前最新点更新 |
+| **13.6** | 2026-07-11 | 点更新 |
 | **13.7** | 2026-09-12 | 当前最新点更新 |
 
 ### 支持周期

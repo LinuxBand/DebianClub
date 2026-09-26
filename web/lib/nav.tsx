@@ -69,7 +69,7 @@ const TRIGGERS: Record<Locale, TriggerLabels> = {
     server: '服务器',
     scenarios: '场景方案',
     versions: '版本',
-    aiTools: 'AI 与工具',
+    aiTools: 'AI 工具',
     more: '更多',
   },
   en: {

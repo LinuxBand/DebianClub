@@ -52,19 +52,19 @@ export function DocsMegaHeader(props: ComponentProps<'header'>) {
           >
             <nav>
               {slots.navTitle && (
-                <slots.navTitle className="inline-flex items-center gap-2.5 font-semibold" />
+                <slots.navTitle className="inline-flex items-center gap-2.5 whitespace-nowrap font-semibold" />
               )}
               {nav?.children}
-              <ul className="flex flex-row items-center gap-0.5 px-4 max-md:hidden">
+              <ul className="flex flex-row items-center gap-0.5 px-4 whitespace-nowrap max-lg:hidden">
                 {primaryItems.map((item, i) => (
                   <MegaNavItem key={i} item={item} pathname={pathname} />
                 ))}
               </ul>
-              <div className="flex flex-row items-center justify-end gap-1.5 flex-1 max-lg:hidden">
+              <div className="flex min-w-0 flex-row items-center justify-end gap-1.5 flex-1 max-lg:hidden">
                 {slots.searchTrigger && (
                   <slots.searchTrigger.full
                     hideIfDisabled
-                    className="w-full rounded-full ps-2.5 max-w-[240px]"
+                    className="w-full min-w-0 rounded-full ps-2.5 max-w-[240px]"
                   />
                 )}
                 {slots.themeSwitch && <slots.themeSwitch />}
@@ -142,7 +142,7 @@ function MegaNavItem({
       <NavigationMenuItem>
         <NavigationMenuTrigger
           data-active={active || undefined}
-          className="inline-flex items-center gap-1 rounded-md p-2 text-sm text-fd-muted-foreground transition-colors hover:text-fd-accent-foreground data-[active=true]:text-fd-primary data-[state=open]:text-fd-accent-foreground [&_svg]:size-3"
+          className="inline-flex items-center gap-1 rounded-md p-2 text-sm whitespace-nowrap text-fd-muted-foreground transition-colors hover:text-fd-accent-foreground data-[active=true]:text-fd-primary data-[state=open]:text-fd-accent-foreground [&_svg]:size-3"
         >
           {item.url ? (
             <Link href={item.url} className="no-underline hover:text-inherit">
@@ -153,7 +153,7 @@ function MegaNavItem({
           )}
           <ChevronDown />
         </NavigationMenuTrigger>
-        <NavigationMenuContent className="grid grid-cols-1 gap-2 p-4 md:grid-cols-2 lg:grid-cols-3">
+        <NavigationMenuContent className="grid grid-cols-1 gap-2 rounded-b-xl border border-t-0 border-fd-border bg-fd-background p-4 shadow-xl md:grid-cols-2 lg:grid-cols-3">
           {item.items.map((child, j) => {
             if (child.type === 'custom') {
               return <Fragment key={j}>{child.children}</Fragment>;
@@ -191,7 +191,7 @@ function MegaNavItem({
           href={item.url}
           external={item.external}
           data-active={active || undefined}
-          className="inline-flex items-center gap-1 rounded-md p-2 text-sm text-fd-muted-foreground no-underline transition-colors hover:text-fd-accent-foreground data-[active=true]:text-fd-primary"
+          className="inline-flex items-center gap-1 rounded-md p-2 text-sm whitespace-nowrap text-fd-muted-foreground no-underline transition-colors hover:text-fd-accent-foreground data-[active=true]:text-fd-primary"
         >
           {item.icon}
           {item.text}

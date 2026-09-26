@@ -74,11 +74,11 @@ const TRIGGERS: Record<Locale, TriggerLabels> = {
   en: {
     download: 'Download',
     basics: 'Basics',
-    admin: 'Administration',
+    admin: 'Admin',
     server: 'Server',
     scenarios: 'Scenarios',
     versions: 'Versions',
-    aiTools: 'AI & Tools',
+    aiTools: 'AI',
     more: 'More',
   },
   de: {

@@ -8,5 +8,6 @@
     "wifi",
     "bluetooth-audio",
     "laptop"
-  ]
+  ],
+  "icon": "Cpu"
 }

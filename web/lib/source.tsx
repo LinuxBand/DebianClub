@@ -1,7 +1,45 @@
 import { docs } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
+import {
+  Bot,
+  BookText,
+  Compass,
+  Cpu,
+  GitCompare,
+  LayoutGrid,
+  Layers,
+  LifeBuoy,
+  Link2,
+  Package,
+  Rocket,
+  Server,
+  ServerCog,
+  Settings,
+  Wrench,
+  type LucideIcon,
+} from 'lucide-react';
 import { docsContentRoute, docsImageRoute, docsRoute } from './shared';
 import { i18n } from './i18n';
+
+// Icon names referenced by meta.json separators ("---[Cpu]Hardware & AI---"),
+// folder meta files ("icon": "Server") and page frontmatter ("icon: Rocket").
+const ICONS: Record<string, LucideIcon> = {
+  Rocket,
+  BookText,
+  Compass,
+  Cpu,
+  GitCompare,
+  Layers,
+  LayoutGrid,
+  LifeBuoy,
+  Link2,
+  Package,
+  Bot,
+  Server,
+  ServerCog,
+  Settings,
+  Wrench,
+};
 
 // See https://fumadocs.dev/docs/headless/source-api for more info.
 // The URL scheme is SEO-preserving: zh at root, other languages under
@@ -11,6 +49,10 @@ export const source = loader({
   i18n,
   source: docs.toFumadocsSource(),
   plugins: [],
+  icon: (name) => {
+    const Icon = name ? ICONS[name] : undefined;
+    return Icon ? <Icon className="size-4 shrink-0" /> : null;
+  },
 });
 
 export function getPageImage(page: (typeof source)['$inferPage']) {

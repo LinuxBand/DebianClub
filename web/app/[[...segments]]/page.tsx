@@ -78,7 +78,7 @@ export default async function Page({ params }: { params: PageParams }) {
   return (
     <DocsLayout
       tree={source.getPageTree(lang)}
-      {...baseOptions(lang)}
+      {...baseOptions(lang, true)}
       slots={{ header: DocsMegaHeader }}
     >
       <DocsPage toc={page.data.toc} full={page.data.full}>

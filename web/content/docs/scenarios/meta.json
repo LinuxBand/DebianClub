@@ -10,5 +10,6 @@
     "ops-jump-box",
     "monitoring-server",
     "git-forge"
-  ]
+  ],
+  "icon": "Layers"
 }

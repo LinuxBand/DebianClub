@@ -55,7 +55,7 @@ export function DocsMegaHeader(props: ComponentProps<'header'>) {
                 <slots.navTitle className="inline-flex items-center gap-2.5 whitespace-nowrap font-semibold" />
               )}
               {nav?.children}
-              <ul className="flex flex-row items-center gap-0.5 px-4 whitespace-nowrap max-lg:hidden">
+              <ul className="flex flex-row items-center gap-0.5 px-4 whitespace-nowrap max-xl:hidden">
                 {primaryItems.map((item, i) => (
                   <MegaNavItem key={i} item={item} pathname={pathname} />
                 ))}

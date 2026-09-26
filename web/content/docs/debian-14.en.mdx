@@ -53,6 +53,38 @@ Until Forky's freeze dates are published, Trixie's actual cadence is the best re
 
 What the stages mean: the transition freeze stops large library migrations; after the soft freeze no new packages enter; the hard freeze allows only critical fixes; the full freeze ships critical corrections only, until release.
 
+## 🛰️ Progress Tracker
+
+> Reverse-chronological log of verifiable Forky / testing activity, updated as Debian publishes (last checked: **2026-09-26**). Sources: the deb.debian.org archive index, packages.debian.org, and sources.debian.org.
+
+### Recent developments
+
+- **2026-09: default toolchain switched** — `python3` in testing now defaults to **3.14** (3.14.7) and GCC defaults to **16.1** (gcc-15.3 remains available), paving the way for large-scale package rebuilds
+- **2026-09: Linux 7.2.6+deb14 landed in testing** — the kernel jumps from Trixie's 6.12 LTS series to 7.2
+- **2026-09: major desktop and base components in place** — GNOME 50.5, KDE Plasma 6.7.4, systemd 261.2, glibc 2.43, LibreOffice 26.8, Firefox ESR 140.16
+- **From 2026-11: Trixie point releases 13.8–13.11 ship on schedule** — before Forky freezes, release management stays focused on Trixie's stable maintenance
+
+### Testing component snapshot (forky/main amd64, 2026-09-26)
+
+| Component | Forky testing | Debian 13 baseline |
+|-----------|---------------|--------------------|
+| Linux kernel | 7.2.6 | 6.12 LTS |
+| systemd | 261.2 | 257.13 |
+| glibc | 2.43 | 2.41 |
+| GCC (default) | 16.1 | 14.2 |
+| Python (default python3) | 3.14.7 | 3.13 |
+| GNOME | 50.5 | 48 |
+| KDE Plasma | 6.7.4 | 6.3 |
+| LibreOffice | 26.8 | 25.2 |
+| Firefox ESR | 140.16 | 128 |
+
+> Testing keeps rolling until the freeze; live versions are authoritative at [packages.debian.org/forky](https://packages.debian.org/forky/). This table only "settles" once the freeze begins.
+
+### Archive activity
+
+- The forky archive index refreshes **daily** (the Release index generated at 2026-09-26 08:08 UTC was already superseded the same day) — the unstable → testing autopilot is rolling normally
+- That cadence slows down markedly once the freeze starts, down to critical fixes only — the clear signal that Forky has entered its release cycle
+
 ## 🔍 Visible differences from Debian 13 so far
 
 - **Kernel**: Debian 13 ships the Linux 6.12 LTS series; Forky testing already tracks 7.2

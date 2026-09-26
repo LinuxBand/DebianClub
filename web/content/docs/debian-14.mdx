@@ -53,6 +53,38 @@ Forky 的冻结日期公布前，Trixie 的实际节奏是最好的参照（来�
 
 各冻结阶段的含义：过渡冻结停止大型库迁移；软冻结后新包不再进入；硬冻结只接受关键修复；完全冻结后仅发布关键修正，直至正式发布。
 
+## 🛰️ 进展追踪
+
+> 按时间倒序记录可核实的 Forky / testing 动态，随官方公告更新（最后核对：**2026-09-26**）。数据来自 deb.debian.org 归档索引、packages.debian.org 与 sources.debian.org。
+
+### 近期动态
+
+- **2026-09：默认工具链完成切换** — testing 中 `python3` 默认指向 **3.14**（3.14.7），GCC 默认指向 **16.1**（gcc-15.3 仍随仓库提供），为后续大规模软件包重建铺路
+- **2026-09：Linux 7.2.6+deb14 进入 testing** — 内核从 Trixie 的 6.12 LTS 系列跃迁到 7.2 系列
+- **2026-09：主要桌面与基础组件到位** — GNOME 50.5、KDE Plasma 6.7.4、systemd 261.2、glibc 2.43、LibreOffice 26.8、Firefox ESR 140.16
+- **2026-11 起：Trixie 点更新 13.8–13.11 按排期发布** — Forky 冻结前，发布管理的工作重点仍在 Trixie 稳定维护上
+
+### testing 组件快照（forky/main amd64，2026-09-26）
+
+| 组件 | Forky testing 当前 | Debian 13 基线 |
+|------|--------------------|----------------|
+| Linux 内核 | 7.2.6 | 6.12 LTS |
+| systemd | 261.2 | 257.13 |
+| glibc | 2.43 | 2.41 |
+| GCC（默认） | 16.1 | 14.2 |
+| Python（默认 python3） | 3.14.7 | 3.13 |
+| GNOME | 50.5 | 48 |
+| KDE Plasma | 6.7.4 | 6.3 |
+| LibreOffice | 26.8 | 25.2 |
+| Firefox ESR | 140.16 | 128 |
+
+> 冻结前 testing 版本会持续滚动，实时版本请以 [packages.debian.org/forky](https://packages.debian.org/forky/) 为准；冻结后这张表才会逐步"定型"。
+
+### 归档活跃度
+
+- forky 归档索引目前**每日刷新**（2026-09-26 08:08 UTC 生成的 Release 索引当日即被新快照取代），unstable → testing 的自动迁移处于正常滚动状态
+- 冻结开始后这一节奏会显著放缓，直至只接受关键修复——那也将是 Forky 进入发布周期的明确信号
+
 ## 🔍 Forky 与 Debian 13 目前的可见差异
 
 - **内核**：Debian 13 为 Linux 6.12 LTS 系列；Forky testing 已跟进 7.2 系列

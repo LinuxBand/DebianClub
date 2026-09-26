@@ -14,7 +14,6 @@ export function MirrorTool({ lang }: { lang: ToolLanguage }) {
   const [components, setComponents] = useState<ComponentMode>('firmware');
   const [shareCopied, showShareCopied] = useCopiedFeedback();
 
-  const selectedMirror = mirrors[mirror];
   const selectedComponents = componentSets[components];
   const snippet = useMemo(
     () => buildMirrorSnippet(release, mirror, components),

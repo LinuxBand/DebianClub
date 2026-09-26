@@ -1,7 +1,7 @@
 'use client';
 
 import { AlertTriangle, Check, Clipboard, ShieldCheck } from 'lucide-react';
-import type { ComponentType, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { classNames } from './logic';
 import { toolText } from './text';

@@ -11,7 +11,13 @@ function Stub({ name, children }: { name: string; children?: ReactNode }) {
   );
 }
 
-const mk = (name: string) => (_props: Record<string, unknown>) => <Stub name={name} />;
+const mk = (name: string) => {
+  function Placeholder() {
+    return <Stub name={name} />;
+  }
+  Placeholder.displayName = name;
+  return Placeholder;
+};
 
 export const StatsSection = mk('StatsSection');
 export const TestimonialsSection = mk('TestimonialsSection');

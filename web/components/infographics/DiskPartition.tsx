@@ -12,7 +12,7 @@ const SEGS = [
 
 export function DiskPartition() {
   const { locale } = useI18n();
-  const t = pickStrings(localeKey(locale)).disk as Record<string, any>;
+  const t = pickStrings(localeKey(locale)).disk;
   return (
     <figure className="my-6 rounded-xl border bg-fd-card/40 p-5">
       <figcaption className="mb-3 text-sm font-semibold text-fd-foreground">{t.title}</figcaption>

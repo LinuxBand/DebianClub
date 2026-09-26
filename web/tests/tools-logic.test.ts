@@ -3,7 +3,6 @@ import { describe, it } from 'node:test';
 import {
   analyzeCommandRisk,
   buildMirrorSnippet,
-  classNames,
   desktopRecommendation,
   hasRecordKey,
   highestRisk,

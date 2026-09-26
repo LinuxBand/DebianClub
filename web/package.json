@@ -15,6 +15,7 @@
     "smoke:check": "node scripts/smoke-check.mjs",
     "start": "serve out",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
+    "lint": "eslint .",
     "postinstall": "fumadocs-mdx",
     "test": "node --test tests/*.test.ts"
   },
@@ -37,6 +38,8 @@
     "@types/node": "^25.9.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.9",
     "postcss": "^8.5.15",
     "serve": "^14.2.6",
     "tailwindcss": "^4.3.1",

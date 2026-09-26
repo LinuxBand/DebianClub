@@ -232,6 +232,7 @@ export function DownloadPage() {
         ? getCountryMirror(nextCountry).id
         : OFFICIAL_MIRROR.id;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- deep-link hash state is only available after mount (SSR-safe)
     setVersionId(nextVersion.id);
     setArchitectureId(nextArchitecture);
     setImageTypeId(nextImageType);
@@ -262,6 +263,7 @@ export function DownloadPage() {
   useEffect(() => {
     if (!architectureOptions.some((option) => option.id === architectureId)) {
       const nextArchitecture = normalizeArchitecture(version, architectureId);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- normalizes stale options after mount; validated by browser smoke
       setArchitectureId(nextArchitecture);
       setImageTypeId(normalizeImageType(version, nextArchitecture, imageTypeId));
       return;

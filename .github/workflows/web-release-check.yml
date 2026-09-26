@@ -53,6 +53,14 @@ jobs:
         shell: bash
         run: corepack pnpm --dir web types:check
 
+      - name: Lint
+        shell: bash
+        run: corepack pnpm --dir web lint
+
+      - name: Unit tests
+        shell: bash
+        run: corepack pnpm --dir web test
+
       - name: Content freshness check
         shell: bash
         run: corepack pnpm --dir web freshness:check

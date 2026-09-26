@@ -39,6 +39,7 @@ export function ReleaseTimeline() {
   const [today, setToday] = useState(2026.45);
   useEffect(() => {
     const d = new Date();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- clock must initialize after mount to keep SSR/client markup identical
     setToday(d.getFullYear() + d.getMonth() / 12 + d.getDate() / 365);
   }, []);
   const todayX = x(Math.min(A1, Math.max(A0, today)));

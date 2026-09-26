@@ -104,6 +104,7 @@ export function PackageSearch({ lang = 'zh' }: { lang?: Lang }) {
   useEffect(() => {
     const initial = new URLSearchParams(window.location.search).get('q');
     if (initial) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- deep-link ?q= is only available after mount (SSR-safe)
       setQuery(initial);
       void runSearch(initial, false);
     }

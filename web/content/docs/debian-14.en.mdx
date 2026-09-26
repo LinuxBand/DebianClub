@@ -1,76 +1,91 @@
 ---
 title: "Debian 14 (Forky)"
-description: "Latest news on Debian 14 \"Forky\" — release timeline, current status, and how to try the next Debian early."
+description: "The dedicated Debian 14 (Forky) page: current development status, the official timeline with freeze cadence reference, safe ways to try testing, and FAQ. Updated as Debian announces."
 ---
 
 ![Debian 14 (Forky) illustration](/images/hero-forky.png)
 
-<Callout type="info" title="About the next Debian">
+<Callout type="info" title="Current status (2026-09-26)">
 
-**Debian 14** has the development codename **Forky** and is currently in the **testing** phase, under active development. This page summarizes Forky's current status, expected release timing, and how to try it early. The current stable release is still [Debian 13 (Trixie)](/en/versions).
-
-</Callout>
-
-## 📌 Quick Overview
-
-| Item | Details |
-|------|---------|
-| **Version** | Debian 14 |
-| **Codename** | Forky (a character from *Toy Story 4*) |
-| **Current status** | testing (in development) |
-| **testing branch opened** | 2025-08-13 (shortly after Trixie's release) |
-| **Current kernel** | Linux 7.2 series (2026-09, testing tracks 7.2.6) |
-| **Expected release** | Around 2027 (no fixed date) |
-| **Based on** | Evolved from the Debian 13 (Trixie) codebase |
-
-> ⚠️ Forky has not been released and is **not suitable for production**. The information below will change as development progresses.
-
-## 🧭 What is "Forky"?
-
-Following Debian tradition, every release is named after a character from *Toy Story*. **Forky**, a character from *Toy Story 4*, will be the codename for Debian 14.
-
-Debian 14 is currently Debian's **testing** distribution: after Debian 13 (Trixie) was released as stable on August 9, 2025, the testing branch was reinitialized under the Forky codename (2025-08-13). Packages from unstable (Sid) migrate automatically into testing once they meet certain criteria.
-
-## 🗓️ Release Timeline
-
-Debian does **not use fixed release dates** — it ships "when it's ready." Based on the roughly two-year cadence of recent stable releases, Debian 14 is expected around **2027**.
-
-Before the official release, Debian typically goes through several **freeze** stages that progressively restrict what can enter testing, stabilizing the upcoming release:
-
-1. **Milestone / transition freeze** — large library transitions stop
-2. **Soft freeze** — no new packages accepted
-3. **Hard freeze** — only fixes for critical bugs allowed
-4. **Full freeze** — final stabilization before release
-
-So far, Debian has not announced specific freeze or release dates for Forky. Refer to the official [release.debian.org](https://release.debian.org/) for the latest.As of September 2026, Forky testing already tracks the Linux 7.2 kernel series (7.2.6); the freeze schedule is expected roughly a year before release, following the trixie cadence.
-
-## 🔍 How to Follow Progress
-
-- **Release status**: [release.debian.org](https://release.debian.org/)
-- **Official release info page**: [Debian "forky" Release Information](https://www.debian.org/releases/forky/)
-- **Draft release notes**: [Forky Release Notes](https://www.debian.org/releases/forky/releasenotes)
-- **Release-critical (RC) bugs**: [Release-critical bug list](https://bugs.debian.org/release-critical/)
-- **Development announcements**: [debian-devel-announce](https://lists.debian.org/debian-devel-announce/)
-
-## 🧪 Want to Try It Early?
-
-If you'd like to preview Debian 14, you can install the **testing** distribution. Keep in mind:
-
-- testing is **not covered by the Debian Security Team** with timely security updates — use stable Debian 13 (Trixie) if you need security guarantees.
-- Packages change frequently and occasional temporary breakage can occur.
-- Only run it on test machines, virtual machines, or non-critical environments.
-
-<Callout type="info" title="Advice for beginners">
-
-If you're new to Debian or running it for daily/production use, stay on [Debian 13 (Trixie)](/en/download). Upgrading after Debian 14 is officially released — and once its first point update (e.g. 14.1) appears — is the safer path.
+Debian 14 carries the codename **Forky** and is currently the **testing** development branch. As of September 2026, testing tracks the **Linux 7.2** kernel series; **freeze and release dates have not been announced**. The current stable release remains [Debian 13 (Trixie)](/en/versions). This page is updated as Debian publishes announcements.
 
 </Callout>
 
-## 🔗 Related Links
+<ReleaseTimeline />
 
-- [Debian "forky" Release Information (official)](https://www.debian.org/releases/forky/)
-- [Debian Release Management](https://release.debian.org/)
-- [Debian Latest News](/en/news)
-- [Version Comparison](/en/comparison)
+## 📌 Status at a Glance
+
+| Item | Status |
+|------|--------|
+| **Codename** | Forky (a Toy Story 4 character, per Debian's naming tradition) |
+| **Current phase** | testing: packages from unstable (Sid) migrate in automatically once they qualify |
+| **Kernel** | Linux 7.2 series (7.2.6+deb14 in testing since 2026-09) |
+| **Freeze schedule** | Not yet announced |
+| **Expected release** | Around 2027 (Debian ships roughly every two years; no fixed date) |
+| **Production advice** | Stay on [Debian 13](/en/download); never run testing in production |
+
+## 🧭 Why "Forky"
+
+Following Debian tradition, releases are named after Toy Story characters. On 2025-07-19 the Release Team announced the next testing codename in "Let's Fork(y)!"; when Trixie became stable on 2025-08-09, the testing branch continued under the Forky name. Packages from unstable migrate into testing automatically once they satisfy age, build, and RC-bug requirements.
+
+## 🗓️ Timeline
+
+### What has happened
+
+| Date | Event |
+|------|-------|
+| 2025-07-19 | Release Team announces the Forky codename (Let's Fork(y)!) |
+| 2025-08-09 | Debian 13 (Trixie) released; testing continues as Forky |
+| 2026-09 | Linux 7.2.6+deb14 kernel lands in Forky testing |
+| 2026-11 – 2027-05 | Trixie point-release schedule (13.8–13.11), running in parallel with Forky development |
+
+### Reference: the Trixie freeze cadence
+
+Until Forky's freeze dates are published, Trixie's actual cadence is the best reference (source: the [DebianTrixie wiki](https://wiki.debian.org/DebianTrixie)). If Forky targets mid-2027, the equivalent milestones would fall roughly in the first half of 2027 — that is an estimate, and Release Team announcements always take precedence.
+
+| Milestone | Trixie actual date | Distance to release |
+|-----------|--------------------|---------------------|
+| Transition & toolchain freeze | 2025-03-15 | ~5 months |
+| Soft Freeze | 2025-04-15 | ~4 months |
+| Hard Freeze | 2025-05-15 | ~3 months |
+| Full Freeze | 2025-07-27 | ~2 weeks |
+| Release | 2025-08-09 | — |
+
+What the stages mean: the transition freeze stops large library migrations; after the soft freeze no new packages enter; the hard freeze allows only critical fixes; the full freeze ships critical corrections only, until release.
+
+## 🔍 Visible differences from Debian 13 so far
+
+- **Kernel**: Debian 13 ships the Linux 6.12 LTS series; Forky testing already tracks 7.2
+- **Everything else** (desktop environment versions, toolchains, installer behavior) only settles during the freeze — any "Debian 14 feature list" circulating today is premature. Wait for the official Release Notes.
+
+## 🧪 How to try Forky safely
+
+- **VM or spare machine**: install testing from the netinst testing image, see the [installation guide](/en/basics/installation)
+- **Daily cloud images**: [cloud.debian.org](https://cloud.debian.org/images/cloud/) publishes daily Forky testing builds, for testing only
+- **Never run testing on your daily driver or production servers**: testing's security update path differs from stable and does not carry stable-grade response guarantees
+- **Testing becomes 14**: at release, testing turns into Debian 14 in place — no reinstall needed, and don't try to "downgrade" back to 13
+
+## ❓ FAQ
+
+| Question | Answer |
+|----------|--------|
+| When will Debian 14 release? | No official date. The two-year cadence points to 2027; a concrete window only appears once the freeze schedule is announced |
+| Is installing testing the same as installing 14? | Yes. Testing evolves into Debian 14 and converts in place at release |
+| What features does Forky have so far? | The Linux 7.2 kernel is confirmed; the full change list waits for the official Release Notes. Treat early "feature lists" with skepticism |
+| Can I use testing in production? | No. Keep production on [Debian 13](/en/download) and plan migration after 14 ships with its first point update |
+| Can 13 upgrade directly to 14? | Yes, after 14 releases — see the [upgrade guide](/en/basics/upgrade) and the official Release Notes |
+
+## 🔗 Official resources
+
+- [release.debian.org](https://release.debian.org/) — release status and point-release schedule
+- [Debian "forky" release info](https://www.debian.org/releases/forky/) — official release page
+- [debian-devel-announce](https://lists.debian.org/debian-devel-announce/) — freeze and release announcements
+- [Debian cloud images](https://cloud.debian.org/images/cloud/) — daily testing builds
+- [DebianTesting wiki](https://wiki.debian.org/DebianTesting) — how testing works
+
+## Related pages
+
+- [Versions & Lifecycle](/en/versions)
 - [Release End-of-Life (EOL)](/en/eol)
-- [Debian Official News](https://www.debian.org/News/)
+- [Upgrade guide](/en/basics/upgrade)
+- [News](/en/news)

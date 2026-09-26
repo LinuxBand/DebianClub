@@ -45,7 +45,7 @@ export function DocsMegaHeader(props: ComponentProps<'header'>) {
           props.className,
         )}
       >
-        <div className="*:mx-auto *:max-w-(--fd-layout-width) flex h-full flex-col">
+        <div className="flex h-full w-full flex-col">
           <NavigationMenuList
             className="flex h-(--fd-header-height) w-full items-center px-4"
             asChild
@@ -62,18 +62,27 @@ export function DocsMegaHeader(props: ComponentProps<'header'>) {
               </ul>
               <div className="flex min-w-0 flex-row items-center justify-end gap-1.5 flex-1 max-lg:hidden">
                 {slots.searchTrigger && (
-                  <slots.searchTrigger.full
-                    hideIfDisabled
-                    className="w-full min-w-0 rounded-full ps-2.5 max-w-[240px]"
-                  />
+                  <>
+                    {/* The docs header only spans the main grid column, so the
+                        full search input only fits on very wide screens; below
+                        2xl the compact icon takes over (the sidebar keeps the
+                        full search box at all widths). */}
+                    <slots.searchTrigger.full
+                      hideIfDisabled
+                      className="hidden w-full min-w-0 rounded-full ps-2.5 max-w-[240px] 2xl:block"
+                    />
+                    <slots.searchTrigger.sm hideIfDisabled className="p-2 2xl:hidden" />
+                  </>
                 )}
-                {slots.themeSwitch && <slots.themeSwitch />}
+                {slots.themeSwitch && <slots.themeSwitch className="shrink-0" />}
                 {slots.languageSelect && (
-                  <slots.languageSelect.root>
-                    <Languages className="size-5" />
-                  </slots.languageSelect.root>
+                  <span className="inline-flex shrink-0">
+                    <slots.languageSelect.root>
+                      <Languages className="size-5" />
+                    </slots.languageSelect.root>
+                  </span>
                 )}
-                <ul className="flex flex-row gap-2 items-center empty:hidden">
+                <ul className="flex flex-row gap-2 items-center shrink-0 empty:hidden">
                   {secondaryItems.map((item, i) => (
                     <li key={i} className="list-none">
                       {item.type === 'button' ? (
@@ -142,7 +151,7 @@ function MegaNavItem({
       <NavigationMenuItem>
         <NavigationMenuTrigger
           data-active={active || undefined}
-          className="inline-flex items-center gap-1 rounded-md p-2 text-sm whitespace-nowrap text-fd-muted-foreground transition-colors hover:text-fd-accent-foreground data-[active=true]:text-fd-primary data-[state=open]:text-fd-accent-foreground [&_svg]:size-3"
+          className="inline-flex items-center gap-1 rounded-md px-1.5 py-2 text-sm whitespace-nowrap text-fd-muted-foreground transition-colors hover:text-fd-accent-foreground data-[active=true]:text-fd-primary data-[state=open]:text-fd-accent-foreground [&_svg]:size-3 xl:px-2"
         >
           {item.url ? (
             <Link href={item.url} className="no-underline hover:text-inherit">
@@ -191,7 +200,7 @@ function MegaNavItem({
           href={item.url}
           external={item.external}
           data-active={active || undefined}
-          className="inline-flex items-center gap-1 rounded-md p-2 text-sm whitespace-nowrap text-fd-muted-foreground no-underline transition-colors hover:text-fd-accent-foreground data-[active=true]:text-fd-primary"
+          className="inline-flex items-center gap-1 rounded-md px-1.5 py-2 text-sm whitespace-nowrap text-fd-muted-foreground no-underline transition-colors hover:text-fd-accent-foreground data-[active=true]:text-fd-primary xl:px-2"
         >
           {item.icon}
           {item.text}

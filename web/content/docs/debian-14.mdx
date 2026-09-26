@@ -1,76 +1,91 @@
 ---
 title: "Debian 14 (Forky)"
-description: "Debian 14 “Forky” 的最新动态——发布计划、当前状态与如何抢先体验下一代 Debian。"
+description: "Debian 14（Forky）专题：当前开发状态、官方时间线与冻结节奏参考、体验 testing 的安全方式与常见问题。随官方公告持续更新。"
 ---
 
 ![Debian 14（Forky）示意图](/images/hero-forky.png)
 
-<Callout type="info" title="本页关于下一代 Debian">
+<Callout type="info" title="当前状态（2026-09-26）">
 
-**Debian 14** 的开发代号为 **Forky**，目前处于 **testing（测试）** 阶段，仍在活跃开发中。本页汇总 Forky 的当前状态、预计发布时间，以及如何抢先体验。当前的稳定版仍是 [Debian 13（Trixie）](/versions)。
+Debian 14 代号 **Forky**，目前是 **testing** 开发分支。截至 2026 年 9 月，testing 已跟进 **Linux 7.2** 内核系列；**冻结与发布日期官方尚未公布**。当前稳定版仍是 [Debian 13（Trixie）](/versions)。本页随 Debian 官方公告持续更新。
 
 </Callout>
 
-## 📌 快速概览
+<ReleaseTimeline />
 
-| 项目 | 信息 |
+## 📌 状态速览
+
+| 项目 | 状态 |
 |------|------|
-| **版本号** | Debian 14 |
-| **开发代号** | Forky（取自《玩具总动员 4》角色） |
-| **当前状态** | testing（测试版，开发中） |
-| **testing 分支启用** | 2025-08-13（Trixie 发布后不久） |
-| **当前内核** | Linux 7.2 系列（2026-09，testing 已跟进 7.2.6） |
-| **预计发布** | 约 2027 年（具体日期未定） |
-| **基于** | 由 Debian 13（Trixie）的代码库演进而来 |
+| **开发代号** | Forky（《玩具总动员 4》角色，按惯例以玩具总动员角色命名） |
+| **当前阶段** | testing：来自 unstable（Sid）的包满足条件后自动迁入 |
+| **内核** | Linux 7.2 系列（7.2.6+deb14 已进入 testing，2026-09） |
+| **冻结时间表** | 尚未公布 |
+| **预计发布** | 约 2027 年（Debian 惯例约两年一个稳定版，无固定日期） |
+| **生产建议** | 继续使用 [Debian 13](/download)；testing 不用于生产 |
 
-> ⚠️ Forky 尚未发布，**不适合生产环境**。下文信息会随开发推进而变化。
+## 🧭 为什么叫 "Forky"
 
-## 🧭 什么是 “Forky”
+按照 Debian 传统，每个版本都以《玩具总动员》角色命名。2025 年 7 月 19 日，Release Team 通过《Let's Fork(y)!》宣布下一代 testing 的代号；2025 年 8 月 9 日 Trixie 发布为稳定版后，testing 分支随即以 Forky 为代号继续迭代。来自 unstable 的软件包在满足年龄、构建和 RC bug 等条件后自动迁入 testing。
 
-按照 Debian 的传统，每个版本都以《玩具总动员》中的角色命名。**Forky** 是《玩具总动员 4》中的角色，将成为 Debian 14 的代号。
+## 🗓️ 时间线
 
-Debian 14 当前是 Debian 的 **testing** 发行版：当 Debian 13（Trixie）于 2025 年 8 月 9 日发布为稳定版后，testing 分支随即以 Forky 为代号重新开始迭代（2025-08-13）。来自 unstable（Sid）的软件包在满足一定条件后会自动迁移进入 testing。
+### 已经发生
 
-## 🗓️ 发布计划
+| 日期 | 事件 |
+|------|------|
+| 2025-07-19 | Release Team 宣布代号 Forky（Let's Fork(y)!） |
+| 2025-08-09 | Debian 13（Trixie）发布，testing 随即以 Forky 继续 |
+| 2026-09 | Linux 7.2.6+deb14 内核进入 Forky testing |
+| 2026-11 至 2027-05 | Trixie 点更新排期（13.8–13.11），与 Forky 开发并行 |
 
-Debian **不采用固定的发布日期**，而是“准备好了才发布”（release when ready）。按照过去每约两年一个稳定版的节奏，Debian 14 预计在 **2027 年左右** 发布。
+### 参考：Trixie 的冻结节奏
 
-正式发布前通常会经历几个 **冻结（freeze）** 阶段，逐步收紧可进入 testing 的变更，以稳定即将发布的版本：
+Forky 的冻结日期公布前，Trixie 的实际节奏是最好的参照（来源：[DebianTrixie Wiki](https://wiki.debian.org/DebianTrixie)）。若 Forky 在 2027 年年中发布，对应里程碑大致落在 2027 年上半年——但这只是推算，一切以 Release Team 公告为准。
 
-1. **里程碑 / 过渡冻结** — 停止大规模库过渡
-2. **软冻结（Soft Freeze）** — 不再接受新软件包进入
-3. **硬冻结（Hard Freeze）** — 仅允许针对关键 bug 的修复
-4. **完全冻结（Full Freeze）** — 发布前最后定版
+| 里程碑 | Trixie 实际时间 | 距发布 |
+|--------|-----------------|--------|
+| 过渡与工具链冻结 | 2025-03-15 | 约 5 个月 |
+| 软冻结（Soft Freeze） | 2025-04-15 | 约 4 个月 |
+| 硬冻结（Hard Freeze） | 2025-05-15 | 约 3 个月 |
+| 完全冻结（Full Freeze） | 2025-07-27 | 约 2 周 |
+| 正式发布 | 2025-08-09 | — |
 
-截至目前，Debian 尚未公布 Forky 的具体冻结与发布日期。请以官方 [release.debian.org](https://release.debian.org/) 公告为准。截至 2026-09，Forky testing 已跟进 Linux 7.2 内核系列（7.2.6），冻结时间表预计参考 trixie 节奏在发布前约一年公布。
+各冻结阶段的含义：过渡冻结停止大型库迁移；软冻结后新包不再进入；硬冻结只接受关键修复；完全冻结后仅发布关键修正，直至正式发布。
 
-## 🔍 如何关注进展
+## 🔍 Forky 与 Debian 13 目前的可见差异
 
-- **发布状态**：[release.debian.org](https://release.debian.org/)
-- **官方发布信息页**：[Debian “forky” 发布信息](https://www.debian.org/releases/forky/)
-- **发布说明草稿**：[Forky Release Notes](https://www.debian.org/releases/forky/releasenotes)
-- **影响发布的严重 bug（RC bugs）**：[发布关键 bug 列表](https://bugs.debian.org/release-critical/)
-- **开发公告邮件列表**：[debian-devel-announce](https://lists.debian.org/debian-devel-announce/)
+- **内核**：Debian 13 为 Linux 6.12 LTS 系列；Forky testing 已跟进 7.2 系列
+- **其余组件**（桌面环境版本、工具链、安装器行为等）要等冻结阶段才会定型——现在流传的任何"Debian 14 新特性清单"都为时过早，请以官方 Release Notes 为准
 
-## 🧪 想抢先体验？
+## 🧪 如何安全体验 Forky
 
-如果你希望提前试用 Debian 14，可以安装 **testing** 发行版。但请注意：
+- **虚拟机或测试机**：使用 testing 的 netinst 测试镜像安装，参考[安装指南](/basics/installation)
+- **每日云镜像**：[cloud.debian.org](https://cloud.debian.org/images/cloud/) 提供 Forky testing 每日构建，仅用于测试
+- **不要在主力机或生产服务器上跑 testing**：testing 的安全更新路径与 stable 不同，不承诺稳定版级别的响应速度
+- **testing 就是未来的 14**：正式发布后 testing 原地成为 Debian 14，无需重装；不要尝试"降级"回 13
 
-- testing **不由 Debian 安全团队** 提供及时的安全更新——如需安全保障，请使用稳定版 Debian 13（Trixie）。
-- 软件包变动频繁，偶尔可能出现暂时性问题。
-- 建议仅在测试机、虚拟机或非关键环境中体验。
+## ❓ 常见问题
 
-<Callout type="info" title="新手建议">
+| 问题 | 回答 |
+|------|------|
+| Debian 14 什么时候发布？ | 官方未公布日期。按约两年一个稳定版的节奏预计 2027 年；冻结时间表公布后才会有明确窗口 |
+| 现在安装 testing 就是安装 14 吗？ | 是。testing 会持续演进为 Debian 14，发布后原地转正 |
+| Forky 已经有哪些新特性？ | 已确定的有 Linux 7.2 内核等；完整变化清单等官方 Release Notes，冻结前不应轻信各种"新特性"文章 |
+| 生产环境可以用 testing 吗？ | 不建议。生产环境继续使用 [Debian 13](/download)，等 14 发布并出现首个点更新后再规划迁移 |
+| 13 能直接升级到 14 吗？ | 14 发布后可以，参考[系统升级指南](/basics/upgrade)与官方 Release Notes |
 
-如果你是新手，或用于日常 / 生产用途，请继续使用 [Debian 13（Trixie）](/download)。等 Debian 14 正式发布、并出现首个点更新（如 14.1）后再升级会更稳妥。
+## 🔗 官方资源
 
-</Callout>
+- [release.debian.org](https://release.debian.org/) —— 发布状态与点更新排期
+- [Debian "forky" 发布信息](https://www.debian.org/releases/forky/) —— 官方发布信息页
+- [debian-devel-announce](https://lists.debian.org/debian-devel-announce/) —— 冻结与发布公告邮件列表
+- [Debian 云镜像](https://cloud.debian.org/images/cloud/) —— testing 每日构建
+- [DebianTesting Wiki](https://wiki.debian.org/DebianTesting) —— testing 说明
 
-## 🔗 相关链接
+## 相关页面
 
-- [Debian “forky” 发布信息（官方）](https://www.debian.org/releases/forky/)
-- [Debian 发布管理](https://release.debian.org/)
-- [Debian 最新动态](/news)
-- [版本对比](/comparison)
+- [版本与生命周期](/versions)
 - [版本支持周期 (EOL)](/eol)
-- [Debian 官方新闻](https://www.debian.org/News/)
+- [系统升级指南](/basics/upgrade)
+- [Debian 最新动态](/news)

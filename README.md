@@ -68,11 +68,12 @@ web/
 ├── public/               # 静态资源
 └── out/                  # 静态导出产物
 
-docs/                     # 旧 VitePress 站内容，已冻结为只读归档，不再更新
 skills/                   # Debian Linux 可靠性技能包
 wrangler.toml             # Cloudflare Pages 部署配置
 .github/workflows/        # CI：发布门禁与技能包发布
 ```
+
+> 旧 VitePress 站内容已归档到 [`archive/vitepress-docs`](https://github.com/yeagoo/DebianClub/tree/archive/vitepress-docs) 分支，不再更新；文档内容唯一来源是 `web/content/docs/`。
 
 ## 贡献指南
 

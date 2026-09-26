@@ -1,0 +1,128 @@
+---
+title: "Monitoring Server"
+description: "Build a centralized monitoring system on Debian covering Prometheus, node_exporter, Alertmanager, and Grafana installation, scraping, alerting, and security baseline."
+---
+
+A monitoring server centralizes metrics from every machine you run: Prometheus scrapes and stores them, node_exporter reports host metrics, Alertmanager routes alerts, and Grafana renders dashboards. It scales naturally from two or three machines upward.
+
+## Who it is for
+
+- Users with two or more servers or VMs that need a single health view
+- Operators who want alerts before disks fill, services crash-loop, or certificates expire
+- Teams that prefer self-hosted monitoring over external SaaS
+
+## Recommended hardware
+
+| Part | Suggestion |
+|------|------------|
+| CPU | 2 cores to start; 4 cores beyond ~50 scrape targets |
+| Memory | 4 GB minimum; 8 GB when Grafana shares the box with Prometheus |
+| Disk | SSD; budget roughly 2–5 GB per target per day and set a retention window |
+| Network | Same LAN as monitored nodes, or a VPN path for the scrape ports |
+
+## Installation path
+
+1. Install Debian stable with only SSH server and standard system utilities; set a static IP or DHCP reservation.
+2. Install Prometheus, Alertmanager, and Grafana on the monitoring box.
+3. Install prometheus-node-exporter on every monitored node.
+4. Register scrape targets in the Prometheus config and confirm all targets are UP.
+5. Import or build dashboards, then configure alert rules and notification channels.
+
+Debian's own repositories carry the Prometheus stack:
+
+```bash
+sudo apt update
+sudo apt install prometheus prometheus-alertmanager prometheus-node-exporter
+```
+
+Monitored nodes only need:
+
+```bash
+sudo apt install prometheus-node-exporter
+```
+
+Grafana is not in the Debian archive; add the upstream APT repository following the [official Grafana Debian install docs](https://grafana.com/docs/grafana/latest/setup-grafana/install-debian/).
+
+## Scrape configuration
+
+Register targets under `scrape_configs` in `/etc/prometheus/prometheus.yml`:
+
+```yaml
+scrape_configs:
+  - job_name: node
+    static_configs:
+      - targets:
+          - 192.168.1.10:9100
+          - 192.168.1.11:9100
+```
+
+Validate and hot-reload after changes:
+
+```bash
+prometheus --config.file=/etc/prometheus/prometheus.yml --syntax-only
+sudo systemctl reload prometheus
+```
+
+Open `http://monitor-host:9090/targets` and confirm every target is UP, then add the Prometheus data source in Grafana (`http://localhost:9090`) and import a node_exporter dashboard.
+
+## Security baseline
+
+Metrics leak hostnames, IPs, and topology, so keep them LAN-only:
+
+```bash
+sudo ufw default deny incoming
+sudo ufw allow from 192.168.1.0/24 to any port 9090 proto tcp
+sudo ufw allow from 192.168.1.0/24 to any port 3000 proto tcp
+sudo ufw enable
+```
+
+- Change the default Grafana admin password immediately and disable anonymous access
+- Keep node_exporter bound to the internal interface only
+- For remote access, front Grafana with a [reverse proxy](/en/server/reverse-proxy) plus HTTPS and authentication instead of opening ports
+
+Full firewall and SSH hardening guidance lives in [Security](/en/administration/security).
+
+## Alert rules
+
+Start with alerts you would actually act on: filesystems about to fill, services restart-looping, nodes going silent:
+
+```yaml
+groups:
+  - name: node
+    rules:
+      - alert: DiskAlmostFull
+        expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} < 0.1
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Root filesystem above 90% usage"
+```
+
+Alertmanager handles deduplication, silences, and routing to email, Telegram, or webhooks. Every alert should map to an action a human would take; anything else is noise.
+
+## Data and backups
+
+- Metrics live in `/var/lib/prometheus`; they are re-collectable, so let retention clean them
+- The irreplaceable parts are Grafana dashboards and alert rules: export JSON regularly or back up `/var/lib/grafana/grafana.db`
+- Include `/etc/prometheus/` and `/etc/alertmanager/` in your `/etc` backups
+
+When rehearsing restores, verify that re-imported dashboards still bind to a working data source and alerts.
+
+## Common issues
+
+| Issue | Check first |
+|-------|-------------|
+| Targets show DOWN | Node firewall on 9100, exporter service state, network path |
+| Grafana won't load | Service status, listening port, firewall rules |
+| Disk grows too fast | Retention `--storage.tsdb.retention.time`, scrape interval, high-cardinality labels |
+| Memory keeps climbing | Target count, concurrent queries, total series count |
+| Alerts never arrive | Alertmanager routing, channel credentials, rule `for` duration |
+
+## Next guides
+
+- [Production Observability](/en/production-observability)
+- [Security](/en/administration/security)
+- [Reverse Proxy](/en/server/reverse-proxy)
+- [Ops Jump Box](/en/scenarios/ops-jump-box)
+- [Backup and Restore](/en/administration/backup)

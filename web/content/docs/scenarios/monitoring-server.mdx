@@ -1,0 +1,128 @@
+---
+title: "监控服务器"
+description: "用 Debian 搭建集中监控体系，覆盖 Prometheus、node_exporter、Alertmanager 和 Grafana 的安装、采集、告警与安全基线。"
+---
+
+监控服务器把分散在各台机器上的指标集中到一处：Prometheus 负责采集与存储，node_exporter 上报主机指标，Alertmanager 处理告警路由，Grafana 提供仪表盘。它适合从两三台机器起步，随规模平滑扩展。
+
+## 适合谁
+
+- 有两台以上服务器（或虚拟机）需要统一查看健康状态的用户
+- 希望在磁盘写满、服务挂掉、证书过期前收到告警的运维
+- 想要自托管监控、不依赖外部 SaaS 的团队
+
+## 推荐硬件
+
+| 部件 | 建议 |
+|------|------|
+| CPU | 2 核起步，采集目标超过 50 个建议 4 核 |
+| 内存 | 4 GB 起步；Grafana 与 Prometheus 同机时建议 8 GB |
+| 磁盘 | SSD，按每采集目标每天约 2–5 GB 预留并设置保留期 |
+| 网络 | 与被监控节点在同一内网，或通过 VPN 打通采集口 |
+
+## 安装路径
+
+1. 安装 Debian stable，只选 SSH server 和标准系统工具，设静态 IP 或 DHCP 保留地址。
+2. 在监控机上安装 Prometheus、Alertmanager 和 Grafana。
+3. 在每台被监控节点安装 prometheus-node-exporter。
+4. 在 Prometheus 配置中登记采集目标，确认 targets 全部 UP。
+5. 导入或制作仪表盘，再配置告警规则与通知渠道。
+
+Debian 官方仓库收录了 Prometheus 全家桶，直接安装即可：
+
+```bash
+sudo apt update
+sudo apt install prometheus prometheus-alertmanager prometheus-node-exporter
+```
+
+被监控节点只需要：
+
+```bash
+sudo apt install prometheus-node-exporter
+```
+
+Grafana 不在 Debian 官方仓库中，按 [Grafana 官方 APT 仓库文档](https://grafana.com/docs/grafana/latest/setup-grafana/install-debian/) 添加上游源后安装。
+
+## 采集配置
+
+在 `/etc/prometheus/prometheus.yml` 的 `scrape_configs` 中登记目标：
+
+```yaml
+scrape_configs:
+  - job_name: node
+    static_configs:
+      - targets:
+          - 192.168.1.10:9100
+          - 192.168.1.11:9100
+```
+
+修改后先校验再热加载：
+
+```bash
+prometheus --config.file=/etc/prometheus/prometheus.yml --syntax-only
+sudo systemctl reload prometheus
+```
+
+打开 `http://监控机IP:9090/targets` 确认所有状态为 UP，再在 Grafana 中添加 Prometheus 数据源（`http://localhost:9090`）并导入 node_exporter 仪表盘。
+
+## 安全配置
+
+监控数据会暴露主机名、IP、服务拓扑，默认只在内网可达：
+
+```bash
+sudo ufw default deny incoming
+sudo ufw allow from 192.168.1.0/24 to any port 9090 proto tcp
+sudo ufw allow from 192.168.1.0/24 to any port 3000 proto tcp
+sudo ufw enable
+```
+
+- 立即修改 Grafana 默认管理员密码，禁用匿名访问
+- node_exporter 只监听内网口，不暴露到公网
+- 需要远程查看时，走 [反向代理](/server/reverse-proxy) 加 HTTPS 和认证，不要直接开放端口
+
+完整的防火墙与 SSH 加固说明见 [安全管理](/administration/security)。
+
+## 告警规则
+
+先从会真正打扰你的告警开始，例如磁盘将要写满、systemd 服务反复重启、节点失联：
+
+```yaml
+groups:
+  - name: node
+    rules:
+      - alert: DiskAlmostFull
+        expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} < 0.1
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "根分区使用率超过 90%"
+```
+
+Alertmanager 负责去重、静默与路由到邮件、Telegram 或 Webhook。告警不是越多越好：每一条告警都应该对应一个需要人处理的动作。
+
+## 数据与备份
+
+- 指标数据在 `/var/lib/prometheus`，丢了可以重新采集，按保留期自动清理即可
+- 真正不可再生的是 Grafana 中的仪表盘与告警规则：定期导出 JSON，或备份 `/var/lib/grafana/grafana.db`
+- `/etc/prometheus/` 与 `/etc/alertmanager/` 的配置纳入 `/etc` 备份
+
+恢复演练时重点验证：重新导入仪表盘后数据源和告警是否仍然可用。
+
+## 常见问题
+
+| 问题 | 优先检查 |
+|------|----------|
+| targets 显示 DOWN | 节点防火墙 9100 端口、导出器服务状态、网络连通 |
+| Grafana 打不开 | 服务状态、监听端口、防火墙规则 |
+| 磁盘增长过快 | 保留期 `--storage.tsdb.retention.time`、采集频率、高基数标签 |
+| 内存持续偏高 | 采集目标数量、查询并发、系列总数 |
+| 告警收不到 | Alertmanager 路由配置、通知渠道凭据、告警规则 `for` 时长 |
+
+## 下一步教程
+
+- [生产观测实践](/production-observability)
+- [安全管理](/administration/security)
+- [反向代理](/server/reverse-proxy)
+- [运维跳板机](/scenarios/ops-jump-box)
+- [备份与恢复](/administration/backup)

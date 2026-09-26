@@ -64,6 +64,13 @@ interface Strings {
   fileLabel: string;
   verifyTitle: string;
   verifyDesc: string;
+  verifyLinux: string;
+  verifyMac: string;
+  verifyWindows: string;
+  gpgHint: string;
+  gpgGuide: string;
+  sizeLabel: string;
+  officialGuide: string;
   nextTitle: string;
   bootableMedia: string;
   installationGuide: string;
@@ -98,7 +105,14 @@ const STRINGS: Record<Lang, Strings> = {
     copied: '已复制',
     fileLabel: '文件',
     verifyTitle: '下载后校验',
-    verifyDesc: '先下载 ISO 与 SHA256SUMS，再在同一目录执行校验命令。',
+    verifyDesc: '先下载 ISO 与 SHA256SUMS，再在同一目录执行校验命令；不同系统的命令如下。',
+    verifyLinux: 'Linux',
+    verifyMac: 'macOS',
+    verifyWindows: 'Windows（PowerShell）',
+    gpgHint: '校验通过后，建议再验证签名以防镜像被篡改：',
+    gpgGuide: '签名验证指南',
+    sizeLabel: '大小',
+    officialGuide: '官方安装指南',
     nextTitle: '下一步',
     bootableMedia: '制作启动盘',
     installationGuide: '安装指南',
@@ -131,7 +145,14 @@ const STRINGS: Record<Lang, Strings> = {
     copied: 'Copied',
     fileLabel: 'File',
     verifyTitle: 'Verify after download',
-    verifyDesc: 'Download the ISO and SHA256SUMS, then run the checksum command in the same directory.',
+    verifyDesc: 'Download the ISO and SHA256SUMS, then run the checksum command for your system in the same directory.',
+    verifyLinux: 'Linux',
+    verifyMac: 'macOS',
+    verifyWindows: 'Windows (PowerShell)',
+    gpgHint: 'After the checksum passes, verify the signature to rule out tampering:',
+    gpgGuide: 'Signature verification guide',
+    sizeLabel: 'Size',
+    officialGuide: 'Official install guide',
     nextTitle: 'Next steps',
     bootableMedia: 'Create bootable media',
     installationGuide: 'Installation guide',
@@ -658,6 +679,9 @@ export function DownloadPage() {
             <div className="mt-2 flex min-w-0 flex-col gap-1 text-sm text-fd-muted-foreground sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3">
               <span className="break-all font-mono text-xs text-fd-foreground">{urls.fileName}</span>
               <span>
+                {t.sizeLabel}: {localize(imageType.size, lang)}
+              </span>
+              <span>
                 {t.sourceMirror}: {localize(urls.sourceMirror.name, lang)}
               </span>
             </div>
@@ -700,14 +724,36 @@ export function DownloadPage() {
             {t.verifyTitle}
           </h2>
           <p className="mt-1 text-sm leading-6 text-fd-muted-foreground">{t.verifyDesc}</p>
-          <div className="mt-3 rounded-md border border-fd-border bg-fd-muted/40 p-3 font-mono text-xs text-fd-foreground">
-            sha256sum -c SHA256SUMS
+          <div className="mt-3 space-y-2">
+            {[
+              { label: t.verifyLinux, command: 'sha256sum -c SHA256SUMS' },
+              { label: t.verifyMac, command: 'shasum -a 256 ' + urls.fileName },
+              { label: t.verifyWindows, command: 'Get-FileHash ' + urls.fileName + ' -Algorithm SHA256' },
+            ].map((row) => (
+              <div key={row.label} className="flex flex-col gap-1">
+                <span className="text-xs font-medium uppercase text-fd-muted-foreground">{row.label}</span>
+                <code className="block overflow-x-auto rounded-md border border-fd-border bg-fd-muted/40 p-2.5 font-mono text-xs text-fd-foreground">
+                  {row.command}
+                </code>
+              </div>
+            ))}
           </div>
+          <p className="mt-3 text-xs leading-5 text-fd-muted-foreground">
+            {t.gpgHint}{' '}
+            <a
+              href="https://www.debian.org/CD/verify"
+              target="_blank"
+              rel="noopener"
+              className="text-fd-primary underline hover:opacity-80"
+            >
+              {t.gpgGuide}
+            </a>
+          </p>
         </div>
 
         <div className="rounded-lg border border-fd-border bg-fd-card p-4">
           <h2 className="text-base font-semibold text-fd-foreground">{t.nextTitle}</h2>
-          <div className="mt-3 grid gap-2 sm:grid-cols-3">
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
             <a
               href={localizedPath('/basics/bootable-media')}
               className={cn(
@@ -737,6 +783,18 @@ export function DownloadPage() {
               )}
             >
               {t.detailedGuide}
+            </a>
+            <a
+              href="https://www.debian.org/releases/stable/install-guide"
+              target="_blank"
+              rel="noopener"
+              className={cn(
+                'rounded-md border border-fd-border px-3 py-2 text-sm font-medium text-fd-foreground no-underline hover:bg-fd-muted',
+                focusRing,
+                pressable,
+              )}
+            >
+              {t.officialGuide}
             </a>
           </div>
         </div>

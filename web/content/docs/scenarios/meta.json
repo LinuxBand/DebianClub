@@ -7,6 +7,8 @@
     "home-server",
     "nas-file-sharing",
     "local-ai-inference",
-    "ops-jump-box"
+    "ops-jump-box",
+    "monitoring-server",
+    "git-forge"
   ]
 }

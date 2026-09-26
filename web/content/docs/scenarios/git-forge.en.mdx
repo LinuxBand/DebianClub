@@ -1,0 +1,119 @@
+---
+title: "Git Forge & CI"
+description: "Self-host code repositories and CI pipelines on Debian with Forgejo, covering installation, HTTPS, runners, hardening, and backup/migration."
+---
+
+A self-hosted Git platform keeps code, issues, reviews, and CI pipelines under your own control. This scenario uses Forgejo (the software behind Codeberg — active community, low resource use). Debian's archive does not ship Forgejo, so we deploy it in a controlled way with the official binary plus a systemd unit, which keeps upgrades and rollbacks predictable.
+
+## Who it is for
+
+- Individuals and small teams who don't want private code on third-party hosting
+- Teams that need CI on their own hardware (intranet builds, private dependencies, ARM machines)
+- Users who want a self-controlled mirror or backup of GitHub/GitLab projects
+
+## Recommended hardware
+
+| Part | Suggestion |
+|------|------------|
+| CPU | 2 cores to start; run CI on separate runner machines for heavy builds |
+| Memory | 4 GB minimum; 8 GB with large repos and LFS |
+| Disk | SSD; plan for repos, LFS, and CI caches, ideally on a dedicated data disk |
+| Network | LAN use is fine; if exposed publicly, always HTTPS plus a minimal firewall |
+
+## Installation path
+
+1. Install Debian stable with only SSH server and standard system utilities.
+2. Install the database (SQLite is fine to start; prefer PostgreSQL for teams) and Git.
+3. Download the official Forgejo binary, create a dedicated system user, and set up a systemd unit.
+4. Finish the setup wizard: disable open sign-ups, configure SMTP, create the admin account.
+5. Deploy forgejo-runner, register it with the instance, and wire up pipelines.
+
+Base dependencies:
+
+```bash
+sudo apt update
+sudo apt install git postgresql
+```
+
+Download Forgejo (use the current version from the [official releases page](https://codeberg.org/forgejo/forgejo/releases)):
+
+```bash
+sudo adduser --system --group --home /srv/forgejo forgejo
+sudo install -o forgejo -g forgejo -d /srv/forgejo/custom /srv/forgejo/data
+curl -fsSLo /tmp/forgejo https://codeberg.org/forgejo/forgejo/releases/download/v11.0.1/forgejo-11.0.1-linux-amd64
+sudo install -o root -g root -m 755 /tmp/forgejo /usr/local/bin/forgejo
+```
+
+The systemd unit, `/etc/systemd/system/forgejo.service`:
+
+```ini
+[Unit]
+Description=Forgejo
+After=network.target postgresql.service
+
+[Service]
+User=forgejo
+ExecStart=/usr/local/bin/forgejo web --config /srv/forgejo/custom/conf/app.ini
+Restart=on-failure
+WorkingDirectory=/srv/forgejo
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now forgejo
+```
+
+Download the forgejo-runner binary per the official docs and register it with your instance. Pipelines live in `.forgejo/workflows/` inside each repo, using a subset of GitHub Actions syntax.
+
+## Security baseline
+
+```bash
+sudo ufw default deny incoming
+sudo ufw allow OpenSSH
+sudo ufw allow 80,443/tcp
+sudo ufw enable
+```
+
+- Disable open registration during setup; accounts are created by invitation
+- Never expose Forgejo's port 3000 directly — serve HTTPS through a [reverse proxy](/en/server/reverse-proxy)
+- Keep the machine's SSH port for admins only; Git traffic goes through Forgejo's built-in `git` user or SSH passthrough
+- Upgrade regularly: replace the binary and `systemctl restart forgejo`, always after a backup
+
+More hardening guidance lives in [Security](/en/administration/security).
+
+## Data and backups
+
+Forgejo ships a built-in dump command covering config, database, and LFS:
+
+```bash
+sudo -u forgejo forgejo dump -c /srv/forgejo/custom/conf/app.ini
+```
+
+Back up:
+
+- The `forgejo dump` output (database + attachments + LFS)
+- The bare repos under `/srv/forgejo/data/` (or mirror repos individually with `git clone --mirror`)
+- The configuration at `/srv/forgejo/custom/conf/app.ini`
+
+When rehearsing a restore: rebuild from the dump, then confirm you can log in, clone, and that CI runners are still online.
+
+## Common issues
+
+| Issue | Check first |
+|-------|-------------|
+| Web UI unreachable | `systemctl status forgejo`, listening port, `journalctl -u forgejo` |
+| SSH push/pull fails | SSH configuration, the `git` user, `SSH_PORT` and proxy settings |
+| Sign-ups still open | `DISABLE_REGISTRATION` in the admin config |
+| CI jobs never run | Runner registration status, label matching, runner logs |
+| Disk fills quickly | LFS objects, CI caches, archived repos |
+
+## Next guides
+
+- [Ops Jump Box](/en/scenarios/ops-jump-box)
+- [Reverse Proxy](/en/server/reverse-proxy)
+- [Databases](/en/server/database)
+- [Backup and Restore](/en/administration/backup)
+- [Security](/en/administration/security)

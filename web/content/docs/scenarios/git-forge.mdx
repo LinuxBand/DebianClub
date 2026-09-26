@@ -1,0 +1,119 @@
+---
+title: "Git 托管与 CI"
+description: "用 Forgejo 在 Debian 上自托管代码仓库与 CI 流水线，覆盖安装、HTTPS、runner、安全加固和备份迁移。"
+---
+
+自托管 Git 平台把代码、issue、review 和 CI 流水线放在自己手里。本方案使用 Forgejo（Codeberg 背后的软件，社区活跃、资源占用低）：Debian 仓库未收录 Forgejo，因此按官方二进制 + systemd 的受控方式部署，升级和回滚都清晰可控。
+
+## 适合谁
+
+- 不想把私有代码放到第三方托管的个人和小团队
+- 需要 CI 在自己的硬件上跑（内网构建、私有依赖、ARM 机器）的团队
+- 想从 GitHub/GitLab 保留一份可自主控制的镜像或备份的用户
+
+## 推荐硬件
+
+| 部件 | 建议 |
+|------|------|
+| CPU | 2 核起步；构建量大时 CI 单独跑在 runner 机器上 |
+| 内存 | 4 GB 起步；大仓库 LFS 建议加到 8 GB |
+| 磁盘 | SSD；按仓库、LFS 和 CI 缓存预留，并单独挂数据盘 |
+| 网络 | 内网使用即可；公网开放时务必 HTTPS + 防火墙最小化 |
+
+## 安装路径
+
+1. 安装 Debian stable，只选 SSH server 和标准系统工具。
+2. 安装数据库（轻量用 SQLite 即可，多人团队建议 PostgreSQL）与 Git。
+3. 下载 Forgejo 官方二进制，创建专用系统用户，配置 systemd 常驻。
+4. 完成初始化向导：关闭开放注册、配置 SMTP、设置管理员。
+5. 部署 forgejo-runner，注册到实例并接入流水线。
+
+基础依赖：
+
+```bash
+sudo apt update
+sudo apt install git postgresql
+```
+
+下载 Forgejo（版本号以 [官方发布页](https://codeberg.org/forgejo/forgejo/releases) 为准）：
+
+```bash
+sudo adduser --system --group --home /srv/forgejo forgejo
+sudo install -o forgejo -g forgejo -d /srv/forgejo/custom /srv/forgejo/data
+curl -fsSLo /tmp/forgejo https://codeberg.org/forgejo/forgejo/releases/download/v11.0.1/forgejo-11.0.1-linux-amd64
+sudo install -o root -g root -m 755 /tmp/forgejo /usr/local/bin/forgejo
+```
+
+systemd 单元 `/etc/systemd/system/forgejo.service`：
+
+```ini
+[Unit]
+Description=Forgejo
+After=network.target postgresql.service
+
+[Service]
+User=forgejo
+ExecStart=/usr/local/bin/forgejo web --config /srv/forgejo/custom/conf/app.ini
+Restart=on-failure
+WorkingDirectory=/srv/forgejo
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now forgejo
+```
+
+CI runner 按官方文档下载 forgejo-runner 二进制并注册到实例，流水线放在仓库的 `.forgejo/workflows/` 目录，语法兼容 GitHub Actions 的常用子集。
+
+## 安全配置
+
+```bash
+sudo ufw default deny incoming
+sudo ufw allow OpenSSH
+sudo ufw allow 80,443/tcp
+sudo ufw enable
+```
+
+- 初始化时关闭开放注册，账号由管理员邀请创建
+- Forgejo 不要直接监听 3000 端口对公网，用 [反向代理](/server/reverse-proxy) 提供 HTTPS
+- 服务器 SSH 端口只给管理用；Git 走 Forgejo 内置的 `git` 用户或 SSH 半桥
+- 定期升级 Forgejo：官方二进制替换 + `systemctl restart forgejo`，升级前先备份
+
+更多基线见 [安全管理](/administration/security)。
+
+## 数据与备份
+
+Forgejo 自带备份命令，覆盖配置、数据库和 LFS：
+
+```bash
+sudo -u forgejo forgejo dump -c /srv/forgejo/custom/conf/app.ini
+```
+
+重点备份：
+
+- `forgejo dump` 产物（数据库 + 附件 + LFS）
+- `/srv/forgejo/data/` 中的仓库裸仓库目录（也可用 `git clone --mirror` 逐仓镜像）
+- `/srv/forgejo/custom/conf/app.ini` 配置
+
+恢复演练：用 dump 重建后，确认能登录、能克隆、CI runner 仍然在线。
+
+## 常见问题
+
+| 问题 | 优先检查 |
+|------|----------|
+| 页面打不开 | `systemctl status forgejo`、端口监听、日志 `journalctl -u forgejo` |
+| SSH 推拉失败 | SSH 配置、`git` 用户、`SSH_PORT` 与代理设置 |
+| 注册入口没关 | 管理后台 `DISABLE_REGISTRATION` 配置 |
+| CI 任务不跑 | runner 注册状态、label 是否匹配、runner 日志 |
+| 磁盘快速增长 | LFS 对象、CI 缓存、旧仓库归档 |
+
+## 下一步教程
+
+- [运维跳板机](/scenarios/ops-jump-box)
+- [反向代理](/server/reverse-proxy)
+- [数据库运维](/server/database)
+- [备份与恢复](/administration/backup)
+- [网络安全](/administration/security)

@@ -16,6 +16,7 @@ import {
 } from 'fumadocs-ui/layouts/docs/page';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { getMDXComponents } from '@/components/mdx';
+import { DocsMegaHeader } from '@/components/docs-mega-header';
 import { getPageImage } from '@/lib/source';
 import { baseOptions } from '@/lib/layout.shared';
 import { abs, hreflang, languageAlternates, ogDefault, pageUrl } from '@/lib/seo';
@@ -75,7 +76,11 @@ export default async function Page({ params }: { params: PageParams }) {
   };
 
   return (
-    <DocsLayout tree={source.getPageTree(lang)} {...baseOptions(lang)}>
+    <DocsLayout
+      tree={source.getPageTree(lang)}
+      {...baseOptions(lang)}
+      slots={{ header: DocsMegaHeader }}
+    >
       <DocsPage toc={page.data.toc} full={page.data.full}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />

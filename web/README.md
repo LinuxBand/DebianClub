@@ -26,7 +26,7 @@ pnpm browser:check    # 浏览器端冒烟检查
 | `app/api/search/route.ts` | 搜索 Route Handler |
 | `content/docs/` | 全部文档内容（8 种语言；中文为无后缀主版本） |
 | `lib/` | 站点配置、内容加载（`lib/source.ts`） |
-| `_migration/` | 构建与发布门禁脚本（同步友情链接、搜索索引拆分、各类检查） |
+| `scripts/` | 构建与发布门禁脚本（同步友情链接、搜索索引拆分、各类检查） |
 | `public/` | 静态资源（含 `_headers`，随产物发布缓存/安全头） |
 | `out/` | 静态导出产物（部署到 Cloudflare Pages） |
 
@@ -36,10 +36,10 @@ pnpm browser:check    # 浏览器端冒烟检查
   （`en/de/es/fr/ja/ko/pt`）。
 - 生命周期和点更新版本以 [debian.org/releases](https://www.debian.org/releases/)
   与 Debian 官方 Release 文件为准，统一记录在 `lib/debian-facts.json`。
-- `_migration/sync-debian-facts.mjs` 负责从 `deb.debian.org` 同步事实；
-  `_migration/debian-facts-check.mjs` 会校验下载页、`whats-new`、`versions`、
+- `scripts/sync-debian-facts.mjs` 负责从 `deb.debian.org` 同步事实；
+  `scripts/debian-facts-check.mjs` 会校验下载页、`whats-new`、`versions`、
   `eol`、`news` 和 `server/cloud` 等版本敏感页面（含云镜像构建 ID 与
-  Docker 官方 tag），`_migration/content-freshness-check.mjs` 负责复核日期到期检查。
+  Docker 官方 tag），`scripts/content-freshness-check.mjs` 负责复核日期到期检查。
 
 ## 部署
 

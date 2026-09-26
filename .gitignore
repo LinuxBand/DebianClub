@@ -58,7 +58,7 @@ yarn-error.log*
 # ============================================
 # 本地辅助脚本（一次性自动化工具，不纳入版本库）
 # ============================================
-scripts/
+/scripts/
 !skills/scripts/
 !skills/scripts/**
 !skills/**/scripts/

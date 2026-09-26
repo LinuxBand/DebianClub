@@ -31,5 +31,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "_disabled", "_migration"]
+  "exclude": ["node_modules", "_disabled", "scripts"]
 }

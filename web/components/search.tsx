@@ -47,7 +47,7 @@ export default function DefaultSearchDialog(props: SharedProps) {
     client: oramaStaticClient({
       initOrama,
       locale,
-      // Per-locale index file (built by _migration/split-search-index.mjs):
+      // Per-locale index file (built by scripts/split-search-index.mjs):
       // only the active language is fetched, and each file stays under
       // Cloudflare Pages' 25 MiB per-file limit.
       from: `/api/search/${locale || 'zh'}`,

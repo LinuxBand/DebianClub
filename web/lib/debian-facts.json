@@ -1,5 +1,5 @@
 {
-  "comment": "Single source of truth for Debian release facts. Updated by web/_migration/sync-debian-facts.mjs; verified by web/_migration/debian-facts-check.mjs and web/_migration/content-freshness-check.mjs.",
+  "comment": "Single source of truth for Debian release facts. Updated by web/scripts/sync-debian-facts.mjs; verified by web/scripts/debian-facts-check.mjs and web/scripts/content-freshness-check.mjs.",
   "generatedAt": "2026-09-08",
   "reviewDate": "2026-09-08",
   "reviewDueDate": "2026-12-08",

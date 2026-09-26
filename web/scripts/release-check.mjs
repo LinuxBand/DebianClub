@@ -42,12 +42,12 @@ const localizedEntryFiles = localizedEntryPages.flatMap((page) =>
 );
 const bilingualOperationalFiles = bilingualOperationalPages.flatMap((page) => [`out/${page}.html`, `out/en/${page}.html`]);
 const requiredFiles = [
-  '_migration/browser-smoke-check.mjs',
-  '_migration/smoke-check.mjs',
-  '_migration/content-freshness-check.mjs',
-  '_migration/i18n-consistency-check.mjs',
-  '_migration/debian-facts-check.mjs',
-  '_migration/sync-debian-facts.mjs',
+  'scripts/browser-smoke-check.mjs',
+  'scripts/smoke-check.mjs',
+  'scripts/content-freshness-check.mjs',
+  'scripts/i18n-consistency-check.mjs',
+  'scripts/debian-facts-check.mjs',
+  'scripts/sync-debian-facts.mjs',
   'lib/debian-facts.json',
   'content/docs/server/cloud.mdx',
   'content/docs/server/cloud.en.mdx',
@@ -111,18 +111,18 @@ const deploymentTextChecks = [
   {
     path: 'package.json',
     checks: [
-      ['"release:check": "pnpm freshness:check && pnpm i18n:check && pnpm facts:check && pnpm pkgseek:check && node _migration/release-check.mjs"', 'release check script exists'],
-      ['"pkgseek:check": "node _migration/pkgseek-verify.mjs"', 'pkgseek check script exists'],
-      ['"freshness:check": "node _migration/content-freshness-check.mjs"', 'freshness check script exists'],
-      ['"facts:sync": "node _migration/sync-debian-facts.mjs"', 'facts sync script exists'],
-      ['"facts:check": "node _migration/debian-facts-check.mjs"', 'facts check script exists'],
-      ['"i18n:check": "node _migration/i18n-consistency-check.mjs"', 'i18n check script exists'],
-      ['"smoke:check": "node _migration/smoke-check.mjs"', 'smoke check script exists'],
-      ['"browser:check": "node _migration/browser-smoke-check.mjs"', 'browser check script exists'],
+      ['"release:check": "pnpm freshness:check && pnpm i18n:check && pnpm facts:check && pnpm pkgseek:check && node scripts/release-check.mjs"', 'release check script exists'],
+      ['"pkgseek:check": "node scripts/pkgseek-verify.mjs"', 'pkgseek check script exists'],
+      ['"freshness:check": "node scripts/content-freshness-check.mjs"', 'freshness check script exists'],
+      ['"facts:sync": "node scripts/sync-debian-facts.mjs"', 'facts sync script exists'],
+      ['"facts:check": "node scripts/debian-facts-check.mjs"', 'facts check script exists'],
+      ['"i18n:check": "node scripts/i18n-consistency-check.mjs"', 'i18n check script exists'],
+      ['"smoke:check": "node scripts/smoke-check.mjs"', 'smoke check script exists'],
+      ['"browser:check": "node scripts/browser-smoke-check.mjs"', 'browser check script exists'],
     ],
   },
   {
-    path: '_migration/browser-smoke-check.mjs',
+    path: 'scripts/browser-smoke-check.mjs',
     checks: [
       ['async function verifySearchUi', 'browser check verifies search UI'],
       ['async function verifyAiSkillsShareLink', 'browser check verifies AI Skills share links'],
@@ -182,7 +182,7 @@ const deploymentTextChecks = [
     ],
   },
   {
-    path: '_migration/smoke-check.mjs',
+    path: 'scripts/smoke-check.mjs',
     checks: [
       ["'/tools#command-safety'", 'smoke covers Chinese command safety tool deep link'],
       ["'/en/tools#command-safety'", 'smoke covers English command safety tool deep link'],
@@ -225,7 +225,7 @@ const deploymentTextChecks = [
     ],
   },
   {
-    path: '_migration/release-check.mjs',
+    path: 'scripts/release-check.mjs',
     checks: [
       ['const aiReadableArtifactChecks = [', 'release gate defines AI-readable artifact checks'],
       ['function checkAiSkillsRegistryArtifact', 'release gate verifies the exported AI Skills registry'],
@@ -240,7 +240,7 @@ const deploymentTextChecks = [
     ],
   },
   {
-    path: '_migration/content-freshness-check.mjs',
+    path: 'scripts/content-freshness-check.mjs',
     checks: [
       ["lib/debian-facts.json", 'freshness check reads the Debian facts cache'],
       ['facts.reviewDate', 'freshness check uses the facts review date'],
@@ -250,7 +250,7 @@ const deploymentTextChecks = [
     ],
   },
   {
-    path: '_migration/debian-facts-check.mjs',
+    path: 'scripts/debian-facts-check.mjs',
     checks: [
       ['https://deb.debian.org/debian/dists', 'facts check verifies the live Debian archive'],
       ['lib/download.ts', 'facts check verifies generated download data'],
@@ -275,7 +275,7 @@ const deploymentTextChecks = [
     ],
   },
   {
-    path: '_migration/debian-facts-check.mjs',
+    path: 'scripts/debian-facts-check.mjs',
     checks: [
       ['CLOUD_META', 'facts check verifies cloud image metadata'],
       ['cloud.debian.org', 'facts check verifies cloud image builds'],
@@ -283,7 +283,7 @@ const deploymentTextChecks = [
     ],
   },
   {
-    path: '_migration/sync-debian-facts.mjs',
+    path: 'scripts/sync-debian-facts.mjs',
     checks: [
       ['CLOUD_META', 'facts sync refreshes cloud image metadata'],
       ['cloud.debian.org', 'facts sync refreshes cloud image builds'],
@@ -291,7 +291,7 @@ const deploymentTextChecks = [
     ],
   },
   {
-    path: '_migration/i18n-consistency-check.mjs',
+    path: 'scripts/i18n-consistency-check.mjs',
     checks: [
       ["const requiredLocales = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt']", 'i18n check covers all locales'],
       ["const bilingualPages = ['production-observability', 'content-freshness', 'i18n-quality']", 'i18n check covers operational bilingual pages'],

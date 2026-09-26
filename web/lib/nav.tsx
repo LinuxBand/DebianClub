@@ -23,7 +23,6 @@ import {
   HardDriveDownload,
   House,
   Lamp,
-  Languages,
   Layers,
   Link2,
   Monitor,
@@ -321,10 +320,6 @@ const DESCRIPTIONS: Descriptions = {
     zh: '内容时效基线与复核机制',
     en: 'Freshness baseline and review process',
   },
-  '/i18n-quality': {
-    zh: '多语言翻译质量与一致性',
-    en: 'Translation quality and consistency',
-  },
   '/links': {
     zh: '推荐的 Debian 相关站点',
     en: 'Recommended Debian-related sites',
@@ -418,7 +413,6 @@ const SECTIONS: SectionSpec[] = [
       { path: '/production-observability', icon: Radar },
       { path: '/release-readiness', icon: ClipboardCheck },
       { path: '/content-freshness', icon: CalendarClock },
-      { path: '/i18n-quality', icon: Languages },
       { path: '/links', icon: Link2 },
     ],
   },

@@ -4,7 +4,7 @@ import { join } from 'node:path';
 const maxSearchFileBytes = 25 * 1024 * 1024;
 const requiredLocales = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt'];
 const localizedEntryPages = ['tools', 'scenarios', 'hardware', 'versions', 'release-readiness', 'deployment'];
-const bilingualOperationalPages = ['production-observability', 'content-freshness', 'i18n-quality'];
+const bilingualOperationalPages = ['production-observability', 'content-freshness'];
 const requiredAiSkillModules = ['apt-safe', 'command-safety', 'systemd-troubleshoot', 'gpu-drivers', 'security-audit'];
 const requiredRobotsLines = [
   'User-Agent: *',
@@ -32,8 +32,6 @@ const requiredSitemapUrls = [
   'https://www.debian.club/en/production-observability',
   'https://www.debian.club/content-freshness',
   'https://www.debian.club/en/content-freshness',
-  'https://www.debian.club/i18n-quality',
-  'https://www.debian.club/en/i18n-quality',
   'https://www.debian.club/deployment',
   'https://www.debian.club/en/deployment',
 ];

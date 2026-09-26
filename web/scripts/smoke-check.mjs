@@ -4,7 +4,7 @@ const searchShardTimeoutMs = 45_000;
 
 const requiredLocales = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt'];
 const localizedEntryPages = ['tools', 'scenarios', 'hardware', 'versions', 'release-readiness', 'deployment'];
-const bilingualOperationalPages = ['production-observability', 'content-freshness', 'i18n-quality'];
+const bilingualOperationalPages = ['production-observability', 'content-freshness'];
 
 function localeRoute(locale, page = '') {
   const path = page ? `/${page}` : '';

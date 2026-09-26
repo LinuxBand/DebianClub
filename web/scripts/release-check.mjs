@@ -303,6 +303,14 @@ const deploymentTextChecks = [
   {
     path: 'components/InteractiveTools.tsx',
     checks: [
+      ["'use client'", 'interactive tools shell is a client component'],
+      ['window.addEventListener(\'hashchange\', syncFromHash)', 'tool tabs sync on hash changes'],
+      ['window.history.replaceState(null, \'\', nextUrl)', 'tool tab clicks update shareable hash'],
+    ],
+  },
+  {
+    path: 'components/tools/logic.ts',
+    checks: [
       ["mirror: 'mirrors'", 'mirror tool hash is mapped'],
       ["install: 'install'", 'install tool hash is mapped'],
       ["desktop: 'desktop'", 'desktop tool hash is mapped'],
@@ -313,46 +321,89 @@ const deploymentTextChecks = [
       ["upgrade: 'upgrade'", 'upgrade planner tool hash is mapped'],
       ['function normalizeToolHash', 'tool hash parsing is centralized'],
       ['function parseToolHash', 'tool hash parameters are parsed from the URL fragment'],
+      ['decodeURIComponent(value)', 'encoded tool hashes are decoded'],
+    ],
+  },
+  {
+    path: 'components/tools/ui.tsx',
+    checks: [
       ['function useCopiedFeedback', 'copy buttons share one copied-state feedback helper'],
       ['window.clearTimeout(timeoutRef.current)', 'copied-state feedback clears stale timers'],
+    ],
+  },
+  {
+    path: 'components/tools/MirrorTool.tsx',
+    checks: [
       ["hashState.params.get('release')", 'mirror tool can preload release from the URL fragment'],
       ["hashState.params.get('mirror')", 'mirror tool can preload mirror from the URL fragment'],
       ["hashState.params.get('components')", 'mirror tool can preload components from the URL fragment'],
       ["window.addEventListener('hashchange', syncMirrorStateFromHash)", 'mirror tool syncs config on hash changes'],
       ['url.hash = `${toolHashIds.mirror}?release=${release}&mirror=${mirror}&components=${components}`', 'mirror tool share links keep config in the URL fragment'],
+    ],
+  },
+  {
+    path: 'components/tools/InstallTool.tsx',
+    checks: [
       ["hashState.params.get('device')", 'install tool can preload device from the URL fragment'],
       ["hashState.params.get('goal')", 'install tool can preload goal from the URL fragment'],
       ["hashState.params.get('risk')", 'install tool can preload risk from the URL fragment'],
       ["window.addEventListener('hashchange', syncInstallStateFromHash)", 'install tool syncs config on hash changes'],
       ['url.hash = `${toolHashIds.install}?device=${device}&goal=${goal}&risk=${risk}`', 'install tool share links keep config in the URL fragment'],
+    ],
+  },
+  {
+    path: 'components/tools/DesktopTool.tsx',
+    checks: [
       ["hashState.params.get('hardware')", 'desktop tool can preload hardware from the URL fragment'],
       ["hashState.params.get('workflow')", 'desktop tool can preload workflow from the URL fragment'],
       ["window.addEventListener('hashchange', syncDesktopStateFromHash)", 'desktop tool syncs config on hash changes'],
       ['url.hash = `${toolHashIds.desktop}?hardware=${hardware}&workflow=${workflow}`', 'desktop tool share links keep config in the URL fragment'],
+    ],
+  },
+  {
+    path: 'components/tools/PartitionTool.tsx',
+    checks: [
       ["hashState.params.get('disk')", 'partition tool can preload disk from the URL fragment'],
       ["hashState.params.get('boot')", 'partition tool can preload boot mode from the URL fragment'],
       ["hashState.params.get('encryption')", 'partition tool can preload encryption from the URL fragment'],
       ["window.addEventListener('hashchange', syncPartitionStateFromHash)", 'partition tool syncs config on hash changes'],
       ['url.hash = `${toolHashIds.partition}?disk=${disk}&boot=${boot}&encryption=${encryption}`', 'partition tool share links keep config in the URL fragment'],
+    ],
+  },
+  {
+    path: 'components/tools/TroubleshootTool.tsx',
+    checks: [
       ["hashState.params.get('symptom')", 'troubleshooting tool can preload symptom from the URL fragment'],
       ["window.addEventListener('hashchange', syncTroubleshootStateFromHash)", 'troubleshooting tool syncs config on hash changes'],
       ['url.hash = `${toolHashIds.troubleshoot}?symptom=${symptom}`', 'troubleshooting tool share links keep config in the URL fragment'],
+    ],
+  },
+  {
+    path: 'components/tools/SafetyTool.tsx',
+    checks: [
+      ['const maxSharedCommandLength = 4000', 'shared command links have a length cap'],
+      ["hashState.params.get('command')", 'command safety can preload a shared command from the URL fragment'],
+      ["window.addEventListener('hashchange', syncSharedCommandFromHash)", 'command safety prefill syncs on hash changes'],
+      ['url.searchParams.delete(\'command\')', 'command safety share links do not keep command query parameters'],
+    ],
+  },
+  {
+    path: 'components/tools/SkillsTool.tsx',
+    checks: [
       ["hashState.params.get('target')", 'AI Skills tool can preload target from the URL fragment'],
       ["hashState.params.get('replace')", 'AI Skills tool can preload replace flag from the URL fragment'],
       ["window.addEventListener('hashchange', syncSkillsStateFromHash)", 'AI Skills tool syncs config on hash changes'],
       ['url.hash = `${toolHashIds.skills}?target=${target}&replace=${replace ? \'true\' : \'false\'}`', 'AI Skills tool share links keep config in the URL fragment'],
+    ],
+  },
+  {
+    path: 'components/tools/UpgradeTool.tsx',
+    checks: [
       ["hashState.params.get('current')", 'upgrade planner can preload current release from the URL fragment'],
       ["hashState.params.get('target')", 'upgrade planner can preload target release from the URL fragment'],
       ["hashState.params.get('exposure')", 'upgrade planner can preload exposure from the URL fragment'],
       ["window.addEventListener('hashchange', syncUpgradeStateFromHash)", 'upgrade planner syncs config on hash changes'],
       ['url.hash = `${toolHashIds.upgrade}?current=${current}&target=${target}&exposure=${exposure}`', 'upgrade planner share links keep config in the URL fragment'],
-      ['const maxSharedCommandLength = 4000', 'shared command links have a length cap'],
-      ["hashState.params.get('command')", 'command safety can preload a shared command from the URL fragment'],
-      ["window.addEventListener('hashchange', syncSharedCommandFromHash)", 'command safety prefill syncs on hash changes'],
-      ['url.searchParams.delete(\'command\')', 'command safety share links do not keep command query parameters'],
-      ['decodeURIComponent(value)', 'encoded tool hashes are decoded'],
-      ['window.addEventListener(\'hashchange\', syncFromHash)', 'tool tabs sync on hash changes'],
-      ['window.history.replaceState(null, \'\', nextUrl)', 'tool tab clicks update shareable hash'],
     ],
   },
   {

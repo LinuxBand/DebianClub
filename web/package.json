@@ -15,7 +15,8 @@
     "smoke:check": "node scripts/smoke-check.mjs",
     "start": "serve out",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
-    "postinstall": "fumadocs-mdx"
+    "postinstall": "fumadocs-mdx",
+    "test": "node --test tests/*.test.ts"
   },
   "dependencies": {
     "@orama/orama": "^3.1.18",

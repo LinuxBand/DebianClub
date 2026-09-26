@@ -5,10 +5,10 @@ description: "Official Debian cloud images, AWS/Azure/OpenStack usage, cloud-ini
 
 <Callout type="info" title="Current Cloud Image Baseline">
 
-- Latest official Debian 13 (Trixie) cloud image build: **20260831-2587** (2026-08-31)
-- Latest Debian 12 (Bookworm, LTS) cloud image build: **20260907-2594** (2026-09-07)
+- Latest official Debian 13 (Trixie) cloud image build: **20260914-2601** (2026-09-14)
+- Latest Debian 12 (Bookworm, LTS) cloud image build: **20260923-2610** (2026-09-23)
 - Debian 11 (Bullseye) reached EOL on 2026-08-31; its cloud images no longer receive Debian security updates
-- Debian 14 (Forky) testing daily cloud image: **20260908-2595** (2026-09-08)
+- Debian 14 (Forky) testing daily cloud image: **20260926-2613** (2026-09-26)
 
 </Callout>
 
@@ -59,7 +59,7 @@ aws --region us-east-2 ssm get-parameters-by-path \
   --path /aws/service/debian/release/13/latest
 ```
 
-Current AMI names: `debian-13-amd64-20260831-2587` / `debian-13-arm64-20260831-2587`.
+Current AMI names: `debian-13-amd64-20260914-2601` / `debian-13-arm64-20260914-2601`.
 
 ### Microsoft Azure
 
@@ -133,7 +133,7 @@ packages:
 ## Container Images
 
 - Official Docker images: `debian:13`, `debian:13-slim`, `debian:trixie`, `debian:trixie-slim`.
-- The current 13.6 tag was updated on 2026-08-25; pin a point-release tag such as `debian:13.6-slim` or a digest in production.
+- The current 13.7 tag was updated on 2026-09-19; pin a point-release tag such as `debian:13.7-slim` or a digest in production.
 - In multi-stage builds, use `debian:13` for the build stage and `debian:13-slim` for the runtime stage.
 
 ```dockerfile

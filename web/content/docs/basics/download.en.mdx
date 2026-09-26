@@ -11,7 +11,7 @@ Looking for a quick download? Visit the [Interactive Download Page](/en/download
 
 This guide helps you download the appropriate Debian 13 installation images for your system.
 
-> Tip: the point release number in Debian ISO filenames changes with each point update (currently `13.6.0`). Always use the file name shown in the mirror's `current/` directory.
+> Tip: the point release number in Debian ISO filenames changes with each point update (currently `13.7.0`). Always use the file name shown in the mirror's `current/` directory.
 
 ## 🎯 Choose Your Download
 
@@ -56,7 +56,7 @@ This guide helps you download the appropriate Debian 13 installation images for 
 
 ```bash
 # Debian 13 currently provides only DVD-1
-debian-13.6.0-amd64-DVD-1.iso      # ~3.7GB
+debian-13.7.0-amd64-DVD-1.iso      # ~3.7GB
 # Contains the installer and a useful set of desktop packages
 ```
 
@@ -66,7 +66,7 @@ debian-13.6.0-amd64-DVD-1.iso      # ~3.7GB
 
 ```bash
 # Minimal installer (downloads packages online)
-debian-13.6.0-amd64-netinst.iso    # ~400MB
+debian-13.7.0-amd64-netinst.iso    # ~400MB
 # Best for: Fast internet, custom installations
 ```
 
@@ -78,10 +78,10 @@ Debian 13 no longer publishes a separate CD-1 image. Use `netinst` for a small d
 
 ```bash
 # Live desktop environments (try before installing)
-debian-live-13.6.0-amd64-gnome.iso      # ~2.9GB
-debian-live-13.6.0-amd64-kde.iso        # ~3.1GB
-debian-live-13.6.0-amd64-xfce.iso       # ~2.7GB
-debian-live-13.6.0-amd64-lxde.iso       # ~2.5GB
+debian-live-13.7.0-amd64-gnome.iso      # ~2.9GB
+debian-live-13.7.0-amd64-kde.iso        # ~3.1GB
+debian-live-13.7.0-amd64-xfce.iso       # ~2.7GB
+debian-live-13.7.0-amd64-lxde.iso       # ~2.5GB
 ```
 
 ## 🏗️ Architecture Selection
@@ -129,7 +129,7 @@ wget https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/SHA256SUMS
 wget https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/SHA256SUMS.sign
 
 # Verify checksum
-sha256sum debian-13.6.0-amd64-DVD-1.iso
+sha256sum debian-13.7.0-amd64-DVD-1.iso
 # Compare with SHA256SUMS file
 
 # Verify GPG signature (Advanced)
@@ -140,7 +140,7 @@ gpg --verify SHA256SUMS.sign SHA256SUMS
 
 ```bash
 # Command line download
-wget https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-13.6.0-amd64-DVD-1.iso
+wget https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-13.7.0-amd64-DVD-1.iso
 
 # Resume interrupted download
 wget -c URL

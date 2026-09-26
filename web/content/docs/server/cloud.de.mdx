@@ -5,10 +5,10 @@ description: "Offizielle Debian-Cloud-Images, AWS/Azure/OpenStack-Nutzung, cloud
 
 <Callout type="info" title="Aktuelle Cloud-Image-Baseline">
 
-- Debian 13 (Trixie): **20260831-2587** (2026-08-31)
-- Debian 12 (Bookworm, LTS): **20260907-2594** (2026-09-07)
+- Debian 13 (Trixie): **20260914-2601** (2026-09-14)
+- Debian 12 (Bookworm, LTS): **20260923-2610** (2026-09-23)
 - Debian 11 (Bullseye): EOL seit 2026-08-31
-- Debian 14 (Forky, testing): **20260908-2595** (2026-09-08)
+- Debian 14 (Forky, testing): **20260926-2613** (2026-09-26)
 
 </Callout>
 
@@ -42,7 +42,7 @@ wget https://cloud.debian.org/images/cloud/trixie/latest/SHA512SUMS
 sha512sum -c SHA512SUMS --ignore-missing
 ```
 
-- AWS: AMI `debian-13-amd64-20260831-2587` / `debian-13-arm64-20260831-2587`
+- AWS: AMI `debian-13-amd64-20260914-2601` / `debian-13-arm64-20260914-2601`
 - Azure: URN `Debian:debian-13:13:latest`
 - OpenStack: `generic`-Image hochladen
 - Lokal: `nocloud`-Image mit QEMU starten
@@ -60,7 +60,7 @@ Nach einem Point-Release wie 13.7 werden Cloud- und Docker-Images neu gebaut. Pr
 
 ## Container-Images
 
-- `debian:13` / `debian:13-slim` (13.6, aktualisiert 2026-08-25)
+- `debian:13` / `debian:13-slim` (13.7, aktualisiert 2026-09-19)
 - Für Produktion Point-Release-Tag oder Digest pinnen.
 
 ## Links

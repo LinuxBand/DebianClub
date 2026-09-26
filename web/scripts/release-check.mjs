@@ -478,14 +478,14 @@ const deploymentTextChecks = [
     path: 'content/docs/content-freshness.mdx',
     checks: [
       ['Phase 44 已上线', 'Chinese content freshness page marks phase 44'],
-      ['2026-12-08', 'Chinese content freshness page documents review due date'],
+      ['2026-12-26', 'Chinese content freshness page documents review due date'],
     ],
   },
   {
     path: 'content/docs/content-freshness.en.mdx',
     checks: [
       ['Phase 44 Live', 'English content freshness page marks phase 44'],
-      ['2026-12-08', 'English content freshness page documents review due date'],
+      ['2026-12-26', 'English content freshness page documents review due date'],
     ],
   },
   {

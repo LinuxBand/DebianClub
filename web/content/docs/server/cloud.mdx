@@ -5,10 +5,10 @@ description: "Debian 官方云镜像、AWS/Azure/OpenStack 使用、cloud-init�
 
 <Callout type="info" title="当前云镜像基线">
 
-- Debian 13（Trixie）官方云镜像最新构建：**20260831-2587**（2026-08-31）
-- Debian 12（Bookworm，LTS）云镜像最新构建：**20260907-2594**（2026-09-07）
+- Debian 13（Trixie）官方云镜像最新构建：**20260914-2601**（2026-09-14）
+- Debian 12（Bookworm，LTS）云镜像最新构建：**20260923-2610**（2026-09-23）
 - Debian 11（Bullseye）已于 2026-08-31 EOL，云镜像不再获得 Debian 安全更新
-- Debian 14（Forky）testing 每日云镜像：**20260908-2595**（2026-09-08）
+- Debian 14（Forky）testing 每日云镜像：**20260926-2613**（2026-09-26）
 
 </Callout>
 
@@ -59,7 +59,7 @@ aws --region us-east-2 ssm get-parameters-by-path \
   --path /aws/service/debian/release/13/latest
 ```
 
-当前 AMI 名称：`debian-13-amd64-20260831-2587` / `debian-13-arm64-20260831-2587`。
+当前 AMI 名称：`debian-13-amd64-20260914-2601` / `debian-13-arm64-20260914-2601`。
 
 ### Microsoft Azure
 
@@ -133,7 +133,7 @@ packages:
 ## 容器镜像
 
 - 官方 Docker 镜像：`debian:13`、`debian:13-slim`、`debian:trixie`、`debian:trixie-slim`。
-- 当前 13.6 标签更新于 2026-08-25；生产环境固定点版本标签（如 `debian:13.6-slim`）或 digest。
+- 当前 13.7 标签更新于 2026-09-19；生产环境固定点版本标签（如 `debian:13.7-slim`）或 digest。
 - 多阶段构建中，构建阶段可用 `debian:13`，运行阶段用 `debian:13-slim` 减小体积。
 
 ```dockerfile

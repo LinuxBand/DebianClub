@@ -36,6 +36,10 @@ pnpm browser:check    # 浏览器端冒烟检查
   （`en/de/es/fr/ja/ko/pt`）。
 - 生命周期和点更新版本以 [debian.org/releases](https://www.debian.org/releases/)
   与 Debian 官方 Release 文件为准，统一记录在 `lib/debian-facts.json`。
+- 翻译流水线：`pnpm i18n:status` 查看各语言缺失页面，
+  `pnpm i18n:translate`（配置 `TRANSLATE_API_KEY`，兼容 OpenAI 接口格式）
+  分批机翻缺失页并自动本地化组件 `lang` 与站内链接；产物需人工审校，
+  再通过 `pnpm i18n:check` 验证。
 - `scripts/sync-debian-facts.mjs` 负责从 `deb.debian.org` 同步事实；
   `scripts/debian-facts-check.mjs` 会校验下载页、`whats-new`、`versions`、
   `eol`、`news` 和 `server/cloud` 等版本敏感页面（含云镜像构建 ID 与

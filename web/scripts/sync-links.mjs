@@ -118,6 +118,7 @@ for (const [lang, loc] of Object.entries(LOC)) {
   const t = I18N[loc];
   const body = `---
 title: "${t.friend_links_title}"
+description: "${INTRO[lang]}"
 ---
 
 ${INTRO[lang]}

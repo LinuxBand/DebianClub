@@ -28,7 +28,7 @@ export function abs(path: string): string {
   return path === '/' ? siteUrl : siteUrl + path;
 }
 
-export const ogDefault = `${siteUrl}/images/hero-home.png`;
+export const ogDefault = `${siteUrl}/images/hero-home-og.jpg`;
 
 // hreflang alternates map for the locales where a page exists (`has` decides).
 export function languageAlternates(slug: string[], has: (lang: string) => boolean): Record<string, string> {

@@ -276,7 +276,7 @@ function HomeContent({ lang }: { lang: string }) {
           </div>
         </div>
         <img
-          src="/images/hero-home.png"
+          src="/images/hero-home.webp"
           alt="Debian.Club"
           className="w-full max-w-md rounded-xl lg:flex-1"
           loading="lazy"
@@ -294,7 +294,7 @@ function HomeContent({ lang }: { lang: string }) {
 
       <section className="mx-auto w-full max-w-6xl px-6 pb-16">
         <h2 className="mb-5 text-2xl font-bold">{t.pathTitle}</h2>
-        <img src="/images/scene-learn.png" alt="" className="mb-6 w-full rounded-xl" loading="lazy" />
+        <img src="/images/scene-learn.webp" alt="" className="mb-6 w-full rounded-xl" loading="lazy" />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {t.steps.map((s) => (
             <div key={s.title} className="rounded-xl border border-fd-border p-5">

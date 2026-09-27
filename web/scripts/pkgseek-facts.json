@@ -40,7 +40,7 @@
     "release": "trixie"
   },
   "fedora/kernel": {
-    "version": "7.2.5-200.fc44",
+    "version": "7.2.7-200.fc44",
     "release": "44"
   },
   "ubuntu/vim": {

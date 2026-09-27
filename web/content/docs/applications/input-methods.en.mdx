@@ -1,0 +1,75 @@
+---
+title: "Chinese Input Methods"
+description: "Set up Chinese input on Debian 13: choosing between fcitx5 and ibus, installing Pinyin, Wayland notes, and fixing the most common problems."
+---
+
+Setting up Chinese input is usually the first thing to do after installing Debian. Debian 13 offers two mature frameworks: **fcitx5** (recommended for KDE and most desktops) and **ibus** (integrated into GNOME out of the box). Both provide Pinyin, Wubi, and other input methods.
+
+## Which one to pick
+
+| Scenario | Recommendation |
+|----------|----------------|
+| GNOME desktop | **ibus** (native GNOME integration, zero setup) |
+| KDE Plasma / Xfce / others | **fcitx5** (better dictionaries and experience) |
+| Wayland session | GNOME → ibus; KDE Wayland → fcitx5 |
+
+Never enable both frameworks at once — conflicting input methods are the most common cause of "can't type Chinese".
+
+## Option 1: fcitx5 (recommended)
+
+Install the core packages and the Chinese addon:
+
+```bash
+sudo apt update
+sudo apt install fcitx5 fcitx5-chinese-addons fcitx5-frontend-gtk3 fcitx5-frontend-gtk4 im-config
+```
+
+Set fcitx5 as the default input framework:
+
+```bash
+im-config -n fcitx5
+```
+
+Log out and back in — fcitx5 autostarts. Toggle with **Ctrl+Space**; switch Pinyin/Wubi from the tray icon (Wubi tables need the `fcitx5-table` package). Use `fcitx5-configtool` to manage dictionaries, cloud Pinyin, and hotkeys.
+
+## Option 2: ibus (GNOME users)
+
+GNOME users don't need fcitx5 — configure it from Settings:
+
+1. Open **Settings → Keyboard → Input Sources**, click **+**
+2. Pick **Chinese (China) → Intelligent Pinyin** (requires `ibus-libpinyin`):
+
+```bash
+sudo apt install ibus-libpinyin
+```
+
+3. Switch input sources with **Super+Space**
+
+## Wayland notes
+
+- **GNOME Wayland**: ibus works natively, no extra configuration
+- **KDE Plasma Wayland**: fcitx5 integrates with Plasma's input method; if individual apps (mostly XWayland apps) can't receive input, set the environment variables:
+
+```bash
+# Add to ~/.pam_environment or your desktop session env file
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+```
+
+- On X11 sessions fcitx5 needs the same three variables; `im-config` writes them for you
+
+## Common issues
+
+| Issue | Check first |
+|-------|-------------|
+| Can't type Chinese at all | `im-config -m` for the active framework; did you re-login; are both ibus and fcitx5 installed |
+| Input fails in some apps | Missing GTK/Qt frontend package; XWayland env vars under Wayland |
+| Candidate window doesn't follow cursor | Known Wayland limitation; prefer the native framework for your session |
+| Ctrl+Space does nothing | Check the trigger key in fcitx5 config, or a conflicting system shortcut |
+
+## Next steps
+
+- [Applications](/en/applications): browsers, office, and development tooling
+- [Configuration](/en/basics/configuration): network, sources, and system settings
+- [Package management](/en/administration/packages): advanced apt usage

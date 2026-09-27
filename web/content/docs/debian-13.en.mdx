@@ -1,0 +1,89 @@
+---
+title: "Debian 13 (Trixie)"
+description: "The dedicated Debian 13 (Trixie) page: what's new, download and install paths, point-release schedule, support lifecycle, and FAQ. The recommended version for new installs."
+---
+
+![Debian 13 (Trixie) illustration](/images/hero-home.webp)
+
+<Callout type="info" title="Current stable release">
+
+**Debian 13**, codename **Trixie**, was released on **August 9, 2025** and is the current **stable** release. As of September 2026 the latest point release is **13.7** (2026-09-12). This page collects what's new, downloads, installation paths, and the support lifecycle.
+
+</Callout>
+
+## 📌 Status at a Glance
+
+| Item | Info |
+|------|------|
+| **Codename** | Trixie (a Toy Story character) |
+| **Release date** | 2025-08-09 |
+| **Current point release** | 13.7 (2026-09-12) |
+| **Kernel** | Linux 6.12 LTS series |
+| **Architectures** | amd64, arm64, armhf, i386, ppc64el, s390x, **riscv64** (first official support) |
+| **Regular security support** | Until 2028-08-09 |
+| **LTS support** | Until 2030-06-30 |
+| **Positioning** | The default choice for new desktops, servers, and production |
+
+## 🚀 Key Changes from Debian 12
+
+- **Kernel**: Linux 6.12 LTS series (Debian 12 shipped 6.1 LTS)
+- **Desktop**: GNOME 48 and KDE Plasma 6.3 (Debian 12 shipped GNOME 43 / Plasma 5.27); Wayland is the default session for most desktops
+- **Toolchain**: GCC 14, LLVM 19, Python 3.13, PHP 8.4
+- **Architectures**: riscv64 becomes an official architecture for the first time — seven in total
+- **Desktop experience**: `/tmp` mounts as tmpfs by default and is cleared on reboot
+- **Repositories**: the installer writes deb822-format `.sources` files by default (the format introduced in Debian 12)
+- **Firmware**: the `non-free-firmware` component continues (introduced in Debian 12); the installer auto-loads common hardware firmware
+
+For a full component comparison see [Versions & Lifecycle](/en/versions).
+
+## 📅 Point-release schedule
+
+The Release Team has published the point-release plan for Trixie's lifetime (dates may shift; official announcements at [release.debian.org](https://release.debian.org/) take precedence):
+
+| Version | Planned date | Status |
+|---------|--------------|--------|
+| 13.7 | 2026-09-12 | Released (current) |
+| 13.8 | 2026-11-14 | Scheduled |
+| 13.9 | 2027-01-09 | Scheduled |
+| 13.10 | 2027-03-13 | Scheduled |
+| 13.11 | 2027-05-08 | Scheduled |
+
+Each point release rolls up security and critical fixes and refreshes the installer images; production systems should stay on the latest point release.
+
+## 💾 Download & Install
+
+- Pick a version, architecture, and nearby mirror on the [download page](/en/download) to get netinst / DVD / Live images
+- Create [bootable media](/en/basics/bootable-media), then follow the [installation guide](/en/basics/installation)
+- For clouds, use the [official Debian cloud images](https://cloud.debian.org/images/cloud/) directly
+- First steps after install: [first boot](/en/basics/first-boot); tuning: [configuration](/en/basics/configuration)
+
+## 🔄 Upgrading from Debian 12
+
+Debian 12 (Bookworm) users can upgrade in place following the [upgrade guide](/en/basics/upgrade): fully update the current system first, switch sources to trixie (mind the security line), run `apt full-upgrade`, then reboot and verify. Back up `/etc` and your data beforehand and keep a working rescue environment.
+
+## 🛡️ Support lifecycle
+
+- **Regular security support**: until **2028-08-09** (Debian Security Team)
+- **LTS**: until **2030-06-30** (Debian LTS Team)
+- The next release, [Debian 14 (Forky)](/en/debian-14), is in development; by convention Trixie keeps regular security support for about a year after 14 ships, then enters LTS
+
+Full lifecycle and EOL dates: [Release End-of-Life (EOL)](/en/eol).
+
+## ❓ FAQ
+
+| Question | Answer |
+|----------|--------|
+| Should I install 13 or wait for 14? | Install 13. Forky is still in testing and [won't ship until at least 2027](/en/debian-14) |
+| Is 13.7 the latest? | Yes. Point releases only roll up fixes; the current one is 13.7 |
+| Do I need the non-free repo? | Firmware lives in `non-free-firmware`; NVIDIA drivers and similar still need `non-free` — see [Hardware & Drivers](/en/hardware) |
+| Is riscv64 supported? | Yes — Debian 13 is the first release with official riscv64 support |
+| Chinese input? | Install fcitx5 or ibus under GNOME/KDE — see [Input Methods](/en/applications/input-methods) |
+
+## 🔗 Related pages
+
+- [Download Debian 13](/en/download)
+- [Debian 13 What's New](/en/basics/whats-new)
+- [Installation guide](/en/basics/installation)
+- [Upgrading from Debian 12](/en/basics/upgrade)
+- [Versions & Lifecycle](/en/versions)
+- [Debian 14 (Forky) preview](/en/debian-14)

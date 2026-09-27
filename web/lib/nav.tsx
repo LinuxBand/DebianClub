@@ -36,6 +36,7 @@ import {
   ShieldCheck,
   Sparkles,
   SquareTerminal,
+  Star,
   Timer,
   Usb,
   Users,
@@ -276,6 +277,10 @@ const DESCRIPTIONS: Descriptions = {
     zh: '各版本支持周期与 EOL 日期速查',
     en: 'Support windows and EOL dates at a glance',
   },
+  '/debian-13': {
+    zh: 'Debian 13 专题：新特性、下载与支持周期',
+    en: 'The Debian 13 hub: new features, downloads, lifecycle',
+  },
   '/debian-14': {
     zh: '下一代 Debian（Forky）进展与预览',
     en: 'Progress and preview of next Debian (Forky)',
@@ -392,6 +397,7 @@ const SECTIONS: SectionSpec[] = [
     items: [
       { path: '/versions', icon: GitCompare },
       { path: '/eol', icon: Timer },
+      { path: '/debian-13', icon: Star },
       { path: '/debian-14', icon: GitFork },
       { path: '/news', icon: Newspaper },
       { path: '/variants', icon: Layers },

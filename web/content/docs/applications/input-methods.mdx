@@ -1,0 +1,75 @@
+---
+title: "中文输入法"
+description: "在 Debian 13 上配置中文输入法的完整指南：fcitx5 与 ibus 的选择、拼音安装步骤、Wayland 注意事项与常见问题。"
+---
+
+装好 Debian 之后的第一件事往往就是中文输入法。Debian 13 下有两条成熟路线：**fcitx5**（推荐 KDE 与通用桌面）和 **ibus**（GNOME 默认集成），都能提供拼音、五笔等输入方案。
+
+## 选择哪条路线
+
+| 场景 | 推荐 |
+|------|------|
+| GNOME 桌面 | **ibus**（GNOME 原生集成，开箱即用） |
+| KDE Plasma / Xfce / 其他桌面 | **fcitx5**（词库与体验更好） |
+| Wayland 会话 | GNOME 用 ibus；KDE Wayland 用 fcitx5 |
+
+不要同时启用两套框架，输入法冲突是"打不出中文"的最常见原因。
+
+## 方案一：fcitx5（推荐）
+
+安装核心包与拼音词库：
+
+```bash
+sudo apt update
+sudo apt install fcitx5 fcitx5-chinese-addons fcitx5-frontend-gtk3 fcitx5-frontend-gtk4 im-config
+```
+
+把 fcitx5 设为默认输入法框架：
+
+```bash
+im-config -n fcitx5
+```
+
+注销并重新登录后，fcitx5 会自动启动。按 **Ctrl+Space** 切换中英文，右下角托盘可切换拼音/五笔（五笔需另装 `fcitx5-table`）。在 fcitx5 配置工具（`fcitx5-configtool`）中可以添加词库、云拼音和快捷键。
+
+## 方案二：ibus（GNOME 用户）
+
+GNOME 用户无需安装 fcitx5，直接用系统设置：
+
+1. 打开 **设置 → 键盘 → 输入源**，点 **+** 添加输入源
+2. 选择 **汉语 (中国) → 智能拼音**（需先安装 `ibus-libpinyin`）：
+
+```bash
+sudo apt install ibus-libpinyin
+```
+
+3. 用 **Super+Space** 切换输入源
+
+## Wayland 注意事项
+
+- **GNOME Wayland**：ibus 原生工作，无需额外配置
+- **KDE Plasma Wayland**：fcitx5 通过 Plasma 的输入法集成工作；如果个别应用（主要是 XWayland 应用）无法输入，再设置环境变量：
+
+```bash
+# 写入 ~/.pam_environment 或桌面会话的环境变量文件
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+```
+
+- X11 会话下，fcitx5 同样需要上面三个环境变量（im-config 会自动写入）
+
+## 常见问题
+
+| 问题 | 优先检查 |
+|------|----------|
+| 完全打不出中文 | `im-config -m` 确认框架；是否注销重登；是否同时装了 ibus 和 fcitx5 |
+| 部分应用无法输入 | 缺对应前端包（GTK/Qt）；Wayland 下 XWayland 应用的环境变量 |
+| 候选词窗口不跟随 | Wayland 下的已知限制；优先使用原生会话输入法（GNOME 用 ibus） |
+| Ctrl+Space 无反应 | 检查 fcitx5 配置中的触发键，或与系统快捷键冲突 |
+
+## 下一步
+
+- [应用软件](/applications)：浏览器、办公与开发工具的安装建议
+- [系统配置](/basics/configuration)：网络、源与系统级设置
+- [软件包管理](/administration/packages)：apt 的进阶用法

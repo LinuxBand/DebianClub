@@ -1,0 +1,73 @@
+---
+title: "Changing APT Mirrors"
+description: "Switch Debian 13 to a faster APT mirror: deb822 .sources and the classic sources.list formats, a comparison of popular mirrors, the security line, and common errors."
+---
+
+Access to `deb.debian.org` can be slow depending on where you are; switching APT to a nearby mirror makes `apt update` an order of magnitude faster. Debian 13 uses the **deb822 format** (the installer writes `/etc/apt/sources.list.d/debian.sources` by default); the classic one-line-per-repo format (`/etc/apt/sources.list`) keeps working too. Pick one — don't mix both.
+
+## Popular mirrors
+
+| Mirror | URL |
+|--------|-----|
+| Debian official | `https://deb.debian.org/debian/` |
+| MIT (US) | `https://mirrors.mit.edu/debian/` |
+| Kernel.org (US) | `https://mirrors.kernel.org/debian/` |
+| University of Waikato (NZ) | `https://debian.netcology.nz/debian/` |
+
+Not sure which? Our [mirror picker](/en/tools#mirror) generates the configuration for your location automatically.
+
+<Callout type="warn" title="Don't forget the security line">
+
+A common mistake is switching the main repo while `trixie-security` still points at the official source. Replace the security line in the examples below together with the main repo.
+
+</Callout>
+
+## Option 1: deb822 format (Debian 13 default)
+
+Edit `/etc/apt/sources.list.d/debian.sources` (using the official source, MIT as an example):
+
+```text
+Types: deb
+URIs: https://mirrors.mit.edu/debian/
+Suites: trixie trixie-updates trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+```
+
+`Suites` should include `trixie`, `trixie-updates`, and **`trixie-security`**. Security updates ship from the `debian-security` suite; keep an eye on whether your mirror also carries it (major mirrors do, under the same domain).
+
+## Option 2: classic sources.list format
+
+Edit `/etc/apt/sources.list`:
+
+```text
+deb https://deb.debian.org/debian/ trixie main contrib non-free non-free-firmware
+deb https://deb.debian.org/debian/ trixie-updates main contrib non-free non-free-firmware
+deb https://deb.debian.org/debian-security trixie-security main contrib non-free non-free-firmware
+```
+
+Note the security line lives under `debian-security`, not `/debian/ trixie-security`. If both `/etc/apt/sources.list` and `/etc/apt/sources.list.d/debian.sources` exist, rename the unused one (e.g. add a `.bak` suffix) — otherwise the same packages get defined twice.
+
+## Apply and verify
+
+```bash
+sudo apt update
+apt policy firefox-esr | head -5
+```
+
+A clean `apt update` plus candidate versions pointing at the mirror means the switch worked. 404s during upgrade usually mean a typo in the suites or a mirror that hasn't finished syncing.
+
+## Common issues
+
+| Issue | Cause and fix |
+|-------|---------------|
+| `404 Not Found` | Mirror still syncing, or wrong suite (trixie, not bookworm) |
+| GPG signature errors | Wrong `Signed-By` path; Debian 13's keyring is `/usr/share/keyrings/debian-archive-keyring.gpg` |
+| Slower after switching | DNS-related; prefer a direct HTTPS mirror over HTTP proxies |
+| Need non-free software | Keep `contrib non-free non-free-firmware` in `Components` |
+
+## Next steps
+
+- [Mirror picker](/en/tools#mirror): generate either format for your location automatically
+- [Package management](/en/administration/packages): advanced apt and dpkg usage
+- [Configuration](/en/basics/configuration): system settings after the initial setup

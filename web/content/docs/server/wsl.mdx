@@ -1,0 +1,76 @@
+---
+title: "在 WSL2 上运行 Debian"
+description: "在 Windows 上通过 WSL2 运行 Debian 的完整指南：安装 Debian 发行版、启用 systemd、中文环境、WSLg 图形应用、VS Code Remote 与备份迁移。"
+---
+
+WSL（Windows Subsystem for Linux）让你在 Windows 上直接运行 Debian，无需虚拟机或双系统。WSL2 使用真正的 Linux 内核，配合 WSLg 还能直接运行图形应用。对需要在 Windows 办公的同时使用 Linux 工具链的开发者来说，这是最平滑的方案。
+
+## 安装 Debian
+
+以管理员身份打开 PowerShell，一条命令完成环境安装并部署 Debian（Debian 是 WSL 官方支持的发行版）：
+
+```powershell
+wsl --install -d Debian
+```
+
+可以用以下命令查看可安装的发行版列表：
+
+```powershell
+wsl --list --online
+```
+
+安装完成后首次启动会要求创建普通用户并设置密码（与 Windows 账户相互独立）。
+
+## 启用 systemd
+
+较新的 WSL 版本支持在 `/etc/wsl.conf` 中开启 systemd（很多服务与 `systemctl` 依赖它）：
+
+```text
+[boot]
+systemd=true
+```
+
+保存后在 PowerShell 中执行 `wsl --shutdown`，再重新进入 Debian 即可生效。
+
+## 中文环境
+
+- 安装中文字体与输入法：`sudo apt install fonts-noto-cjk fcitx5 fcitx5-chinese-addons`
+- 输入法的详细配置（含 WSL 下的环境变量）见[中文输入法](/applications/input-methods)
+- Windows Terminal 对中文显示良好，建议作为默认终端
+
+## 图形应用（WSLg）
+
+Windows 11 与 Windows 10 21H2+ 内置 WSLg：在 Debian 里 `apt install` 的图形程序（如 `firefox-esr`）会直接以 Windows 窗口运行，无需额外配置 X Server。
+
+## 与 Windows 互操作
+
+| 需求 | 做法 |
+|------|------|
+| 在 Debian 里访问 Windows 文件 | `/mnt/c`（各盘符自动挂载） |
+| 在 Windows 里访问 Debian 文件 | 资源管理器地址栏输入 `\\wsl$\Debian` |
+| VS Code 远程开发 | 安装 **WSL** 扩展后 `code .` 即可进入 Debian 环境 |
+| Docker | 使用 Docker Desktop 的 WSL2 后端，或在 Debian 内按 [Docker 教程](/server/docker) 安装 |
+
+## 备份与迁移
+
+WSL 发行版是一个可整体导出的容器文件：
+
+```powershell
+wsl --export Debian D:\backup\debian.tar
+wsl --import Debian2 D:\wsl\Debian2 D:\backup\debian.tar
+```
+
+导出的 tar 也可以在换机时恢复，建议在大幅改配置前先导出一份。
+
+## 局限与定位
+
+- WSL 不是独立系统：性能略低于原生，内核由微软维护，**不适合作为生产服务器**
+- 部分依赖 systemd 全量能力的场景受 WSL 的 systemd 支持程度限制
+- 需要完整 Linux 环境时，参考[下载](/download)安装原生 Debian，或在[虚拟机](/basics/virtual-machine)中体验
+
+## 下一步
+
+- [命令行基础](/basics/command-line)：从零熟悉 Linux 终端
+- [中文输入法](/applications/input-methods)：补全 WSL 里的中文体验
+- [Docker 安装](/server/docker)：在 Debian 里搭建容器环境
+- [开发工作站](/scenarios/development-workstation)：把 Debian 配置成主力开发环境

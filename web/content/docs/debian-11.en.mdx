@@ -1,0 +1,39 @@
+---
+title: "Debian 11 (Bullseye)"
+description: "Debian 11 (Bullseye) reached End-of-Life on 2026-08-31. Options for running systems: upgrade via 12 to 13, buy third-party ELTS, or isolate and decommission."
+---
+
+**Debian 11**, codename **Bullseye**, was released on **August 14, 2021**. Its **LTS support ended on August 31, 2026** — Debian no longer provides any security updates, so the release is at **End-of-Life**.
+
+<Callout type="error" title="EOL: act on running systems">
+
+Bullseye systems receive no security updates, and internet-exposed machines get riskier by the day. Three routes: **upgrade** through Debian 12 to 13, buy third-party **ELTS**, or isolate and decommission.
+
+</Callout>
+
+## 📌 Historical reference
+
+| Item | Info |
+|------|------|
+| **Release date** | 2021-08-14 |
+| **Last point release** | 11.11 (during LTS) |
+| **Kernel** | Linux 5.10 LTS series |
+| **Desktop** | GNOME 3.38 |
+| **LTS ended** | **2026-08-31** |
+| **ELTS** | Until 2031-06-30 (third-party commercial, subset of packages) |
+
+## 🔄 What to do with running Debian 11 systems
+
+1. **Preferred: step-wise upgrade** — Debian does not support skipping releases. The standard route is **11 → 12 → 13**, applying the [upgrade guide](/en/basics/upgrade) process at each step: fully update, switch sources, full-upgrade, reboot and verify. Back up `/etc` and your data first.
+2. **Can't upgrade: ELTS** — a subset of packages can get paid security updates until 2031-06-30 via third-party [Extended LTS](https://wiki.debian.org/LTS/Extended), for legacy systems that can't be reworked quickly.
+3. **Can't upgrade and not needed: isolate or decommission** — move off the public internet, restrict access, and plan replacement.
+
+Common upgrade pitfalls: third-party repositories (Docker, Node, etc.) need their bullseye → bookworm addresses updated per step; the `non-free-firmware` component exists from 12 onward, so migrate firmware packages into it after the upgrade.
+
+## 🔗 Related pages
+
+- [Debian 12 (Bookworm)](/en/debian-12)
+- [Debian 13 (Trixie)](/en/debian-13)
+- [Upgrade guide](/en/basics/upgrade)
+- [Release End-of-Life (EOL)](/en/eol)
+- [Extended LTS](https://wiki.debian.org/LTS/Extended)

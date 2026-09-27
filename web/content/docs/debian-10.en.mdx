@@ -1,0 +1,40 @@
+---
+title: "Debian 10 (Buster)"
+description: "Debian 10 (Buster) left LTS on 2024-06-30 and only third-party ELTS remains (until 2029-06-30). Step-wise migration route 10→11→12→13 and practical advice."
+---
+
+**Debian 10**, codename **Buster**, was released on **July 6, 2019**. Its **LTS support ended on June 30, 2024**, and skipping releases is not supported — systems still on 10 should migrate step-wise via **10 → 11 → 12 → 13**, or evaluate third-party **ELTS** (until 2029-06-30).
+
+<Callout type="error" title="Double EOL: migrate soon">
+
+Debian 10 has had no official security updates for years, and its kernel and toolchain are far behind the current stable. Unless regulation forces you to keep it, prefer a fresh [Debian 13](/en/debian-13) install or the step-wise upgrade route.
+
+</Callout>
+
+## 📌 Historical reference
+
+| Item | Info |
+|------|------|
+| **Release date** | 2019-07-06 |
+| **Kernel** | Linux 4.19 LTS series |
+| **Desktop** | GNOME 3.30 |
+| **LTS ended** | **2024-06-30** |
+| **ELTS** | Until 2029-06-30 (third-party commercial, subset of packages) |
+
+## 🔄 Migration route
+
+Debian does not support skipping releases — from 10 you must go step by step:
+
+1. **10 → 11 (Bullseye)**: fully update, switch sources from `buster` to `bullseye`, `apt full-upgrade`, reboot and verify
+2. **11 → 12 (Bookworm)**: repeat the process, updating third-party repository addresses
+3. **12 → 13 (Trixie)**: the final switch — see the [upgrade guide](/en/basics/upgrade)
+
+Back up `/etc` and your data at every step and confirm services before moving on. For old hardware with rebuildable data, **a fresh Debian 13 install is usually faster and safer than three upgrades**.
+
+## 🔗 Related pages
+
+- [Debian 11 (Bullseye)](/en/debian-11)
+- [Debian 12 (Bookworm)](/en/debian-12)
+- [Debian 13 (Trixie)](/en/debian-13)
+- [Upgrade guide](/en/basics/upgrade)
+- [Release End-of-Life (EOL)](/en/eol)

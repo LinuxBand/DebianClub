@@ -1,0 +1,39 @@
+---
+title: "Debian 11 (Bullseye)"
+description: "Debian 11（Bullseye）专题：LTS 已于 2026-08-31 结束，当前处于 EOL 状态。仍在运行 Bullseye 的系统如何处置：升级、ELTS 或下线。"
+---
+
+**Debian 11** 代号 **Bullseye**，于 **2021 年 8 月 14 日** 发布。其 **LTS 支持已于 2026 年 8 月 31 日结束**，Debian 不再提供任何安全更新——当前处于 **EOL（生命周期终止）** 状态。
+
+<Callout type="error" title="EOL：仍在运行请立即处置">
+
+仍在运行 Debian 11 的系统已无安全更新，暴露在公网的机器风险持续上升。三条路线：**升级**到 Debian 12/13、购买第三方 **ELTS** 延长支持，或隔离后下线。
+
+</Callout>
+
+## 📌 历史信息速览
+
+| 项目 | 信息 |
+|------|------|
+| **发布日期** | 2021-08-14 |
+| **最后点更新** | 11.11（LTS 期内） |
+| **内核** | Linux 5.10 LTS 系列 |
+| **桌面** | GNOME 3.38 |
+| **LTS 结束** | **2026-08-31**（已结束） |
+| **ELTS** | 至 2031-06-30（第三方商业支持，部分包） |
+
+## 🔄 如何处置仍在运行的 Debian 11
+
+1. **首选：逐级升级** — Debian 不支持跨版本直接升级，标准路线是 **11 → 12 → 13**，每一步都按[升级指南](/basics/upgrade)的流程执行：完全更新 → 切源 → full-upgrade → 重启验证。升级前备份 `/etc` 与数据。
+2. **无法升级：ELTS** — 部分包可通过第三方 [Extended LTS](https://wiki.debian.org/LTS/Extended) 获得到 2031-06-30 的付费安全更新，适合短期内无法改造的遗留系统。
+3. **无法升级也无需保留：隔离或下线** — 移出公网、限制内网访问，并规划替换。
+
+升级时的常见坑：跨版本后部分第三方源（Docker、Node 等）需要重新对应 bullseye → bookworm 的仓库地址；`non-free-firmware` 组件从 12 开始存在，升级后建议把固件包迁移到该组件。
+
+## 🔗 相关页面
+
+- [Debian 12 (Bookworm)](/debian-12)
+- [Debian 13 (Trixie)](/debian-13)
+- [系统升级指南](/basics/upgrade)
+- [版本支持周期 (EOL)](/eol)
+- [Extended LTS](https://wiki.debian.org/LTS/Extended)

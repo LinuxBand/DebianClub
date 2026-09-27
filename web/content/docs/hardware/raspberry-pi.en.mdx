@@ -1,0 +1,51 @@
+---
+title: "Debian on Raspberry Pi"
+description: "Run native Debian on a Raspberry Pi: how it relates to Raspberry Pi OS, where the Trixie arm64 images come from, writing the SD card, and first-boot setup."
+---
+
+A Raspberry Pi 4/5 is a 64-bit ARM (arm64) device and runs **native Debian** perfectly well — not just Raspberry Pi OS. This page covers how the two relate, where the images come from, and what to do on first boot.
+
+## Debian vs Raspberry Pi OS
+
+**Raspberry Pi OS** is a derivative of Debian that adds Pi-specific firmware, presets, and desktop tuning. Package structure is nearly identical:
+
+- Want the "works-out-of-the-box Pi ecosystem" (auto firmware, desktop polish) → use Raspberry Pi OS, see the [variant introduction](/en/variants/raspberry-pi-os)
+- Want a **pure Debian environment** (identical behavior to your x86 servers, great for learning and migration) → follow this page to install native Debian
+
+## Where the images come from
+
+The official Debian installer doesn't target the Pi's boot flow; the community-maintained [raspi.debian.net](https://raspi.debian.net/) publishes prebuilt Debian arm64 Pi images, including Trixie/13 daily builds. When downloading:
+
+- Pick the image matching your board (arm64 for Pi 4/5)
+- Each image page lists SHA256 checksums — verify before writing
+
+## Writing the SD card
+
+Use a 16GB+ SD card and write with balenaEtcher or `dd`:
+
+```bash
+# assuming the image is downloaded and verified; sdX is your SD device (confirm with lsblk!)
+xzcat debian-13-raspi-arm64.img.xz | sudo dd of=/dev/sdX bs=4M status=progress
+sync
+```
+
+## First boot
+
+1. Insert the card, attach a display and keyboard (or enable SSH via the boot partition — see the image page notes)
+2. Immediately after first login: change default credentials, create a normal user, run `sudo apt update && sudo apt full-upgrade`
+3. Install firmware packages as needed (Wi-Fi usually needs `firmware-*` packages from the `non-free-firmware` component)
+
+From here the system behaves exactly like Debian on x86: see [Applications](/en/applications) for software picks and [Security](/en/administration/security) for hardening.
+
+## When to choose Raspberry Pi OS instead
+
+- You need the full GPU-accelerated desktop, camera modules, or HAT ecosystem
+- You want to follow the Pi Foundation's kernel and firmware cadence
+- Raspberry Pi OS is Debian-based too, so package management is identical — switching later costs nothing
+
+## Related pages
+
+- [Raspberry Pi OS variant](/en/variants/raspberry-pi-os)
+- [Hardware & Drivers](/en/hardware)
+- [Home Server scenario](/en/scenarios/home-server): what to run afterwards
+- [CPU Architectures](/en/hardware/architectures): where arm64 fits in Debian

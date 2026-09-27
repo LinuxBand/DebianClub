@@ -1,0 +1,73 @@
+---
+title: "Debian 12 (Bookworm)"
+description: "The Debian 12 (Bookworm) page: 12.15 status, LTS support until 2028, differences from Debian 13, the upgrade path, and downloads. Start here if you still run Bookworm."
+---
+
+**Debian 12**, codename **Bookworm**, was released on **June 10, 2023**. Its regular security support ended in July 2026 and the release is now in the **LTS** phase, maintained by the Debian LTS team until **June 30, 2028**.
+
+<Callout type="info" title="12 or 13?">
+
+Existing Debian 12 systems keep receiving LTS security updates, but **new installs should use [Debian 13 (Trixie)](/en/debian-13)**; plan an upgrade for current machines using the [upgrade guide](/en/basics/upgrade).
+
+</Callout>
+
+## 📌 Status at a glance
+
+| Item | Info |
+|------|------|
+| **Release date** | 2023-06-10 |
+| **Current point release** | 12.15 (2026-07-11, the last regular point release) |
+| **Kernel** | Linux 6.1 LTS series |
+| **Desktop** | GNOME 43 |
+| **Regular security support** | Ended 2026-07-12 |
+| **LTS support** | Until **2028-06-30** (amd64, i386, arm64, armhf, ppc64el) |
+| **ELTS** | Until 2033-06-30 (third-party commercial) |
+| **Recommendation** | Plan an upgrade to [Debian 13](/en/debian-13) |
+
+## 🔍 Key differences from Debian 13
+
+- **Kernel**: 6.1 LTS (13 ships 6.12 LTS)
+- **Desktop**: GNOME 43, KDE Plasma 5.27 (13 ships GNOME 48, Plasma 6.3, with Wayland as default)
+- **Toolchain**: Python 3.11, GCC 12 (13 ships Python 3.13, GCC 14)
+- **Repositories**: 12 already uses deb822 and the `non-free-firmware` component, so the source layout barely changes when upgrading to 13
+- Full component comparison: the table in [Versions & Lifecycle](/en/versions)
+
+## 💾 Downloads
+
+Debian 12.15 installer images remain available on the official cdimage server — useful for reproducing older environments or deploying on hardware outside 13's installer coverage:
+
+- [Debian 12.15 download (official cdimage)](https://cdimage.debian.org/cdimage/release/12.15.0/)
+- General download entry: [Download](/en/download)
+
+## 🔄 Upgrading to Debian 13
+
+Every LTS security update flows into the 12 repositories; the standard route to 13:
+
+1. Fully update the current system and back up `/etc` plus your data
+2. Switch sources from `bookworm` to `trixie` (including the security line)
+3. `sudo apt update && sudo apt full-upgrade`
+4. Reboot and clean up
+
+Full steps and caveats: the [upgrade guide](/en/basics/upgrade).
+
+## 🛡️ Life in the LTS phase
+
+- LTS does not cover every package — verify critical dependencies on the [LTS page](https://wiki.debian.org/LTS)
+- High-frequency apps like browsers still get updates, but the overall pace is slower
+- Treat LTS start as an upgrade countdown for anything exposed to the internet
+
+## ❓ FAQ
+
+| Question | Answer |
+|----------|--------|
+| How long can I keep using Debian 12? | LTS runs until **2028-06-30**; afterwards you need third-party ELTS or an upgrade |
+| Should I still install 12 fresh? | No — install [Debian 13](/en/debian-13) |
+| How do I upgrade 12 to 13? | Follow the [upgrade guide](/en/basics/upgrade): update, switch sources, full-upgrade |
+| Is daily usage very different from 13? | Desktop and toolchains are noticeably newer on 13, but workflows are identical |
+
+## 🔗 Related pages
+
+- [Debian 13 (Trixie)](/en/debian-13)
+- [Upgrade guide](/en/basics/upgrade)
+- [Release End-of-Life (EOL)](/en/eol)
+- [Debian LTS](https://wiki.debian.org/LTS)

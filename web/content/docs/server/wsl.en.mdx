@@ -1,0 +1,76 @@
+---
+title: "Debian on WSL2"
+description: "Run Debian on Windows with WSL2: install the Debian distro, enable systemd, set up Chinese input, WSLg graphical apps, VS Code Remote, and backup/migration."
+---
+
+WSL (Windows Subsystem for Linux) lets you run Debian directly on Windows without a VM or dual boot. WSL2 uses a real Linux kernel, and with WSLg you can run graphical apps natively. For developers who need Linux tooling on a Windows workstation, this is the smoothest option.
+
+## Installing Debian
+
+Open PowerShell as administrator and run a single command — Debian is an officially supported WSL distro:
+
+```powershell
+wsl --install -d Debian
+```
+
+List the available distros with:
+
+```powershell
+wsl --list --online
+```
+
+The first launch asks you to create a normal user and password, independent of your Windows account.
+
+## Enabling systemd
+
+Recent WSL releases support systemd via `/etc/wsl.conf` (many services and `systemctl` depend on it):
+
+```text
+[boot]
+systemd=true
+```
+
+Run `wsl --shutdown` in PowerShell, then re-enter Debian for it to take effect.
+
+## Chinese input
+
+- Install fonts and an input framework: `sudo apt install fonts-noto-cjk fcitx5 fcitx5-chinese-addons`
+- Full setup (including WSL environment variables) is covered in [Chinese Input Methods](/en/applications/input-methods)
+- Windows Terminal handles CJK display well and makes a good default terminal
+
+## Graphical apps (WSLg)
+
+Windows 11 and Windows 10 21H2+ include WSLg: graphical programs installed via `apt` (e.g. `firefox-esr`) open as native Windows windows with no X server setup.
+
+## Windows interop
+
+| Goal | How |
+|------|-----|
+| Access Windows files from Debian | `/mnt/c` (drives mount automatically) |
+| Access Debian files from Windows | `\\wsl$\Debian` in Explorer |
+| VS Code remote development | Install the **WSL** extension, then `code .` inside Debian |
+| Docker | Docker Desktop's WSL2 backend, or install inside Debian per the [Docker guide](/en/server/docker) |
+
+## Backup and migration
+
+A WSL distro is a single exportable container:
+
+```powershell
+wsl --export Debian D:\backup\debian.tar
+wsl --import Debian2 D:\wsl\Debian2 D:\backup\debian.tar
+```
+
+Use the tar to restore on a new machine, and export a fresh copy before major configuration changes.
+
+## Limits and positioning
+
+- WSL is not a standalone system: performance is slightly below native, the kernel is maintained by Microsoft, and it is **not suitable as a production server**
+- Some systemd-heavy scenarios remain limited by WSL's systemd support
+- For a full Linux environment, [install](/en/download) native Debian or try it in a [virtual machine](/en/basics/virtual-machine)
+
+## Next steps
+
+- [Command-line basics](/en/basics/command-line): get comfortable with the terminal
+- [Chinese Input Methods](/en/applications/input-methods): complete the CJK experience in WSL
+- [Install Docker](/en/server/docker): build a container environment inside Debian
+- [Development Workstation](/en/scenarios/development-workstation): turn Debian into your daily dev machine

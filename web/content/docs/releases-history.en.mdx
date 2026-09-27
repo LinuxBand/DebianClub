@@ -1,0 +1,61 @@
+---
+title: "Debian Release History & Upgrade Paths"
+description: "Debian release timeline from 10 Buster to 14 Forky, the support-window pattern, and the step-wise upgrade route between versions. Know where your system stands and where to go next."
+---
+
+Debian names releases after Toy Story characters and ships a new stable roughly every two years. This page puts the recent release timeline, support windows, and upgrade routes in one place, so you can tell where your system stands and where to go next.
+
+## Release timeline
+
+| Release | Codename | Released | Kernel | Status |
+|---------|----------|----------|--------|--------|
+| Debian 14 | Forky | Not released (expected ~2027) | — | In [testing](/en/debian-14) |
+| **Debian 13** | Trixie | **2025-08-09** | 6.12 LTS | **Current stable** ✓ |
+| Debian 12 | Bookworm | 2023-06-10 | 6.1 LTS | [LTS until 2028-06-30](/en/debian-12) |
+| Debian 11 | Bullseye | 2021-08-14 | 5.10 LTS | [EOL (2026-08-31)](/en/debian-11) |
+| Debian 10 | Buster | 2019-07-06 | 4.19 LTS | [EOL (2024-06-30)](/en/debian-10) |
+
+Older releases (9 Stretch and before) are past official support; a few packages remain available via third-party ELTS.
+
+## Upgrade route: one step at a time
+
+Debian does **not** support skipping releases. The standard route always moves between adjacent versions:
+
+```text
+10 (Buster) → 11 (Bullseye) → 12 (Bookworm) → 13 (Trixie) → 14 (Forky, after release)
+```
+
+The generic process for every step (full commands in the [upgrade guide](/en/basics/upgrade)):
+
+1. Fully update the current release; back up `/etc` and your data
+2. Switch the codename in your sources to the target version (including security)
+3. `apt update && apt full-upgrade`, resolving config-file prompts
+4. Reboot, verify services and hardware, then continue to the next step
+
+Jumping two or more releases in one source edit almost always leaves dependency debris — for old systems like Debian 10, a fresh install is usually faster and safer.
+
+## The support-window pattern
+
+Every stable release follows the same lifecycle (exact dates on the [EOL page](/en/eol)):
+
+1. **stable**: full security-team maintenance after release, with rolling point updates
+2. **oldstable + regular security**: about one year after the next release ships
+3. **LTS**: the LTS team takes over for roughly three years, covering five architectures
+4. **EOL**: official support ends; only third-party ELTS remains
+
+Using Debian 12 as the example: released 2023-06-10 → regular security ended 2026-07 → LTS until 2028-06-30. The matching dates for Debian 13 are 2028-08 and 2030-06-30.
+
+## Where each release stands now
+
+- **13 (Trixie)**: current stable — [13.7 released](/en/news); 13.8 planned for 2026-11-14
+- **12 (Bookworm)**: LTS phase — see the [Debian 12 page](/en/debian-12)
+- **11 (Bullseye)**: EOL — see the [Debian 11 page](/en/debian-11) for migration options
+- **10 (Buster)**: EOL — see the [Debian 10 page](/en/debian-10) for the step-wise route
+- **14 (Forky)**: in testing — tracked on the [preview page](/en/debian-14)
+
+## Related pages
+
+- [Versions & Lifecycle](/en/versions): which release to choose
+- [Release End-of-Life (EOL)](/en/eol): date quick reference
+- [Upgrade guide](/en/basics/upgrade): upgrade commands in detail
+- [Debian 14 (Forky)](/en/debian-14): next-generation preview

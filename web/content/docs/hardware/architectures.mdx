@@ -1,0 +1,50 @@
+---
+title: "Debian 支持的 CPU 架构"
+description: "Debian 13 官方支持的 8 种 CPU 架构总览：amd64、arm64、armel、armhf、i386、ppc64el、riscv64、s390x，以及 LoongArch 移植状态与查看本机架构的方法。"
+---
+
+Debian 13（Trixie）官方支持 **8 种 CPU 架构**（数据来自官方归档的 Release 索引），覆盖从嵌入式开发板到大型机的硬件。选下载镜像或确认自己的系统属于哪种架构时，这一页可以当速查表用。
+
+## 官方架构一览
+
+| 架构 | 全称 | 典型硬件 |
+|------|------|----------|
+| **amd64** | 64 位 x86（x86-64） | 绝大多数 Intel/AMD 台式机、笔记本、服务器 |
+| **arm64** | 64 位 ARM | 树莓派 4/5、Apple Silicon 虚拟机、Ampere 等 ARM 服务器 |
+| **armhf** | 32 位 ARM（硬浮点） | 较老的 ARM 开发板与设备 |
+| **armel** | 32 位 ARM（软浮点，EABI） | 更老旧的嵌入式 ARM 设备 |
+| **i386** | 32 位 x86 | 远古 PC 与特定遗留场景 |
+| **ppc64el** | 64 位小端 POWER | IBM POWER 服务器 |
+| **riscv64** | 64 位 RISC-V | VisionFine 2 等新兴 RISC-V 开发板（Debian 13 首次官方支持） |
+| **s390x** | IBM Z 大型机 | z Systems 大型机环境 |
+
+> Trixie 的重要变化：除 i386 外，所有架构都改用 **64 位 time_t ABI**，解决了 2038 年时间溢出问题；同时 **mips64el 架构在本代被移除**。
+
+## ARM 家族：arm64、armhf、armel 怎么区分
+
+- **arm64**（AArch64）：64 位 ARM，树莓派 4/5、主流 ARM 开发板与服务器的首选
+- **armhf**：32 位 ARM + 硬件浮点，常见于树莓派早期型号与老款开发板
+- **armel**：32 位 ARM + 软浮点，面向更老旧的嵌入式设备，日常用户几乎不会接触
+
+## riscv64：Debian 13 首次官方支持
+
+RISC-V 是开源指令集架构，VisionFive 2 等开发板已能运行官方 Debian 13。这是继 12 为 riscv64 打好基础后，Debian 首次将其纳入正式发布架构。
+
+## LoongArch（龙芯）现状
+
+龙芯的 **loong64** 架构目前**不在官方发布架构中**，处于 [debian-ports](https://www.debian.org/ports/) 的非官方移植阶段（部分软件可用，状态以官方页面为准）。龙芯设备用户通常使用厂商提供的 Loongnix 等衍生系统，或关注 loong64 移植的进展。
+
+## 查看本机架构
+
+```bash
+dpkg --print-architecture
+uname -m
+```
+
+`uname -m` 输出与 Debian 架构的对应关系：`x86_64` → amd64，`aarch64` → arm64，`riscv64` → riscv64，`loongarch64` → loong64，`armv7l` → armhf。
+
+## 相关页面
+
+- [硬件与驱动](/hardware)：NVIDIA、Wi-Fi、蓝牙等驱动指南
+- [版本与生命周期](/versions)
+- [Debian 14 (Forky)](/debian-14)：下一代变化

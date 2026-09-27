@@ -19,6 +19,7 @@ import {
   GitBranch,
   GitCompare,
   GitFork,
+  History,
   HardDrive,
   HardDriveDownload,
   House,
@@ -277,6 +278,10 @@ const DESCRIPTIONS: Descriptions = {
     zh: '各版本支持周期与 EOL 日期速查',
     en: 'Support windows and EOL dates at a glance',
   },
+  '/debian-12': {
+    zh: 'Debian 12 专页：LTS 至 2028 与升级路线',
+    en: 'Debian 12 page: LTS until 2028 and upgrade path',
+  },
   '/debian-13': {
     zh: 'Debian 13 专题：新特性、下载与支持周期',
     en: 'The Debian 13 hub: new features, downloads, lifecycle',
@@ -398,6 +403,7 @@ const SECTIONS: SectionSpec[] = [
       { path: '/versions', icon: GitCompare },
       { path: '/eol', icon: Timer },
       { path: '/debian-13', icon: Star },
+      { path: '/debian-12', icon: History },
       { path: '/debian-14', icon: GitFork },
       { path: '/news', icon: Newspaper },
       { path: '/variants', icon: Layers },

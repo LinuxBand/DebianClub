@@ -1,0 +1,51 @@
+---
+title: "在树莓派上安装 Debian"
+description: "在树莓派上运行原生 Debian 的指南：Debian 与 Raspberry Pi OS 的关系、Trixie 官方 arm64 镜像来源、写入 SD 卡与首次启动配置。"
+---
+
+树莓派 4/5 是 64 位 ARM（arm64）设备，完全可以运行**原生 Debian**——不只是基于 Debian 的 Raspberry Pi OS。本页说明两者关系、镜像从哪来、以及首次启动要做的事。
+
+## Debian 与 Raspberry Pi OS 的关系
+
+**Raspberry Pi OS** 是在 Debian 基础上加入树莓派专有固件、预配置和桌面调优的衍生系统。两者包结构高度一致：
+
+- 想要"开箱即用的树莓派生态"（自动固件、NOOBS 式体验）→ 选 Raspberry Pi OS，见 [变体发行版介绍](/variants/raspberry-pi-os)
+- 想要**纯 Debian 环境**（与 x86 服务器行为一致、便于学习与迁移）→ 按本页安装原生 Debian
+
+## 镜像从哪来
+
+Debian 官方安装器不直接支持树莓派的启动方式，社区维护的 [raspi.debian.net](https://raspi.debian.net/) 提供预构建的 Debian arm64 树莓派镜像（含 Trixie/13 的每日构建），这是事实上的官方推荐来源。下载时注意：
+
+- 选择与你的树莓派型号匹配的镜像（RPi 4/5 用 arm64）
+- 每个镜像页面附有 SHA256 校验值，写入前先校验
+
+## 写入 SD 卡
+
+准备好 16GB 以上的 SD 卡，用 balenaEtcher 或 `dd` 写入：
+
+```bash
+# 假设镜像已下载并校验，sdX 为你的 SD 卡设备（用 lsblk 确认，小心选错盘）
+xzcat debian-13-raspi-arm64.img.xz | sudo dd of=/dev/sdX bs=4M status=progress
+sync
+```
+
+## 首次启动
+
+1. 插卡、接显示器与键盘（或提前在启动分区放好配置启用 SSH，具体以 raspi.debian.net 镜像页说明为准）
+2. 首次登录后**立即**：修改默认凭据、创建普通用户、执行 `sudo apt update && sudo apt full-upgrade`
+3. 按需安装固件包（如 Wi-Fi 所需的 `firmware-*` 包，来自 `non-free-firmware` 组件）
+
+之后的系统管理与 x86 上的 Debian 完全一致：软件装 [应用软件](/applications)，安全配置看 [安全管理](/administration/security)。
+
+## 什么时候选 Raspberry Pi OS
+
+- 需要 GPU 加速桌面、摄像头模块或 HAT 扩展板的完整生态
+- 跟随树莓派官方内核与固件更新节奏
+- 此时 Raspberry Pi OS（Debian 系）与原生 Debian 包管理完全一致，切换成本为零
+
+## 相关页面
+
+- [Raspberry Pi OS 变体介绍](/variants/raspberry-pi-os)
+- [硬件与驱动](/hardware)
+- [家用服务器场景](/scenarios/home-server)：装好后的玩法
+- [CPU 架构总览](/hardware/architectures)：arm64 在 Debian 的位置

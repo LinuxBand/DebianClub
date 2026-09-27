@@ -1,0 +1,50 @@
+---
+title: "Debian CPU Architectures"
+description: "The 8 CPU architectures officially supported by Debian 13: amd64, arm64, armel, armhf, i386, ppc64el, riscv64, s390x — plus LoongArch port status and how to check your own architecture."
+---
+
+Debian 13 (Trixie) officially supports **8 CPU architectures** (per the official archive Release index), spanning everything from hobby boards to mainframes. Use this page as a quick reference when choosing a download image or identifying your system.
+
+## Official architectures
+
+| Architecture | Full name | Typical hardware |
+|--------------|-----------|------------------|
+| **amd64** | 64-bit x86 (x86-64) | Most Intel/AMD desktops, laptops, servers |
+| **arm64** | 64-bit ARM | Raspberry Pi 4/5, Apple Silicon VMs, Ampere ARM servers |
+| **armhf** | 32-bit ARM (hard-float) | Older ARM boards and devices |
+| **armel** | 32-bit ARM (soft-float, EABI) | Even older embedded ARM devices |
+| **i386** | 32-bit x86 | Legacy PCs and niche scenarios |
+| **ppc64el** | 64-bit little-endian POWER | IBM POWER servers |
+| **riscv64** | 64-bit RISC-V | Emerging RISC-V boards like VisionFive 2 (first official support in Debian 13) |
+| **s390x** | IBM Z mainframe | z Systems environments |
+
+> Notable Trixie changes: every architecture except i386 now uses the **64-bit time_t ABI**, solving the 2038 problem; and the **mips64el architecture was dropped** in this release.
+
+## The ARM family: arm64 vs armhf vs armel
+
+- **arm64** (AArch64): 64-bit ARM — the choice for Raspberry Pi 4/5, modern boards, and ARM servers
+- **armhf**: 32-bit ARM with hard-float — early Raspberry Pi models and older boards
+- **armel**: 32-bit ARM with soft-float — very old embedded devices, rarely relevant today
+
+## riscv64: first official support in Debian 13
+
+RISC-V is an open instruction set architecture; boards like the VisionFive 2 run official Debian 13 images. Debian 12 laid the groundwork, and 13 is the first release with riscv64 as an official architecture.
+
+## LoongArch status
+
+Loongson's **loong64** architecture is **not part of the official release**; it exists as an in-progress port on [debian-ports](https://www.debian.org/ports/) (partially usable — check the official page for current status). Loongson devices typically ship vendor systems such as Loongnix, or track the loong64 port's progress.
+
+## Check your own architecture
+
+```bash
+dpkg --print-architecture
+uname -m
+```
+
+Mapping from `uname -m`: `x86_64` → amd64, `aarch64` → arm64, `riscv64` → riscv64, `loongarch64` → loong64, `armv7l` → armhf.
+
+## Related pages
+
+- [Hardware & Drivers](/en/hardware): NVIDIA, Wi-Fi, and Bluetooth guides
+- [Versions & Lifecycle](/en/versions)
+- [Debian 14 (Forky)](/en/debian-14): what changes next

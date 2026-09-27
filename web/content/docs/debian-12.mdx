@@ -1,0 +1,73 @@
+---
+title: "Debian 12 (Bookworm)"
+description: "Debian 12（Bookworm）专题：12.15 现状、LTS 支持到 2028、与 Debian 13 的对比、升级路线与下载。仍在使用 Bookworm 的用户从这里开始。"
+---
+
+**Debian 12** 代号 **Bookworm**，于 **2023 年 6 月 10 日** 发布。常规安全支持已于 2026 年 7 月结束，目前处于 **LTS（长期支持）**阶段，由 Debian LTS 团队维护到 **2028 年 6 月 30 日**。
+
+<Callout type="info" title="12 还是 13？">
+
+仍在运行 12 的系统可以继续获得 LTS 安全更新，但**新装系统请选择 [Debian 13 (Trixie)](/debian-13)**；现有 12 的机器建议按[升级指南](/basics/upgrade)规划升级。
+
+</Callout>
+
+## 📌 状态速览
+
+| 项目 | 信息 |
+|------|------|
+| **发布日期** | 2023-06-10 |
+| **当前点更新** | 12.15（2026-07-11，常规期最后一个点更新） |
+| **内核** | Linux 6.1 LTS 系列 |
+| **桌面** | GNOME 43 |
+| **常规安全支持** | 已于 2026-07-12 结束 |
+| **LTS 支持** | 至 **2028-06-30**（amd64、i386、arm64、armhf、ppc64el） |
+| **ELTS** | 至 2033-06-30（第三方商业支持） |
+| **升级建议** | 规划升级到 [Debian 13](/debian-13) |
+
+## 🔍 与 Debian 13 的主要差异
+
+- **内核**：6.1 LTS（13 为 6.12 LTS）
+- **桌面**：GNOME 43、KDE Plasma 5.27（13 为 GNOME 48、Plasma 6.3，Wayland 默认化）
+- **工具链**：Python 3.11、GCC 12（13 为 Python 3.13、GCC 14）
+- **软件源**：12 已使用 deb822 格式与 `non-free-firmware` 组件，升级到 13 时源结构变化不大
+- 完整对照见 [版本与生命周期](/versions) 的核心组件表
+
+## 💾 下载
+
+Debian 12.15 安装镜像仍可在官方 cdimage 获取，适合需要复现旧环境或为新硬件之外的老设备做部署的场景：
+
+- [Debian 12.15 下载（官方 cdimage）](https://cdimage.debian.org/cdimage/release/12.15.0/)
+- 通用下载入口见[系统下载](/download)
+
+## 🔄 升级到 Debian 13
+
+LTS 阶段的每个安全更新都会同步进入 12 的仓库；升级到 13 的标准路线：
+
+1. 完全更新当前系统并备份 `/etc` 与数据
+2. 将软件源从 `bookworm` 切换为 `trixie`（含 security 源）
+3. `sudo apt update && sudo apt full-upgrade`
+4. 重启后清理残留
+
+完整步骤与注意事项见[系统升级指南](/basics/upgrade)。
+
+## 🛡️ LTS 阶段注意事项
+
+- LTS 覆盖范围不包含所有包，关键依赖先在 [LTS 页面](https://wiki.debian.org/LTS)确认
+- 桌面浏览器等高频应用仍会更新，但整体节奏明显放缓
+- 公网服务把 LTS 开始视为升级倒计时，而不是长期停留的理由
+
+## ❓ 常见问题
+
+| 问题 | 回答 |
+|------|------|
+| Debian 12 还能用多久？ | LTS 支持到 **2028-06-30**；之后需要第三方 ELTS 或升级 |
+| 现在还应该新装 12 吗？ | 不建议。新装选 [Debian 13](/debian-13) |
+| 12 怎么升级到 13？ | 参考[升级指南](/basics/upgrade)，先更新、再切源、最后 full-upgrade |
+| 12 和 13 日常使用差别大吗？ | 桌面与工具链有明显更新，但操作习惯完全一致 |
+
+## 🔗 相关页面
+
+- [Debian 13 (Trixie)](/debian-13)
+- [系统升级指南](/basics/upgrade)
+- [版本支持周期 (EOL)](/eol)
+- [Debian LTS](https://wiki.debian.org/LTS)

@@ -1,6 +1,14 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
+@import './home.css';
+
+/* Landing-page type: display face for headlines, mono for terminal details.
+   The font variables are set on <html> in app/[[...segments]]/layout.tsx. */
+@theme inline {
+  --font-display: var(--font-bricolage), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-code: var(--font-jetbrains), ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+}
 
 /* Debian.Club brand — primary = Debian red */
 :root {

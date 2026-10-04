@@ -71,9 +71,9 @@ const en: LandingStrings = {
 const zh: LandingStrings = {
   tagline: '从零开始学习 Debian 13 · 最稳定的 Linux 发行版',
   actions: [
-    { label: '🚀 开始学习', href: '/basics/introduction', primary: true },
-    { label: '📥 系统下载', href: '/download' },
-    { label: '📖 查看教程', href: '/basics/installation' },
+    { label: '开始学习', href: '/basics/introduction', primary: true },
+    { label: '系统下载', href: '/download' },
+    { label: '查看教程', href: '/basics/installation' },
   ],
   features: [
     { title: '完全免费', detail: '所有内容完全免费，无需注册，随时访问学习。' },
@@ -120,7 +120,7 @@ const zh: LandingStrings = {
   ],
   tryTitle: '快速体验 Debian',
   tryText: '用虚拟机安装、Live USB 体验、双系统安装，或完整替换。',
-  ctaLabel: '🔗 更多优质站点 → 友情链接',
+  ctaLabel: '更多优质站点 → 友情链接',
   ctaHref: '/links',
 };
 
@@ -148,7 +148,7 @@ const de: LandingStrings = {
   ],
   "tryTitle": "Debian schnell ausprobieren",
   "tryText": "Führen Sie es in einer virtuellen Maschine aus, von einem Live-USB-Stick, im Dual-Boot oder voll und ganz.",
-  "ctaLabel": "🔗 Weitere hochwertige Seiten → Partnerlinks",
+  "ctaLabel": "Weitere hochwertige Seiten → Partnerlinks",
   "ctaHref": "/links"
 };
 
@@ -176,7 +176,7 @@ const es: LandingStrings = {
   ],
   "tryTitle": "Prueba Debian rápidamente",
   "tryText": "Ejecútalo en una máquina virtual, desde un USB en vivo, en arranque dual o lánzate de lleno.",
-  "ctaLabel": "🔗 Más sitios de calidad → Enlaces amigos",
+  "ctaLabel": "Más sitios de calidad → Enlaces amigos",
   "ctaHref": "/links"
 };
 
@@ -204,7 +204,7 @@ const fr: LandingStrings = {
   ],
   "tryTitle": "Essayer Debian rapidement",
   "tryText": "Lancez-le dans une machine virtuelle, depuis une clé USB live, en dual-boot, ou foncez à fond.",
-  "ctaLabel": "🔗 Plus de sites de qualité → Liens amis",
+  "ctaLabel": "Plus de sites de qualité → Liens amis",
   "ctaHref": "/links"
 };
 
@@ -232,7 +232,7 @@ const ja: LandingStrings = {
   ],
   "tryTitle": "手軽にDebianを試す",
   "tryText": "仮想マシン、ライブUSB、デュアルブートで実行したり、思い切って全面導入したりできます。",
-  "ctaLabel": "🔗 その他の優良サイト → 友情リンク",
+  "ctaLabel": "その他の優良サイト → 友情リンク",
   "ctaHref": "/links"
 };
 
@@ -260,7 +260,7 @@ const ko: LandingStrings = {
   ],
   "tryTitle": "Debian 빠르게 체험하기",
   "tryText": "가상 머신, 라이브 USB, 듀얼 부팅으로 실행하거나 전면 도입해 보세요.",
-  "ctaLabel": "🔗 더 많은 우수 사이트 → 친구 링크",
+  "ctaLabel": "더 많은 우수 사이트 → 친구 링크",
   "ctaHref": "/links"
 };
 
@@ -288,7 +288,7 @@ const pt: LandingStrings = {
   ],
   "tryTitle": "Experimente o Debian rapidamente",
   "tryText": "Execute-o em uma máquina virtual, a partir de um USB live, em dual-boot ou de vez.",
-  "ctaLabel": "🔗 Mais sites de qualidade → Links Amigos",
+  "ctaLabel": "Mais sites de qualidade → Links Amigos",
   "ctaHref": "/links"
 };
 
@@ -346,6 +346,149 @@ const extrasEn: LandingExtras = {
     { name: 'System Admin', role: 'Senior SysAdmin', quote: 'We run Debian on 500+ servers with zero downtime for years.' },
   ],
 };
+
+// Featured content areas (zh + en authored; other locales fall back to en).
+export interface LandingFocus {
+  title: string;
+  detail: string;
+  areas: { title: string; detail: string; href: string }[];
+}
+
+const focusZh: LandingFocus = {
+  title: '重点内容专区',
+  detail: '围绕真实部署、AI Skills、硬件驱动、版本生命周期和交互工具，提供更完整的 Debian 使用路线。',
+  areas: [
+    {
+      title: '场景方案',
+      detail: '把家用服务器、Docker 主机、NAS、开发工作站和本地 AI 推理整理成可落地路线。',
+      href: '/scenarios',
+    },
+    {
+      title: 'AI Skills',
+      detail: '让 AI 助手在安装软件、排查服务和修改配置前先验证 Debian 系统事实。',
+      href: '/ai/skills',
+    },
+    {
+      title: '硬件与驱动',
+      detail: '集中处理 NVIDIA、Wi-Fi、蓝牙、音频和笔记本兼容等高频硬件问题。',
+      href: '/hardware',
+    },
+    {
+      title: '版本与生命周期',
+      detail: '跟踪 stable、oldstable、testing、LTS 和下一代 Debian 的升级建议。',
+      href: '/versions',
+    },
+    {
+      title: '交互工具',
+      detail: '规划镜像源选择器、安装方式选择器、排障向导和 AI Skills 安装命令生成器。',
+      href: '/tools',
+    },
+  ],
+};
+
+const focusEn: LandingFocus = {
+  title: 'Featured Content Areas',
+  detail:
+    'Practical paths for real deployments, AI Skills, hardware drivers, release lifecycle guidance, and interactive Debian tools.',
+  areas: [
+    {
+      title: 'Scenarios',
+      detail: 'Deployment paths for home servers, Docker hosts, NAS boxes, workstations, and local AI inference.',
+      href: '/scenarios',
+    },
+    {
+      title: 'AI Skills',
+      detail: 'Reliability rules that make AI agents verify Debian system facts before acting.',
+      href: '/ai/skills',
+    },
+    {
+      title: 'Hardware & Drivers',
+      detail: 'Focused guidance for NVIDIA, Wi-Fi, Bluetooth, audio, and laptop compatibility issues.',
+      href: '/hardware',
+    },
+    {
+      title: 'Versions & Lifecycle',
+      detail: 'Guidance for stable, oldstable, testing, LTS, and the next Debian release.',
+      href: '/versions',
+    },
+    {
+      title: 'Interactive Tools',
+      detail: 'Planned selectors and wizards for mirrors, installation paths, troubleshooting, and AI Skills installs.',
+      href: '/tools',
+    },
+  ],
+};
+
+export function pickFocus(locale: string | undefined): LandingFocus {
+  return locale === 'zh' ? focusZh : focusEn;
+}
+
+// "What's new in this release" bento (zh + en authored; other locales fall
+// back to en). Facts mirror content/docs/basics/whats-new.mdx.
+export interface LandingRelease {
+  released: (date: string, ltsEnd: string) => string;
+  viewAll: string;
+  apt: { title: string; detail: string };
+  packages: { title: string; detail: string };
+  time: { title: string; detail: string };
+  riscv: { title: string; detail: string };
+  tmp: { title: string; detail: string };
+}
+
+const releaseZh: LandingRelease = {
+  released: (date, ltsEnd) => `${date} 发布，LTS 支持至 ${ltsEnd}`,
+  viewAll: '查看全部变化',
+  apt: { title: 'APT 3.0', detail: 'deb822 软件源格式，输出更清晰易读' },
+  packages: { title: '软件包全面更新', detail: 'GNOME 48、KDE Plasma 6.3 与新版工具链' },
+  time: { title: '2038 年问题就绪', detail: '32 位 ARM 改用 64 位 time_t' },
+  riscv: { title: 'riscv64 官方支持', detail: '首次正式支持 64 位 RISC-V 架构' },
+  tmp: { title: '/tmp 默认使用 tmpfs', detail: '临时文件放进内存，重启自动清空' },
+};
+
+const releaseEn: LandingRelease = {
+  released: (date, ltsEnd) => `Released ${date}, LTS until ${ltsEnd}`,
+  viewAll: 'See every change',
+  apt: { title: 'APT 3.0', detail: 'deb822 sources and clearer, easier-to-read output' },
+  packages: { title: 'Refreshed packages', detail: 'GNOME 48, KDE Plasma 6.3 and a new toolchain' },
+  time: { title: 'Ready for 2038', detail: '32-bit ARM moves to a 64-bit time_t' },
+  riscv: { title: 'Official riscv64', detail: 'First release to support 64-bit RISC-V' },
+  tmp: { title: '/tmp on tmpfs by default', detail: 'Temporary files live in memory and clear on reboot' },
+};
+
+export function pickRelease(locale: string | undefined): LandingRelease {
+  return locale === 'zh' ? releaseZh : releaseEn;
+}
+
+// Headline version jumps shown in the bento (previous stable → current stable).
+export const releaseUpgrades: { name: string; from: string; to: string }[] = [
+  { name: 'linux', from: '6.1', to: '6.12' },
+  { name: 'python', from: '3.11', to: '3.13' },
+  { name: 'gcc', from: '12.2', to: '14.2' },
+];
+
+// Every Debian release codename, oldest first (language-neutral; drives the
+// home page release ticker).
+export const releaseCodenames: { name: string; version: string }[] = [
+  { name: 'buzz', version: '1.1' },
+  { name: 'rex', version: '1.2' },
+  { name: 'bo', version: '1.3' },
+  { name: 'hamm', version: '2.0' },
+  { name: 'slink', version: '2.1' },
+  { name: 'potato', version: '2.2' },
+  { name: 'woody', version: '3.0' },
+  { name: 'sarge', version: '3.1' },
+  { name: 'etch', version: '4.0' },
+  { name: 'lenny', version: '5.0' },
+  { name: 'squeeze', version: '6.0' },
+  { name: 'wheezy', version: '7' },
+  { name: 'jessie', version: '8' },
+  { name: 'stretch', version: '9' },
+  { name: 'buster', version: '10' },
+  { name: 'bullseye', version: '11' },
+  { name: 'bookworm', version: '12' },
+  { name: 'trixie', version: '13' },
+  { name: 'forky', version: '14' },
+];
 
 export function pickExtras(locale: string | undefined): LandingExtras {
   return locale === 'zh' ? extrasZh : extrasEn;

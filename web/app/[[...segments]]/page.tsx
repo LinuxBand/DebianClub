@@ -1,9 +1,8 @@
-import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { source } from '@/lib/source';
 import { i18n } from '@/lib/i18n';
-import { pickLanding, pickExtras } from '@/lib/landing';
+import { pickLanding } from '@/lib/landing';
 import { appName, siteUrl } from '@/lib/shared';
 import { getBreadcrumbItems } from 'fumadocs-core/breadcrumb';
 import { HomeLayout } from 'fumadocs-ui/layouts/home';
@@ -17,6 +16,7 @@ import {
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { getMDXComponents } from '@/components/mdx';
 import { DocsMegaHeader } from '@/components/docs-mega-header';
+import { HomePage } from '@/components/home/HomePage';
 import { getPageImage } from '@/lib/source';
 import { baseOptions } from '@/lib/layout.shared';
 import { abs, hreflang, languageAlternates, ogDefault, pageUrl } from '@/lib/seo';
@@ -33,7 +33,7 @@ export default async function Page({ params }: { params: PageParams }) {
   if (slug.length === 0) {
     return (
       <HomeLayout {...baseOptions(lang)}>
-        <HomeContent lang={lang} />
+        <HomePage lang={lang} />
       </HomeLayout>
     );
   }
@@ -149,231 +149,6 @@ export async function generateMetadata({
     },
     twitter: { card: 'summary_large_image', title, description, images: [ogImage] },
   };
-}
-
-function HomeContent({ lang }: { lang: string }) {
-  const t = pickLanding(lang);
-  const x = pickExtras(lang);
-  const prefix = lang === i18n.defaultLanguage ? '' : `/${lang}`;
-  const focusIntro =
-    lang === 'zh'
-      ? {
-          title: '重点内容专区',
-          detail:
-            '围绕真实部署、AI Skills、硬件驱动、版本生命周期和交互工具，提供更完整的 Debian 使用路线。',
-        }
-      : {
-          title: 'Featured Content Areas',
-          detail:
-            'Practical paths for real deployments, AI Skills, hardware drivers, release lifecycle guidance, and interactive Debian tools.',
-        };
-  const focusAreas =
-    lang === 'zh'
-      ? [
-          {
-            title: '场景方案',
-            detail: '把家用服务器、Docker 主机、NAS、开发工作站和本地 AI 推理整理成可落地路线。',
-            href: '/scenarios',
-          },
-          {
-            title: 'AI Skills',
-            detail: '让 AI 助手在安装软件、排查服务和修改配置前先验证 Debian 系统事实。',
-            href: '/ai/skills',
-          },
-          {
-            title: '硬件与驱动',
-            detail: '集中处理 NVIDIA、Wi-Fi、蓝牙、音频和笔记本兼容等高频硬件问题。',
-            href: '/hardware',
-          },
-          {
-            title: '版本与生命周期',
-            detail: '跟踪 stable、oldstable、testing、LTS 和下一代 Debian 的升级建议。',
-            href: '/versions',
-          },
-          {
-            title: '交互工具',
-            detail: '规划镜像源选择器、安装方式选择器、排障向导和 AI Skills 安装命令生成器。',
-            href: '/tools',
-          },
-        ]
-      : [
-          {
-            title: 'Scenarios',
-            detail: 'Deployment paths for home servers, Docker hosts, NAS boxes, workstations, and local AI inference.',
-            href: '/scenarios',
-          },
-          {
-            title: 'AI Skills',
-            detail: 'Reliability rules that make AI agents verify Debian system facts before acting.',
-            href: '/ai/skills',
-          },
-          {
-            title: 'Hardware & Drivers',
-            detail: 'Focused guidance for NVIDIA, Wi-Fi, Bluetooth, audio, and laptop compatibility issues.',
-            href: '/hardware',
-          },
-          {
-            title: 'Versions & Lifecycle',
-            detail: 'Guidance for stable, oldstable, testing, LTS, and the next Debian release.',
-            href: '/versions',
-          },
-          {
-            title: 'Interactive Tools',
-            detail: 'Planned selectors and wizards for mirrors, installation paths, troubleshooting, and AI Skills installs.',
-            href: '/tools',
-          },
-        ];
-  const href = (h: string) => {
-    const slug = h.replace(/^\//, '').split('/').filter(Boolean);
-    if (slug.length === 0) return prefix || '/';
-    if (source.getPage(slug, lang)) return `${prefix}${h}`;
-    if (lang !== 'en' && source.getPage(slug, 'en')) return `/en${h}`;
-    return h;
-  };
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${siteUrl}/#org`,
-        name: appName,
-        url: siteUrl,
-        logo: `${siteUrl}/images/debian-logo.svg`,
-      },
-      {
-        '@type': 'WebSite',
-        '@id': `${siteUrl}/#site`,
-        name: appName,
-        url: siteUrl,
-        inLanguage: hreflang(lang),
-        publisher: { '@id': `${siteUrl}/#org` },
-      },
-    ],
-  };
-
-  return (
-    <main className="flex flex-1 flex-col">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <section className="mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-6 py-16 lg:flex-row lg:py-24">
-        <div className="flex-1 text-center lg:text-left">
-          <h1 className="text-4xl font-bold tracking-tight md:text-5xl">Debian.Club</h1>
-          <p className="mt-4 text-lg text-fd-muted-foreground">{t.tagline}</p>
-          <div className="mt-7 flex flex-wrap justify-center gap-3 lg:justify-start">
-            {t.actions.map((a) => (
-              <Link
-                key={a.href}
-                href={href(a.href)}
-                className={
-                  a.primary
-                    ? 'rounded-lg bg-fd-primary px-5 py-2.5 font-medium text-fd-primary-foreground no-underline'
-                    : 'rounded-lg border border-fd-border px-5 py-2.5 font-medium no-underline hover:bg-fd-accent'
-                }
-              >
-                {a.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-        <img
-          src="/images/hero-home.webp"
-          alt="Debian.Club"
-          className="w-full max-w-md rounded-xl lg:flex-1"
-          loading="lazy"
-        />
-      </section>
-
-      <section className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 px-6 pb-16 sm:grid-cols-2 lg:grid-cols-3">
-        {t.features.map((f) => (
-          <div key={f.title} className="rounded-xl border border-fd-border bg-fd-card/40 p-5">
-            <h3 className="font-semibold text-fd-foreground">{f.title}</h3>
-            <p className="mt-1.5 text-sm text-fd-muted-foreground">{f.detail}</p>
-          </div>
-        ))}
-      </section>
-
-      <section className="mx-auto w-full max-w-6xl px-6 pb-16">
-        <h2 className="mb-5 text-2xl font-bold">{t.pathTitle}</h2>
-        <img src="/images/scene-learn.webp" alt="" className="mb-6 w-full rounded-xl" loading="lazy" />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {t.steps.map((s) => (
-            <div key={s.title} className="rounded-xl border border-fd-border p-5">
-              <h3 className="mb-2 font-semibold text-fd-foreground">{s.title}</h3>
-              <ul className="space-y-1.5 text-sm">
-                {s.links.map((l) => (
-                  <li key={l.href}>
-                    <Link href={href(l.href)} className="text-fd-muted-foreground hover:text-fd-primary">
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-6xl px-6 pb-16">
-        <div className="mb-6 max-w-3xl">
-          <h2 className="text-2xl font-bold text-fd-foreground">{focusIntro.title}</h2>
-          <p className="mt-2 text-sm leading-6 text-fd-muted-foreground md:text-base">{focusIntro.detail}</p>
-        </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
-          {focusAreas.map((area) => (
-            <Link
-              key={area.href}
-              href={href(area.href)}
-              className="rounded-xl border border-fd-border bg-fd-card/40 p-5 no-underline transition-colors hover:bg-fd-accent/60"
-            >
-              <h3 className="font-semibold text-fd-foreground">{area.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-fd-muted-foreground">{area.detail}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-y border-fd-border bg-fd-card/30 py-14">
-        <div className="mx-auto w-full max-w-6xl px-6">
-          <h2 className="mb-8 text-center text-2xl font-bold">{x.statsTitle}</h2>
-          <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-            {x.stats.map((s) => (
-              <div key={s.label} className="text-center">
-                <div className="text-3xl font-bold text-fd-primary md:text-4xl">{s.number}</div>
-                <div className="mt-1 text-sm text-fd-muted-foreground">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-6xl px-6 py-16">
-        <h2 className="mb-8 text-center text-2xl font-bold">{x.voicesTitle}</h2>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {x.testimonials.map((tm) => (
-            <figure key={tm.name} className="flex flex-col rounded-xl border border-fd-border bg-fd-card/40 p-5">
-              <blockquote className="flex-1 text-sm text-fd-foreground">“{tm.quote}”</blockquote>
-              <figcaption className="mt-4">
-                <div className="font-semibold text-fd-foreground">{tm.name}</div>
-                <div className="text-xs text-fd-muted-foreground">{tm.role}</div>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto w-full max-w-6xl px-6 pb-16">
-        <h2 className="mb-5 text-2xl font-bold">{t.tryTitle}</h2>
-        <img src="/images/devices.png" alt="" className="mb-4 w-full rounded-xl" loading="lazy" />
-        <p className="text-fd-muted-foreground">{t.tryText}</p>
-      </section>
-
-      <section className="mx-auto w-full max-w-6xl px-6 pb-20">
-        <Link href={href(t.ctaHref)} className="text-fd-primary hover:underline">
-          {t.ctaLabel}
-        </Link>
-      </section>
-    </main>
-  );
 }
 
 export function generateStaticParams() {

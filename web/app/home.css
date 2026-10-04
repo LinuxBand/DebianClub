@@ -1,0 +1,722 @@
+/* Home page (landing) — surfaces, micro-interactions and motion.
+   Everything is scoped to the landing markup (`[data-home]` / `.home-*`).
+   The page is fully readable without JS; components/home/HomeMotion.tsx opts
+   into scroll motion by setting `data-motion="on"`. */
+
+[data-home] {
+  --home-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --home-ink-soft: color-mix(in oklab, var(--color-fd-foreground) 14%, transparent);
+}
+
+[data-home] :focus-visible {
+  outline: 2px solid var(--color-fd-ring);
+  outline-offset: 3px;
+  border-radius: 0.5rem;
+}
+
+/* ── Entrances ─────────────────────────────────────────────────────────── */
+
+@keyframes home-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+    filter: blur(6px);
+  }
+}
+
+.home-rise {
+  animation: home-rise 1.1s var(--home-ease) both;
+  animation-delay: calc(var(--i, 0) * 90ms + 60ms);
+}
+
+[data-home][data-motion='on'] [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 1.75rem, 0);
+  transition:
+    opacity 0.9s var(--home-ease),
+    transform 0.9s var(--home-ease);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+/* The wipe clips a child, not the observed element, so the
+   IntersectionObserver still sees a box to intersect with. */
+[data-home][data-motion='on'] [data-reveal='wipe'] > * {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.3s var(--home-ease);
+}
+
+[data-home][data-motion='on'] [data-reveal][data-shown] {
+  opacity: 1;
+  transform: none;
+}
+
+[data-home][data-motion='on'] [data-reveal='wipe'][data-shown] > * {
+  clip-path: inset(0);
+}
+
+/* ── Backdrops ─────────────────────────────────────────────────────────── */
+
+.home-dots {
+  background-image: radial-gradient(var(--home-ink-soft) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 75% 70% at 22% 35%, #000 10%, transparent 72%);
+}
+
+.home-dots--wide {
+  mask-image: linear-gradient(100deg, transparent 35%, #000 110%);
+}
+
+.home-swirl {
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  z-index: -1;
+  width: min(112vw, 34rem);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+@media (width >= 64rem) {
+  .home-swirl {
+    top: 40%;
+    left: 52%;
+    width: min(52rem, 56vw);
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* ── Hero pieces ───────────────────────────────────────────────────────── */
+
+@keyframes home-pulse {
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+.home-pulse {
+  position: relative;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: var(--color-fd-primary);
+}
+
+.home-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  opacity: 0.55;
+  animation: home-pulse 2.2s var(--home-ease) infinite;
+}
+
+.home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 3rem;
+  padding: 0 1.375rem;
+  border-radius: 0.8125rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    transform 0.3s var(--home-ease),
+    background-color 0.3s,
+    border-color 0.3s,
+    box-shadow 0.4s var(--home-ease);
+}
+
+.home-btn:active {
+  transform: scale(0.97);
+}
+
+.home-btn--primary {
+  background: var(--color-fd-primary);
+  color: var(--color-fd-primary-foreground);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.22),
+    0 10px 22px -10px color-mix(in oklab, var(--color-fd-primary) 80%, transparent);
+}
+
+.home-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.22),
+    0 18px 30px -12px color-mix(in oklab, var(--color-fd-primary) 85%, transparent);
+}
+
+.home-btn--primary:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.home-btn--ghost {
+  border: 1px solid var(--color-fd-border);
+  background: color-mix(in oklab, var(--color-fd-background) 70%, transparent);
+  color: var(--color-fd-foreground);
+  backdrop-filter: blur(8px);
+}
+
+.home-btn--ghost:hover {
+  border-color: color-mix(in oklab, var(--color-fd-foreground) 32%, transparent);
+  background: var(--color-fd-accent);
+}
+
+.home-link {
+  padding-bottom: 3px;
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  transition:
+    color 0.3s,
+    background-size 0.5s var(--home-ease);
+}
+
+.home-link:hover {
+  color: var(--color-fd-primary);
+  background-position: 100% 100%;
+  background-size: 0 1px;
+}
+
+/* The terminal keeps its own dark palette in both themes. */
+.home-terminal {
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.09);
+  border-radius: 0.9375rem;
+  background: rgb(19 17 21 / 0.94);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.07),
+    0 36px 70px -28px rgb(74 8 34 / 0.55),
+    0 14px 28px -16px rgb(0 0 0 / 0.4);
+  backdrop-filter: blur(12px);
+}
+
+.home-terminal__body {
+  min-height: calc(9 * 1.8em + 2.25rem);
+  padding: 1rem 1.125rem 1.25rem;
+  font-size: 0.78rem;
+  line-height: 1.8;
+}
+
+.home-terminal__body p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes home-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.home-caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.15em;
+  vertical-align: text-bottom;
+  background: #ff6b9d;
+  animation: home-blink 1.1s steps(1) infinite;
+}
+
+/* ── Release ticker ────────────────────────────────────────────────────── */
+
+@keyframes home-marquee {
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+.home-marquee {
+  display: flex;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.home-marquee__track {
+  display: flex;
+  flex-shrink: 0;
+  align-items: baseline;
+  min-width: 100%;
+  white-space: nowrap;
+  animation: home-marquee 60s linear infinite;
+}
+
+.home-marquee:hover .home-marquee__track {
+  animation-play-state: paused;
+}
+
+/* ── Spotlight surface ─────────────────────────────────────────────────── */
+
+.home-spot {
+  position: relative;
+}
+
+.home-spot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    26rem circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in oklab, var(--color-fd-primary) 11%, transparent),
+    transparent 62%
+  );
+  transition: opacity 0.5s;
+}
+
+.home-spot:hover::after {
+  opacity: 1;
+}
+
+/* ── Release bento ─────────────────────────────────────────────────────── */
+
+.home-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 1.75rem;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(
+      70% 60% at 50% 38%,
+      color-mix(in oklab, var(--color-fd-primary) 7%, transparent),
+      transparent 70%
+    ),
+    var(--color-fd-card);
+  transition:
+    border-color 0.4s,
+    box-shadow 0.5s var(--home-ease);
+}
+
+.home-tile:hover {
+  border-color: color-mix(in oklab, var(--color-fd-primary) 38%, var(--color-fd-border));
+  box-shadow: 0 30px 60px -40px color-mix(in oklab, var(--color-fd-primary) 60%, transparent);
+}
+
+.home-tile--hero {
+  border-color: color-mix(in oklab, var(--color-fd-primary) 18%, var(--color-fd-border));
+  background:
+    linear-gradient(
+      140deg,
+      color-mix(in oklab, var(--color-fd-primary) 16%, transparent),
+      color-mix(in oklab, var(--color-fd-primary) 3%, transparent) 62%
+    ),
+    var(--color-fd-card);
+}
+
+.home-tile__stage {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 11rem;
+  padding-bottom: 1.5rem;
+}
+
+.home-tile__stage--dots {
+  background-image: radial-gradient(var(--home-ink-soft) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(ellipse 60% 70% at 50% 45%, #000 15%, transparent 75%);
+}
+
+.home-tile__numeral {
+  font-size: clamp(9rem, 26vw, 21rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  color: var(--color-fd-primary);
+  transition:
+    transform 1.1s var(--home-ease),
+    opacity 0.9s;
+}
+
+.home-tile--hero:hover .home-tile__numeral {
+  transform: scale(1.04);
+}
+
+.home-strike {
+  position: relative;
+}
+
+.home-strike::after {
+  content: '';
+  position: absolute;
+  top: 52%;
+  right: -0.25rem;
+  left: -0.25rem;
+  height: 2px;
+  background: var(--color-fd-primary);
+  transform-origin: left;
+  transition: transform 0.8s var(--home-ease) 0.5s;
+}
+
+.home-meter {
+  position: relative;
+  height: 0.375rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: var(--home-ink-soft);
+}
+
+.home-meter::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--color-fd-primary);
+  transform: scaleX(var(--w));
+  transform-origin: left;
+  transition: transform 1.2s var(--home-ease) calc(0.35s + var(--i) * 0.12s);
+}
+
+@keyframes home-ring {
+  from {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+
+  to {
+    transform: scale(2.3);
+    opacity: 0;
+  }
+}
+
+.home-rings {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 50%;
+  background: var(--color-fd-primary);
+  color: var(--color-fd-primary-foreground);
+}
+
+.home-rings::before,
+.home-rings::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--color-fd-primary);
+  border-radius: inherit;
+  animation: home-ring 3s var(--home-ease) infinite;
+}
+
+.home-rings::after {
+  animation-delay: 1.5s;
+}
+
+.home-chip {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border: 1.5px solid var(--color-fd-primary);
+  border-radius: 1.125rem;
+  background: var(--color-fd-card);
+  color: var(--color-fd-primary);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--color-fd-primary) 9%, transparent);
+  transition: transform 0.6s var(--home-ease);
+}
+
+.home-tile:hover .home-chip {
+  transform: rotate(90deg);
+}
+
+.home-toggle {
+  position: relative;
+  width: 4.25rem;
+  height: 2.25rem;
+  border-radius: 2rem;
+  background: var(--color-fd-primary);
+  transition: background-color 0.5s 0.5s;
+}
+
+.home-toggle::after {
+  content: '';
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.2);
+  transform: translateX(2rem);
+  transition: transform 0.6s var(--home-ease) 0.5s;
+}
+
+/* Tile visuals play once the tile is revealed; their resting (no-JS) state is
+   the finished one above. */
+[data-motion='on'] [data-reveal]:not([data-shown]) .home-tile__numeral {
+  transform: translateY(18%) scale(0.9);
+  opacity: 0;
+}
+
+[data-motion='on'] [data-reveal]:not([data-shown]) .home-strike::after,
+[data-motion='on'] [data-reveal]:not([data-shown]) .home-meter::after {
+  transform: scaleX(0);
+}
+
+[data-motion='on'] [data-reveal]:not([data-shown]) .home-toggle {
+  background: var(--home-ink-soft);
+}
+
+[data-motion='on'] [data-reveal]:not([data-shown]) .home-toggle::after {
+  transform: translateX(0);
+}
+
+/* ── Learning path ─────────────────────────────────────────────────────── */
+
+/* `--progress` defaults to complete so the path reads as done without JS. */
+.home-path,
+.home-closer {
+  --progress: 1;
+}
+
+.home-path__steps {
+  position: relative;
+}
+
+.home-path__steps > ol {
+  display: grid;
+  gap: 2.75rem;
+}
+
+.home-path__track {
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0;
+  left: 4px;
+  width: 1px;
+  background: var(--color-fd-border);
+}
+
+.home-path__fill {
+  position: absolute;
+  inset: -0.5px;
+  background: var(--color-fd-primary);
+  transform: scaleY(var(--progress));
+  transform-origin: top left;
+}
+
+.home-path__step {
+  --on: clamp(0, calc((var(--progress) - var(--at)) * 14), 1);
+  position: relative;
+  padding-left: 2.25rem;
+}
+
+.home-path__node {
+  position: absolute;
+  top: 0.3rem;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: color-mix(
+    in oklab,
+    var(--color-fd-primary) calc(var(--on) * 100%),
+    var(--color-fd-background)
+  );
+  box-shadow:
+    0 0 0 1px
+      color-mix(in oklab, var(--color-fd-primary) calc(var(--on) * 100%), var(--color-fd-muted-foreground)),
+    0 0 0 calc(var(--on) * 5px) color-mix(in oklab, var(--color-fd-primary) 18%, transparent);
+}
+
+.home-path__num {
+  color: color-mix(
+    in oklab,
+    var(--color-fd-primary) calc(var(--on) * 100%),
+    var(--color-fd-muted-foreground)
+  );
+}
+
+@media (width >= 64rem) {
+  .home-path__steps > ol {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2.5rem;
+  }
+
+  .home-path__track {
+    inset: 4px 0 auto;
+    width: auto;
+    height: 1px;
+  }
+
+  .home-path__fill {
+    transform: scaleX(var(--progress));
+  }
+
+  .home-path__step {
+    padding-top: 2.5rem;
+    padding-left: 0;
+  }
+
+  .home-path__node {
+    top: 0;
+  }
+}
+
+/* ── Featured index rows ───────────────────────────────────────────────── */
+
+.home-row {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: start;
+  padding: 1.875rem 0;
+  color: var(--color-fd-foreground);
+  text-decoration: none;
+}
+
+.home-row > :first-child {
+  padding-top: 0.6rem;
+}
+
+.home-row::before {
+  content: '';
+  position: absolute;
+  inset: 0 -1rem;
+  z-index: -1;
+  border-radius: 0.75rem;
+  background: color-mix(in oklab, var(--color-fd-primary) 7%, transparent);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.55s var(--home-ease);
+}
+
+.home-row__title {
+  display: block;
+  transition:
+    transform 0.55s var(--home-ease),
+    color 0.3s;
+}
+
+.home-row__arrow {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 50%;
+  color: var(--color-fd-muted-foreground);
+  transition:
+    transform 0.55s var(--home-ease),
+    background-color 0.3s,
+    border-color 0.3s,
+    color 0.3s;
+}
+
+@media (hover: hover) {
+  .home-row:hover::before {
+    transform: scaleY(1);
+  }
+
+  .home-row:hover .home-row__title {
+    color: var(--color-fd-primary);
+    transform: translateX(0.5rem);
+  }
+
+  .home-row:hover .home-row__arrow {
+    border-color: var(--color-fd-primary);
+    background: var(--color-fd-primary);
+    color: var(--color-fd-primary-foreground);
+    transform: rotate(45deg);
+  }
+}
+
+/* ── Voices / media ────────────────────────────────────────────────────── */
+
+.home-quote::before {
+  content: '\201C';
+  display: block;
+  height: 2.25rem;
+  margin-bottom: 0.75rem;
+  font-size: 4.5rem;
+  line-height: 1;
+  color: var(--color-fd-primary);
+}
+
+.home-frame {
+  overflow: hidden;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 1rem;
+  box-shadow: 0 40px 80px -48px color-mix(in oklab, var(--color-fd-primary) 55%, transparent);
+}
+
+.home-frame img {
+  transition: transform 1.4s var(--home-ease);
+}
+
+.dark .home-frame img {
+  filter: brightness(0.9);
+}
+
+.home-frame:hover img {
+  transform: scale(1.035);
+}
+
+/* ── Closer wordmark ───────────────────────────────────────────────────── */
+
+.home-closer {
+  container-type: inline-size;
+}
+
+.home-wordmark {
+  position: relative;
+  font-size: 17.6cqi;
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.home-wordmark__outline {
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in oklab, var(--color-fd-foreground) 26%, transparent);
+}
+
+.home-wordmark__fill {
+  position: absolute;
+  inset: 0;
+  color: var(--color-fd-foreground);
+  clip-path: inset(-10% calc((1 - var(--progress)) * 100%) -10% 0);
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .home-rise,
+  .home-rings::before,
+  .home-rings::after,
+  .home-pulse::after,
+  .home-caret,
+  .home-marquee__track {
+    animation: none;
+  }
+
+  .home-marquee {
+    overflow-x: auto;
+  }
+
+  .home-marquee__track[aria-hidden='true'] {
+    display: none;
+  }
+
+  [data-home] *,
+  [data-home] *::before,
+  [data-home] *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

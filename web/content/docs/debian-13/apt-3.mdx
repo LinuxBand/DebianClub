@@ -1,0 +1,79 @@
+---
+title: "APT 3.0 与 deb822 软件源"
+description: "Debian 13 (Trixie) 首次搭载 APT 3.0：更清晰的分栏输出、新的依赖求解器，安装器默认写入 deb822 格式的 debian.sources。"
+---
+
+Debian 13 (Trixie) 是首个搭载 **APT 3.0** 的稳定版。这是一次大版本升级：软件源配置默认改用 **deb822 格式**（`.sources` 文件），命令行输出重新设计，依赖解析也换了新的求解器。
+
+## APT 3.0 带来了什么
+
+### 更易读的输出
+
+`apt update`、`apt upgrade` 等命令改为**分栏排版**，安装、升级、删除的包分别用不同颜色标出，数量一目了然：
+
+```bash
+sudo apt update
+sudo apt upgrade
+```
+
+不再需要从一长串单行文本里找重点，`-44 个软件包可升级`、`新安装 3 个`、`删除 1 个` 各占一栏。
+
+### 新的依赖求解器
+
+APT 3.0 重写了依赖解析逻辑，处理复杂冲突时给出的方案更合理，删除系统关键包这类“过激方案”更少出现。
+
+### deb822 软件源格式
+
+Debian 13 的安装器**默认写入 deb822 格式**的 `/etc/apt/sources.list.d/debian.sources`，取代单行的 `sources.list`：
+
+```bash
+# 旧的 one-line 格式（sources.list）
+deb https://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+```
+
+```yaml
+# 新的 deb822 格式（debian.sources）
+Types: deb
+URIs: https://deb.debian.org/debian
+Suites: trixie trixie-updates trixie-backports
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+```
+
+deb822 把每个字段写成 `键: 值` 的结构化形式，注释和分组更清晰，也不再需要记 `trixie/updates` 这类斜杠写法——安全更新直接写 `trixie-security`：
+
+```yaml
+Types: deb
+URIs: https://security.debian.org/debian-security
+Suites: trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+```
+
+<Callout type="info" title="旧格式仍然支持">
+
+`/etc/apt/sources.list` 的单行格式在 Debian 13 中依然有效，APT 会同时读取两种格式。从 Debian 12 升级上来的系统不需要立即迁移。第三方软件源（Docker、NVIDIA 等）会逐步跟进 deb822。
+
+</Callout>
+
+## 查看与调整软件源
+
+```bash
+# 查看当前生效的软件源配置
+apt indextargets | grep -E '^(URI|SUITE|COMPONENTS)' | sort -u
+
+# 修改后刷新索引
+sudo apt update
+```
+
+镜像站选择、国内加速见[镜像源页](/basics/mirrors)；完整的源配置说明见[系统配置](/basics/configuration)。
+
+## 下一步
+
+- [软件包管理](/administration/packages) - apt / dpkg 日常操作
+- [从 Debian 12 升级](/basics/upgrade) - 升级时的源调整步骤
+- [Debian 13 专题](/debian-13) - 返回版本总览
+
+---
+
+**新装系统推荐直接使用 Debian 13：** [下载 Debian 13 →](/download)

@@ -1,0 +1,40 @@
+---
+title: "Official riscv64 support in Debian 13"
+description: "Debian 13 (Trixie) is the first Debian stable release with riscv64 (64-bit RISC-V) as an official architecture — RISC-V hardware can now run stock Debian."
+---
+
+Debian 13 (Trixie) is **the first Debian stable release to officially support riscv64 (64-bit RISC-V)**. After years of porting work, RISC-V devices can now run the exact same stock Debian as amd64 and arm64 — no unofficial port required.
+
+## What it means
+
+Before Trixie, riscv64 was only available through the unofficial [debian-ports](https://www.ports.debian.org/) archive. Being an official architecture now means:
+
+- **The same quality bar as other official architectures** — security updates (DSAs) and point releases ship in sync with amd64
+- **A complete install experience** — official riscv64 installation images with debian-installer support
+- **About 69,800 packages** — the official archive is essentially fully covered on riscv64
+
+Debian 13 supports seven architectures: amd64, arm64, armel, armhf, ppc64el, **riscv64** and s390x.
+
+<Callout type="info" title="The hardware ecosystem is growing">
+
+Typical riscv64 hardware includes RISC-V dev boards such as the StarFive VisionFive 2 and Milk-V boards, plus newer RISC-V laptops and servers. Driver and firmware maturity varies by device — validate in a test environment before production deployments.
+
+</Callout>
+
+## Installing on RISC-V hardware
+
+1. Get a riscv64 installation image from the [download page](/download) or an official mirror
+2. Write it to media following [bootable media](/basics/bootable-media) (some boards need an SPI flash payload or board-specific bootloader first)
+3. Follow the [installation guide](/basics/installation) — the flow is identical to amd64
+
+Package management and system configuration after install are the same as on any other architecture.
+
+## Why it matters
+
+RISC-V is a fully open instruction set architecture — no licensing fees, no proprietary restrictions. With official riscv64 support, an open ISA and an open operating system come together as an official combination for the first time, with long-term value for open hardware, education and custom silicon.
+
+## Next steps
+
+- [Debian 13 hub](/debian-13) - back to the release overview
+- [Download Debian 13](/download) - grab a riscv64 image
+- [Hardware & drivers](/hardware) - hardware guides per architecture

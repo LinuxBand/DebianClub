@@ -1,0 +1,54 @@
+---
+title: "Debian 13 与 2038 年问题"
+description: "Debian 13 (Trixie) 中除 i386 外的所有架构都改用 64 位 time_t，32 位 ARM 设备也能正确表示 2038 年之后的日期。"
+---
+
+计算机内部用 `time_t` 类型记录时间。在 32 位系统上，传统的 32 位有符号 `time_t` 只能数到 **2038 年 1 月 19 日**，之后就会溢出——这就是“2038 年问题”（Y2038），可以理解为时间维度上的“千年虫”。
+
+## Debian 13 的解法
+
+Debian 13 将**除 i386 之外的所有架构**改为 64 位 `time_t`，日期可以正确表示到远超 2038 年的范围。官方发行说明原文：
+
+> All architectures other than i386 now use a 64-bit time_t ABI, supporting dates beyond 2038.
+
+对用户最直接的影响是 **32 位 ARM 设备**（`armhf`，如树莓派等单板机）：Debian 13 起，这些设备上的系统时间不再受 2038 限制，NTP 校时、证书有效期校验、定时任务等都能在 2038 年之后正常工作。
+
+<Callout type="warn" title="i386 仍然使用 32 位 time_t">
+
+i386 保持 32 位 `time_t` 以兼容存量 32 位程序，且 Debian 13 已不提供 i386 的官方内核和安装器（i386 仅作为部分软件的多架构补充存在）。需要长期运行到 2038 年以后的 32 位硬件，请选择 `armhf` 等架构。
+
+</Callout>
+
+## 一次 ABI 变化，需要注意什么
+
+64 位 `time_t` 改变了 32 位架构上的 C 语言二进制接口（ABI）：
+
+- **普通用户无需任何操作** —— Debian 13 官方仓库中的所有包都已按新 ABI 构建，一起升级即可
+- **自己编译的 32 位程序** 需要在 Debian 13 环境下重新编译，不能与旧的 32 位 `time_t` 二进制混用
+- **第三方闭源 32 位 ARM 程序** 需要厂商提供按新 ABI 构建的版本
+
+## 验证 time_t 大小
+
+在 Debian 13 的 32 位系统（如 armhf）上编译运行：
+
+```c
+/* sizeof_time.c */
+#include <stdio.h>
+#include <time.h>
+
+int main(void) {
+    printf("sizeof(time_t) = %zu 字节\n", sizeof(time_t));
+    return 0;
+}
+```
+
+```bash
+gcc sizeof_time.c -o sizeof_time && ./sizeof_time
+# Debian 13 armhf 输出：sizeof(time_t) = 8 字节（Debian 12 为 4 字节）
+```
+
+## 下一步
+
+- [Debian 13 专题](/debian-13) - 返回版本总览
+- [硬件兼容性](/basics/hardware-compatibility) - 查看硬件支持情况
+- [下载 Debian 13](/download) - 选择适合你设备的架构

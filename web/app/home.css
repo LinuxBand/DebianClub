@@ -300,6 +300,50 @@
   box-shadow: 0 30px 60px -40px color-mix(in oklab, var(--color-fd-primary) 60%, transparent);
 }
 
+/* Tiles are links to feature pages: kill the underline, keep the focus ring. */
+a.home-tile {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+a.home-tile:focus-visible {
+  outline: 2px solid var(--color-fd-primary);
+  outline-offset: 2px;
+}
+
+/* Corner arrow that eases in on hover to signal the tile is a link. */
+.home-tile__more {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 50%;
+  background: var(--color-fd-card);
+  color: var(--color-fd-muted-foreground);
+  opacity: 0;
+  transform: translate(-6px, 6px);
+  transition:
+    opacity 0.35s var(--home-ease),
+    transform 0.55s var(--home-ease),
+    border-color 0.3s,
+    color 0.3s;
+}
+
+@media (hover: hover) {
+  a.home-tile:hover .home-tile__more,
+  a.home-tile:focus-visible .home-tile__more {
+    border-color: color-mix(in oklab, var(--color-fd-primary) 45%, var(--color-fd-border));
+    color: var(--color-fd-primary);
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
 .home-tile--hero {
   border-color: color-mix(in oklab, var(--color-fd-primary) 18%, var(--color-fd-border));
   background:

@@ -26,12 +26,13 @@ description: "Debian 13（Trixie）专题：新特性、下载与安装路线、
 
 ## 🚀 相比 Debian 12 的主要变化
 
-- **内核**：Linux 6.12 LTS 系列（Debian 12 为 6.1 LTS）
-- **桌面**：GNOME 48、KDE Plasma 6.3（Debian 12 为 GNOME 43 / Plasma 5.27），Wayland 成为大多数桌面的默认会话
+- **内核**：Linux 6.12 LTS 系列（Debian 12 为 6.1 LTS），详见[软件包全面更新](/debian-13/packages)
+- **桌面**：GNOME 48、KDE Plasma 6.3（Debian 12 为 GNOME 43 / Plasma 5.27），Wayland 成为大多数桌面的默认会话，详见[软件包全面更新](/debian-13/packages)
 - **工具链**：GCC 14、LLVM 19、Python 3.13、PHP 8.4
-- **架构**：riscv64 首次成为官方支持架构，共 7 个架构
-- **桌面体验**：`/tmp` 默认挂载为 tmpfs，重启自动清理
-- **软件源**：安装器默认写入 deb822 格式的 `.sources` 文件（Debian 12 引入的新格式）
+- **架构**：riscv64 首次成为官方支持架构，共 7 个架构，详见[riscv64 官方支持](/debian-13/riscv64)
+- **系统时间**：除 i386 外所有架构改用 64 位 time_t，详见 [2038 年问题就绪](/debian-13/year-2038)
+- **桌面体验**：`/tmp` 默认挂载为 tmpfs，重启自动清理，详见[/tmp 默认使用 tmpfs](/debian-13/tmp-tmpfs)
+- **软件源**：安装器默认写入 deb822 格式的 `.sources` 文件（Debian 12 引入的新格式），详见[APT 3.0 与 deb822 软件源](/debian-13/apt-3)
 - **固件**：继续使用 `non-free-firmware` 组件（自 Debian 12 起引入），安装器可自动加载常见硬件固件
 
 具体组件版本对照见 [版本与生命周期](/versions)。

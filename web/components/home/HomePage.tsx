@@ -247,79 +247,79 @@ export function HomePage({ lang }: { lang: string }) {
 
         <div className="mt-12 grid grid-cols-1 gap-4 lg:mt-16 lg:grid-cols-12">
           <div data-reveal="" className="flex min-w-0 lg:col-span-7 lg:row-span-2">
-            <article className="home-tile home-tile--hero min-w-0 flex-1">
-            <div aria-hidden="true" className="home-tile__stage">
-              <span className="home-tile__numeral font-display">{stable.number}</span>
-            </div>
-            <TileCaption
-              icon={<Sparkle />}
-              title={`Debian ${stable.number} \u201c${stable.codenameTitle}\u201d`}
-              detail={rel.released(stable.releaseDate, stable.ltsEnd)}
-            />
-          </article>
+            <TileLink href={href(rel.hero.href)} variant="hero">
+              <div aria-hidden="true" className="home-tile__stage">
+                <span className="home-tile__numeral font-display">{stable.number}</span>
+              </div>
+              <TileCaption
+                icon={<Sparkle />}
+                title={`Debian ${stable.number} \u201c${stable.codenameTitle}\u201d`}
+                detail={rel.released(stable.releaseDate, stable.ltsEnd)}
+              />
+            </TileLink>
           </div>
 
           <div data-reveal="" style={stagger(1)} className="flex min-w-0 lg:col-span-5">
-            <article className="home-tile min-w-0 flex-1">
-            <div aria-hidden="true" className="home-tile__stage flex-wrap content-center gap-y-2 font-code">
-              <span className="home-strike text-base text-fd-muted-foreground sm:text-xl md:text-2xl">sources.list</span>
-              <ArrowRight className="mx-2 size-4 shrink-0 text-fd-muted-foreground sm:mx-3" />
-              <span className="text-base font-semibold text-fd-foreground sm:text-xl md:text-2xl">debian.sources</span>
-            </div>
-            <TileCaption icon={<TerminalWindow />} title={rel.apt.title} detail={rel.apt.detail} />
-          </article>
+            <TileLink href={href(rel.apt.href)}>
+              <div aria-hidden="true" className="home-tile__stage flex-wrap content-center gap-y-2 font-code">
+                <span className="home-strike text-base text-fd-muted-foreground sm:text-xl md:text-2xl">sources.list</span>
+                <ArrowRight className="mx-2 size-4 shrink-0 text-fd-muted-foreground sm:mx-3" />
+                <span className="text-base font-semibold text-fd-foreground sm:text-xl md:text-2xl">debian.sources</span>
+              </div>
+              <TileCaption icon={<TerminalWindow />} title={rel.apt.title} detail={rel.apt.detail} />
+            </TileLink>
           </div>
 
           <div data-reveal="" style={stagger(2)} className="flex min-w-0 lg:col-span-5">
-            <article className="home-tile min-w-0 flex-1">
-            <div aria-hidden="true" className="home-tile__stage">
-              <ul className="w-full max-w-xs space-y-3 font-code text-xs">
-                {releaseUpgrades.map((pkg, i) => (
-                  <li key={pkg.name} className="grid grid-cols-[3.75rem_1fr_auto] items-center gap-3">
-                    <span className="text-fd-muted-foreground">{pkg.name}</span>
-                    <span className="home-meter" style={{ '--w': 0.55 + i * 0.2, '--i': i } as CSSProperties} />
-                    <span className="text-fd-muted-foreground">
-                      {pkg.from} <span className="text-fd-primary">→</span>{' '}
-                      <span className="font-semibold text-fd-foreground">{pkg.to}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <TileCaption icon={<Package />} title={rel.packages.title} detail={rel.packages.detail} />
-          </article>
+            <TileLink href={href(rel.packages.href)}>
+              <div aria-hidden="true" className="home-tile__stage">
+                <ul className="w-full max-w-xs space-y-3 font-code text-xs">
+                  {releaseUpgrades.map((pkg, i) => (
+                    <li key={pkg.name} className="grid grid-cols-[3.75rem_1fr_auto] items-center gap-3">
+                      <span className="text-fd-muted-foreground">{pkg.name}</span>
+                      <span className="home-meter" style={{ '--w': 0.55 + i * 0.2, '--i': i } as CSSProperties} />
+                      <span className="text-fd-muted-foreground">
+                        {pkg.from} <span className="text-fd-primary">→</span>{' '}
+                        <span className="font-semibold text-fd-foreground">{pkg.to}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <TileCaption icon={<Package />} title={rel.packages.title} detail={rel.packages.detail} />
+            </TileLink>
           </div>
 
           <div data-reveal="" className="flex min-w-0 lg:col-span-4">
-            <article className="home-tile min-w-0 flex-1">
-            <div aria-hidden="true" className="home-tile__stage">
-              <span className="home-rings">
-                <ShieldCheck weight="bold" className="size-6" />
-              </span>
-            </div>
-            <TileCaption icon={<ShieldCheck />} title={rel.time.title} detail={rel.time.detail} />
-          </article>
+            <TileLink href={href(rel.time.href)}>
+              <div aria-hidden="true" className="home-tile__stage">
+                <span className="home-rings">
+                  <ShieldCheck weight="bold" className="size-6" />
+                </span>
+              </div>
+              <TileCaption icon={<ShieldCheck />} title={rel.time.title} detail={rel.time.detail} />
+            </TileLink>
           </div>
 
           <div data-reveal="" style={stagger(1)} className="flex min-w-0 lg:col-span-4">
-            <article className="home-tile min-w-0 flex-1">
-            <div aria-hidden="true" className="home-tile__stage home-tile__stage--dots">
-              <span className="home-chip">
-                <Cpu className="size-7" />
-              </span>
-            </div>
-            <TileCaption icon={<Cpu />} title={rel.riscv.title} detail={rel.riscv.detail} />
-          </article>
+            <TileLink href={href(rel.riscv.href)}>
+              <div aria-hidden="true" className="home-tile__stage home-tile__stage--dots">
+                <span className="home-chip">
+                  <Cpu className="size-7" />
+                </span>
+              </div>
+              <TileCaption icon={<Cpu />} title={rel.riscv.title} detail={rel.riscv.detail} />
+            </TileLink>
           </div>
 
           <div data-reveal="" style={stagger(2)} className="flex min-w-0 lg:col-span-4">
-            <article className="home-tile min-w-0 flex-1">
-            <div aria-hidden="true" className="home-tile__stage gap-4">
-              <span className="font-code text-sm text-fd-muted-foreground">tmpfs</span>
-              <span className="home-toggle" />
-            </div>
-            <TileCaption icon={<Lightning />} title={rel.tmp.title} detail={rel.tmp.detail} />
-          </article>
+            <TileLink href={href(rel.tmp.href)}>
+              <div aria-hidden="true" className="home-tile__stage gap-4">
+                <span className="font-code text-sm text-fd-muted-foreground">tmpfs</span>
+                <span className="home-toggle" />
+              </div>
+              <TileCaption icon={<Lightning />} title={rel.tmp.title} detail={rel.tmp.detail} />
+            </TileLink>
           </div>
         </div>
       </section>
@@ -540,6 +540,28 @@ export function HomePage({ lang }: { lang: string }) {
         </div>
       </section>
     </main>
+  );
+}
+
+// A whole release-bento tile as one link: the corner arrow appears on hover
+// to signal "this card opens a feature page".
+function TileLink({
+  href: to,
+  variant,
+  children,
+}: {
+  href: string;
+  variant?: 'hero';
+  children: ReactNode;
+}) {
+  return (
+    <Link
+      href={to}
+      className={`home-tile group min-w-0 flex-1 no-underline ${variant === 'hero' ? 'home-tile--hero' : ''}`}
+    >
+      <ArrowUpRight weight="bold" aria-hidden="true" className="home-tile__more" />
+      {children}
+    </Link>
   );
 }
 

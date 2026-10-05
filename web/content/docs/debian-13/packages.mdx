@@ -1,0 +1,53 @@
+---
+title: "Debian 13 软件包全面更新"
+description: "Debian 13 (Trixie) 的工具链与桌面全面升级：Linux 6.12 LTS、Python 3.13、GCC 14.2、GNOME 48、KDE Plasma 6.3。"
+---
+
+Debian 13 (Trixie) 对内核、工具链和桌面环境做了一轮全面更新。相较 Debian 12，几乎所有核心组件都跨了主版本，同时保持了 Debian 一贯的稳定性标准。
+
+## 核心组件版本对照
+
+| 软件 | Debian 13 | Debian 12 | 主要改进 |
+|------|-----------|-----------|----------|
+| **Linux 内核** | 6.12 (LTS) | 6.1 (LTS) | 更好的新硬件支持与性能优化 |
+| **Python** | 3.13 | 3.11 | 执行更快，改进的错误提示 |
+| **GCC** | 14.2 | 12.2 | C++23 支持，更完整的语言特性 |
+| **GNOME** | 48 | 43 | 现代化界面，性能与内存优化 |
+| **KDE Plasma** | 6.3 | 5.27 | Qt 6 基础，Wayland 体验成熟 |
+| **LibreOffice** | 25.2 | 7.4 | 更好的文档兼容性 |
+| **Firefox ESR** | 128+ | 102 | 隐私保护与性能增强 |
+
+## 其他值得关注的版本
+
+- **systemd 257** - 更快的并行启动，改进的日志与 cgroup 管理
+- **OpenSSL 3.5** - 更强的默认加密算法
+- **LLVM/Clang 19** - 默认工具链可选
+- **Rust 1.85**、**PHP 8.4**、**PostgreSQL 17**、**OpenSSH 10.0**
+- 全库规模：约 **14,100 个新包**，总量约 **69,800 个**，另有约 44,300 个包获得更新
+
+## 桌面体验变化
+
+**Wayland 成为大多数桌面环境的默认会话**。GNOME 与 KDE Plasma 在 Wayland 下提供更流畅的动画、更好的多显示器缩放和触控板手势支持。X11 会话仍可选用，方便依赖旧 X11 程序的用户。
+
+## 验证当前版本
+
+```bash
+# 内核版本
+uname -r
+
+# 查询某个包可用的版本
+apt policy python3 gcc-14
+
+# 当前桌面环境
+echo "$XDG_CURRENT_DESKTOP"
+```
+
+## 下一步
+
+- [Debian 13 新特性总览](/basics/whats-new) - 查看全部变化
+- [选择桌面环境](/basics/desktop-environments) - GNOME / KDE / Xfce 对比
+- [版本与生命周期](/versions) - 各版本支持周期
+
+---
+
+**体验新版工具链与桌面：** [下载 Debian 13 →](/download)

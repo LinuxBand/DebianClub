@@ -1,0 +1,79 @@
+---
+title: "APT 3.0 and the deb822 sources format"
+description: "Debian 13 (Trixie) is the first stable release to ship APT 3.0: clearer columnar output, a new dependency solver, and deb822 debian.sources written by the installer by default."
+---
+
+Debian 13 (Trixie) is the first stable release to ship **APT 3.0**. It is a major upgrade: source configuration moves to the structured **deb822 format** (`.sources` files), command-line output is redesigned, and dependency resolution gets a new solver.
+
+## What APT 3.0 changes
+
+### Easier-to-read output
+
+Commands like `apt update` and `apt upgrade` switch to a **columnar layout**: installed, upgraded and removed packages are colour-coded and counted in separate columns:
+
+```bash
+sudo apt update
+sudo apt upgrade
+```
+
+No more scanning a single long line — "-44 packages can be upgraded", "3 newly installed" and "1 to remove" each get their own column.
+
+### A new dependency solver
+
+APT 3.0 rewrites dependency resolution. It proposes saner solutions for complex conflicts and far less often suggests removing essential packages.
+
+### The deb822 sources format
+
+The Debian 13 installer now writes the structured **deb822 format** to `/etc/apt/sources.list.d/debian.sources` by default, replacing the one-line `sources.list`:
+
+```bash
+# Old one-line format (sources.list)
+deb https://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+```
+
+```yaml
+# New deb822 format (debian.sources)
+Types: deb
+URIs: https://deb.debian.org/debian
+Suites: trixie trixie-updates trixie-backports
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+```
+
+deb822 spells every field out as `Key: value`, keeps comments and groups readable, and drops the `trixie/updates` slash notation — security updates are simply `trixie-security`:
+
+```yaml
+Types: deb
+URIs: https://security.debian.org/debian-security
+Suites: trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+```
+
+<Callout type="info" title="The old format still works">
+
+The one-line `/etc/apt/sources.list` format remains fully supported in Debian 13; APT reads both formats. Systems upgraded from Debian 12 do not need to migrate right away. Third-party sources (Docker, NVIDIA, etc.) will adopt deb822 over time.
+
+</Callout>
+
+## Inspect and adjust your sources
+
+```bash
+# Show the effective source configuration
+apt indextargets | grep -E '^(URI|SUITE|COMPONENTS)' | sort -u
+
+# Refresh indexes after editing
+sudo apt update
+```
+
+For mirror selection and regional acceleration see the [mirrors page](/basics/mirrors); full source configuration is covered in [basic configuration](/basics/configuration).
+
+## Next steps
+
+- [Package management](/administration/packages) - everyday apt / dpkg usage
+- [Upgrading from Debian 12](/basics/upgrade) - source changes during upgrade
+- [Debian 13 hub](/debian-13) - back to the release overview
+
+---
+
+**New installs should go straight to Debian 13:** [Download Debian 13 →](/download)

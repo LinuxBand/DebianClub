@@ -1,0 +1,54 @@
+---
+title: "Debian 13 and the year 2038"
+description: "In Debian 13 (Trixie) every architecture except i386 moves to a 64-bit time_t, so 32-bit ARM boards can represent dates beyond 2038 correctly."
+---
+
+Computers record time in a `time_t` type. On 32-bit systems, the traditional 32-bit signed `time_t` can only count up to **19 January 2038** before it overflows — the "year 2038 problem" (Y2038), essentially the millenium bug all over again, but for timekeeping.
+
+## How Debian 13 fixes it
+
+Debian 13 moves **every architecture except i386** to a 64-bit `time_t`, so dates well beyond 2038 are represented correctly. From the release announcement:
+
+> All architectures other than i386 now use a 64-bit time_t ABI, supporting dates beyond 2038.
+
+The most visible impact is on **32-bit ARM hardware** (`armhf`, single-board computers in particular): from Debian 13 on, system time on these devices is no longer bounded by 2038, so NTP synchronisation, certificate validity checks and scheduled jobs all keep working past 2038.
+
+<Callout type="warn" title="i386 keeps a 32-bit time_t">
+
+i386 keeps the 32-bit `time_t` for compatibility with existing 32-bit binaries, and Debian 13 ships no official i386 kernel or installer (i386 survives only as a multi-arch supplement for some software). If 32-bit hardware must run beyond 2038, pick an architecture such as `armhf`.
+
+</Callout>
+
+## One ABI change — what to watch for
+
+A 64-bit `time_t` changes the C binary interface (ABI) on 32-bit architectures:
+
+- **Regular users need to do nothing** — every package in the Debian 13 archive is built against the new ABI and upgrades as one piece
+- **Self-compiled 32-bit programs** must be rebuilt in a Debian 13 environment; they cannot mix with old 32-bit `time_t` binaries
+- **Third-party closed-source 32-bit ARM programs** need a vendor build against the new ABI
+
+## Verify the time_t size
+
+Compile and run this on a 32-bit Debian 13 system (armhf, for example):
+
+```c
+/* sizeof_time.c */
+#include <stdio.h>
+#include <time.h>
+
+int main(void) {
+    printf("sizeof(time_t) = %zu bytes\n", sizeof(time_t));
+    return 0;
+}
+```
+
+```bash
+gcc sizeof_time.c -o sizeof_time && ./sizeof_time
+# On Debian 13 armhf: sizeof(time_t) = 8 bytes (4 bytes on Debian 12)
+```
+
+## Next steps
+
+- [Debian 13 hub](/debian-13) - back to the release overview
+- [Hardware compatibility](/basics/hardware-compatibility) - what hardware is supported
+- [Download Debian 13](/download) - pick the architecture for your device

@@ -26,12 +26,13 @@ description: "The dedicated Debian 13 (Trixie) page: what's new, download and in
 
 ## 🚀 Key Changes from Debian 12
 
-- **Kernel**: Linux 6.12 LTS series (Debian 12 shipped 6.1 LTS)
-- **Desktop**: GNOME 48 and KDE Plasma 6.3 (Debian 12 shipped GNOME 43 / Plasma 5.27); Wayland is the default session for most desktops
+- **Kernel**: Linux 6.12 LTS series (Debian 12 shipped 6.1 LTS) — see [Refreshed packages](/en/debian-13/packages)
+- **Desktop**: GNOME 48 and KDE Plasma 6.3 (Debian 12 shipped GNOME 43 / Plasma 5.27); Wayland is the default session for most desktops — see [Refreshed packages](/en/debian-13/packages)
 - **Toolchain**: GCC 14, LLVM 19, Python 3.13, PHP 8.4
-- **Architectures**: riscv64 becomes an official architecture for the first time — seven in total
-- **Desktop experience**: `/tmp` mounts as tmpfs by default and is cleared on reboot
-- **Repositories**: the installer writes deb822-format `.sources` files by default (the format introduced in Debian 12)
+- **Architectures**: riscv64 becomes an official architecture for the first time — seven in total; see [Official riscv64](/en/debian-13/riscv64)
+- **System time**: every architecture except i386 moves to a 64-bit time_t; see [Ready for 2038](/en/debian-13/year-2038)
+- **Desktop experience**: `/tmp` mounts as tmpfs by default and is cleared on reboot — see [/tmp on tmpfs by default](/en/debian-13/tmp-tmpfs)
+- **Repositories**: the installer writes deb822-format `.sources` files by default (the format introduced in Debian 12) — see [APT 3.0 and deb822](/en/debian-13/apt-3)
 - **Firmware**: the `non-free-firmware` component continues (introduced in Debian 12); the installer auto-loads common hardware firmware
 
 For a full component comparison see [Versions & Lifecycle](/en/versions).

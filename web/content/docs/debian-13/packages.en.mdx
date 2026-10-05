@@ -1,0 +1,53 @@
+---
+title: "Refreshed packages in Debian 13"
+description: "Debian 13 (Trixie) upgrades the toolchain and desktop across the board: Linux 6.12 LTS, Python 3.13, GCC 14.2, GNOME 48 and KDE Plasma 6.3."
+---
+
+Debian 13 (Trixie) ships a sweeping refresh of the kernel, toolchain and desktops. Compared with Debian 12, nearly every core component moves up a major version while keeping Debian's usual stability bar.
+
+## Core component versions
+
+| Software | Debian 13 | Debian 12 | What improves |
+|----------|-----------|-----------|---------------|
+| **Linux kernel** | 6.12 (LTS) | 6.1 (LTS) | Better new-hardware support and performance |
+| **Python** | 3.13 | 3.11 | Faster execution, better error messages |
+| **GCC** | 14.2 | 12.2 | C++23 support, fuller language coverage |
+| **GNOME** | 48 | 43 | Modern UI, performance and memory gains |
+| **KDE Plasma** | 6.3 | 5.27 | Qt 6 base, mature Wayland experience |
+| **LibreOffice** | 25.2 | 7.4 | Better document compatibility |
+| **Firefox ESR** | 128+ | 102 | Privacy and performance improvements |
+
+## Other versions worth noting
+
+- **systemd 257** - faster parallel boot, improved logging and cgroup handling
+- **OpenSSL 3.5** - stronger defaults for encryption
+- **LLVM/Clang 19** - available as an alternative toolchain
+- **Rust 1.85**, **PHP 8.4**, **PostgreSQL 17**, **OpenSSH 10.0**
+- Archive size: about **14,100 new packages**, roughly **69,800 in total**, plus ~44,300 updates
+
+## Desktop experience
+
+**Wayland is now the default session for most desktop environments.** GNOME and KDE Plasma feel smoother on Wayland, with better multi-monitor scaling and touchpad gestures. X11 sessions remain available for users who depend on legacy X11 applications.
+
+## Verify your versions
+
+```bash
+# Kernel version
+uname -r
+
+# Available versions of a package
+apt policy python3 gcc-14
+
+# Current desktop environment
+echo "$XDG_CURRENT_DESKTOP"
+```
+
+## Next steps
+
+- [What's new in Debian 13](/basics/whats-new) - every change at a glance
+- [Choosing a desktop environment](/basics/desktop-environments) - GNOME / KDE / Xfce compared
+- [Versions & lifecycle](/versions) - support windows per release
+
+---
+
+**Try the new toolchain and desktops:** [Download Debian 13 →](/download)

@@ -1,0 +1,72 @@
+---
+title: "/tmp on tmpfs by default"
+description: "Debian 13 (Trixie) mounts /tmp as an in-memory tmpfs by default: faster temporary files, cleared on reboot. What changes, what to watch for, and how to revert."
+---
+
+Starting with Debian 13 (Trixie), the `/tmp` directory is **mounted as a tmpfs by default** (an in-memory filesystem, mounted through systemd's `tmp.mount` with `rw,nosuid`). Temporary files no longer hit the disk and are cleared automatically on reboot.
+
+## What changes
+
+| | Debian 12 and earlier | Debian 13 |
+|---|---|---|
+| Where `/tmp` lives | Disk (root filesystem) | **Memory (tmpfs)** |
+| After a reboot | Files remain | **Cleared automatically** |
+| Read/write speed | Limited by the disk | Close to memory speed |
+| Space limit | Free disk space | About half of RAM by default (tmpfs default, used on demand) |
+
+- **Faster** — build artifacts, extraction and caches do their temporary I/O in memory
+- **Cleaner** — a reboot wipes `/tmp`, so no stale temporary files pile up
+- **Kinder to SSDs** — frequent temporary writes stop wearing the disk
+
+`/var/tmp` stays on disk — temporary data that must survive a reboot (some crash dumps, packaging build trees) belongs there.
+
+## What to watch for
+
+<Callout type="warn" title="Files in /tmp do not survive a reboot">
+
+Any workflow that assumes files "stay in /tmp until I delete them" breaks. Half-downloaded files and unfinished script output are gone after a reboot. If you park important files in `/tmp` out of habit, it's time to change that habit.
+
+</Callout>
+
+- **Large files** — tmpfs content lives in memory (and can swap out). Writing multi-gigabyte files into `/tmp` on memory-constrained devices can create memory pressure
+- **Programs that assume /tmp is persistent** — the rare software that expects `/tmp` to survive reboots should switch to `/var/tmp`
+
+## Inspect and adjust
+
+```bash
+# Confirm the mount type of /tmp
+findmnt /tmp
+# Output looks like: tmpfs /tmp tmpfs rw,nosuid,...
+
+# Capacity and usage
+df -h /tmp
+```
+
+### Revert to a disk-backed /tmp
+
+If you want `/tmp` back on disk (small-memory machines, or services that need a huge `/tmp`):
+
+```bash
+# Mask the tmp.mount unit and /tmp falls back to the root filesystem (disk)
+sudo systemctl mask tmp.mount
+```
+
+Takes effect after a reboot. To go back to the default tmpfs, unmask:
+
+```bash
+sudo systemctl unmask tmp.mount
+```
+
+### Resize the tmpfs
+
+Add an `/etc/fstab` entry for `/tmp` to override the default size (fstab entries take priority):
+
+```text
+tmpfs /tmp tmpfs rw,nosuid,nodev,size=4G 0 0
+```
+
+## Next steps
+
+- [Debian 13 hub](/debian-13) - back to the release overview
+- [Disk & mount management](/administration/disk-management) - fstab and mounts in depth
+- [Basic configuration](/basics/configuration) - more system tuning

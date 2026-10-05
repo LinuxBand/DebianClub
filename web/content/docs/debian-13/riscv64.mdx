@@ -1,0 +1,40 @@
+---
+title: "Debian 13 官方支持 riscv64"
+description: "Debian 13 (Trixie) 首次将 riscv64 列为官方支持架构，RISC-V 硬件可以直接运行标准 Debian。"
+---
+
+Debian 13 (Trixie) 是**首个官方支持 riscv64（64 位 RISC-V）架构的 Debian 稳定版**。经过多年的移植开发，RISC-V 设备现在可以直接运行与 amd64、arm64 完全同源的标准 Debian，而不是非官方移植版。
+
+## 意味着什么
+
+在 Trixie 之前，riscv64 只能通过 [debian-ports](https://www.ports.debian.org/) 的非官方仓库使用。进入官方架构列表意味着：
+
+- **与官方架构同等的质量标准** - 安全更新（DSA）、点更新与 amd64 同步发布
+- **完整安装体验** - 官方提供 riscv64 的安装镜像与 debian-installer 支持
+- **约 69,800 个软件包** - 官方仓库对 riscv64 基本全覆盖
+
+Debian 13 共支持 7 个架构：amd64、arm64、armel、armhf、ppc64el、**riscv64**、s390x。
+
+<Callout type="info" title="硬件生态正在成长">
+
+riscv64 的典型落地硬件包括 StarFive VisionFive 2、Milk-V 系列等 RISC-V 开发板，以及新的 RISC-V 笔记本与服务器。驱动与固件成熟度因设备而异，生产部署前建议先在测试环境验证。
+
+</Callout>
+
+## 在 RISC-V 设备上安装
+
+1. 从[下载页](/download)或官方镜像站获取 riscv64 安装镜像
+2. 按[启动盘制作](/basics/bootable-media)写入介质（部分开发板需写入 SPI flash 或使用板级引导）
+3. 跟随[安装指南](/basics/installation)完成安装，流程与 amd64 一致
+
+安装后的软件管理、系统配置与其他架构完全相同。
+
+## 为什么重要
+
+RISC-V 是完全开源的指令集架构，没有任何授权费与专有限制。Debian 对 riscv64 的官方支持，让开源指令集与开源操作系统第一次以“官方组合”的方式落地，对开源硬件生态、教学与定制芯片场景都有长远意义。
+
+## 下一步
+
+- [Debian 13 专题](/debian-13) - 返回版本总览
+- [下载 Debian 13](/download) - 获取 riscv64 镜像
+- [硬件与驱动](/hardware) - 各架构硬件指南

@@ -1,0 +1,12 @@
+{
+  "title": "Debian 13 (Trixie)",
+  "pages": [
+    "index",
+    "apt-3",
+    "packages",
+    "year-2038",
+    "riscv64",
+    "tmp-tmpfs"
+  ],
+  "icon": "Star"
+}

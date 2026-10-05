@@ -1,0 +1,72 @@
+---
+title: "/tmp 默认使用 tmpfs"
+description: "Debian 13 (Trixie) 默认把 /tmp 挂载为内存文件系统 tmpfs：临时文件读写更快，重启自动清空。本文介绍行为变化、注意事项与恢复方法。"
+---
+
+从 Debian 13 (Trixie) 开始，`/tmp` 目录**默认挂载为 tmpfs**（基于内存的文件系统，经 systemd 的 `tmp.mount` 挂载，选项为 `rw,nosuid`）。临时文件不再写入磁盘，重启后自动清空。
+
+## 行为变化
+
+| | Debian 12 及更早 | Debian 13 |
+|---|---|---|
+| `/tmp` 位置 | 磁盘（根文件系统） | **内存（tmpfs）** |
+| 重启后 | 文件保留 | **自动清空** |
+| 读写速度 | 受磁盘限制 | 接近内存速度 |
+| 空间上限 | 磁盘剩余空间 | 默认约为内存的一半（tmpfs 默认值，按需占用） |
+
+- **更快** - 编译中间产物、解压、缓存等临时 I/O 直接走内存
+- **更干净** - 重启即清空，不会积累残留临时文件
+- **更省心** - SSD 寿命不再被频繁的临时写入消耗
+
+`/var/tmp` 仍保留在磁盘上——需要跨重启保存的临时数据（如某些软件的崩溃转储、打包构建目录）请放 `/var/tmp`。
+
+## 注意事项
+
+<Callout type="warn" title="/tmp 里的文件会被清空">
+
+任何“放在 /tmp 里想着重启后还在”的用法都会失效。下载到一半的文件、还没跑完的脚本输出，重启后都会消失。习惯把重要文件先放 `/tmp` 的用户需要调整习惯。
+
+</Callout>
+
+- **大文件** - tmpfs 数据占用内存（可被换出到 swap）。在内存紧张的设备上向 `/tmp` 写入超大文件（如数 GB 的镜像）可能触发内存压力
+- **依赖 /tmp 持久化的程序** - 极少数软件假设 `/tmp` 跨重启存在，这类程序应改用 `/var/tmp`
+
+## 查看与调整
+
+```bash
+# 确认 /tmp 的挂载类型
+findmnt /tmp
+# 输出形如：tmpfs /tmp tmpfs rw,nosuid,...
+
+# 查看容量与占用
+df -h /tmp
+```
+
+### 恢复为磁盘上的 /tmp
+
+如果希望 `/tmp` 回到磁盘（例如内存很小、或某些服务需要大容量 `/tmp`）：
+
+```bash
+# 屏蔽 tmp.mount 单元后，/tmp 回落到根文件系统（磁盘）
+sudo systemctl mask tmp.mount
+```
+
+重启后生效。想恢复默认 tmpfs 时解除屏蔽即可：
+
+```bash
+sudo systemctl unmask tmp.mount
+```
+
+### 调整 tmpfs 大小
+
+在 `/etc/fstab` 中为 `/tmp` 添加一行即可覆盖默认大小（fstab 条目优先生效）：
+
+```text
+tmpfs /tmp tmpfs rw,nosuid,nodev,size=4G 0 0
+```
+
+## 下一步
+
+- [Debian 13 专题](/debian-13) - 返回版本总览
+- [磁盘与挂载管理](/administration/disk-management) - fstab 与挂载详解
+- [系统配置](/basics/configuration) - 更多系统调优

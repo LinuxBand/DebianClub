@@ -424,35 +424,60 @@ export function pickFocus(locale: string | undefined): LandingFocus {
 }
 
 // "What's new in this release" bento (zh + en authored; other locales fall
-// back to en). Facts mirror content/docs/basics/whats-new.mdx.
+// back to en). Facts mirror content/docs/basics/whats-new.mdx. Each tile
+// links into a deep-dive page under content/docs/debian-13/ (hrefs are
+// locale-neutral paths — HomePage.href() resolves the localized route).
 export interface LandingRelease {
   released: (date: string, ltsEnd: string) => string;
   viewAll: string;
-  apt: { title: string; detail: string };
-  packages: { title: string; detail: string };
-  time: { title: string; detail: string };
-  riscv: { title: string; detail: string };
-  tmp: { title: string; detail: string };
+  hero: { href: string };
+  apt: { title: string; detail: string; href: string };
+  packages: { title: string; detail: string; href: string };
+  time: { title: string; detail: string; href: string };
+  riscv: { title: string; detail: string; href: string };
+  tmp: { title: string; detail: string; href: string };
 }
 
 const releaseZh: LandingRelease = {
   released: (date, ltsEnd) => `${date} 发布，LTS 支持至 ${ltsEnd}`,
   viewAll: '查看全部变化',
-  apt: { title: 'APT 3.0', detail: 'deb822 软件源格式，输出更清晰易读' },
-  packages: { title: '软件包全面更新', detail: 'GNOME 48、KDE Plasma 6.3 与新版工具链' },
-  time: { title: '2038 年问题就绪', detail: '32 位 ARM 改用 64 位 time_t' },
-  riscv: { title: 'riscv64 官方支持', detail: '首次正式支持 64 位 RISC-V 架构' },
-  tmp: { title: '/tmp 默认使用 tmpfs', detail: '临时文件放进内存，重启自动清空' },
+  hero: { href: '/debian-13' },
+  apt: { title: 'APT 3.0', detail: 'deb822 软件源格式，输出更清晰易读', href: '/debian-13/apt-3' },
+  packages: {
+    title: '软件包全面更新',
+    detail: 'GNOME 48、KDE Plasma 6.3 与新版工具链',
+    href: '/debian-13/packages',
+  },
+  time: { title: '2038 年问题就绪', detail: '32 位 ARM 改用 64 位 time_t', href: '/debian-13/year-2038' },
+  riscv: { title: 'riscv64 官方支持', detail: '首次正式支持 64 位 RISC-V 架构', href: '/debian-13/riscv64' },
+  tmp: {
+    title: '/tmp 默认使用 tmpfs',
+    detail: '临时文件放进内存，重启自动清空',
+    href: '/debian-13/tmp-tmpfs',
+  },
 };
 
 const releaseEn: LandingRelease = {
   released: (date, ltsEnd) => `Released ${date}, LTS until ${ltsEnd}`,
   viewAll: 'See every change',
-  apt: { title: 'APT 3.0', detail: 'deb822 sources and clearer, easier-to-read output' },
-  packages: { title: 'Refreshed packages', detail: 'GNOME 48, KDE Plasma 6.3 and a new toolchain' },
-  time: { title: 'Ready for 2038', detail: '32-bit ARM moves to a 64-bit time_t' },
-  riscv: { title: 'Official riscv64', detail: 'First release to support 64-bit RISC-V' },
-  tmp: { title: '/tmp on tmpfs by default', detail: 'Temporary files live in memory and clear on reboot' },
+  hero: { href: '/debian-13' },
+  apt: {
+    title: 'APT 3.0',
+    detail: 'deb822 sources and clearer, easier-to-read output',
+    href: '/debian-13/apt-3',
+  },
+  packages: {
+    title: 'Refreshed packages',
+    detail: 'GNOME 48, KDE Plasma 6.3 and a new toolchain',
+    href: '/debian-13/packages',
+  },
+  time: { title: 'Ready for 2038', detail: '32-bit ARM moves to a 64-bit time_t', href: '/debian-13/year-2038' },
+  riscv: { title: 'Official riscv64', detail: 'First release to support 64-bit RISC-V', href: '/debian-13/riscv64' },
+  tmp: {
+    title: '/tmp on tmpfs by default',
+    detail: 'Temporary files live in memory and clear on reboot',
+    href: '/debian-13/tmp-tmpfs',
+  },
 };
 
 export function pickRelease(locale: string | undefined): LandingRelease {

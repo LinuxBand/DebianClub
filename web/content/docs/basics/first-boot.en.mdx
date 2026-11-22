@@ -2,6 +2,8 @@
 title: "First Boot Setup"
 description: "Initial configuration and setup after installing Debian 13"
 ---
+<Verified date="2026-11-21" label="Verified">GNOME 48.7 / Wayland</Verified>
+
 
 <BootChain />
 
@@ -29,6 +31,26 @@ Password: [enter your password]
 # Switch to graphical mode (if available)
 sudo systemctl start gdm3
 ```
+
+## 🎛️ GNOME Settings (measured)
+
+Debian's GNOME does **not** run a multi-step "privacy / online accounts" initial-setup wizard (that is Ubuntu). After the first login you get a skippable welcome tour, then the desktop.
+
+![GNOME Settings](/images/verify/desktop/gnome-settings-en.png)
+
+![System: region, users, about](/images/verify/desktop/gnome-system-en.png)
+
+![Region & Language](/images/verify/desktop/gnome-region-en.png)
+
+![Users](/images/verify/desktop/gnome-users-en.png)
+
+![Displays](/images/verify/desktop/gnome-displays-en.png)
+
+![Sound](/images/verify/desktop/gnome-sound-en.png)
+
+![About](/images/verify/settings-about-en.png)
+
+Measured with GNOME 48.7 / Wayland at 1280x800.
 
 ## 📶 Network Configuration
 

@@ -1,7 +1,10 @@
 ---
 title: "Desktop Environments"
 description: "Choose and configure the perfect desktop environment for your Debian 13 system"
+verified: "2026-11-19"
 ---
+<Verified date="2026-11-21" label="Verified">GNOME 48.7 / Plasma 6.3.6 / Xfce 4.20.1</Verified>
+
 
 ![Debian desktop environments](/images/desktops.webp)
 
@@ -12,6 +15,12 @@ Explore different desktop environments available for Debian 13 and choose the on
 ### GNOME (Default)
 
 GNOME is the default desktop environment for Debian 13, offering a modern and clean interface.
+
+![GNOME 48 desktop](/images/verify/gnome-desktop-en.png)
+
+![System details: GNOME 48 / Wayland](/images/verify/system-details-en.png)
+
+Measured in a PVE VM: **GNOME 48.7**, **Wayland** by default, kernel 6.12.117. Without a GPU the graphics entry shows Software Rendering, which is expected.
 
 ```bash
 # Install GNOME (usually pre-installed)
@@ -51,6 +60,18 @@ sudo systemctl set-default graphical.target
 - Powerful file manager (Dolphin)
 - Integrated applications suite
 
+#### KDE Plasma (measured, Debian 13.6)
+
+![KDE Plasma 6.3 desktop](/images/verify/desktop/kde-desktop-en.png)
+
+![Kickoff application launcher](/images/verify/desktop/kde-launcher-en.png)
+
+![KDE System Settings](/images/verify/desktop/kde-settings-en.png)
+
+![Info Center: Plasma 6.3.6 / Wayland](/images/verify/desktop/kde-info-en.png)
+
+Installed with `task-kde-desktop`: **Plasma 6.3.6**, Qt 6.8.2, Wayland session.
+
 ### Xfce
 
 Lightweight and efficient, perfect for older hardware.
@@ -71,6 +92,18 @@ sudo apt install xfce4-dev-tools
 - Low resource usage
 - Traditional desktop metaphor
 - Highly configurable
+
+#### Xfce (measured, Debian 13.6)
+
+![Xfce 4.20 desktop](/images/verify/desktop/xfce-desktop-en.png)
+
+![Xfce Applications menu](/images/verify/desktop/xfce-menu-en.png)
+
+![Xfce Applications menu → Settings](/images/verify/desktop/xfce-settings-menu-en.png)
+
+![Xfce Settings Manager](/images/verify/desktop/xfce-settings-en.png)
+
+Installed with `task-xfce-desktop`: **Xfce 4.20.1**, top panel plus dock, Whisker-style Applications menu and Settings Manager.
 
 ### LXDE/LXQt
 

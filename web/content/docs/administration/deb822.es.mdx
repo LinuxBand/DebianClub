@@ -1,9 +1,11 @@
 ---
 title: "Formato de fuente deb822 (.sources)"
-description: "Guía completa del formato de fuentes de software deb822/.sources adoptado por defecto en Debian 13, con explicación de campos, configuración de fuentes de terceros y migración con un solo comando."
+description: "Guía del formato deb822/.sources: campos, fuentes de terceros y migración desde la sources.list clásica; el instalador de 13.6 sigue escribiendo sources.list de una línea por defecto."
 ---
+<Verified date="2026-11-19" label="Verificado">APT 3.0.3</Verified>
 
-Introducido a partir de Debian 12 y convertido en el formato predeterminado en **Debian 13 (Trixie)**, el formato **deb822** es una forma más clara y fácil de mantener para configurar las fuentes de software. Utiliza la extensión `.sources`, donde cada fuente se describe en múltiples líneas con el formato «clave: valor», reemplazando la tradicional línea única `deb`.
+
+**deb822** se introdujo en Debian 12 y APT 3.0 lo admite por completo en Debian 13, pero es **opcional**: el instalador de 13.6 sigue escribiendo la `sources.list` clásica de una línea. El formato usa la extensión `.sources`, donde cada fuente se describe en varias líneas «clave: valor», lo que resulta más claro para varios `Suites` y `Signed-By`.
 
 ## Formato tradicional vs formato deb822
 
@@ -31,7 +33,7 @@ Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
 
-Después de una instalación nueva de Debian 13, la fuente oficial se guarda en `/etc/apt/sources.list.d/debian.sources`, mientras que el tradicional `/etc/apt/sources.list` suele estar vacío o no existir.
+Tras una instalación nueva de Debian 13.6, las fuentes oficiales se escriben realmente en `/etc/apt/sources.list` (una línea); `/etc/apt/sources.list.d/` está vacío. La afirmación de que el instalador genera `debian.sources` no coincide con lo observado.
 
 ## Explicación de campos
 
@@ -90,7 +92,7 @@ Simplemente cambie los `URIs` del archivo `debian.sources` oficial por un espejo
 ```text
 Types: deb
 URIs: https://mirrors.tuna.tsinghua.edu.cn/debian
-Suites: trixie trixie-updates trixie-backports
+Suites: trixie trixie-updates
 Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 

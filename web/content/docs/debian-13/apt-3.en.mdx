@@ -1,79 +1,115 @@
 ---
-title: "APT 3.0 and the deb822 sources format"
-description: "Debian 13 (Trixie) is the first stable release to ship APT 3.0: clearer columnar output, a new dependency solver, and deb822 debian.sources written by the installer by default."
+title: "APT 3.0 and deb822 Sources"
+description: "Debian 13 (Trixie) ships APT 3.0 with columnar output and a new solver. deb822 is supported but optional: the 13.6 installer still writes a one-line sources.list."
+verified: "2026-11-19"
 ---
+<Verified date="2026-11-21" label="Verified">Debian 13.6 / APT 3.0.3</Verified>
 
-Debian 13 (Trixie) is the first stable release to ship **APT 3.0**. It is a major upgrade: source configuration moves to the structured **deb822 format** (`.sources` files), command-line output is redesigned, and dependency resolution gets a new solver.
 
-## What APT 3.0 changes
+Debian 13 (Trixie) is the first stable release with **APT 3.0**. It brings a redesigned command-line output and a new dependency solver; for sources, APT 3.0 **supports both** the classic one-line `sources.list` and deb822 `.sources` files.
 
-### Easier-to-read output
+## What APT 3.0 Changes
 
-Commands like `apt update` and `apt upgrade` switch to a **columnar layout**: installed, upgraded and removed packages are colour-coded and counted in separate columns:
+### More Readable Output
+
+`apt update`, `apt upgrade` and friends now use a **column layout** with counts for packages to install, upgrade and remove:
 
 ```bash
 sudo apt update
 sudo apt upgrade
 ```
 
-No more scanning a single long line — "-44 packages can be upgraded", "3 newly installed" and "1 to remove" each get their own column.
+![apt update on Debian 13.6](/images/verify/apt/apt-update-en.png)
 
-### A new dependency solver
+### New Dependency Solver
 
-APT 3.0 rewrites dependency resolution. It proposes saner solutions for complex conflicts and far less often suggests removing essential packages.
+APT 3.0 rewrote dependency resolution so complex conflicts produce saner plans and fewer "remove half the system" proposals.
 
-### The deb822 sources format
+## What the Installer Actually Writes
 
-The Debian 13 installer now writes the structured **deb822 format** to `/etc/apt/sources.list.d/debian.sources` by default, replacing the one-line `sources.list`:
+A common claim is that "Debian 13 installs deb822 `debian.sources` by default". **That is not what 13.6 does.**
+
+After a Debian 13.6.0 netinst install, the installer writes the classic one-line `/etc/apt/sources.list`; `/etc/apt/sources.list.d/` is empty:
 
 ```bash
-# Old one-line format (sources.list)
-deb https://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+# /etc/apt/sources.list (actual output from Debian 13.6)
+deb cdrom:[Debian GNU/Linux 13.6.0 _Trixie_ - Official amd64 NETINST ...]/ trixie contrib main non-free-firmware
+
+deb http://deb.debian.org/debian/ trixie main non-free-firmware
+deb-src http://deb.debian.org/debian/ trixie main non-free-firmware
+
+deb http://security.debian.org/debian-security trixie-security main non-free-firmware
+deb-src http://security.debian.org/debian-security trixie-security main non-free-firmware
+
+deb http://deb.debian.org/debian/ trixie-updates main non-free-firmware
+deb-src http://deb.debian.org/debian/ trixie-updates main non-free-firmware
 ```
 
+Three details:
+
+- **No `trixie-backports` by default**; add it manually if needed.
+- Default components are only `main` and `non-free-firmware`, not `contrib`/`non-free`.
+- `deb-src` lines are written too (source repositories are enabled by default).
+
+<Callout type="info" title="Verified environment">
+
+Debian 13.6.0 amd64 netinst (2026-07-11 build), PVE 9.2.2 + OVMF, mirror set to `deb.debian.org` during install. The mirror host varies, but the **format is one-line**.
+
+</Callout>
+
+## deb822 Format (Optional)
+
+deb822 writes each source as multi-line `Key: value` blocks. It is clearer for multiple `Suites`, `Components` or `Signed-By`, and APT 3.0 fully supports it, but it is **optional**, not the installer default:
+
 ```yaml
-# New deb822 format (debian.sources)
+# /etc/apt/sources.list.d/debian.sources
 Types: deb
 URIs: https://deb.debian.org/debian
-Suites: trixie trixie-updates trixie-backports
-Components: main contrib non-free non-free-firmware
+Suites: trixie trixie-updates
+Components: main non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
 
-deb822 spells every field out as `Key: value`, keeps comments and groups readable, and drops the `trixie/updates` slash notation — security updates are simply `trixie-security`:
+Security updates usually live in a separate file:
 
 ```yaml
 Types: deb
 URIs: https://security.debian.org/debian-security
 Suites: trixie-security
-Components: main contrib non-free non-free-firmware
+Components: main non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
 
-<Callout type="info" title="The old format still works">
+<Callout type="warn" title="Do not mix both formats for the same source">
 
-The one-line `/etc/apt/sources.list` format remains fully supported in Debian 13; APT reads both formats. Systems upgraded from Debian 12 do not need to migrate right away. Third-party sources (Docker, NVIDIA, etc.) will adopt deb822 over time.
+`/etc/apt/sources.list` and `sources.list.d/*.sources` are read together. When migrating, back up and remove the old file, or `apt update` will see duplicate sources.
 
 </Callout>
 
-## Inspect and adjust your sources
+## Inspect and Adjust Sources
 
 ```bash
-# Show the effective source configuration
-apt indextargets | grep -E '^(URI|SUITE|COMPONENTS)' | sort -u
+# List active sources (APT 3.0: use apt-get indextargets)
+apt-get indextargets | grep -E '^(Repo-URI|Suite|Component):' | sort -u
 
-# Refresh indexes after editing
+# Refresh indexes after changes
 sudo apt update
 ```
 
-For mirror selection and regional acceleration see the [mirrors page](/basics/mirrors); full source configuration is covered in [basic configuration](/basics/configuration).
+`apt indextargets` is not a valid subcommand in APT 3.0 and fails with `Invalid operation indextargets`; use `apt-get indextargets`.
 
-## Next steps
+![apt-get indextargets on Debian 13.6](/images/verify/apt/indextargets-en.png)
 
-- [Package management](/administration/packages) - everyday apt / dpkg usage
-- [Upgrading from Debian 12](/basics/upgrade) - source changes during upgrade
-- [Debian 13 hub](/debian-13) - back to the release overview
+The measured `Suite` values are `stable`, `stable-security`, and `stable-updates` (aliases, not `trixie`); components are only `main` and `non-free-firmware`.
+
+See [mirrors](/en/basics/mirrors) for mirror choices and [system configuration](/en/basics/configuration) for the full source configuration.
+
+## Next
+
+- [Package management](/en/administration/packages) - daily apt / dpkg usage
+- [Upgrade from Debian 12](/en/basics/upgrade) - source changes during upgrade
+- [Debian 13 hub](/en/debian-13) - release overview
 
 ---
 
-**New installs should go straight to Debian 13:** [Download Debian 13 →](/download)
+**New installs should use Debian 13:** [Download Debian 13 →](/en/download)

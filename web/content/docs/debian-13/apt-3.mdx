@@ -1,9 +1,14 @@
 ---
 title: "APT 3.0 与 deb822 软件源"
-description: "Debian 13 (Trixie) 首次搭载 APT 3.0：更清晰的分栏输出、新的依赖求解器，安装器默认写入 deb822 格式的 debian.sources。"
+description: "Debian 13 (Trixie) 首次搭载 APT 3.0：更清晰的分栏输出、新的依赖求解器。deb822 是可选的新格式，但 13.6 安装器仍默认写入一行式 sources.list。"
+verified: "2026-11-19"
 ---
+<Verified date="2026-11-19" label="实测验证">Debian 13.6.0 / APT 3.0.3</Verified>
 
-Debian 13 (Trixie) 是首个搭载 **APT 3.0** 的稳定版。这是一次大版本升级：软件源配置默认改用 **deb822 格式**（`.sources` 文件），命令行输出重新设计，依赖解析也换了新的求解器。
+
+Debian 13 (Trixie) 是首个搭载 **APT 3.0** 的稳定版。这是一次大版本升级：命令行输出重新设计，依赖解析换了新的求解器；软件源方面，APT 3.0 **同时支持**传统一行式 `sources.list` 和 deb822 的 `.sources` 文件。
+
+> 版本说明：13.6 安装介质自带 APT **3.0.3**；装完 `apt upgrade` 后为 **3.0.4**（2026-11-20 实测），本文命令在两个版本上一致。
 
 ## APT 3.0 带来了什么
 
@@ -18,53 +23,88 @@ sudo apt upgrade
 
 不再需要从一长串单行文本里找重点，`-44 个软件包可升级`、`新安装 3 个`、`删除 1 个` 各占一栏。
 
+![apt update 实测输出](/images/verify/apt/apt-update-zh.png)
+
 ### 新的依赖求解器
 
 APT 3.0 重写了依赖解析逻辑，处理复杂冲突时给出的方案更合理，删除系统关键包这类“过激方案”更少出现。
 
-### deb822 软件源格式
+## 安装器实际写入的软件源
 
-Debian 13 的安装器**默认写入 deb822 格式**的 `/etc/apt/sources.list.d/debian.sources`，取代单行的 `sources.list`：
+网上很多文章说“Debian 13 安装器默认写入 deb822 的 `debian.sources`”，**实测并非如此**。
+
+Debian 13.6.0 netinst 在完成安装后，写入的是传统一行式 `/etc/apt/sources.list`，`/etc/apt/sources.list.d/` 为空：
 
 ```bash
-# 旧的 one-line 格式（sources.list）
-deb https://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+# /etc/apt/sources.list（Debian 13.6 安装器实测输出）
+deb cdrom:[Debian GNU/Linux 13.6.0 _Trixie_ - Official amd64 NETINST ...]/ trixie contrib main non-free-firmware
+
+deb http://deb.debian.org/debian/ trixie main non-free-firmware
+deb-src http://deb.debian.org/debian/ trixie main non-free-firmware
+
+deb http://security.debian.org/debian-security trixie-security main non-free-firmware
+deb-src http://security.debian.org/debian-security trixie-security main non-free-firmware
+
+deb http://deb.debian.org/debian/ trixie-updates main non-free-firmware
+deb-src http://deb.debian.org/debian/ trixie-updates main non-free-firmware
 ```
 
+注意三点：
+
+- **默认没有 `trixie-backports`**，需要时手动加；
+- 默认组件只有 `main` 和 `non-free-firmware`，没有 `contrib`、`non-free`；
+- `deb-src` 行默认也会写入（安装器默认启用源码仓库）。
+
+<Callout type="info" title="实测环境">
+
+Debian 13.6.0 amd64 netinst（2026-07-11 构建），PVE 9.2.2 + OVMF，安装时选择“中国 / deb.debian.org”镜像。不同镜像、不同安装模式写出的主机名会不同，但**格式是一行式**，这一点不变。
+
+</Callout>
+
+## deb822 格式（可选）
+
+deb822 把每个源写成多行「键: 值」，比一行式更清晰，适合需要多个 `Suites`、`Components` 或 `Signed-By` 的场景。APT 3.0 完全支持，但它是**可选格式**，不是安装器默认：
+
 ```yaml
-# 新的 deb822 格式（debian.sources）
+# /etc/apt/sources.list.d/debian.sources
 Types: deb
 URIs: https://deb.debian.org/debian
-Suites: trixie trixie-updates trixie-backports
-Components: main contrib non-free non-free-firmware
+Suites: trixie trixie-updates
+Components: main non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
 
-deb822 把每个字段写成 `键: 值` 的结构化形式，注释和分组更清晰，也不再需要记 `trixie/updates` 这类斜杠写法——安全更新直接写 `trixie-security`：
+安全更新单独一个文件：
 
 ```yaml
 Types: deb
 URIs: https://security.debian.org/debian-security
 Suites: trixie-security
-Components: main contrib non-free non-free-firmware
+Components: main non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
 
-<Callout type="info" title="旧格式仍然支持">
+<Callout type="warn" title="不要两种写法混用同一批源">
 
-`/etc/apt/sources.list` 的单行格式在 Debian 13 中依然有效，APT 会同时读取两种格式。从 Debian 12 升级上来的系统不需要立即迁移。第三方软件源（Docker、NVIDIA 等）会逐步跟进 deb822。
+`/etc/apt/sources.list` 和 `sources.list.d/*.sources` 会同时生效。迁移时先备份并移走旧文件，避免同一个源出现两份、`apt update` 报重复。
 
 </Callout>
 
 ## 查看与调整软件源
 
 ```bash
-# 查看当前生效的软件源配置
-apt indextargets | grep -E '^(URI|SUITE|COMPONENTS)' | sort -u
+# 查看当前生效的软件源（APT 3.0 可用；注意是 apt-get indextargets）
+apt-get indextargets | grep -E '^(Repo-URI|Suite|Component):' | sort -u
 
 # 修改后刷新索引
 sudo apt update
 ```
+
+`apt indextargets` 在 APT 3.0 中不是合法子命令，会报 `Invalid operation indextargets`；需要写成 `apt-get indextargets`。
+
+![apt-get indextargets 实测输出](/images/verify/apt/indextargets-zh.png)
+
+实测输出里 `Suite` 是 `stable`、`stable-security`、`stable-updates` 这类别名，不是 `trixie`；`Component` 只有 `main` 和 `non-free-firmware`。
 
 镜像站选择、国内加速见[镜像源页](/basics/mirrors)；完整的源配置说明见[系统配置](/basics/configuration)。
 

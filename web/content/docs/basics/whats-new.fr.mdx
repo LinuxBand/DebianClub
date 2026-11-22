@@ -3,7 +3,7 @@ title: "Quoi de neuf dans Debian 13"
 description: "Nouvelles fonctionnalités, améliorations et changements importants dans Debian 13 (Trixie)"
 ---
 
-Debian 13 sous le nom de code "Trixie" a été officiellement publiée en août 2025 et est la version stable actuelle. Depuis septembre 2026, la dernière version de point est **13.7**.
+Debian 13 sous le nom de code "Trixie" a été officiellement publiée en août 2025 et est la version stable actuelle. Depuis novembre 2026, la dernière version de point est **13.8**.
 
 ## Principales nouvelles fonctionnalités
 
@@ -33,6 +33,14 @@ main contrib non-free-firmware
 main contrib non-free
 ```
 
+## 🧩 Version ponctuelle 13.8 (2026-11-21)
+
+La 13.8 est parue le 2026-11-21 : corrections de sécurité et quelques bogues graves. Ce n'est pas une nouvelle version de Debian 13 ; les supports d'installation existants restent utilisables.
+
+Corrections notables : contournement de Secure Boot dans GRUB (CVE-2026-97876), plusieurs erreurs mémoire dans glibc, mises à jour OpenSSL, MariaDB et microcode Intel, correctifs KWin pour la gestion des couleurs Wayland, et tzdata actualisé (Cuba en heure d'été permanente).
+
+Mise à jour habituelle : `sudo apt update && sudo apt full-upgrade`.
+
 ## Calendrier des versions
 
 | Version | Date | Statut |
@@ -44,7 +52,8 @@ main contrib non-free
 | Debian 13.4 | 2026-03-14 | Version de point |
 | Debian 13.5 | 2026-05-16 | Version de point |
 | Debian 13.6 | 2026-07-11 | Version de point précédente |
-| Debian 13.7 | 2026-09-12 | Version de point actuelle |
+| **13.7** | 2026-09-12 | Version de point précédente |
+| **13.8** | 2026-11-21 | Version de point actuelle |
 
 ## Liens utiles
 

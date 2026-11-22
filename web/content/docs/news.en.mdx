@@ -9,15 +9,21 @@ This page summarizes recent important updates from the Debian project, helping y
 
 ### Version Releases
 
+#### Debian 13.8 Released (2026-11-21)
+
+Debian 13.8 was released on **2026-11-21**. It is the eighth point update of Debian 13 (Trixie), with security fixes and critical bug fixes.
+
+- [Announcement](https://www.debian.org/News/2026/20261121)
+- [Download Debian 13.8](/download)
+
 #### Debian 13.7 Released (2026-09-12)
 
 Debian 13.7 was released on **2026-09-12**. It is the seventh point update of Debian 13 (Trixie) and contains security fixes and critical bug fixes.
 
-Further point releases are already scheduled: **13.8** is planned for **2026-11-14**, followed by 13.9 (2027-01-09), 13.10 (2027-03-13), and 13.11 (2027-05-08); confirmed dates are announced via [debian-stable-announce](https://lists.debian.org/debian-stable-announce/).
+Next point releases: 13.8 shipped on 2026-11-21; 13.9 (2027-01-16), 13.10 (2027-03-13), and 13.11 (2027-05-08) are scheduled, subject to [debian-stable-announce](https://lists.debian.org/debian-stable-announce/).
 
-- [Official announcement](https://www.debian.org/News/2026/20260912)
-- [Debian Release Management](https://release.debian.org/)
-- [Debian Releases](https://www.debian.org/releases/)
+- [Announcement](https://www.debian.org/News/2026/20260912)
+- [Release management](https://release.debian.org/)
 
 #### Debian 11 (Bullseye) LTS Has Ended (2026-08-31)
 
@@ -37,7 +43,7 @@ DebConf26 closed on July 25, 2026 in Santa Fe, Argentina. More than 270 attendee
 #### Debian 13.6 and 12.15 Released (2026-07-11)
 
 On 2026-07-11, Debian released two point updates simultaneously:
-- **Debian 13.6**: Sixth point update of the current stable release (Trixie), with security fixes and critical bug fixes
+- **Debian 13.6**: Sixth point update of the stable release (Trixie), with security fixes and critical bug fixes
 - **Debian 12.15**: Routine point update of oldstable (Bookworm), and the final point update within its regular security support period
 
 - [Debian Release Information](https://www.debian.org/releases/)
@@ -81,13 +87,13 @@ On January 10, 2026, Debian simultaneously released:
 
 ### Cloud & Containers
 
-#### Debian 13 Cloud and Container Images Updated (2026-10-04)
+#### Debian 13 Cloud and Container Images Updated (2026-11-16)
 
-The latest official Debian 13 cloud image build is **20261001-2618** (2026-10-01). It supports AWS EC2, Microsoft Azure, OpenStack, and local QEMU/plain VM use, with `generic`, `genericcloud`, `nocloud`, `ec2`, and `azure` image types. Current AWS AMIs are `debian-13-amd64-20261001-2618` / `debian-13-arm64-20261001-2618`; the Azure image URN is `Debian:debian-13:13:latest`.
+The latest official Debian 13 cloud image build is **20261116-2664** (2026-11-16). It supports AWS EC2, Microsoft Azure, OpenStack, and local QEMU/plain VM use, with `generic`, `genericcloud`, `nocloud`, `ec2`, and `azure` image types. Current AWS AMIs are `debian-13-amd64-20261116-2664` / `debian-13-arm64-20261116-2664`; the Azure image URN is `Debian:debian-13:13:latest`.
 
-- Debian 12 LTS cloud images were refreshed on **2026-09-23**; Debian 11 reached EOL on 2026-08-31 and its cloud images no longer receive Debian security updates.
+- Debian 12 LTS cloud images were refreshed on **2026-11-17**; Debian 11 reached EOL on 2026-08-31 and its cloud images no longer receive Debian security updates.
 - Debian 14 (Forky) testing daily cloud images are available for testing, not production.
-- The official Docker images `debian:13` / `debian:13-slim` were updated to 13.7 (2026-09-19); pin a point-release tag or digest for production containers.
+- The official Docker images `debian:13` / `debian:13-slim` were updated to 13.8; pin a point-release tag or digest for production containers.
 - Debian 13.7 was released on 2026-09-12; cloud and Docker images have been updated accordingly.
 
 - [Debian official cloud images](https://cloud.debian.org/images/cloud/)
@@ -167,7 +173,7 @@ Debian continues to welcome new members:
 
 ### Security Maintenance
 
-The Debian Security Team continues to publish DSA (Debian Security Advisory) and DLA (Debian LTS Advisory) notices. As of 2026-09-26, recent advisories cover ghostscript, vlc, php8.4, chromium, libreoffice, nginx, xorg-server, network-manager, firefox-esr, thunderbird, linux, and others; the latest numbers include DSA-6516-1 (ghostscript), DSA-6515-1 (vlc), DSA-6514-1 (php8.4), DSA-6513-1 (chromium), DSA-6501-1 (firefox-esr), plus DLA-4796-1 (evolution-data-server), DLA-4795-1 (openssl), and DLA-4790-1 (chromium).
+The Debian Security Team continues to publish DSA (Debian Security Advisory) and DLA (Debian LTS Advisory) notices. As of 2026-11-21, recent advisories cover ghostscript, vlc, php8.4, chromium, libreoffice, nginx, xorg-server, network-manager, firefox-esr, thunderbird, linux, and others; the latest numbers include DSA-6516-1 (ghostscript), DSA-6515-1 (vlc), DSA-6514-1 (php8.4), DSA-6513-1 (chromium), DSA-6501-1 (firefox-esr), plus DLA-4796-1 (evolution-data-server), DLA-4795-1 (openssl), and DLA-4790-1 (chromium).
 
 - Stable (Debian 13) is maintained by the Security Team
 - Debian 12 (Bookworm) moved to LTS team maintenance on 2026-07-12; LTS support for Debian 11 (Bullseye) ended on 2026-08-31 — Debian no longer provides security updates, and a subset of packages is covered by third-party ELTS until 2031-06-30; systems still running it should be migrated or retired promptly

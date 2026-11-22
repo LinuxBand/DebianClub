@@ -10,6 +10,7 @@ import { DownloadPage } from './DownloadPage';
 import { SkillsCatalog } from './SkillsCatalog';
 import { InteractiveTools } from './InteractiveTools';
 import { PackageSearch } from './PackageSearch';
+import { Verified } from './Verified';
 
 export function getMDXComponents(components?: MDXComponents) {
   return {
@@ -26,6 +27,7 @@ export function getMDXComponents(components?: MDXComponents) {
     SkillsCatalog,
     InteractiveTools,
     PackageSearch,
+    Verified,
     ...components,
   } satisfies MDXComponents;
 }

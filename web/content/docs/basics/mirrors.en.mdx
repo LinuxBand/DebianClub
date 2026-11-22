@@ -1,9 +1,12 @@
 ---
 title: "Changing APT Mirrors"
-description: "Switch Debian 13 to a faster APT mirror: deb822 .sources and the classic sources.list formats, a comparison of popular mirrors, the security line, and common errors."
+description: "Switch Debian 13 to a faster APT mirror: classic sources.list (installer default) and optional deb822 .sources, mirror comparison, security line and common errors."
+verified: "2026-11-19"
 ---
+<Verified date="2026-11-21" label="Verified">Debian 13.6</Verified>
 
-Access to `deb.debian.org` can be slow depending on where you are; switching APT to a nearby mirror makes `apt update` an order of magnitude faster. Debian 13 uses the **deb822 format** (the installer writes `/etc/apt/sources.list.d/debian.sources` by default); the classic one-line-per-repo format (`/etc/apt/sources.list`) keeps working too. Pick one — don't mix both.
+
+Access to `deb.debian.org` can be very slow: measured **15-56 KB/s** in China, versus **25 MB/s** from Tsinghua TUNA. Debian 13.6's installer writes the **classic one-line** `/etc/apt/sources.list` (and leaves `sources.list.d/` empty); deb822 `.sources` is an **optional** format supported by APT 3.0. Pick one — don't mix both.
 
 ## Popular mirrors
 
@@ -22,7 +25,7 @@ A common mistake is switching the main repo while `trixie-security` still points
 
 </Callout>
 
-## Option 1: deb822 format (Debian 13 default)
+## Option 1: deb822 format (optional)
 
 Edit `/etc/apt/sources.list.d/debian.sources` (using the official source, MIT as an example):
 
@@ -34,9 +37,11 @@ Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
 
-`Suites` should include `trixie`, `trixie-updates`, and **`trixie-security`**. Security updates ship from the `debian-security` suite; keep an eye on whether your mirror also carries it (major mirrors do, under the same domain).
+`Suites` should include `trixie`, `trixie-updates`, and **`trixie-security`**. Security updates usually ship from the `debian-security` suite; a separate entry (as in Option 2) is safer, because some mirrors host it under a different domain.
 
-## Option 2: classic sources.list format
+The installer enables only `main non-free-firmware` by default; add `contrib`/`non-free` yourself if needed.
+
+## Option 2: classic sources.list (13.6 installer default)
 
 Edit `/etc/apt/sources.list`:
 
@@ -54,6 +59,12 @@ Note the security line lives under `debian-security`, not `/debian/ trixie-secur
 sudo apt update
 apt policy firefox-esr | head -5
 ```
+
+![apt update hitting the mirror](/images/verify/apt/apt-update-en.png)
+
+Note: the installer rewrites only the main repository; `trixie-security` still points at `security.debian.org` (third line in the screenshot). Edit it manually if you want security traffic on the mirror too.
+
+![apt policy after switching the mirror](/images/verify/apt/apt-policy-en.png)
 
 A clean `apt update` plus candidate versions pointing at the mirror means the switch worked. 404s during upgrade usually mean a typo in the suites or a mirror that hasn't finished syncing.
 

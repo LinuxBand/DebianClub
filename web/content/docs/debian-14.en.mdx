@@ -5,11 +5,13 @@ description: "The dedicated Debian 14 (Forky) page: current development status, 
 
 ![Debian 14 (Forky) illustration](/images/hero-forky.png)
 
-<Callout type="info" title="Current status (2026-09-26)">
+<Callout type="info" title="Current status (2026-11-21)">
 
-Debian 14 carries the codename **Forky** and is currently the **testing** development branch. As of September 2026, testing tracks the **Linux 7.2** kernel series; **freeze and release dates have not been announced**. The current stable release remains [Debian 13 (Trixie)](/en/versions). This page is updated as Debian publishes announcements.
+Debian 14 carries the codename **Forky** and is currently the **testing** development branch. As of September 2026, testing tracks the **Linux 6.19** kernel series; **freeze and release dates have not been announced**. The current stable release remains [Debian 13 (Trixie)](/en/versions). This page is updated as Debian publishes announcements.
 
 </Callout>
+
+> Version data checked on 2026-11-20 against [packages.debian.org/forky](https://packages.debian.org/forky/). testing moves fast; the archive is authoritative.
 
 <ReleaseTimeline />
 
@@ -19,7 +21,7 @@ Debian 14 carries the codename **Forky** and is currently the **testing** develo
 |------|--------|
 | **Codename** | Forky (a Toy Story 4 character, per Debian's naming tradition) |
 | **Current phase** | testing: packages from unstable (Sid) migrate in automatically once they qualify |
-| **Kernel** | Linux 7.2 series (7.2.6+deb14 in testing since 2026-09) |
+| **Kernel** | Linux 6.19 series (6.19.10+deb14 in testing since 2026-09) |
 | **Freeze schedule** | Not yet announced |
 | **Expected release** | Around 2027 (Debian ships roughly every two years; no fixed date) |
 | **Production advice** | Stay on [Debian 13](/en/download); never run testing in production |
@@ -36,7 +38,7 @@ Following Debian tradition, releases are named after Toy Story characters. On 20
 |------|-------|
 | 2025-07-19 | Release Team announces the Forky codename (Let's Fork(y)!) |
 | 2025-08-09 | Debian 13 (Trixie) released; testing continues as Forky |
-| 2026-09 | Linux 7.2.6+deb14 kernel lands in Forky testing |
+| 2026-09 | Linux 6.19.10+deb14 kernel lands in Forky testing |
 | 2026-11 – 2027-05 | Trixie point-release schedule (13.8–13.11), running in parallel with Forky development |
 
 ### Reference: the Trixie freeze cadence
@@ -55,39 +57,39 @@ What the stages mean: the transition freeze stops large library migrations; afte
 
 ## 🛰️ Progress Tracker
 
-> Reverse-chronological log of verifiable Forky / testing activity, updated as Debian publishes (last checked: **2026-09-26**). Sources: the deb.debian.org archive index, packages.debian.org, and sources.debian.org.
+> Reverse-chronological log of verifiable Forky / testing activity, updated as Debian publishes (last checked: **2026-11-21**). Sources: the deb.debian.org archive index, packages.debian.org, and sources.debian.org.
 
 ### Recent developments
 
 - **2026-09: default toolchain switched** — `python3` in testing now defaults to **3.14** (3.14.7) and GCC defaults to **16.1** (gcc-15.3 remains available), paving the way for large-scale package rebuilds
-- **2026-09: Linux 7.2.6+deb14 landed in testing** — the kernel jumps from Trixie's 6.12 LTS series to 7.2
-- **2026-09: major desktop and base components in place** — GNOME 50.5, KDE Plasma 6.7.4, systemd 261.2, glibc 2.43, LibreOffice 26.8, Firefox ESR 140.16
+- **2026-09: Linux 6.19.10+deb14 landed in testing** — the kernel jumps from Trixie's 6.12 LTS series to 6.19
+- **2026-09: major desktop and base components in place** — GNOME 51.0, KDE Plasma 6.7.4, systemd 262.2, glibc 2.43, LibreOffice 26.8, Firefox ESR 153.5.1
 - **From 2026-11: Trixie point releases 13.8–13.11 ship on schedule** — before Forky freezes, release management stays focused on Trixie's stable maintenance
 
-### Testing component snapshot (forky/main amd64, 2026-09-26)
+### Testing component snapshot (forky/main amd64, 2026-11-21)
 
 | Component | Forky testing | Debian 13 baseline |
 |-----------|---------------|--------------------|
-| Linux kernel | 7.2.6 | 6.12 LTS |
-| systemd | 261.2 | 257.13 |
+| Linux kernel | 6.19.10 | 6.12 LTS |
+| systemd | 262.2 | 257.13 |
 | glibc | 2.43 | 2.41 |
 | GCC (default) | 16.1 | 14.2 |
 | Python (default python3) | 3.14.7 | 3.13 |
-| GNOME | 50.5 | 48 |
+| GNOME | 51.0 | 48 |
 | KDE Plasma | 6.7.4 | 6.3 |
 | LibreOffice | 26.8 | 25.2 |
-| Firefox ESR | 140.16 | 128 |
+| Firefox ESR | 153.5.1 | 153.7 |
 
 > Testing keeps rolling until the freeze; live versions are authoritative at [packages.debian.org/forky](https://packages.debian.org/forky/). This table only "settles" once the freeze begins.
 
 ### Archive activity
 
-- The forky archive index refreshes **daily** (the Release index generated at 2026-09-26 08:08 UTC was already superseded the same day) — the unstable → testing autopilot is rolling normally
+- The forky archive index refreshes **daily** (the Release index generated at 2026-11-21 08:08 UTC was already superseded the same day) — the unstable → testing autopilot is rolling normally
 - That cadence slows down markedly once the freeze starts, down to critical fixes only — the clear signal that Forky has entered its release cycle
 
 ## 🔍 Visible differences from Debian 13 so far
 
-- **Kernel**: Debian 13 ships the Linux 6.12 LTS series; Forky testing already tracks 7.2
+- **Kernel**: Debian 13 ships the Linux 6.12 LTS series; Forky testing already tracks 6.19
 - **Everything else** (desktop environment versions, toolchains, installer behavior) only settles during the freeze — any "Debian 14 feature list" circulating today is premature. Wait for the official Release Notes.
 
 ## 🧪 How to try Forky safely
@@ -103,7 +105,7 @@ What the stages mean: the transition freeze stops large library migrations; afte
 |----------|--------|
 | When will Debian 14 release? | No official date. The two-year cadence points to 2027; a concrete window only appears once the freeze schedule is announced |
 | Is installing testing the same as installing 14? | Yes. Testing evolves into Debian 14 and converts in place at release |
-| What features does Forky have so far? | The Linux 7.2 kernel is confirmed; the full change list waits for the official Release Notes. Treat early "feature lists" with skepticism |
+| What features does Forky have so far? | The Linux 6.19 kernel is confirmed; the full change list waits for the official Release Notes. Treat early "feature lists" with skepticism |
 | Can I use testing in production? | No. Keep production on [Debian 13](/en/download) and plan migration after 14 ships with its first point update |
 | Can 13 upgrade directly to 14? | Yes, after 14 releases — see the [upgrade guide](/en/basics/upgrade) and the official Release Notes |
 

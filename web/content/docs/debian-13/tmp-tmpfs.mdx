@@ -1,9 +1,12 @@
 ---
 title: "/tmp 默认使用 tmpfs"
 description: "Debian 13 (Trixie) 默认把 /tmp 挂载为内存文件系统 tmpfs：临时文件读写更快，重启自动清空。本文介绍行为变化、注意事项与恢复方法。"
+verified: "2026-11-19"
 ---
+<Verified date="2026-11-19" label="实测验证">Debian 13.6.0</Verified>
 
-从 Debian 13 (Trixie) 开始，`/tmp` 目录**默认挂载为 tmpfs**（基于内存的文件系统，经 systemd 的 `tmp.mount` 挂载，选项为 `rw,nosuid`）。临时文件不再写入磁盘，重启后自动清空。
+
+从 Debian 13 (Trixie) 开始，`/tmp` 目录**默认挂载为 tmpfs**（基于内存的文件系统，经 systemd 的 `tmp.mount` 挂载，选项为 `rw,nosuid,nodev`）。临时文件不再写入磁盘，重启后自动清空。
 
 ## 行为变化
 
@@ -12,7 +15,7 @@ description: "Debian 13 (Trixie) 默认把 /tmp 挂载为内存文件系统 tmpf
 | `/tmp` 位置 | 磁盘（根文件系统） | **内存（tmpfs）** |
 | 重启后 | 文件保留 | **自动清空** |
 | 读写速度 | 受磁盘限制 | 接近内存速度 |
-| 空间上限 | 磁盘剩余空间 | 默认约为内存的一半（tmpfs 默认值，按需占用） |
+| 空间上限 | 磁盘剩余空间 | 默认约为内存的一半（实测 2 GiB 内存 → 984 MB） |
 
 - **更快** - 编译中间产物、解压、缓存等临时 I/O 直接走内存
 - **更干净** - 重启即清空，不会积累残留临时文件
@@ -33,10 +36,12 @@ description: "Debian 13 (Trixie) 默认把 /tmp 挂载为内存文件系统 tmpf
 
 ## 查看与调整
 
+![findmnt /tmp 与 df -h /tmp 实测](/images/verify/apt/tmpfs-zh.png)
+
 ```bash
 # 确认 /tmp 的挂载类型
 findmnt /tmp
-# 输出形如：tmpfs /tmp tmpfs rw,nosuid,...
+# 输出形如：tmpfs /tmp tmpfs rw,nosuid,nodev,nr_inodes=1048576,inode64
 
 # 查看容量与占用
 df -h /tmp
@@ -64,6 +69,18 @@ sudo systemctl unmask tmp.mount
 ```text
 tmpfs /tmp tmpfs rw,nosuid,nodev,size=4G 0 0
 ```
+
+### 临时调整（无需重启，实测）
+
+```bash
+sudo mount -o remount,size=2G /tmp
+findmnt /tmp
+df -h /tmp
+```
+
+![remount /tmp 实测](/images/verify/apt/tmpfs-remount-zh.png)
+
+实测（2 GiB 内存 VM）：默认 984M，`remount,size=2G` 后**立即**变为 2.0G，`findmnt` 显示 `size=2097152k`，无需重启；重启后仍按 `tmp.mount` 或 fstab 的配置。
 
 ## 下一步
 

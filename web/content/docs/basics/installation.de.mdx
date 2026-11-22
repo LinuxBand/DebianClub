@@ -2,14 +2,18 @@
 title: "Installationsanleitung"
 description: "Vollständige Schritt-für-Schritt Installationsanleitung für Debian 13"
 ---
+<Verified date="2026-11-19" label="Verifiziert">Debian 13.6.0 / PVE 9.2.2</Verified>
 
-![Debian-Installationsschritte](/images/install-journey.webp)
+
+![Debian 13 UEFI-Bootmenü](/images/verify/uefi-boot-menu.png)
 
 ## Vorbereitung vor der Installation
 
 - ✅ Bootfähiges Medium erstellt
 - ✅ Wichtige Daten gesichert
 - ✅ Netzwerkverbindung verfügbar (empfohlen)
+
+- **Medium:** `debian-13.8.0-amd64-netinst.iso` (aktuelles Point-Release; die Screenshots in dieser Anleitung stammen von 13.6.0).
 
 <Callout type="warn" title="Wichtig">
 
@@ -33,8 +37,8 @@ Eine Neuinstallation **löscht alle Daten** auf der Festplatte! Sichern Sie wich
 2. **Netzwerk konfigurieren** — Kabelverbindung empfohlen
 3. **Festplatte partitionieren** — Geführte Partitionierung für Anfänger
 4. **Basissystem installieren** — Automatischer Download
-5. **Software auswählen** — Desktop-Umgebung wählen
-6. **GRUB-Bootloader installieren** — Auf Hauptfestplatte installieren
+5. **Software auswählen** — Der Standardablauf fragt nicht: Er installiert Desktop + GNOME + Standardwerkzeuge; die Auswahl erscheint nur im Expertenmodus.
+6. **GRUB-Bootloader installieren** — Unter UEFI wird GRUB ohne Nachfrage in die EFI-Partition installiert.
 7. **Installation abschließen** — Neustart
 
 ## Empfohlenes Partitionierungsschema
@@ -45,6 +49,22 @@ Eine Neuinstallation **löscht alle Daten** auf der Festplatte! Sichern Sie wich
 | `/` | 20-50 GB | ext4 | Root-Partition |
 | `swap` | 2-8 GB | swap | Virtueller Speicher |
 | `/home` | Verbleibender Platz | ext4 | Benutzerdaten |
+
+Gemessen: Bei 17,2 GB Disk und 2 GiB RAM erzeugt der Assistent EFI 925,9 MB und Swap 899,7 MB. Die Tabellengrößen sind eine Empfehlung für manuelle Partitionierung.
+
+## In 13.6 verifizierte Details
+
+- **Bootmenü:** UEFI hat fünf Einträge und **kein `Help`**; `Help` gibt es nur im BIOS-Menü.
+- **Partitionierung:** Bei 17,2 GB Disk und 2 GiB RAM erzeugt der Assistent EFI 925,9 MB, Root 15,4 GB und Swap 899,7 MB (nicht „gleich RAM“).
+- **Softwareauswahl:** Der Standardablauf zeigt die Liste ebenfalls (nach den 45 Basispaketen); Desktop + GNOME + Standardwerkzeuge sind bereits ausgewählt, einfach auf „Weiter“ klicken.
+- **SSH:** `openssh-server` ist nicht vorausgewählt; ein frisches System hat kein sshd.
+- **GRUB:** Unter UEFI wird GRUB ohne MBR-Abfrage in die EFI-Partition installiert.
+- **Zeitzone:** Englische Installationen fragen danach; Chinesisch + China nutzt automatisch `Asia/Shanghai`.
+- **Spiegel:** `deb.debian.org` erreichte nur 15–56 KB/s; `mirrors.tuna.tsinghua.edu.cn` 25 MB/s.
+
+![UEFI-Bootmenü](/images/verify/uefi-boot-menu.png)
+
+![Partitionsübersicht](/images/verify/partition-overview.png)
 
 ## Nächste Schritte
 

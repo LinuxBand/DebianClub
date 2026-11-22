@@ -2,6 +2,8 @@
 title: "Backports Usage Guide"
 description: "A complete guide to safely install newer software on Debian 13 stable via trixie-backports"
 ---
+<Verified date="2026-11-21" label="Verified">Debian 13.6 / APT 3.0.4</Verified>
+
 
 Debian Stable is known for its stability, but its software versions are relatively conservative. **Backports** is an official Debian compromise: it **recompiles** newer software from `testing` for the current stable release, allowing you to install individual newer packages on demand without leaving Stable.
 
@@ -54,6 +56,10 @@ sudo apt install -t trixie-backports libreoffice
 # Install a newer kernel (useful for new hardware)
 sudo apt install -t trixie-backports linux-image-amd64
 ```
+
+![apt policy after enabling backports](/images/verify/apt/backports-en.png)
+
+Measured 2026-11-20: after adding `trixie-backports` as deb822, `apt update` fetched it (about 607 kB); `apt policy linux-image-amd64` shows the backports version at priority **100**, while the candidate stays at the stable/security 500 version — so nothing is installed from backports without `-t`.
 
 Subsequent `sudo apt upgrade` will update already installed backports packages to newer versions in backports, while all other packages remain on Stable.
 

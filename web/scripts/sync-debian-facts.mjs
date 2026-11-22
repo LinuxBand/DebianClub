@@ -23,7 +23,8 @@ const MONTHS = {
 function parseReleaseDate(text) {
   const match = /(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/.exec(String(text ?? ''));
   if (!match) return null;
-  const month = MONTHS[match[2].toLowerCase()];
+  const key = match[2].toLowerCase();
+  const month = MONTHS[key] ?? MONTHS[Object.keys(MONTHS).find((name) => name.startsWith(key.slice(0, 3)))];
   if (!month) return null;
   return `${match[3]}-${String(month).padStart(2, '0')}-${match[1].padStart(2, '0')}`;
 }
@@ -193,6 +194,45 @@ for (const suite of SUITES) {
     fetched += 1;
   } catch (error) {
     console.warn(`[facts-sync] ${suite}: fetch failed (${error instanceof Error ? error.message : String(error)}); keeping committed facts`);
+  }
+}
+
+async function fetchPlannedReleases() {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 12000);
+  try {
+    const res = await fetch('https://release.debian.org/', {
+      signal: ctrl.signal,
+      headers: { 'User-Agent': 'debian-club-facts-sync' },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const html = await res.text();
+    const rows = [];
+    for (const row of html.matchAll(/<tr>([\s\S]*?)<\/tr>/g)) {
+      const cells = [...row[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((m) => m[1]);
+      if (cells.length < 2) continue;
+      const version = cells[1].replace(/<[^>]+>/g, '').trim();
+      if (!/^\d+\.\d+$/.test(version)) continue;
+      const date = parseReleaseDate(cells[0].replace(/<[^>]+>/g, ' '));
+      if (date) rows.push({ version, date });
+    }
+    return rows;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+const plannedLive = await fetchPlannedReleases().catch((error) => {
+  console.warn(`[facts-sync] planned releases: fetch failed (${error instanceof Error ? error.message : String(error)}); keeping committed facts`);
+  return null;
+});
+if (plannedLive && plannedLive.length > 0) {
+  const current = JSON.stringify(facts.plannedPointReleases ?? []);
+  const next = JSON.stringify(plannedLive);
+  if (current !== next) {
+    console.log(`[facts-sync] plannedPointReleases: ${current} -> ${next}`);
+    facts.plannedPointReleases = plannedLive;
+    changed = true;
   }
 }
 

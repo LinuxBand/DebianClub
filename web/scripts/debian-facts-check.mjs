@@ -84,6 +84,46 @@ for (const suite of ['stable', 'oldstable']) {
     fail(`facts.pointReleases is missing ${suite} ${version}; run pnpm facts:sync`);
   }
 }
+const planned = facts.plannedPointReleases ?? [];
+if (planned.length === 0) {
+  fail('facts.plannedPointReleases is missing; run pnpm facts:sync');
+} else {
+  pass(`facts.plannedPointReleases lists ${planned.map((e) => e.version).join(', ')}`);
+}
+try {
+  const res = await fetch('https://release.debian.org/', { headers: { 'User-Agent': 'debian-club-facts-check' } });
+  if (res.ok) {
+    const html = await res.text();
+    const MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
+    const live = [];
+    for (const row of html.matchAll(/<tr>([\s\S]*?)<\/tr>/g)) {
+      const cells = [...row[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((m) => m[1]);
+      if (cells.length < 2) continue;
+      const version = cells[1].replace(/<[^>]+>/g, '').trim();
+      if (!/^\d+\.\d+$/.test(version)) continue;
+      const m = /(\d{1,2})\s+([A-Za-z]{3})[a-z]*\s+(\d{4})/.exec(cells[0].replace(/<[^>]+>/g, ' '));
+      if (m && MONTHS[m[2].toLowerCase()]) {
+        live.push({ version, date: `${m[3]}-${String(MONTHS[m[2].toLowerCase()]).padStart(2, '0')}-${m[1].padStart(2, '0')}` });
+      }
+    }
+    if (live.length > 0 && JSON.stringify(live) !== JSON.stringify(planned)) {
+      console.warn(`[facts-check] planned schedule drifted: live ${JSON.stringify(live)} vs facts ${JSON.stringify(planned)}; run pnpm facts:sync`);
+    } else if (live.length > 0) {
+      pass('release.debian.org planned point releases match facts');
+    }
+  }
+} catch (error) {
+  console.warn(`[facts-check] release.debian.org: could not fetch (${error instanceof Error ? error.message : String(error)}); using committed facts`);
+}
+
+for (const locale of ['zh', 'en']) {
+  const index = localePath('content/docs/debian-13/index', locale);
+  if (mustInclude(index, planned.map((entry) => entry.date), 'planned point release dates')) {
+    pass(`${index} lists the planned point-release dates`);
+  }
+  mustNotInclude(index, ['2027-01-09'], 'planned point release dates');
+}
+
 if (failures.length > 0) {
   console.error(`[facts-check] ${failures.length} check(s) failed`);
   process.exit(1);
@@ -248,7 +288,7 @@ for (const locale of LOCALES) {
   }
 
   const news = localePath('content/docs/news', locale);
-  if (mustInclude(news, ['2026-08-31', '2026-08-07', '2026-08-16', '2026-08-30', '2026-09-07', 'DebConf27', 'cloud.debian.org', 'hub.docker.com/_/debian', facts.cloud.stable.build], 'recent news entries')) {
+  if (mustInclude(news, ['2026-08-31', '2026-08-07', '2026-08-16', '2026-08-30', '2026-09-07', 'DebConf27', 'cloud.debian.org', 'hub.docker.com/_/debian', facts.cloud.stable.build, stable.pointReleaseDate, ...planned.map((entry) => entry.date)], 'recent news entries')) {
     pass(`${news} contains the recent Debian news entries`);
   }
 

@@ -1,7 +1,10 @@
 ---
 title: "桌面环境选择"
 description: "了解和选择适合您的 Debian 13 桌面环境，包含详细配置指南"
+verified: "2026-11-19"
 ---
+<Verified date="2026-11-19" label="实测验证">GNOME 48.7 / Wayland</Verified>
+
 
 ![Debian 桌面环境](/images/desktops.webp)
 
@@ -42,6 +45,14 @@ description: "了解和选择适合您的 Debian 13 桌面环境，包含详细�
 - **适合**：现代硬件，新手用户
 
 </div>
+
+#### GNOME 实测（Debian 13.6）
+
+![GNOME 48 桌面](/images/verify/gnome-desktop.png)
+
+![系统详情：GNOME 48 / Wayland](/images/verify/system-details.png)
+
+在 PVE 虚拟机中实测：**GNOME 48.7**、默认 **Wayland** 会话、内核 6.12.117；无 GPU 时“显卡”显示 Software Rendering，属正常现象。旧文档写的 GNOME 48 是正确的。
 
 #### GNOME 优势
 
@@ -89,6 +100,18 @@ description: "了解和选择适合您的 Debian 13 桌面环境，包含详细�
 
 </div>
 
+#### KDE Plasma 实测（Debian 13.6）
+
+![KDE Plasma 6.3 桌面](/images/verify/desktop/kde-desktop-zh.png)
+
+![KDE 应用启动器](/images/verify/desktop/kde-launcher-zh.png)
+
+![KDE 系统设置](/images/verify/desktop/kde-settings-zh.png)
+
+![信息中心：Plasma 6.3.6 / Wayland](/images/verify/desktop/kde-info-zh.png)
+
+在同一台 VM 中安装 `task-kde-desktop` 实测：**Plasma 6.3.6**、Qt 6.8.2、默认 Wayland 会话，Dolphin、Discover、系统设置等组件齐全。
+
 #### KDE Plasma 优势
 
 ```bash
@@ -134,6 +157,18 @@ description: "了解和选择适合您的 Debian 13 桌面环境，包含详细�
 - **适合**：老旧硬件，追求效率
 
 </div>
+
+#### Xfce 实测（Debian 13.6）
+
+![Xfce 4.20 桌面](/images/verify/desktop/xfce-desktop-zh.png)
+
+![Xfce 应用菜单](/images/verify/desktop/xfce-menu-zh.png)
+
+![Xfce 应用菜单 → 设置](/images/verify/desktop/xfce-settings-menu-zh.png)
+
+![Xfce 设置管理器](/images/verify/desktop/xfce-settings-zh.png)
+
+安装 `task-xfce-desktop` 实测：**Xfce 4.20.1**，顶部面板 + 底部 Dock，设置管理器含窗口管理器、外观、显示、键盘、鼠标等模块。
 
 #### Xfce 优势
 
@@ -297,6 +332,10 @@ sudo apt install lxqt
 3. **点击设置图标**（通常在右下角）
 4. **选择桌面环境**
 5. **输入密码登录**
+
+![GDM 会话选择：GNOME / Plasma / Xfce](/images/verify/desktop/gdm-session-menu-zh.png)
+
+> 实测：新装桌面环境后，需要 `sudo systemctl restart gdm` 才会出现在这个菜单里；直接注销可能仍只显示旧会话。
 
 #### 设置默认桌面环境
 

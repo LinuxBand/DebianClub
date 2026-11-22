@@ -5,10 +5,10 @@ description: "Debian 官方云镜像、AWS/Azure/OpenStack 使用、cloud-init�
 
 <Callout type="info" title="当前云镜像基线">
 
-- Debian 13（Trixie）官方云镜像最新构建：**20261001-2618**（2026-10-01）
-- Debian 12（Bookworm，LTS）云镜像最新构建：**20260923-2610**（2026-09-23）
+- Debian 13（Trixie）官方云镜像最新构建：**20261116-2664**（2026-11-16）
+- Debian 12（Bookworm，LTS）云镜像最新构建：**20261117-2665**（2026-11-17）
 - Debian 11（Bullseye）已于 2026-08-31 EOL，云镜像不再获得 Debian 安全更新
-- Debian 14（Forky）testing 每日云镜像：**20261004-2621**（2026-10-04）
+- Debian 14（Forky）testing 每日云镜像：**20261119-2667**（2026-11-19）
 
 </Callout>
 
@@ -59,7 +59,7 @@ aws --region us-east-2 ssm get-parameters-by-path \
   --path /aws/service/debian/release/13/latest
 ```
 
-当前 AMI 名称：`debian-13-amd64-20261001-2618` / `debian-13-arm64-20261001-2618`。
+当前 AMI 名称：`debian-13-amd64-20261116-2664` / `debian-13-arm64-20261116-2664`。
 
 ### Microsoft Azure
 
@@ -125,7 +125,7 @@ packages:
 | Debian 11 (Bullseye) | 2026-08-31 EOL | 不再用于新云主机 |
 | Debian 14 (Forky) | testing，每日构建 | 仅测试 |
 
-- 点更新（如 13.7）发布后，官方云镜像和 Docker 镜像会重新构建；不要长期使用旧镜像 ID。
+- 点更新（如 13.8）发布后，官方云镜像和 Docker 镜像会重新构建；不要长期使用旧镜像 ID。
 - 生产环境固定镜像版本或 digest，并定期重建实例；不要把云主机当“宠物”长期原地升级。
 - 使用 `unattended-upgrades` 或镜像构建流水线保持安全更新。
 - 及时关注 [Debian 版本支持周期](/eol)。
@@ -133,7 +133,7 @@ packages:
 ## 容器镜像
 
 - 官方 Docker 镜像：`debian:13`、`debian:13-slim`、`debian:trixie`、`debian:trixie-slim`。
-- 当前 13.7 标签更新于 2026-09-19；生产环境固定点版本标签（如 `debian:13.7-slim`）或 digest。
+- 生产环境请固定点版本标签（如 `debian:13.8-slim`）或 digest。
 - 多阶段构建中，构建阶段可用 `debian:13`，运行阶段用 `debian:13-slim` 减小体积。
 
 ```dockerfile

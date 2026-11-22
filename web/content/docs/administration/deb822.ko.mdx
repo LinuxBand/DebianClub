@@ -1,9 +1,11 @@
 ---
 title: "deb822 소스 형식(.sources)"
-description: "Debian 13에서 기본으로 채택된 deb822/.sources 소프트웨어 저장소 형식에 대한 완전한 안내서로, 필드 설명, 타사 저장소 구성 및 원클릭 마이그레이션을 포함합니다."
+description: "deb822/.sources 형식 안내서: 필드 설명, 타사 저장소, 기존 sources.list에서 마이그레이션. 13.6 설치 프로그램은 기본적으로 한 줄 형식 sources.list를 기록합니다."
 ---
+<Verified date="2026-11-19" label="실측 확인">APT 3.0.3</Verified>
 
-Debian 12부터 도입되어 **Debian 13 (Trixie)** 에서 기본값이 된 **deb822** 형식은 더 명확하고 유지 관리가 쉬운 소프트웨어 저장소 구성 방식입니다. `.sources` 확장자를 사용하며, 각 저장소는 여러 줄의 '키: 값' 형식으로 설명되어 기존의 한 줄 `deb` 표기법을 대체합니다.
+
+**deb822** 형식은 Debian 12에서 도입되었고 Debian 13의 APT 3.0에서 완전히 지원되지만 **선택 사항**입니다. 13.6 설치 프로그램은 여전히 기존 한 줄 형식 `sources.list`를 기록합니다. `.sources` 확장자를 사용하며 각 저장소를 여러 줄의 '키: 값'으로 설명하므로 여러 `Suites`와 `Signed-By`를 쓸 때 더 명확합니다.
 
 ## 기존 형식 vs deb822 형식
 
@@ -31,7 +33,7 @@ Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
 
-Debian 13을 새로 설치하면 공식 저장소는 `/etc/apt/sources.list.d/debian.sources`에 저장되며, 기존의 `/etc/apt/sources.list`는 일반적으로 비어 있거나 존재하지 않습니다.
+Debian 13.6을 새로 설치하면 공식 저장소는 실제로 `/etc/apt/sources.list`(한 줄 형식)에 기록되고 `/etc/apt/sources.list.d/`는 비어 있습니다. 설치 프로그램이 `debian.sources`를 만든다는 설명은 실측과 다릅니다.
 
 ## 필드 설명
 
@@ -90,7 +92,7 @@ sudo apt update
 ```text
 Types: deb
 URIs: https://mirrors.tuna.tsinghua.edu.cn/debian
-Suites: trixie trixie-updates trixie-backports
+Suites: trixie trixie-updates
 Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
@@ -105,7 +107,8 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
 ## 요약
 
-- Debian 13은 기본적으로 deb822(`.sources`) 형식을 사용하며, 소스 파일은 `/etc/apt/sources.list.d/`에 위치합니다.
+- Debian 13.6 설치 프로그램은 기본적으로 한 줄 형식 `sources.list`를 기록합니다. deb822는 선택 사항입니다.
+- 기본 구성 요소는 `main non-free-firmware`뿐이며 `trixie-backports`는 기본적으로 활성화되지 않습니다.
 - `sudo apt modernize-sources` 명령으로 기존 형식에서 원클릭 마이그레이션할 수 있습니다.
 - 타사 저장소를 추가할 때는 항상 `gpg --dearmor`로 키링을 생성하고 `Signed-By`에서 명시적으로 참조하며, `apt-key`는 더 이상 사용하지 마십시오.
 

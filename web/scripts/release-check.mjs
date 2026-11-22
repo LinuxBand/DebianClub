@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
+const facts = JSON.parse(readFileSync(new URL('../lib/debian-facts.json', import.meta.url), 'utf8'));
 const maxSearchFileBytes = 25 * 1024 * 1024;
 const requiredLocales = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ko', 'pt'];
 const localizedEntryPages = ['tools', 'scenarios', 'hardware', 'versions', 'release-readiness', 'deployment'];
@@ -476,14 +477,14 @@ const deploymentTextChecks = [
     path: 'content/docs/content-freshness.mdx',
     checks: [
       ['Phase 44 已上线', 'Chinese content freshness page marks phase 44'],
-      ['2026-12-26', 'Chinese content freshness page documents review due date'],
+      [facts.reviewDueDate, 'Chinese content freshness page documents review due date'],
     ],
   },
   {
     path: 'content/docs/content-freshness.en.mdx',
     checks: [
       ['Phase 44 Live', 'English content freshness page marks phase 44'],
-      ['2026-12-26', 'English content freshness page documents review due date'],
+      [facts.reviewDueDate, 'English content freshness page documents review due date'],
     ],
   },
   {

@@ -2,14 +2,18 @@
 title: "설치 가이드"
 description: "Debian 13 완전한 단계별 설치 가이드"
 ---
+<Verified date="2026-11-19" label="실측 확인">Debian 13.6.0 / PVE 9.2.2</Verified>
 
-![Debian 설치 단계](/images/install-journey.webp)
+
+![Debian 13 UEFI 부트 메뉴](/images/verify/uefi-boot-menu.png)
 
 ## 설치 전 준비
 
 - ✅ 부팅 가능한 미디어 생성 완료
 - ✅ 중요 데이터 백업 완료
 - ✅ 네트워크 연결 사용 가능 (권장)
+
+- **미디어:** `debian-13.8.0-amd64-netinst.iso` (현재 포인트 릴리스, 이 가이드의 스크린샷은 13.6.0 기준).
 
 <Callout type="warn" title="중요">
 
@@ -33,8 +37,8 @@ description: "Debian 13 완전한 단계별 설치 가이드"
 2. **네트워크 구성** — 유선 연결 권장
 3. **디스크 파티션** — 초보자는 가이드 파티션 사용
 4. **기본 시스템 설치** — 자동 다운로드
-5. **소프트웨어 선택** — 데스크톱 환경 선택
-6. **GRUB 부트로더 설치** — 메인 디스크에 설치
+5. **소프트웨어 선택** — 기본 흐름에서는 묻지 않고 데스크톱 + GNOME + 표준 도구를 자동 설치합니다. 선택 화면은 전문가 모드에서만 나옵니다.
+6. **GRUB 부트로더 설치** — UEFI에서는 질문 없이 EFI 파티션에 설치됩니다.
 7. **설치 완료** — 재시작
 
 ## 권장 파티션 레이아웃
@@ -45,6 +49,22 @@ description: "Debian 13 완전한 단계별 설치 가이드"
 | `/` | 20-50GB | ext4 | 루트 파티션 |
 | `swap` | 2-8GB | swap | 가상 메모리 |
 | `/home` | 나머지 공간 | ext4 | 사용자 데이터 |
+
+실측: 17.2 GB 디스크와 2 GiB RAM에서 EFI 925.9 MB, swap 899.7 MB가 생성되었습니다. 표의 크기는 수동 파티션 권장값입니다.
+
+## 13.6에서 확인한 내용
+
+- **부팅 메뉴:** UEFI는 5개 항목이며 **`Help`가 없습니다**. `Help`는 BIOS 메뉴에만 있습니다.
+- **파티션:** 17.2 GB 디스크와 2 GiB RAM에서 EFI 925.9 MB, 루트 15.4 GB, swap 899.7 MB가 생성됩니다(“RAM과 동일”이 아님).
+- **소프트웨어 선택:** 기본 흐름에서도 45개 기본 패키지 후에 이 목록이 나타나며 데스크톱 + GNOME + 표준 도구가 미리 선택되어 있습니다. 계속을 누르면 됩니다.
+- **SSH:** `openssh-server`는 기본 선택이 아니며, 새로 설치한 시스템에는 sshd가 없습니다.
+- **GRUB:** UEFI에서는 MBR을 묻지 않고 EFI 파티션에 설치됩니다.
+- **시간대:** 영어 설치에서는 질문하지만, 중국어 + 중국은 자동으로 `Asia/Shanghai`를 사용합니다.
+- **미러:** `deb.debian.org`는 15–56 KB/s였고, `mirrors.tuna.tsinghua.edu.cn`은 25 MB/s였습니다.
+
+![UEFI 부트 메뉴](/images/verify/uefi-boot-menu.png)
+
+![파티션 개요](/images/verify/partition-overview.png)
 
 ## 다음 단계
 

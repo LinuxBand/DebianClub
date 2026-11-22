@@ -2,6 +2,8 @@
 title: "首次启动配置"
 description: "Debian 13 首次启动后的基本配置指南，包括语言设置、用户配置和基本系统优化"
 ---
+<Verified date="2026-11-20" label="实测验证">GNOME 48.7 / Wayland</Verified>
+
 
 <BootChain />
 
@@ -33,46 +35,33 @@ before booting or `c' for a command-line.
 - **密码输入**：输入用户密码
 - **桌面环境**：如果安装了多个桌面环境，可在此选择
 
-## ⚙️ GNOME 初始设置向导
+## ⚙️ 首次登录：只有“欢迎”导览，没有多步向导
 
-如果安装了 GNOME 桌面环境，首次登录会启动初始设置向导：
+Debian 13 的 GNOME 首次登录**不会**启动 Ubuntu 那种“隐私 / 在线账号”多步设置向导。实际流程是：
 
-### 步骤 1：欢迎界面
+1. 在 GDM 输入密码登录
+2. 桌面弹出“欢迎使用 Debian GNU/Linux”的 GNOME Tour 对话框，可直接“跳过”
+3. 进入桌面
 
-```bash
-欢迎使用 GNOME
-即将进行一些快速设置来个性化您的体验
-```
+![GNOME 欢迎导览](/images/verify/gnome-welcome.png)
 
-点击"开始设置"继续。
+> 文档旧版把 Ubuntu 的 `gnome-initial-setup` 流程写成了 Debian 的首次启动，实测不成立。
 
-### 步骤 2：隐私设置
+## 🎛️ GNOME 设置面板（实测）
 
-```bash
-位置服务
-□ 启用位置服务
+![设置主界面](/images/verify/desktop/gnome-settings-zh.png)
 
-自动问题报告
-□ 自动发送错误报告给开发者
-```
+![系统：区域与语言 / 用户 / 关于](/images/verify/desktop/gnome-system-zh.png)
 
-根据个人喜好选择，建议关闭以保护隐私。
+![区域与语言](/images/verify/desktop/gnome-region-zh.png)
 
-### 步骤 3：在线账户
+![用户](/images/verify/desktop/gnome-users-zh.png)
 
-```bash
-连接您的在线账户
-- Google
-- Microsoft
-- Nextcloud
-- ...
-```
+![显示器](/images/verify/desktop/gnome-displays-zh.png)
 
-可以跳过此步骤，稍后在需要时添加。
+![声音](/images/verify/desktop/gnome-sound-zh.png)
 
-### 步骤 4：完成设置
-
-点击"开始使用 Debian"完成设置。
+实测环境：GNOME 48.7 / Wayland、中文界面、1280×800。
 
 ## 🔧 基本系统配置
 
@@ -124,46 +113,49 @@ sudo apt install -y \
 
 ### 1. 中文语言支持
 
+Debian 没有 Ubuntu 的 `language-pack-zh-hans` 包。中文界面/字体用桌面任务或字体包：
+
 ```bash
-# 安装中文语言包
-sudo apt install -y \
-    language-pack-zh-hans \
-    language-pack-zh-hans-base
+# 中文桌面任务（含字体、输入法、中文手册）
+sudo apt install -y task-chinese-s-desktop
 
-# 安装中文字体
-sudo apt install -y \
-    fonts-noto-cjk \
-    fonts-wqy-zenhei \
-    fonts-wqy-microhei
+# 或者只补中文字体
+sudo apt install -y fonts-noto-cjk
 
-# 重新配置语言环境
+# 生成并选择 zh_CN.UTF-8
 sudo dpkg-reconfigure locales
 ```
 
-**在 locales 配置中：**
-1. 选择 `zh_CN.UTF-8 UTF-8`
-2. 设置系统默认语言（可保持英文）
+### 2. 输入法配置（ibus-libpinyin，实测）
 
-### 2. 输入法配置
+安装 GNOME 桌面任务时已经自带 **ibus-libpinyin 1.15.8-2**，不需要再装 `ibus`、`ibus-pinyin`：
 
 ```bash
-# 安装 iBus 中文输入法
-sudo apt install -y \
-    ibus ibus-pinyin \
-    ibus-libpinyin
-
-# 启动 iBus
-ibus-daemon -drx
-
-# 配置输入法
-ibus-setup
+# 确认已安装
+dpkg -l ibus-libpinyin
+# 查看可用引擎（应包含 libpinyin - Intelligent Pinyin）
+ibus list-engine | grep -A1 中文
 ```
 
-**iBus 配置步骤：**
-1. 打开"输入法"选项卡
-2. 点击"添加"按钮
-3. 选择"中文" → "拼音"
-4. 添加"Intelligent Pinyin"
+默认输入源只有 `汉语（中国）` 键盘布局，**没有拼音引擎**，需要在
+“设置 → 系统 → 区域与语言”里添加，或直接改 gsettings：
+
+![区域与语言](/images/verify/desktop/gnome-region-zh.png)
+
+```bash
+# 添加“英语(US)”和“汉语(智能拼音)”
+gsettings set org.gnome.desktop.input-sources sources \
+  "[('xkb', 'us'), ('ibus', 'libpinyin')]"
+
+# 之后用 Super+Space 切换输入法
+```
+
+切换后输入 `nihao`，会出现 libpinyin 的候选窗：
+
+![libpinyin 候选窗：你好 / 你好吗 / 你 / 尼 / 呢](/images/verify/desktop/ime-candidates-zh.png)
+
+> 注意：GNOME 下不要再跑 `ibus-daemon -drx`，会和 GNOME 自带的 ibus 冲突；
+> `ibus-setup` 也不是必需，输入源由 GNOME 设置管理。
 
 ### 3. 时区设置
 

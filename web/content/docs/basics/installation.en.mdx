@@ -1,11 +1,23 @@
 ---
 title: "Installation Guide"
-description: "Complete step-by-step Debian 13 installation guide with detailed instructions and troubleshooting"
+description: "Debian 13.6 installation walkthrough with real screenshots: UEFI/BIOS menus, partitioning, mirror choice, software selection, GRUB and first login."
+verified: "2026-11-19"
 ---
+<Verified date="2026-11-21" label="Verified">Debian 13.6.0 / PVE 9.2.2</Verified>
 
-![Debian installation steps](/images/install-journey.webp)
 
-This tutorial provides a comprehensive guide to installing Debian 13. We assume you have already created a bootable installation media and are ready to begin the installation process.
+![Debian 13 UEFI boot menu](/images/verify/uefi-boot-menu.png)
+
+This guide follows a real **Debian 13.6.0 amd64 netinst** installation on a PVE 9.2.2 UEFI VM (OVMF, 2 vCPU / 2 GiB / 16 GiB). Physical machines look almost the same; differences are called out where they matter.
+
+<Callout type="info" title="Verified environment">
+
+- Media: `debian-13.8.0-amd64-netinst.iso` (built 2026-07-11)
+- Firmware: UEFI (OVMF); BIOS comparison below
+- Mirror: `mirrors.tuna.tsinghua.edu.cn` (25 MB/s measured in China)
+- Tested: 2026-11-18 / 19
+
+</Callout>
 
 ## 🎯 Pre-Installation Preparation
 
@@ -57,16 +69,37 @@ Common keys:
 
 Insert the bootable media and restart. You'll see the Debian boot menu:
 
-```
-Debian GNU/Linux installer boot menu
+**UEFI mode** (13.6, exactly 5 entries, **no Help**):
+
+```text
+Debian GNU/Linux 13.6.0
+Debian GNU/Linux UEFI Installer menu
 
 Graphical install
 Install
-Advanced options >
-Accessible dark contrast installer menu >
+Advanced options ...
+Accessible dark contrast installer menu ..
+Install with speech synthesis
+```
+
+![UEFI boot menu](/images/verify/uefi-boot-menu.png)
+
+**BIOS/Legacy mode** is the one that has `Help`:
+
+```text
+Debian GNU/Linux installer menu (BIOS mode)
+
+Graphical install
+Install
+Advanced options ...
+Accessible dark contrast installer menu ..
 Help
 Install with speech synthesis
 ```
+
+![BIOS boot menu](/images/verify/bios-boot-menu.png)
+
+Many tutorials mix the two menus into one; if you see `Help`, it is the BIOS menu.
 
 #### Choose Installation Method
 
@@ -125,6 +158,12 @@ Choose a Debian software repository mirror:
 - `ftp.us.debian.org` (United States)
 - `ftp.uk.debian.org` (United Kingdom)
 
+![Mirror country list in the English installer](</images/verify/installation/mirror-countries-en.png>)
+
+![Mirror host list, with deb.debian.org as default](</images/verify/installation/mirror-hosts-en.png>)
+
+Measured: the country list follows the location chosen earlier (United States here) and the host list defaults to `deb.debian.org`. The Chinese country list does **not** include Aliyun; pick `mirrors.ustc.edu.cn` or `mirrors.tuna.tsinghua.edu.cn` if you want a domestic mirror during install.
+
 ## 👤 User and Password Setup
 
 ### 1. Set Root Password
@@ -132,7 +171,7 @@ Choose a Debian software repository mirror:
 ```bash
 # Root user is the system administrator account
 # Recommended: at least 8 characters with letters and numbers
-# (the installer only warns about weak passwords; it does not enforce this)
+# (the installer does NOT enforce password strength: "debian" was accepted without warning in 13.6)
 ```
 
 **Password Security Recommendations:**
@@ -168,14 +207,18 @@ This is the most important step in the installation process!
 
 #### 1. Guided Partitioning (Recommended for beginners)
 
-```bash
-Use entire disk
-├── Use entire disk and set up LVM
-├── Use entire disk and set up encrypted LVM
-└── Manual partitioning (advanced users)
+Actual menu in 13.6:
+
+```text
+Guided - use entire disk
+Guided - use entire disk and set up LVM
+Guided - use entire disk and set up encrypted LVM
+Manual
 ```
 
-**Recommended choice: "Use entire disk"**
+![Partitioning method in the English installer](/images/verify/installation/partition-method-en.png)
+
+**Recommended for beginners: "Guided - use entire disk"**, then pick the disk and "All files in one partition (recommended for new users)".
 
 #### 2. Custom Partition Scheme
 
@@ -183,10 +226,12 @@ For experienced users, recommended partition scheme:
 
 | Mount Point | Size | File System | Description |
 |-------------|------|-------------|-------------|
-| `/boot/efi` | 512 MB | FAT32 | UEFI boot partition |
+| `/boot/efi` | 512 MB-1 GB | FAT32 | UEFI boot partition |
 | `/` | 25-50 GB | ext4 | Root partition |
-| `/home` | Remaining space | ext4 | User data |
-| `swap` | 4-8 GB | swap | Swap partition |
+| `/home` | Remaining space | ext4 | User data (optional) |
+| `swap` | 4-8 GB or RAM size | swap | Hibernation needs >= RAM |
+
+Measured guided result on a 17.2 GB disk with 2 GiB RAM: EFI **925.9 MB**, root **15.4 GB**, swap **899.7 MB** (about 44% of RAM, not "equal to RAM").
 
 ### Practical Partitioning
 
@@ -194,7 +239,15 @@ For experienced users, recommended partition scheme:
 
 1. **Select disk**: Choose the disk to install on
 2. **Partition scheme**: Choose "All files in one partition"
-3. **Confirm operation**: Review partition table, confirm when satisfied
+3. **Review**: the summary shows each partition and its mount point
+
+   ![Partition overview: 16.2 GB ext4 root + 937.4 MB swap](</images/verify/installation/partition-overview-en.png>)
+
+4. **Confirm operation**: the installer lists exactly what will be formatted
+
+   ![Write changes confirmation](</images/verify/installation/partition-write-confirm-en.png>)
+
+BIOS installs get no ESP: the measured layout on a 17.2 GB disk was root **16.2 GB** plus swap **937.4 MB**.
 
 #### Manual Partitioning (Advanced)
 
@@ -222,7 +275,7 @@ For experienced users, recommended partition scheme:
 
 4. **Create swap partition**:
    ```bash
-   Size: Equal to memory size (4-8 GB)
+   Size: 4-8 GB, or equal to RAM if you need hibernation
    Type: Swap partition
    ```
 
@@ -238,26 +291,37 @@ For experienced users, recommended partition scheme:
 
 ### Desktop Environment Selection
 
-```bash
-Debian Desktop Environment Selection:
+**The default Graphical install also shows this checklist**, after the 45 base packages finish downloading. Desktop environment, GNOME and standard system utilities are **pre-selected**, so you can just click Continue:
 
-□ Debian desktop environment    # Default selected
-□ ... GNOME                    # Modern interface (recommended for beginners)
-□ ... Xfce                     # Lightweight interface
-□ ... KDE Plasma               # Highly customizable
-□ ... Cinnamon                 # Traditional style
-□ ... MATE                     # Classic interface
-□ ... LXDE                     # Minimal interface
-□ web server
-□ SSH server                   # Recommended
-□ standard system utilities    # Recommended
+![Software selection in the default flow (English)](/images/verify/installation/software-selection-default-en.png)
+
+The expert install shows the same list, with additional low-priority questions:
+
+![Software selection in expert mode (Chinese UI)](/images/verify/software-selection-expert.png)
+
+Actual entries in 13.6:
+
+```text
+[x] Debian desktop environment
+[x] ... GNOME
+[ ] ... Xfce
+[ ] ... GNOME Flashback
+[ ] ... KDE Plasma
+[ ] ... Cinnamon
+[ ] ... MATE
+[ ] ... LXDE
+[ ] ... LXQt
+[ ] web server
+[ ] SSH server
+[x] standard system utilities
+[ ] Choose a Debian Blend for installation
 ```
 
-**Recommended combination for beginners:**
-- ✅ Debian desktop environment
-- ✅ GNOME (or your preferred desktop)
-- ✅ SSH server
-- ✅ Standard system utilities
+Notes:
+
+- The old list missed **GNOME Flashback**, **LXQt** and **Debian Blend**.
+- **SSH server is NOT selected by default**; a fresh install has no sshd. Install it later with `sudo apt install openssh-server`.
+- English installs ask for a time zone; Chinese + China skips it and uses `Asia/Shanghai`.
 
 ### Desktop Environment Comparison
 
@@ -304,15 +368,18 @@ Finishing installation... (95%)
 
 #### Installation Location Selection
 
-```bash
-# Single system installation
-Install GRUB bootloader to master boot record?
-Choose: Yes
+UEFI installs do **not** ask about the master boot record; GRUB is installed to the EFI partition automatically. The GRUB 2.12 menu looks like this:
 
-# Dual boot installation
-Installation device:
-Choose main hard disk (usually /dev/sda)
+![GRUB menu](/images/verify/grub-menu.png)
+
+```text
+GNU GRUB 2.12-9+deb13u2
+Debian GNU/Linux
+Advanced options for Debian GNU/Linux
+UEFI Firmware Settings
 ```
+
+Only BIOS installs ask "Install GRUB bootloader to master boot record?".
 
 #### Dual Boot Configuration
 
@@ -337,25 +404,26 @@ When you see the "Installation complete" message:
 
 ### First Login
 
-#### GNOME Welcome Screen
+GDM login screen:
 
-First boot will show GNOME initial setup:
+![GDM login](/images/verify/gdm-login-en.png)
 
-```bash
-1. Select language
-2. Connect to network
-3. Online accounts (can skip)
-4. Privacy settings
-5. Complete setup
-```
+After the first login a welcome dialog appears; click "Skip":
 
-#### Login Screen
+![GNOME welcome (Chinese UI)](/images/verify/gnome-welcome.png)
 
-```bash
-User selection: Choose the user you created
-Password input: Enter user password
-Desktop environment: Choose desktop environment (if multiple)
-```
+GNOME desktop:
+
+![GNOME desktop](/images/verify/gnome-desktop-en.png)
+
+System details (Settings -> System -> About -> System Details) measured:
+
+![System details](/images/verify/system-details-en.png)
+
+- Debian GNU/Linux 13 (trixie), 64-bit
+- GNOME 48, Wayland
+- Kernel 6.12.117+deb13-amd64
+- In a VM the graphics entry shows Software Rendering (no GPU), which is expected.
 
 ## 🔧 Post-Installation Basic Configuration
 

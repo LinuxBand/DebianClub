@@ -2,14 +2,18 @@
 title: "Guia de instalação"
 description: "Guia de instalação completo passo a passo para o Debian 13"
 ---
+<Verified date="2026-11-19" label="Verificado">Debian 13.6.0 / PVE 9.2.2</Verified>
 
-![Etapas de instalação do Debian](/images/install-journey.webp)
+
+![Menu de inicialização UEFI do Debian 13](/images/verify/uefi-boot-menu.png)
 
 ## Preparação antes da instalação
 
 - ✅ Mídia inicializável criada
 - ✅ Dados importantes em backup
 - ✅ Conexão de rede disponível (recomendado)
+
+- **Mídia:** `debian-13.8.0-amd64-netinst.iso` (versão pontual atual; as capturas deste guia são da 13.6.0).
 
 <Callout type="warn" title="Importante">
 
@@ -33,8 +37,8 @@ Teclas comuns:
 2. **Configurar rede** — Conexão cabeada recomendada
 3. **Particionar disco** — Usar particionamento guiado para iniciantes
 4. **Instalar sistema base** — Download automático
-5. **Selecionar software** — Escolher ambiente desktop
-6. **Instalar carregador GRUB** — Instalar no disco principal
+5. **Selecionar software** — O fluxo padrão não pergunta: instala desktop + GNOME + utilitários; a lista só aparece na instalação especializada.
+6. **Instalar carregador GRUB** — Em UEFI, o GRUB é instalado na partição EFI sem perguntar.
 7. **Concluir instalação** — Reiniciar
 
 ## Esquema de particionamento recomendado
@@ -45,6 +49,22 @@ Teclas comuns:
 | `/` | 20-50 GB | ext4 | Partição raiz |
 | `swap` | 2-8 GB | swap | Memória virtual |
 | `/home` | Espaço restante | ext4 | Dados do usuário |
+
+Medido: com disco de 17,2 GB e 2 GiB de RAM, o assistente cria EFI de 925,9 MB e swap de 899,7 MB. Os tamanhos da tabela são uma recomendação para particionamento manual.
+
+## Detalhes verificados no 13.6
+
+- **Menu de inicialização:** o UEFI tem cinco entradas e **não tem `Help`**; `Help` só existe no menu BIOS.
+- **Particionamento:** com disco de 17,2 GB e 2 GiB de RAM, o assistente cria EFI 925,9 MB, raiz 15,4 GB e swap 899,7 MB (não “igual à RAM”).
+- **Seleção de software:** o fluxo padrão também mostra a lista (após os 45 pacotes base), com desktop + GNOME + utilitários já marcados; basta clicar em Continuar.
+- **SSH:** `openssh-server` não vem pré-selecionado; um sistema recém-instalado não tem sshd.
+- **GRUB:** em UEFI, o GRUB é instalado na partição EFI sem perguntar sobre o MBR.
+- **Fuso horário:** instalações em inglês perguntam; chinês + China usa `Asia/Shanghai` automaticamente.
+- **Espelhos:** `deb.debian.org` deu apenas 15–56 KB/s; `mirrors.tuna.tsinghua.edu.cn` alcançou 25 MB/s.
+
+![Menu de inicialização UEFI](/images/verify/uefi-boot-menu.png)
+
+![Resumo das partições](/images/verify/partition-overview.png)
 
 ## Próximos passos
 

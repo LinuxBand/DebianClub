@@ -5,10 +5,10 @@ description: "Imagens cloud oficiais do Debian, uso com AWS/Azure/OpenStack, clo
 
 <Callout type="info" title="Base atual das imagens cloud">
 
-- Debian 13 (Trixie): **20261001-2618** (2026-10-01)
-- Debian 12 (Bookworm, LTS): **20260923-2610** (2026-09-23)
+- Debian 13 (Trixie): **20261116-2664** (2026-11-16)
+- Debian 12 (Bookworm, LTS): **20261117-2665** (2026-11-17)
 - Debian 11 (Bullseye): EOL desde 2026-08-31
-- Debian 14 (Forky, testing): **20261004-2621** (2026-10-04)
+- Debian 14 (Forky, testing): **20261119-2667** (2026-11-19)
 
 </Callout>
 
@@ -42,7 +42,7 @@ wget https://cloud.debian.org/images/cloud/trixie/latest/SHA512SUMS
 sha512sum -c SHA512SUMS --ignore-missing
 ```
 
-- AWS: AMI `debian-13-amd64-20261001-2618` / `debian-13-arm64-20261001-2618`
+- AWS: AMI `debian-13-amd64-20261116-2664` / `debian-13-arm64-20261116-2664`
 - Azure: URN `Debian:debian-13:13:latest`
 - OpenStack: enviar a imagem `generic`
 - Local: iniciar a imagem `nocloud` com QEMU
@@ -56,11 +56,11 @@ sha512sum -c SHA512SUMS --ignore-missing
 | Debian 11 | EOL em 2026-08-31 | Não usar em novos hosts cloud |
 | Debian 14 | testing | Apenas para testes |
 
-Após um lançamento pontual como 13.7, as imagens cloud e Docker são reconstruídas. Em produção, fixe a versão ou o digest.
+Após um lançamento pontual como 13.8, as imagens cloud e Docker são reconstruídas. Em produção, fixe a versão ou o digest.
 
 ## Imagens de contêiner
 
-- `debian:13` / `debian:13-slim` (13.7, atualizado em 2026-09-19)
+- `debian:13` / `debian:13-slim` (13.8)
 - Em produção, fixe uma tag de versão pontual ou um digest.
 
 ## Links

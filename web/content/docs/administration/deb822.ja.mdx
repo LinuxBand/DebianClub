@@ -1,9 +1,11 @@
 ---
 title: "deb822 ソース形式（.sources）"
-description: "Debian 13 でデフォルトとなる deb822/.sources 形式の完全ガイド。フィールドの説明、サードパーティリポジトリの設定、ワンクリック移行を含む。"
+description: "deb822/.sources 形式のガイド。フィールド、サードパーティリポジトリ、従来の sources.list からの移行を解説。13.6 のインストーラーは既定で一行形式の sources.list を書き込みます。"
 ---
+<Verified date="2026-11-19" label="実測確認済み">APT 3.0.3</Verified>
 
-Debian 12 で導入され、**Debian 13 (Trixie)** でデフォルトとなった **deb822** 形式は、より明確でメンテナンスしやすいソフトウェアリポジトリ設定方法です。`.sources` 拡張子を使用し、各リポジトリを複数行の「キー: 値」形式で記述します。従来の一行 `deb` 記法に代わるものです。
+
+**deb822** は Debian 12 で導入され、Debian 13 の APT 3.0 で完全にサポートされていますが、**任意**の形式です。13.6 のインストーラーは現在も従来の一行形式 `sources.list` を書き込みます。`.sources` 拡張子を使い、各リポジトリを複数行の「キー: 値」で記述するため、複数の `Suites` や `Signed-By` を使う場合に分かりやすくなります。
 
 ## 従来形式 vs deb822 形式
 
@@ -31,7 +33,7 @@ Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
 
-Debian 13 の新規インストール後、公式リポジトリは `/etc/apt/sources.list.d/debian.sources` に保存され、従来の `/etc/apt/sources.list` は通常空か存在しません。
+Debian 13.6 の新規インストール後、公式リポジトリは実際には `/etc/apt/sources.list`（一行形式）に書き込まれ、`/etc/apt/sources.list.d/` は空です。「インストーラーが debian.sources を生成する」という説明は実測と一致しません。
 
 ## フィールド説明
 
@@ -90,7 +92,7 @@ sudo apt update
 ```text
 Types: deb
 URIs: https://mirrors.tuna.tsinghua.edu.cn/debian
-Suites: trixie trixie-updates trixie-backports
+Suites: trixie trixie-updates
 Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
@@ -105,7 +107,8 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
 ## まとめ
 
-- Debian 13 はデフォルトで deb822（`.sources`）形式を使用し、ソースファイルは `/etc/apt/sources.list.d/` に置かれます。
+- Debian 13.6 のインストーラーは既定で一行形式の `sources.list` を書き込みます。deb822 は任意です。
+- 既定のコンポーネントは `main non-free-firmware` のみで、`trixie-backports` は既定では有効になりません。
 - `sudo apt modernize-sources` で従来形式からワンクリック移行できます。
 - サードパーティリポジトリを追加する際は、常に `gpg --dearmor` でキーリングを生成し、`Signed-By` で明示的に参照してください。`apt-key` は使用しないでください。
 

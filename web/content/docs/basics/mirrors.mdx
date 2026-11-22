@@ -1,9 +1,14 @@
 ---
 title: "Debian 换源教程（镜像源配置）"
-description: "Debian 13 换源教程：deb822 新格式与传统 sources.list 写法、清华/中科大/阿里云镜像源对照、安全源配置与常见错误。"
+description: "Debian 13 换源教程：传统 sources.list（安装器默认）与 deb822 可选写法、清华/中科大/阿里云镜像对照、安全源配置与常见错误。"
+verified: "2026-11-19"
 ---
+<Verified date="2026-11-19" label="实测验证">Debian 13.6.0 / TUNA</Verified>
 
-国内访问 `deb.debian.org` 速度不稳定，装完系统把软件源换成就近镜像，`apt update` 能快一个数量级。Debian 13 使用 **deb822 格式**（安装器默认写入 `/etc/apt/sources.list.d/debian.sources`），旧的每行一条式写法（`/etc/apt/sources.list`）也继续可用——两种写法二选一，不要混用。
+
+国内访问 `deb.debian.org` 速度很不稳定：实测只有 **15–56 KB/s**，换清华 TUNA 后达到 **25 MB/s**，apt 能快两三个数量级。
+
+Debian 13.6 安装器**默认写入传统一行式** `/etc/apt/sources.list`（`sources.list.d/` 为空）；deb822 的 `.sources` 是 APT 3.0 支持的**可选格式**，适合新配置或需要多 `Suites`/`Signed-By` 的场景。两种写法二选一，不要混用。
 
 ## 常用国内镜像
 
@@ -23,7 +28,7 @@ description: "Debian 13 换源教程：deb822 新格式与传统 sources.list �
 
 </Callout>
 
-## 方式一：deb822 格式（Debian 13 默认）
+## 方式一：deb822 格式（可选）
 
 编辑 `/etc/apt/sources.list.d/debian.sources`（以清华源为例）：
 
@@ -35,9 +40,11 @@ Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
 
-注意：`Suites` 里要同时包含 `trixie`、`trixie-updates` 和 **`trixie-security`**（安全更新走镜像站的 `debian-security` 路径，见下方传统格式示例中的独立写法——部分镜像站将安全源托管在同一域名下，直接合并即可）。
+注意：`Suites` 里要同时包含 `trixie`、`trixie-updates` 和 **`trixie-security`**。安全更新通常走镜像站的 `debian-security` 路径，建议像下面传统格式那样单独写一个安全源条目，避免部分镜像站路径不一致。
 
-## 方式二：传统 sources.list 格式
+安装器默认只启用 `main non-free-firmware`；需要 `contrib`/`non-free` 时再自行加上。
+
+## 方式二：传统 sources.list（13.6 安装器默认）
 
 编辑 `/etc/apt/sources.list`，替换为（以中科大为例）：
 
@@ -56,7 +63,13 @@ sudo apt update
 apt policy firefox-esr | head -5
 ```
 
-`apt update` 无报错、`apt policy` 显示的候选版本来自镜像站地址，即换源成功。 upgrades 出现 404 时优先检查 Suites 拼写和镜像站是否同步完成。
+![apt update 命中镜像](/images/verify/apt/apt-update-zh.png)
+
+![apt policy 校验镜像](/images/verify/apt/apt-policy-zh.png)
+
+`apt update` 无报错、`apt policy` 显示的候选版本来自镜像站地址，即换源成功。
+
+注意：安装器只替换主仓库，`trixie-security` 默认仍指向 `security.debian.org`；截图里第 3 行就是官方安全源。要全走镜像，需手动改安全源。 `apt update` 出现 404 时优先检查 Suites 拼写和镜像站是否同步完成。
 
 ## 常见问题
 

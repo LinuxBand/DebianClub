@@ -5,11 +5,13 @@ description: "Debian 14（Forky）专题：当前开发状态、官方时间线�
 
 ![Debian 14（Forky）示意图](/images/hero-forky.png)
 
-<Callout type="info" title="当前状态（2026-09-26）">
+<Callout type="info" title="当前状态（2026-11-21）">
 
-Debian 14 代号 **Forky**，目前是 **testing** 开发分支。截至 2026 年 9 月，testing 已跟进 **Linux 7.2** 内核系列；**冻结与发布日期官方尚未公布**。当前稳定版仍是 [Debian 13（Trixie）](/versions)。本页随 Debian 官方公告持续更新。
+Debian 14 代号 **Forky**，目前是 **testing** 开发分支。截至 2026 年 9 月，testing 已跟进 **Linux 6.19** 内核系列；**冻结与发布日期官方尚未公布**。当前稳定版仍是 [Debian 13（Trixie）](/versions)。本页随 Debian 官方公告持续更新。
 
 </Callout>
+
+> 版本数据核对：2026-11-20，来源 [packages.debian.org/forky](https://packages.debian.org/forky/)。testing 版本变动频繁，以仓库实际为准。
 
 <ReleaseTimeline />
 
@@ -19,7 +21,7 @@ Debian 14 代号 **Forky**，目前是 **testing** 开发分支。截至 2026 �
 |------|------|
 | **开发代号** | Forky（《玩具总动员 4》角色，按惯例以玩具总动员角色命名） |
 | **当前阶段** | testing：来自 unstable（Sid）的包满足条件后自动迁入 |
-| **内核** | Linux 7.2 系列（7.2.6+deb14 已进入 testing，2026-09） |
+| **内核** | Linux 6.19 系列（6.19.10+deb14 已进入 testing，2026-09） |
 | **冻结时间表** | 尚未公布 |
 | **预计发布** | 约 2027 年（Debian 惯例约两年一个稳定版，无固定日期） |
 | **生产建议** | 继续使用 [Debian 13](/download)；testing 不用于生产 |
@@ -36,7 +38,7 @@ Debian 14 代号 **Forky**，目前是 **testing** 开发分支。截至 2026 �
 |------|------|
 | 2025-07-19 | Release Team 宣布代号 Forky（Let's Fork(y)!） |
 | 2025-08-09 | Debian 13（Trixie）发布，testing 随即以 Forky 继续 |
-| 2026-09 | Linux 7.2.6+deb14 内核进入 Forky testing |
+| 2026-09 | Linux 6.19.10+deb14 内核进入 Forky testing |
 | 2026-11 至 2027-05 | Trixie 点更新排期（13.8–13.11），与 Forky 开发并行 |
 
 ### 参考：Trixie 的冻结节奏
@@ -55,39 +57,39 @@ Forky 的冻结日期公布前，Trixie 的实际节奏是最好的参照（来�
 
 ## 🛰️ 进展追踪
 
-> 按时间倒序记录可核实的 Forky / testing 动态，随官方公告更新（最后核对：**2026-09-26**）。数据来自 deb.debian.org 归档索引、packages.debian.org 与 sources.debian.org。
+> 按时间倒序记录可核实的 Forky / testing 动态，随官方公告更新（最后核对：**2026-11-21**）。数据来自 deb.debian.org 归档索引、packages.debian.org 与 sources.debian.org。
 
 ### 近期动态
 
 - **2026-09：默认工具链完成切换** — testing 中 `python3` 默认指向 **3.14**（3.14.7），GCC 默认指向 **16.1**（gcc-15.3 仍随仓库提供），为后续大规模软件包重建铺路
-- **2026-09：Linux 7.2.6+deb14 进入 testing** — 内核从 Trixie 的 6.12 LTS 系列跃迁到 7.2 系列
-- **2026-09：主要桌面与基础组件到位** — GNOME 50.5、KDE Plasma 6.7.4、systemd 261.2、glibc 2.43、LibreOffice 26.8、Firefox ESR 140.16
+- **2026-09：Linux 6.19.10+deb14 进入 testing** — 内核从 Trixie 的 6.12 LTS 系列跃迁到 6.19 系列
+- **2026-09：主要桌面与基础组件到位** — GNOME 51.0、KDE Plasma 6.7.4、systemd 262.2、glibc 2.43、LibreOffice 26.8、Firefox ESR 153.5.1
 - **2026-11 起：Trixie 点更新 13.8–13.11 按排期发布** — Forky 冻结前，发布管理的工作重点仍在 Trixie 稳定维护上
 
-### testing 组件快照（forky/main amd64，2026-09-26）
+### testing 组件快照（forky/main amd64，2026-11-21）
 
 | 组件 | Forky testing 当前 | Debian 13 基线 |
 |------|--------------------|----------------|
-| Linux 内核 | 7.2.6 | 6.12 LTS |
-| systemd | 261.2 | 257.13 |
+| Linux 内核 | 6.19.10 | 6.12 LTS |
+| systemd | 262.2 | 257.13 |
 | glibc | 2.43 | 2.41 |
-| GCC（默认） | 16.1 | 14.2 |
+| GCC（默认） | 16.2 | 14.2 |
 | Python（默认 python3） | 3.14.7 | 3.13 |
-| GNOME | 50.5 | 48 |
+| GNOME | 51.0 | 48 |
 | KDE Plasma | 6.7.4 | 6.3 |
 | LibreOffice | 26.8 | 25.2 |
-| Firefox ESR | 140.16 | 128 |
+| Firefox ESR | 153.5.1 | 153.7 |
 
 > 冻结前 testing 版本会持续滚动，实时版本请以 [packages.debian.org/forky](https://packages.debian.org/forky/) 为准；冻结后这张表才会逐步"定型"。
 
 ### 归档活跃度
 
-- forky 归档索引目前**每日刷新**（2026-09-26 08:08 UTC 生成的 Release 索引当日即被新快照取代），unstable → testing 的自动迁移处于正常滚动状态
+- forky 归档索引目前**每日刷新**（2026-11-21 08:08 UTC 生成的 Release 索引当日即被新快照取代），unstable → testing 的自动迁移处于正常滚动状态
 - 冻结开始后这一节奏会显著放缓，直至只接受关键修复——那也将是 Forky 进入发布周期的明确信号
 
 ## 🔍 Forky 与 Debian 13 目前的可见差异
 
-- **内核**：Debian 13 为 Linux 6.12 LTS 系列；Forky testing 已跟进 7.2 系列
+- **内核**：Debian 13 为 Linux 6.12 LTS 系列；Forky testing 已跟进 6.19 系列
 - **其余组件**（桌面环境版本、工具链、安装器行为等）要等冻结阶段才会定型——现在流传的任何"Debian 14 新特性清单"都为时过早，请以官方 Release Notes 为准
 
 ## 🧪 如何安全体验 Forky
@@ -103,7 +105,7 @@ Forky 的冻结日期公布前，Trixie 的实际节奏是最好的参照（来�
 |------|------|
 | Debian 14 什么时候发布？ | 官方未公布日期。按约两年一个稳定版的节奏预计 2027 年；冻结时间表公布后才会有明确窗口 |
 | 现在安装 testing 就是安装 14 吗？ | 是。testing 会持续演进为 Debian 14，发布后原地转正 |
-| Forky 已经有哪些新特性？ | 已确定的有 Linux 7.2 内核等；完整变化清单等官方 Release Notes，冻结前不应轻信各种"新特性"文章 |
+| Forky 已经有哪些新特性？ | 已确定的有 Linux 6.19 内核等；完整变化清单等官方 Release Notes，冻结前不应轻信各种"新特性"文章 |
 | 生产环境可以用 testing 吗？ | 不建议。生产环境继续使用 [Debian 13](/download)，等 14 发布并出现首个点更新后再规划迁移 |
 | 13 能直接升级到 14 吗？ | 14 发布后可以，参考[系统升级指南](/basics/upgrade)与官方 Release Notes |
 

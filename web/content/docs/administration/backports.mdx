@@ -1,11 +1,14 @@
 ---
 title: "Backports 使用指南"
 description: "在 Debian 13 稳定版上通过 trixie-backports 安全地安装较新版本软件的完整指南"
+verified: "2026-11-19"
 ---
+<Verified date="2026-11-19" label="实测验证">Debian 13 APT</Verified>
+
 
 Debian 稳定版（Stable）以「稳定」著称，但软件版本相对保守。**Backports** 是 Debian 官方提供的折中方案：它把 `testing` 中较新的软件**重新编译**到当前稳定版上，让你在不离开 Stable 的前提下，按需安装个别较新的软件。
 
-对 Debian 13 而言，对应的源是 **`trixie-backports`**。
+对 Debian 13 而言，对应的源是 **`trixie-backports`**。注意：13.6 安装器**默认不启用** backports，默认 `sources.list` 里只有 `trixie`、`trixie-updates`、`trixie-security`，需要按下面的步骤手动加。
 
 ## 什么时候用 Backports
 
@@ -54,6 +57,10 @@ sudo apt install -t trixie-backports libreoffice
 # 安装较新的内核（对新硬件很有用）
 sudo apt install -t trixie-backports linux-image-amd64
 ```
+
+![启用 backports 后的 apt policy](/images/verify/apt/backports-zh.png)
+
+实测（2026-11-20）：添加 deb822 的 `trixie-backports` 后 `apt update` 正常拉取（约 607 kB）；`apt policy linux-image-amd64` 中 backports 版本标记为 **100**，候选仍是 stable/security 的 500 版本——所以不加 `-t` 不会自动安装 backports。
 
 后续 `sudo apt upgrade` 会把已装的 backports 软件升级到 backports 中的新版本，其余软件仍走 Stable。
 

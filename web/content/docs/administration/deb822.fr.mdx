@@ -1,9 +1,11 @@
 ---
 title: "Format de source deb822 (.sources)"
-description: "Guide complet du format de source de logiciels deb822/.sources adopté par défaut dans Debian 13, avec explication des champs, configuration de sources tierces et migration en une commande"
+description: "Guide du format deb822/.sources : champs, sources tierces et migration depuis la sources.list classique ; l’installateur 13.6 écrit toujours une sources.list d’une ligne par défaut"
 ---
+<Verified date="2026-11-19" label="Vérifié">APT 3.0.3</Verified>
 
-Introduit à partir de Debian 12 et devenu le format par défaut dans **Debian 13 (Trixie)**, le format **deb822** est une manière plus claire et plus facile à maintenir de configurer les sources de logiciels. Il utilise l'extension `.sources`, chaque source étant décrite sous forme de lignes multiples « clé : valeur », remplaçant la syntaxe traditionnelle sur une seule ligne `deb`.
+
+**deb822** a été introduit avec Debian 12 et APT 3.0 le prend entièrement en charge dans Debian 13, mais il est **facultatif** : l’installateur 13.6 écrit toujours la `sources.list` classique d’une ligne. Le format utilise l’extension `.sources`, chaque source étant décrite sur plusieurs lignes « clé : valeur », ce qui est plus clair avec plusieurs `Suites` et `Signed-By`.
 
 ## Format traditionnel vs format deb822
 
@@ -31,7 +33,7 @@ Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
 
-Après une installation fraîche de Debian 13, les sources officielles sont enregistrées dans `/etc/apt/sources.list.d/debian.sources`, tandis que le traditionnel `/etc/apt/sources.list` est généralement vide ou inexistant.
+Après une installation fraîche de Debian 13.6, les sources officielles sont en réalité écrites dans `/etc/apt/sources.list` (une ligne) ; `/etc/apt/sources.list.d/` est vide. L’affirmation selon laquelle l’installateur génère `debian.sources` ne correspond pas à ce qui est observé.
 
 ## Description des champs
 
@@ -90,7 +92,7 @@ Modifiez simplement le champ `URIs` du fichier `debian.sources` officiel pour le
 ```text
 Types: deb
 URIs: https://mirrors.tuna.tsinghua.edu.cn/debian
-Suites: trixie trixie-updates trixie-backports
+Suites: trixie trixie-updates
 Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
@@ -105,7 +107,8 @@ Après modification, n'oubliez pas d'exécuter `sudo apt update`.
 
 ## Résumé
 
-- Debian 13 utilise par défaut le format deb822 (`.sources`) ; les fichiers de sources se trouvent dans `/etc/apt/sources.list.d/`.
+- L’installateur Debian 13.6 écrit par défaut une `sources.list` d’une ligne ; deb822 est facultatif.
+- Les composants par défaut sont seulement `main non-free-firmware` ; `trixie-backports` n’est pas activé par défaut.
 - Utilisez `sudo apt modernize-sources` pour migrer en une commande depuis l'ancien format.
 - Lors de l'ajout d'une source tierce, générez toujours un keyring avec `gpg --dearmor` et référencez-le explicitement dans `Signed-By` ; n'utilisez plus `apt-key`.
 

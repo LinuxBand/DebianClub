@@ -2,14 +2,18 @@
 title: "Guide d'installation"
 description: "Guide d'installation complet étape par étape pour Debian 13"
 ---
+<Verified date="2026-11-19" label="Vérifié">Debian 13.6.0 / PVE 9.2.2</Verified>
 
-![Étapes d'installation de Debian](/images/install-journey.webp)
+
+![Menu de démarrage UEFI de Debian 13](/images/verify/uefi-boot-menu.png)
 
 ## Préparation avant l'installation
 
 - ✅ Support de démarrage créé
 - ✅ Données importantes sauvegardées
 - ✅ Connexion réseau disponible (recommandée)
+
+- **Support :** `debian-13.8.0-amd64-netinst.iso` (version ponctuelle actuelle ; les captures de ce guide proviennent de 13.6.0).
 
 <Callout type="warn" title="Important">
 
@@ -33,8 +37,8 @@ Touches communes :
 2. **Configurer le réseau** — Connexion filaire recommandée
 3. **Partitionner le disque** — Utiliser le partitionnement guidé pour les débutants
 4. **Installer le système de base** — Téléchargement automatique
-5. **Sélectionner les logiciels** — Choisir l'environnement de bureau
-6. **Installer le chargeur d'amorçage GRUB** — Installer sur le disque principal
+5. **Sélectionner les logiciels** — Le parcours standard ne demande rien : il installe bureau + GNOME + utilitaires ; la liste n’apparaît qu’en installation experte.
+6. **Installer le chargeur d'amorçage GRUB** — En UEFI, GRUB est installé dans la partition EFI sans question.
 7. **Terminer l'installation** — Redémarrer
 
 ## Partitionnement recommandé
@@ -46,6 +50,8 @@ Touches communes :
 | `swap` | 2-8 Go | swap | Mémoire virtuelle |
 | `/home` | Espace restant | ext4 | Données utilisateur |
 
+Mesuré : avec un disque de 17,2 Go et 2 Gio de RAM, l’assistant crée une EFI de 925,9 Mo et un swap de 899,7 Mo. Les tailles du tableau sont une recommandation pour un partitionnement manuel.
+
 ## Résolution des problèmes courants
 
 ```bash
@@ -56,6 +62,20 @@ ls /sys/firmware/efi
 sudo grub-install /dev/sda
 sudo update-grub
 ```
+
+## Détails vérifiés en 13.6
+
+- **Menu de démarrage :** l’UEFI a cinq entrées et **pas de `Help`** ; `Help` n’existe que dans le menu BIOS.
+- **Partitionnement :** avec un disque de 17,2 Go et 2 Gio de RAM, l’assistant crée EFI 925,9 Mo, racine 15,4 Go et swap 899,7 Mo (pas « égal à la RAM »).
+- **Sélection des logiciels :** le parcours standard affiche aussi la liste (après les 45 paquets de base), avec bureau + GNOME + utilitaires déjà cochés ; cliquez simplement sur Continuer.
+- **SSH :** `openssh-server` n’est pas présélectionné ; une installation fraîche n’a pas de sshd.
+- **GRUB :** en UEFI, GRUB est installé dans la partition EFI sans question sur le MBR.
+- **Fuseau horaire :** les installations en anglais le demandent ; chinois + Chine utilise automatiquement `Asia/Shanghai`.
+- **Miroirs :** `deb.debian.org` ne donnait que 15–56 Ko/s ; `mirrors.tuna.tsinghua.edu.cn` atteignait 25 Mo/s.
+
+![Menu de démarrage UEFI](/images/verify/uefi-boot-menu.png)
+
+![Résumé des partitions](/images/verify/partition-overview.png)
 
 ## Étapes suivantes
 

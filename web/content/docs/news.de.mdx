@@ -9,11 +9,18 @@ Diese Seite fasst aktuelle wichtige Updates des Debian-Projekts zusammen und hä
 
 ### Versions­veröffentlichungen
 
+#### Debian 13.8 veröffentlicht (2026-11-21)
+
+Debian 13.8 wurde am **2026-11-21** veröffentlicht – das achte Point-Release von Debian 13 (Trixie) mit Sicherheits- und wichtigen Fehlerkorrekturen.
+
+- [Ankündigung](https://www.debian.org/News/2026/20261121)
+- [Debian 13.8 herunterladen](/download)
+
 #### Debian 13.7 veröffentlicht (2026-09-12)
 
 Debian 13.7 wurde am **2026-09-12** veröffentlicht. Es ist das siebte Point-Release von Debian 13 (Trixie) und enthält Sicherheits- und wichtige Fehlerkorrekturen.
 
-Weitere Point-Releases sind bereits eingeplant: **13.8** ist für den **2026-11-14** vorgesehen, danach 13.9 (2027-01-09), 13.10 (2027-03-13) und 13.11 (2027-05-08); bestätigte Termine werden über [debian-stable-announce](https://lists.debian.org/debian-stable-announce/) bekannt gegeben.
+Weitere Point-Releases sind bereits eingeplant: **13.8** ist am **2026-11-21** erschienen, danach 13.9 (2027-01-16), 13.10 (2027-03-13) und 13.11 (2027-05-08); bestätigte Termine werden über [debian-stable-announce](https://lists.debian.org/debian-stable-announce/) bekannt gegeben.
 
 - [Offizielle Ankündigung](https://www.debian.org/News/2026/20260912)
 - [Debian Release Management](https://release.debian.org/)
@@ -81,13 +88,13 @@ Am 10. Januar 2026 hat Debian gleichzeitig veröffentlicht:
 
 ### Cloud & Container
 
-#### Debian 13 Cloud- und Container-Images aktualisiert (2026-10-04)
+#### Debian 13 Cloud- und Container-Images aktualisiert (2026-11-16)
 
-Der neueste offizielle Debian-13-Cloud-Image-Build ist **20261001-2618** (2026-10-01). Er unterstützt AWS EC2, Microsoft Azure, OpenStack und lokale QEMU/Plain-VM-Nutzung mit den Image-Typen `generic`, `genericcloud`, `nocloud`, `ec2` und `azure`. Aktuelle AWS-AMIs sind `debian-13-amd64-20261001-2618` / `debian-13-arm64-20261001-2618`; die Azure-Image-URN lautet `Debian:debian-13:13:latest`.
+Der neueste offizielle Debian-13-Cloud-Image-Build ist **20261116-2664** (2026-11-16). Er unterstützt AWS EC2, Microsoft Azure, OpenStack und lokale QEMU/Plain-VM-Nutzung mit den Image-Typen `generic`, `genericcloud`, `nocloud`, `ec2` und `azure`. Aktuelle AWS-AMIs sind `debian-13-amd64-20261116-2664` / `debian-13-arm64-20261116-2664`; die Azure-Image-URN lautet `Debian:debian-13:13:latest`.
 
-- Debian 12 LTS Cloud-Images wurden am **2026-09-23** aktualisiert; Debian 11 hat am 2026-08-31 das EOL erreicht, seine Cloud-Images erhalten keine Debian-Sicherheitsupdates mehr.
+- Debian 12 LTS Cloud-Images wurden am **2026-11-17** aktualisiert; Debian 11 hat am 2026-08-31 das EOL erreicht, seine Cloud-Images erhalten keine Debian-Sicherheitsupdates mehr.
 - Debian 14 (Forky) Testing-Daily-Cloud-Images sind für Tests verfügbar, nicht für die Produktion.
-- Die offiziellen Docker-Images `debian:13` / `debian:13-slim` wurden auf 13.7 aktualisiert (2026-09-19); für Produktionscontainer einen Point-Release-Tag oder Digest pinnen.
+- Die offiziellen Docker-Images `debian:13` / `debian:13-slim` wurden auf 13.8 aktualisiert; für Produktionscontainer einen Point-Release-Tag oder Digest pinnen.
 - Debian 13.7 wurde am 2026-09-12 veröffentlicht; Cloud- und Docker-Images wurden danach aktualisiert.
 
 - [Offizielle Debian-Cloud-Images](https://cloud.debian.org/images/cloud/)
@@ -167,7 +174,7 @@ Debian begrüßt weiterhin neue Mitglieder:
 
 ### Sicherheits­wartung
 
-Das Debian-Sicherheitsteam veröffentlicht weiterhin DSA-(Debian Security Advisory) und DLA-(Debian LTS Advisory)-Meldungen. Stand 2026-09-26 betreffen aktuelle Meldungen unter anderem ghostscript, vlc, php8.4, chromium, libreoffice, nginx, xorg-server, network-manager, firefox-esr, thunderbird und linux; die neuesten Nummern sind DSA-6516-1 (ghostscript), DSA-6515-1 (vlc), DSA-6514-1 (php8.4), DSA-6513-1 (chromium), DSA-6501-1 (firefox-esr) sowie DLA-4796-1 (evolution-data-server), DLA-4795-1 (openssl) und DLA-4790-1 (chromium).
+Das Debian-Sicherheitsteam veröffentlicht weiterhin DSA-(Debian Security Advisory) und DLA-(Debian LTS Advisory)-Meldungen. Stand 2026-11-21 betreffen aktuelle Meldungen unter anderem ghostscript, vlc, php8.4, chromium, libreoffice, nginx, xorg-server, network-manager, firefox-esr, thunderbird und linux; die neuesten Nummern sind DSA-6516-1 (ghostscript), DSA-6515-1 (vlc), DSA-6514-1 (php8.4), DSA-6513-1 (chromium), DSA-6501-1 (firefox-esr) sowie DLA-4796-1 (evolution-data-server), DLA-4795-1 (openssl) und DLA-4790-1 (chromium).
 
 - Stable (Debian 13) wird vom Sicherheits­team gewartet
 - Debian 12 (Bookworm) wird seit dem 2026-07-12 vom LTS-Team gewartet; der LTS-Support für Debian 11 (Bullseye) endete am 2026-08-31 – Debian bietet keine Sicherheitsupdates mehr, ein Teil der Pakete wird über ELTS bis 2031-06-30 unterstützt; noch laufende Systeme sollten migriert oder abgeschaltet werden

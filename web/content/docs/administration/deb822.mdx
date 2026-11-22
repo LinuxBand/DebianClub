@@ -1,9 +1,12 @@
 ---
 title: "deb822 源格式（.sources）"
-description: "Debian 13 默认采用的 deb822/.sources 软件源格式完整指南，含字段说明、第三方源配置与一键迁移"
+description: "deb822/.sources 软件源格式指南：字段说明、第三方源配置、从传统 sources.list 迁移；13.6 安装器默认仍写一行式"
+verified: "2026-11-19"
 ---
+<Verified date="2026-11-19" label="实测验证">APT 3.0.3</Verified>
 
-从 Debian 12 开始引入、并在 **Debian 13 (Trixie)** 中成为默认的 **deb822** 格式，是一种更清晰、更易维护的软件源配置方式。它使用 `.sources` 扩展名，每个源以多行「键: 值」的形式描述，取代了传统的单行 `deb` 写法。
+
+**deb822** 格式从 Debian 12 开始引入，Debian 13 的 APT 3.0 完整支持，但它是**可选格式**：13.6 安装器默认仍写传统一行式 `sources.list`。deb822 用 `.sources` 扩展名，每个源以多行「键: 值」描述，更适合多 `Suites`、`Signed-By` 等复杂配置。
 
 ## 传统格式 vs deb822 格式
 
@@ -31,7 +34,7 @@ Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
 
-Debian 13 全新安装后，官方源就保存在 `/etc/apt/sources.list.d/debian.sources` 中，而传统的 `/etc/apt/sources.list` 通常为空或不存在。
+Debian 13.6 全新安装后，官方源实际写在 `/etc/apt/sources.list`（一行式），`/etc/apt/sources.list.d/` 为空。网上“安装器默认生成 debian.sources”的说法与实测不符。
 
 ## 字段说明
 
@@ -56,6 +59,10 @@ sudo apt modernize-sources
 ```
 
 该命令会读取现有的 `sources.list`，生成等价的 `.sources` 文件，并把原文件备份为 `.bak`。执行后运行 `sudo apt update` 验证即可。
+
+![apt modernize-sources 实测](/images/verify/apt/modernize-sources-zh.png)
+
+实测（APT 3.0.4）：执行后 `/etc/apt/sources.list` 被移除，原内容在 `sources.list.bak`；所有条目合并进 `/etc/apt/sources.list.d/debian.sources`，按 `trixie`、`trixie-security`、`trixie-updates` 分成三个 stanza，`Types` 同时包含 `deb` 和 `deb-src`，随后 `apt update` 正常命中三个源。
 
 ## 添加第三方源（deb822 写法）
 
@@ -90,8 +97,8 @@ sudo apt update
 ```text
 Types: deb
 URIs: https://mirrors.tuna.tsinghua.edu.cn/debian
-Suites: trixie trixie-updates trixie-backports
-Components: main contrib non-free non-free-firmware
+Suites: trixie trixie-updates
+Components: main non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
 Types: deb
@@ -105,7 +112,8 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
 ## 小结
 
-- Debian 13 默认使用 deb822（`.sources`）格式，源文件位于 `/etc/apt/sources.list.d/`。
+- Debian 13.6 安装器默认写一行式 `sources.list`；deb822 是可选格式。
+- 默认组件只有 `main non-free-firmware`，默认不含 `trixie-backports`。
 - 用 `sudo apt modernize-sources` 可一键从旧格式迁移。
 - 添加第三方源时，始终用 `gpg --dearmor` 生成 keyring 并在 `Signed-By` 中显式引用，不要再用 `apt-key`。
 

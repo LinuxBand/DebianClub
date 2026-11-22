@@ -3,7 +3,7 @@ title: "What's New in Debian 13"
 description: "New features, improvements and important changes in Debian 13 (Trixie)"
 ---
 
-Debian 13 codenamed "Trixie" was officially released in August 2025 and is the current stable release. As of September 2026, the latest point release is **13.7**. This page introduces the important changes and new features in this version.
+Debian 13 codenamed "Trixie" was officially released in August 2025 and is the current stable release. As of November 2026, the latest point release is **13.8**. This page introduces the important changes and new features in this version.
 
 ## 🚀 Major New Features
 
@@ -226,6 +226,26 @@ debconf-show package-name
 sudo dpkg-reconfigure package-name
 ```
 
+## 🧩 13.8 Point Release (2026-11-21)
+
+Released on 2026-11-21, 13.8 is a point update: mostly security fixes plus a few serious bugs. It is not a new Debian 13 release, and existing installation media keeps working.
+
+Notable fixes:
+
+- **GRUB**: Secure Boot bypass (CVE-2026-97876), several use-after-free issues, higher SBAT revision
+- **glibc**: out-of-bounds reads/writes, buffer and stack overflows, UTF-32 decode hangs
+- **OpenSSL, MariaDB, Intel microcode**: upstream stable and security updates
+- **KWin**: Wayland colour management and null-output crashes when unplugging monitors
+- **tzdata**: Cuba moves to permanent DST; updates for Manitoba and the Northwest Territories
+- **debian-installer**: kernel ABI bumped to 6.12.117+deb13
+
+Upgrade as usual:
+
+```bash
+sudo apt update && sudo apt full-upgrade
+```
+
+
 ## 🔮 Release Timeline & Point Updates
 
 ### Released Versions
@@ -239,7 +259,8 @@ sudo dpkg-reconfigure package-name
 | **13.4** | 2026-03-14 | Security fixes and critical bug fixes |
 | **13.5** | 2026-05-16 | Security fixes and critical bug fixes |
 | **13.6** | 2026-07-11 | Point release |
-| **13.7** | 2026-09-12 | Current latest point release |
+| **13.7** | 2026-09-12 | Point release |
+| **13.8** | 2026-11-21 | Current latest point release |
 
 ### Support Lifecycle
 
